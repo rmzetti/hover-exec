@@ -1,35 +1,98 @@
-# zetti README
+# Hover exec
 
-This is the README for your extension "zetti". After writing up a brief description, we recommend including the following sections.
-
-```matlab
-
-```
+This is the README for *hover exec*.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Hover exec facilitates execution of code blocks in a variety of installed scripts.
 
-For example if there is an image subfolder under your extension project workspace:
+The following scripts are supported 'out of the box':
 
-\!\[feature X\]\(images/feature-x.png\)
+- javascript
+- html
+- powershell
+- python
+- julia
+- octave
+- scilab
+- gnuplot
+- matlab
+- lua
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+and other scripts can be added by providing three strings for *Hover exec* in  `settings.json`.
+
+Hover script exec in action:
+
+![hover exec](./Hover-exec.gif)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+The script languages to be used (eg. *python*, *gnuplot*, etc) should be installed, and on the path.. eg. on Windows the python repl should run if `python` is entered in a cmd/powershell window.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+"exec.selectOnHover": select code on hover, default:false
+
+For each script language to be used, three strings are required:
+- [0] the exec command
+- [1] a change directory command to change working folder to 'currentFolder' 
+- [2] a regex to enable output to be inserted into `=<<intermediate results>>`
+
+A fourth string is optional to change the output file name and extension (the default is `temp.txt`)
+
+"exec.js":
+[0] "'node '+temp"
+[1]	"'process.chdir(\"'+currentFolder+'\")\\n';"
+[2]	"console.log(\"$1=<<\"+($1)+\">>\")"
+
+"exec.html":
+[0]	"temp"
+[1] "''"
+[2] ""
+[3]	"temp.html"
+
+"exec.pwsh":
+[0] "'pwsh -f '+temp"
+[1]	"'cd '+currentFolder+'\\n';"
+[2]	"\"$1=<<\"+($1)+\">>\""
+
+"exec.python":
+[0] "'python '+temp"
+[1]	"'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
+[2]	"print(\"$1=<<\"+str($1)+\">>\")"
+
+"exec.julia":
+[0]	"'julia '+temp",
+[1]	"'cd(\"'+currentFolder+'\")\\n'"
+[2]	"println(string(\"$1=<<\",$1,\">>\"))"
+
+"exec.octave":
+[0]	"'octave '+temp"
+[1]	"'cd '+currentFolder+';\\n'"
+[2]	"disp([\"$1=<<\" $1 \">>\"])"
+
+"exec.scilab":
+[0] "'scilex -quit -nb -f '+temp"
+[1]	"'cd '+currentFolder+';\\n'"
+[2]	"disp(\"$1=<<\"+string($1)+\">>\")"
+
+"exec.gnuplot":
+[0]	"'gnuplot -p -c '+temp"
+[1]	"'set loadpath \"'+currentFolder+'\"\\n'"
+[2]	""
+
+"exec.matlab":
+[0] "'matlab -sd '+tempd+' -batch \"temp\"'"
+[1]	"'path(path,\"'+currentFolder+'\");'"
+[2]	"disp([\"$1=<<\" $1 \">>\"])"
+[3]	"temp.m"
+
+"exec.lua":
+[0]	"'lua54 '+temp"
+[1]	"''"
+[2]	"print('$1=<<'..($1)..'>>')"
 
 ### Extension settings by codeblock
 `budd`
