@@ -1,0 +1,153 @@
+{   
+	"name": "exec",
+	"publisher": "rmzetti",
+	"displayName": "Hover Exec",
+	"description": "execute codeblocks",
+	"version": "0.3.2",
+	"engines": {
+		"vscode": "^1.56.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:markdown"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"configuration": {
+			"type":"object",
+			"title":"Hover Exec",
+			"properties": {
+				"exec.buddvs":{
+					"type":"array",
+					"default":[
+						"'buddvs '+temp",
+						"'chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\")+'\");'",
+						"write('$1=<<'+($1)+'>>')" ],
+					"description": "budd script"
+				},
+				"exec.octave":{
+					"type":"array",
+					"default":[
+						"'octave '+temp",
+						"'cd '+currentFolder+';\\n'",
+						"disp([\"$1=<<\" $1 \">>\"])" ],
+					"description": "octave"
+				},
+				"exec.matlab":{
+					"type":"array",
+					"default":[
+						"'matlab -sd '+tempd+' -batch \"temp\"'",
+						"'path(path,\"'+currentFolder+'\");'",
+						"disp([\"$1=<<\" $1 \">>\"])",
+						"temp.m" ],
+					"description": "octave"
+				},
+				"exec.scilab":{
+					"type":"array",
+					"default":[
+						"'scilex -quit -nb -f '+temp",
+						"'cd '+currentFolder+';\\n'",
+						"disp(\"$1=<<\"+string($1)+\">>\")" ],
+					"description": "scilab"
+				},
+				"exec.python":{
+					"type":"array",
+					"default":[
+						"'python '+temp",
+						"'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';",
+						"print(\"$1=<<\"+str($1)+\">>\")" ],
+					"description": "python"
+				},
+				"exec.julia":{
+					"type":"array",
+					"default":[
+						"'julia '+temp",
+						"'cd(\"'+currentFolder+'\")\\n'",
+						"println(string(\"$1=<<\",$1,\">>\"))" ],
+					"description": "julia"
+				},
+				"exec.gnuplot":{
+					"type":"array",
+					"default":[
+						"'gnuplot -p -c '+temp",
+						"'set loadpath \"'+currentFolder+'\"\\n'",
+						"" ],
+					"description": "gnuplot - no intermediate results"
+				},
+				"exec.pwsh":{
+					"type":"array",
+					"default":[
+						"'pwsh -f '+temp",
+						"'cd '+currentFolder+'\\n';",
+						"\"$1=<<\"+($1)+\">>\""],
+					"description": "powershell"
+				},
+				"exec.lua":{
+					"type":"array",
+					"default":[
+						"'lua54 '+temp",
+						"''",
+						"print('$1=<<'..($1)..'>>')" ],
+					"description": "lua"
+				},
+				"exec.js":{
+					"type":"array",
+					"default":[
+						"'node '+temp",
+						"'process.chdir(\"'+currentFolder+'\")\\n';",
+						"console.log(\"$1=<<\"+($1)+\">>\")" ],
+					"description": "powershell"
+				},
+				"exec.html":{
+					"type":"array",
+					"default":[
+						"temp",	"''", "",
+						"temp.html" ],
+					"description": "html"
+				},
+				"exec.selectOnHover":{
+					"description": "select code on hover",
+					"default": false,
+					"type": "boolean"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch --devtool eval",
+		"package": "webpack --mode production",
+		"test-compile": "tsc -p ./",
+		"test-watch": "tsc -watch -p ./",
+		"pretest": "npm run test-compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.56.0",
+		"@typescript-eslint/eslint-plugin": "^4.14.1",
+		"@typescript-eslint/parser": "^4.14.1",
+		"eslint": "^7.19.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.2.1",
+		"ts-loader": "^8.3.0",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0",
+		"webpack": "^5.40.0",
+		"webpack-cli": "^4.7.2"
+	},
+	"comments": {
+		"//": [
+			"originally in package:",
+			"webpack --mode production --devtool hidden-source-map",
+			"for hover, did not need under contributes:",
+			"  'capabilities':{'hoverProvider':'true'},"
+		]
+	}
+}
