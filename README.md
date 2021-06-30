@@ -46,64 +46,64 @@ Note that additional script languages can be added just by adding a new section 
 ```
 "exec.js":
 [0] "'node '+temp"
-[1]	"'process.chdir(\"'+currentFolder+'\")\\n';"
-[2]	"console.log(\"$1=<<\"+($1)+\">>\")"
+[1] "'process.chdir(\"'+currentFolder+'\")\\n';"
+[2] "console.log(\"$1=<<\"+($1)+\">>\")"
 ```
 ```
 "exec.html":
-[0]	"temp"
+[0] "temp"
 [1] "''"
 [2] ""
-[3]	"temp.html"
+[3] "temp.html"
 ```
 ```
 "exec.pwsh":
 [0] "'pwsh -f '+temp"
-[1]	"'cd '+currentFolder+'\\n';"
-[2]	"\"$1=<<\"+($1)+\">>\""
+[1] "'cd '+currentFolder+'\\n';"
+[2] "\"$1=<<\"+($1)+\">>\""
 ```
 ```
 "exec.python":
 [0] "'python '+temp"
-[1]	"'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
-[2]	"print(\"$1=<<\"+str($1)+\">>\")"
+[1] "'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
+[2] "print(\"$1=<<\"+str($1)+\">>\")"
 ```
 ```
 "exec.julia":
-[0]	"'julia '+temp",
-[1]	"'cd(\"'+currentFolder+'\")\\n'"
-[2]	"println(string(\"$1=<<\",$1,\">>\"))"
+[0] "'julia '+temp",
+[1] "'cd(\"'+currentFolder+'\")\\n'"
+[2] "println(string(\"$1=<<\",$1,\">>\"))"
 ```
 ```
 "exec.octave":
-[0]	"'octave '+temp"
-[1]	"'cd '+currentFolder+';\\n'"
-[2]	"disp([\"$1=<<\" $1 \">>\"])"
+[0] "'octave '+temp"
+[1] "'cd '+currentFolder+';\\n'"
+[2] "disp([\"$1=<<\" $1 \">>\"])"
 ```
 ```
 "exec.scilab":
 [0] "'scilex -quit -nb -f '+temp"
-[1]	"'cd '+currentFolder+';\\n'"
-[2]	"disp(\"$1=<<\"+string($1)+\">>\")"
+[1] "'cd '+currentFolder+';\\n'"
+[2] "disp(\"$1=<<\"+string($1)+\">>\")"
 ```
 ```
 "exec.gnuplot":
-[0]	"'gnuplot -p -c '+temp"
-[1]	"'set loadpath \"'+currentFolder+'\"\\n'"
-[2]	""
+[0] "'gnuplot -p -c '+temp"
+[1] "'set loadpath \"'+currentFolder+'\"\\n'"
+[2] ""
 ```
 ```
 "exec.matlab":
 [0] "'matlab -sd '+tempd+' -batch \"temp\"'"
-[1]	"'path(path,\"'+currentFolder+'\");'"
-[2]	"disp([\"$1=<<\" $1 \">>\"])"
-[3]	"temp.m"
+[1] "'path(path,\"'+currentFolder+'\");'"
+[2] "disp([\"$1=<<\" $1 \">>\"])"
+[3] "temp.m"
 ```
 ```
 "exec.lua":
-[0]	"'lua54 '+temp"
-[1]	"''"
-[2]	"print('$1=<<'..($1)..'>>')"
+[0] "'lua54 '+temp"
+[1] "''"
+[2] "print('$1=<<'..($1)..'>>')"
 ```
 ## Known Issues
 
