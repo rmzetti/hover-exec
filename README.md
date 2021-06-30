@@ -35,12 +35,13 @@ This extension contributes the following settings:
 
 "exec.selectOnHover": select code on hover, default:false
 
-For each script language to be used, three strings are required:
+For each script language, exec.id, three strings are required, with a fourth optional:
 - [0] the exec command
 - [1] a change directory command to change working folder to 'currentFolder' 
-- [2] a regex to enable output to be inserted into `=<<intermediate results>>`
+- [2] a regex result string to enable output, $1, to be provided in the form `=<< $1>>` for in-line display of intermediate results
+- [3] optional to provide an output file name and extension (the default is `temp.txt`)
 
-A fourth string is optional to change the output file name and extension (the default is `temp.txt`)
+Note that additional script languages can be added just by adding a new section to `settings.json`
 
 "exec.js":
 [0] "'node '+temp"
@@ -93,59 +94,6 @@ A fourth string is optional to change the output file name and extension (the de
 [0]	"'lua54 '+temp"
 [1]	"''"
 [2]	"print('$1=<<'..($1)..'>>')"
-
-### Extension settings by codeblock
-`budd`
->    ex='buddvs';
-	swapExp='write("$1=<<"+($1)+">>")';
-	cd="chdir('"+currentFolder.replace(/\//g,"\\")+"');"; 
-
-`python`
->    ex='python';
-	swapExp='print("$1=<<"+str($1)+">>")';
-
-`julia`
->    ex='julia';
-
-`matlab`
->	ex='matlab';
-	cd="path(path,'"+currentFolder+"');";
-	swapExp='disp(["$1=<<" $1 ">>"])';
-
-`octave`
->	ex='octave';
-	cd='cd '+currentFolder+';';
-	swapExp='disp(["$1=<<" $1 ">>"])';
-
-`scilab`
->	ex='scilab';
-	cd='cd '+currentFolder+';';
-	swapExp='disp("$1=<<"+string($1)+">>")';
-
-`gnuplot`
->	ex='gnuplot';
-	cd='set loadpath "'+currentFolder+'"\n';
-
-`html`
->	ex='html';
-
-`powershell`
->	ex='pwsh';
-	swapExp='"$1=<<"+($1)+">>"';
-	cd='cd '+currentFolder+'\n';
-
-`lua`
->	ex='lua';
-
-`js`
->	ex='node';
-	swapExp='console.log("$1=<<"+($1)+">>")';
-	cd="process.chdir('"+currentFolder+"')\n";
-
-`output`
->	ex='delete';
-
-
 
 ## Known Issues
 
