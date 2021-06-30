@@ -12,7 +12,7 @@ let cd='';
 let ex='';
 let exec='';
 let arr:string;
-let config=vscode.workspace.getConfiguration('exec');
+let config=vscode.workspace.getConfiguration('hover-exec');
 const {activeTextEditor}=vscode.window;
 export function activate(context: vscode.ExtensionContext) {
 	const uriHandler = new MyUriHandler();
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 					exec=eval(arr[0]);cd=eval(arr[1]);swapExp=arr[2];
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectOutputCodeblock();}
-					let url='vscode://rmzetti.exec?'+ex; //rmzetti.exec is publisher.extensionName
+					let url='vscode://rmzetti.hover-exec?'+ex; //rmzetti.hover-exec is publisher.extensionName
 					if (msg!=='') { msg='['+ex+' '+msg+']('+url+')';} 
 					else { msg='[exec '+ex+']('+url+')';}
 					const contents=new vscode.MarkdownString('*hover exec:*\n\n'+msg);
@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 					ex='delete';
 					if(selectOnHover){selectOutputCodeblock();}
 					return new vscode.Hover(new vscode.MarkdownString(
-						'*hover exec:*\n\n[delete output](vscode://rmzetti.exec?delete)'
+						'*hover exec:*\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
 					));
 				} else {
 					ex='';
@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}})()
 	);
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-		config=vscode.workspace.getConfiguration('exec'); //update config
+		config=vscode.workspace.getConfiguration('hover-exec'); //update config
 	}));
 }
 class MyUriHandler implements vscode.UriHandler {

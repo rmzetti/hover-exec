@@ -33,7 +33,7 @@ The script languages to be used (eg. *python*, *gnuplot*, etc) should be install
 
 This extension contributes the following settings:
 
-`"exec.selectOnHover"`: select code on hover, default:false
+`"hover-exec.selectOnHover"`: select code on hover, default:false
 
 For each script language, exec.id, three strings are required, with a fourth optional:
 - [0] the exec command
@@ -41,66 +41,67 @@ For each script language, exec.id, three strings are required, with a fourth opt
 - [2] a regex result string to enable output, $1, to be provided in the form `=<< $1>>` for in-line display of intermediate results
 - [3] optional to provide an output file name and extension (the default is `temp.txt`)
 
-Note that additional script languages can be added just by adding a new section to `settings.json`
+Note that additional script languages can be added as follows:
+- adding a new section to `settings.json` following
 
 ```
-"exec.js":
+"hover-exec.js":
 [0] "'node '+temp"
 [1] "'process.chdir(\"'+currentFolder+'\")\\n';"
 [2] "console.log(\"$1=<<\"+($1)+\">>\")"
 ```
 ```
-"exec.html":
+"hover-exec.html":
 [0] "temp"
 [1] "''"
 [2] ""
 [3] "temp.html"
 ```
 ```
-"exec.pwsh":
+"hover-exec.pwsh":
 [0] "'pwsh -f '+temp"
 [1] "'cd '+currentFolder+'\\n';"
 [2] "\"$1=<<\"+($1)+\">>\""
 ```
 ```
-"exec.python":
+"hover-exec.python":
 [0] "'python '+temp"
 [1] "'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
 [2] "print(\"$1=<<\"+str($1)+\">>\")"
 ```
 ```
-"exec.julia":
+"hover-exec.julia":
 [0] "'julia '+temp",
 [1] "'cd(\"'+currentFolder+'\")\\n'"
 [2] "println(string(\"$1=<<\",$1,\">>\"))"
 ```
 ```
-"exec.octave":
+"hover-exec.octave":
 [0] "'octave '+temp"
 [1] "'cd '+currentFolder+';\\n'"
 [2] "disp([\"$1=<<\" $1 \">>\"])"
 ```
 ```
-"exec.scilab":
+"hover-exec.scilab":
 [0] "'scilex -quit -nb -f '+temp"
 [1] "'cd '+currentFolder+';\\n'"
 [2] "disp(\"$1=<<\"+string($1)+\">>\")"
 ```
 ```
-"exec.gnuplot":
+"hover-exec.gnuplot":
 [0] "'gnuplot -p -c '+temp"
 [1] "'set loadpath \"'+currentFolder+'\"\\n'"
 [2] ""
 ```
 ```
-"exec.matlab":
+"hover-exec.matlab":
 [0] "'matlab -sd '+tempd+' -batch \"temp\"'"
 [1] "'path(path,\"'+currentFolder+'\");'"
 [2] "disp([\"$1=<<\" $1 \">>\"])"
 [3] "temp.m"
 ```
 ```
-"exec.lua":
+"hover-exec.lua":
 [0] "'lua54 '+temp"
 [1] "''"
 [2] "print('$1=<<'..($1)..'>>')"

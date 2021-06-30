@@ -1,5 +1,5 @@
 {   
-	"name": "exec",
+	"name": "hover-exec",
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
@@ -19,7 +19,7 @@
 			"type":"object",
 			"title":"Hover Exec",
 			"properties": {
-				"exec.buddvs":{
+				"hover-exec.buddvs":{
 					"type":"array",
 					"default":[
 						"'buddvs '+temp",
@@ -27,7 +27,7 @@
 						"write('$1=<<'+($1)+'>>')" ],
 					"description": "budd script"
 				},
-				"exec.octave":{
+				"hover-exec.octave":{
 					"type":"array",
 					"default":[
 						"'octave '+temp",
@@ -35,7 +35,7 @@
 						"disp([\"$1=<<\" $1 \">>\"])" ],
 					"description": "octave"
 				},
-				"exec.matlab":{
+				"hover-exec.matlab":{
 					"type":"array",
 					"default":[
 						"'matlab -sd '+tempd+' -batch \"temp\"'",
@@ -44,7 +44,7 @@
 						"temp.m" ],
 					"description": "octave"
 				},
-				"exec.scilab":{
+				"hover-exec.scilab":{
 					"type":"array",
 					"default":[
 						"'scilex -quit -nb -f '+temp",
@@ -52,7 +52,7 @@
 						"disp(\"$1=<<\"+string($1)+\">>\")" ],
 					"description": "scilab"
 				},
-				"exec.python":{
+				"hover-exec.python":{
 					"type":"array",
 					"default":[
 						"'python '+temp",
@@ -60,7 +60,7 @@
 						"print(\"$1=<<\"+str($1)+\">>\")" ],
 					"description": "python"
 				},
-				"exec.julia":{
+				"hover-exec.julia":{
 					"type":"array",
 					"default":[
 						"'julia '+temp",
@@ -68,7 +68,7 @@
 						"println(string(\"$1=<<\",$1,\">>\"))" ],
 					"description": "julia"
 				},
-				"exec.gnuplot":{
+				"hover-exec.gnuplot":{
 					"type":"array",
 					"default":[
 						"'gnuplot -p -c '+temp",
@@ -76,7 +76,7 @@
 						"" ],
 					"description": "gnuplot - no intermediate results"
 				},
-				"exec.pwsh":{
+				"hover-exec.pwsh":{
 					"type":"array",
 					"default":[
 						"'pwsh -f '+temp",
@@ -84,7 +84,7 @@
 						"\"$1=<<\"+($1)+\">>\""],
 					"description": "powershell"
 				},
-				"exec.lua":{
+				"hover-exec.lua":{
 					"type":"array",
 					"default":[
 						"'lua54 '+temp",
@@ -92,7 +92,7 @@
 						"print('$1=<<'..($1)..'>>')" ],
 					"description": "lua"
 				},
-				"exec.js":{
+				"hover-exec.js":{
 					"type":"array",
 					"default":[
 						"'node '+temp",
@@ -100,14 +100,14 @@
 						"console.log(\"$1=<<\"+($1)+\">>\")" ],
 					"description": "powershell"
 				},
-				"exec.html":{
+				"hover-exec.html":{
 					"type":"array",
 					"default":[
 						"temp",	"''", "",
 						"temp.html" ],
 					"description": "html"
 				},
-				"exec.selectOnHover":{
+				"hover-exec.selectOnHover":{
 					"description": "select code on hover",
 					"default": false,
 					"type": "boolean"
