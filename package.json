@@ -32,7 +32,8 @@
 					"default":[
 						"'octave '+temp",
 						"'cd '+currentFolder+';\\n'",
-						"disp([\"$1=<<\" $1 \">>\"])" ],
+						"disp([\"$1=<<\" $1 \">>\"])" ,
+						"temp.m" ],
 					"description": "octave"
 				},
 				"hover-exec.matlab":{
@@ -49,7 +50,8 @@
 					"default":[
 						"'scilex -quit -nb -f '+temp",
 						"'cd '+currentFolder+';\\n'",
-						"disp(\"$1=<<\"+string($1)+\">>\")" ],
+						"disp(\"$1=<<\"+string($1)+\">>\")" ,
+						"temp.sci" ],
 					"description": "scilab"
 				},
 				"hover-exec.python":{
@@ -57,7 +59,8 @@
 					"default":[
 						"'python '+temp",
 						"'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';",
-						"print(\"$1=<<\"+str($1)+\">>\")" ],
+						"print(\"$1=<<\"+str($1)+\">>\")" ,
+						"temp.py" ],
 					"description": "python"
 				},
 				"hover-exec.julia":{
@@ -65,7 +68,8 @@
 					"default":[
 						"'julia '+temp",
 						"'cd(\"'+currentFolder+'\")\\n'",
-						"println(string(\"$1=<<\",$1,\">>\"))" ],
+						"println(string(\"$1=<<\",$1,\">>\"))" ,
+						"temp.jl" ],
 					"description": "julia"
 				},
 				"hover-exec.gnuplot":{
@@ -73,7 +77,8 @@
 					"default":[
 						"'gnuplot -p -c '+temp",
 						"'set loadpath \"'+currentFolder+'\"\\n'",
-						"" ],
+						"" ,
+						"temp.gp" ],
 					"description": "gnuplot - no intermediate results"
 				},
 				"hover-exec.pwsh":{
@@ -81,7 +86,8 @@
 					"default":[
 						"'pwsh -f '+temp",
 						"'cd '+currentFolder+'\\n';",
-						"\"$1=<<\"+($1)+\">>\""],
+						"\"$1=<<\"+($1)+\">>\"" ,
+						"temp.ps1" ],
 					"description": "powershell"
 				},
 				"hover-exec.lua":{
@@ -89,7 +95,8 @@
 					"default":[
 						"'lua54 '+temp",
 						"''",
-						"print('$1=<<'..($1)..'>>')" ],
+						"print('$1=<<'..($1)..'>>')" ,
+						"temp.lua" ],
 					"description": "lua"
 				},
 				"hover-exec.js":{
@@ -97,8 +104,9 @@
 					"default":[
 						"'node '+temp",
 						"'process.chdir(\"'+currentFolder+'\")\\n';",
-						"console.log(\"$1=<<\"+($1)+\">>\")" ],
-					"description": "powershell"
+						"console.log(\"$1=<<\"+($1)+\">>\")" ,
+						"temp.js" ],
+					"description": "javascript node"
 				},
 				"hover-exec.html":{
 					"type":"array",
