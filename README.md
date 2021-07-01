@@ -35,20 +35,25 @@ This extension contributes the following settings:
 
 `"hover-exec.selectOnHover"`: select code on hover, default:false
 
-For each script language, exec.id, three strings are required, with a fourth optional:
-- [0] the exec command
-- [1] a change directory command to change working folder to 'currentFolder' 
-- [2] a regex result string to enable output, $1, to be provided in the form `=<< $1>>` for in-line display of intermediate results
-- [3] optional to provide an output file name and extension (the default is `temp.txt`)
+For each script language, `hover-exec.id`, (call it id-script) four strings are required:
+- [0] the javascript exec command to run the script from a temp file
+        - the javascript variable `temp` will provide the appropriate temp file name and path
+- [1] a javascript string to produce a script command which will change working folder 
+        - use the javascript variable `currentFolder` to get the path of the current folder
+- [2] a regex result string (in the appropriate scripting language) to enable the output, `$1`, to be provided in the form `=<< $1>>` for in-line display of intermediate results
+- [3] a string to provide the output file `name.ext` (the default is `temp.txt`) - this is optional
 
-Note that additional script languages can be added as follows:
-- adding a new section to `settings.json` following
+The easiest way to add a new script language is to open `settings/extensions/hover-exec`, copy and paste an existing one, change the id (hover-exec.id), and then change the strings (as described above) as appropriate. All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote). If `\` are needed, they have to be escaped (ie. `\\`) - for example, `\\n` is a new line.
+
+Here are the strings for the included scripts:
+
 
 ```
 "hover-exec.js":
 [0] "'node '+temp"
 [1] "'process.chdir(\"'+currentFolder+'\")\\n';"
 [2] "console.log(\"$1=<<\"+($1)+\">>\")"
+[3] "temp.js"
 ```
 ```
 "hover-exec.html":
@@ -62,36 +67,44 @@ Note that additional script languages can be added as follows:
 [0] "'pwsh -f '+temp"
 [1] "'cd '+currentFolder+'\\n';"
 [2] "\"$1=<<\"+($1)+\">>\""
+[3] "temp.ps1"
 ```
 ```
 "hover-exec.python":
 [0] "'python '+temp"
 [1] "'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
 [2] "print(\"$1=<<\"+str($1)+\">>\")"
+[3] "temp.py"
 ```
+Note: the horrifying regex replacement string to ensure any `\` in `currentFolder` are appropriately escaped.
+
 ```
 "hover-exec.julia":
 [0] "'julia '+temp",
 [1] "'cd(\"'+currentFolder+'\")\\n'"
 [2] "println(string(\"$1=<<\",$1,\">>\"))"
+[3] "temp.jl"
 ```
 ```
 "hover-exec.octave":
 [0] "'octave '+temp"
 [1] "'cd '+currentFolder+';\\n'"
 [2] "disp([\"$1=<<\" $1 \">>\"])"
+[3] "temp.m"
 ```
 ```
 "hover-exec.scilab":
 [0] "'scilex -quit -nb -f '+temp"
 [1] "'cd '+currentFolder+';\\n'"
 [2] "disp(\"$1=<<\"+string($1)+\">>\")"
+[3] "temp.sci"
 ```
 ```
 "hover-exec.gnuplot":
 [0] "'gnuplot -p -c '+temp"
 [1] "'set loadpath \"'+currentFolder+'\"\\n'"
 [2] ""
+[3] "temp.gp"
 ```
 ```
 "hover-exec.matlab":
@@ -105,45 +118,16 @@ Note that additional script languages can be added as follows:
 [0] "'lua54 '+temp"
 [1] "''"
 [2] "print('$1=<<'..($1)..'>>')"
+[3] "temp.lua"
 ```
+Note: straight lua does not include the current working directory concept, but `LuaFileSystem` could be `require`d in [1] and then `lfs.currentdir()` utilised.
+
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+This is a beta version.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.3.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial beta release
