@@ -23,7 +23,7 @@ and other scripts can be added by providing three strings for *Hover exec* in  `
 
 Hover script exec in action:
 
-![hover exec](./Hover-exec.gif)
+![hover exec](https://github.com/rmzetti/exec/blob/master/Hover-exec.gif)
 
 ## Requirements
 
