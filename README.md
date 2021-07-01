@@ -36,17 +36,20 @@ This extension contributes the following settings:
 `"hover-exec.selectOnHover"`: select code on hover, default:false
 
 For each script language, `hover-exec.id`, (call it id-script) four strings are required:
+
 - [0] the javascript exec command to run the script from a temp file
         - the javascript variable `temp` will provide the appropriate temp file name and path
+
 - [1] a javascript string to produce a script command which will change working folder 
         - use the javascript variable `currentFolder` to get the path of the current folder
+
 - [2] a regex result string (in the appropriate scripting language) to enable the output, `$1`, to be provided in the form `=<< $1>>` for in-line display of intermediate results
+
 - [3] a string to provide the output file `name.ext` (the default is `temp.txt`) - this is optional
 
 The easiest way to add a new script language is to open `settings/extensions/hover-exec`, copy and paste an existing one, change the id (hover-exec.id), and then change the strings (as described above) as appropriate. All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote). If `\` are needed, they have to be escaped (ie. `\\`) - for example, `\\n` is a new line.
 
-Here are the strings for the included scripts:
-
+These are the strings for the currently included scripts:
 
 ```
 "hover-exec.js":
