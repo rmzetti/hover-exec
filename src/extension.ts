@@ -43,9 +43,10 @@ export function activate(context: vscode.ExtensionContext) {
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectOutputCodeblock();}
 					let url='vscode://rmzetti.hover-exec?'+ex; //rmzetti.hover-exec is publisher.extensionName
-					if (msg!=='') { msg='['+ex+' '+msg+']('+url+')';} 
-					else { msg='[exec '+ex+']('+url+')';}
-					const contents=new vscode.MarkdownString('*hover exec:*\n\n'+msg);
+					msg='[exec '+ex+' '+msg+']('+url+')';
+					msg='*[ \[last script\] ]('+'file:///'+temp+')* '+
+					'*[ \[last result\] ]('+'file:///'+temp+'.out.txt)*\n\n'+msg;
+					const contents=new vscode.MarkdownString('*hover exec:* '+msg);
 					contents.isTrusted = true;
 					return new vscode.Hover(contents);
 				} else if(ex==='output'){
@@ -55,14 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 						'*hover exec:*\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
 					));
 				} else {
-					ex='';
-					if(temp===''){return null;}
-					let temp1=temp.replace(/\s/g,'%20').replace(/\\/g,'/');
-					return new vscode.Hover(new vscode.MarkdownString(
-						'*hover exec:*\n\n'+
-						'[ open last script executed ]('+'file:///'+temp1+')\n\n'+
-						'[ open last result ]('+'file:///'+temp1+'.out.txt)'
-					));
+					ex='';return null;
 				}
 			}
 			else {
