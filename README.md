@@ -4,7 +4,9 @@ This is the README for VsCode extension *hover exec*.
 
 ## Features
 
-Hover exec facilitates execution of code blocks in a variety of installed scripts.
+Hover exec facilitates execution of markdown code blocks in a variety of installed scripts.
+
+The extension is activated when a markdown file is opened.
 
 The following scripts are supported 'out of the box':
 
@@ -19,11 +21,12 @@ The following scripts are supported 'out of the box':
 - matlab
 - lua
 
-and other scripts can be added by providing three strings for *Hover exec* in  `settings.json`.
+and other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below).
 
 Hover script exec in action:
 
-![hover exec](https://github.com/rmzetti/exec/blob/master/Hover-exec.gif)
+![hover-exec.gif](https://github.com/rmzetti/what/raw/master/Hover-exec.gif)
+
 
 ## Requirements
 
@@ -47,7 +50,9 @@ For each script language, `hover-exec.id`, (call it id-script) four strings are 
 
 - [3] a string to provide the output file `name.ext` (the default is `temp.txt`) - this is optional
 
-The easiest way to add a new script language is to open `settings/extensions/hover-exec`, copy and paste an existing one, change the id (hover-exec.id), and then change the strings (as described above) as appropriate. All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote). If `\` are needed, they have to be escaped (ie. `\\`) - for example, `\\n` is a new line.
+The easiest way to add a new script language is to (1) open `settings/extensions/hover-exec`, (2) copy and paste an existing script setting, (3) change the id (`hover-exec.id`), and (4) change the strings (as described above) as appropriate.
+
+All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote). If `\` are needed, they have to be escaped (ie. `\\`) - for example, `\\n` is a new line.
 
 These are the strings for the currently included scripts:
 
@@ -79,8 +84,7 @@ These are the strings for the currently included scripts:
 [2] "print(\"$1=<<\"+str($1)+\">>\")"
 [3] "temp.py"
 ```
-Note: the horrifying regex replacement string to ensure any `\` in `currentFolder` are appropriately escaped.
-
+*Note: the horrifying regex replacement string above to ensure any `\` in `currentFolder` are appropriately escaped.*
 ```
 "hover-exec.julia":
 [0] "'julia '+temp",
@@ -123,11 +127,15 @@ Note: the horrifying regex replacement string to ensure any `\` in `currentFolde
 [2] "print('$1=<<'..($1)..'>>')"
 [3] "temp.lua"
 ```
-Note: straight lua does not include the current working directory concept, but `LuaFileSystem` could be `require`d in [1] and then `lfs.currentdir()` utilised.
+*Note: straight lua does not include the current working directory concept, but `LuaFileSystem` could be `require`d in [1] and then `lfs.currentdir()` utilised.*
 
 ## Known Issues
 
 This is a beta version.
+
+Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. Assigned variables do not carry over into the next script execution. This kind of approach is best suited for a range of useful small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+
+Matlab takes a substantial amount of time (nearly 10s on my Ryzen pc) to run a codeblock. The others are generally pretty fast (see the demo above).
 
 ## Release Notes
 
