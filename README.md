@@ -21,7 +21,7 @@ The following scripts are supported 'out of the box':
 - matlab
 - lua
 
-and other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below).
+Other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below).
 
 Hover script exec in action:
 
