@@ -4,10 +4,9 @@ import * as fs from "fs";
 let lastCodeBlock="";
 let startCode=0;
 let lastResult:string='';
-let swap='';
-let swapExp='';
+let swapExp='$1=>>';
 let suppressOutput=false;
-let tempd:string='';
+let tempd:string='';;
 let temp='';
 let cd='';
 let ex='';
@@ -16,9 +15,6 @@ let arr:string;
 let config=vscode.workspace.getConfiguration('hover-exec');
 const {activeTextEditor}=vscode.window;
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-		config=vscode.workspace.getConfiguration('hover-exec'); //update config
-	}));
 	const uriHandler = new MyUriHandler();
 	context.subscriptions.push(vscode.window.registerUriHandler(uriHandler));
 	vscode.languages.registerHoverProvider(
@@ -28,33 +24,28 @@ export function activate(context: vscode.ExtensionContext) {
 			pos: vscode.Position,token: vscode.CancellationToken
 		  ): Promise<vscode.Hover | null> { // <vscode.Hover|null|undefined>
 			const line = doc.lineAt(pos);
-			let currentFolder=doc.uri.path.substring(1,doc.uri.path.lastIndexOf('/')+1);  //%c
+			let currentFolder=doc.uri.path.substring(1,doc.uri.path.lastIndexOf('/')+1); //nb. used in eval(arr[1])
 			vscode.workspace.fs.createDirectory(context.globalStorageUri);
 			let selectOnHover=config.get('selectOnHover');
 			cd='';
 			startCode=pos.line;
 			if(line.text.startsWith('```')){
-				tempd=context.globalStorageUri.fsPath+'/';
+				tempd=context.globalStorageUri.fsPath;
 				suppressOutput=line.text.endsWith('>');
-				swap='';
-				swapExp='';
+				swapExp='$1=>>';
 				ex=getcmd(line.text); //command id
 				arr=config.get(ex) as string;
 				let msg=getmsg(line.text); //message for hover
 				if(arr && arr.length>=3){
-					temp='temp.txt';if(arr.length>=4){temp=arr[3];}
-					exec=arr[0].replace('%f','"'+tempd+temp+'"').replace('%p','"'+tempd+'"').replace('%c','"'+currentFolder+'"').replace('%n','"'+temp+'"');
-					cd=arr[1].replace('%c','"'+currentFolder+'"').replace('%p','"'+tempd+'"');
-					if(cd!==''){cd+='\n';}
-					swap=arr[2].substr(0,3); // {{ is the start, the end is }}
-					swapExp=arr[2].substr(3);
+					temp=tempd+'/temp.txt';
+					if(arr.length>=4){temp=tempd+'/'+arr[3];}
+					exec=eval(arr[0]);cd=eval(arr[1]);swapExp=arr[2];
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectOutputCodeblock();}
-					let url='vscode://rmzetti.hover-exec?'+ex;
-					if(swap!==''){msg+='  ... *use '+swap+' for inline results*';}
+					let url='vscode://rmzetti.hover-exec?'+ex; //rmzetti.hover-exec is publisher.extensionName
 					msg='[exec '+ex+' '+msg+']('+url+')';
-					msg='*[ \[last script\] ]('+'file:///'+tempd+temp+')* '+
-					'*[ \[last result\] ]('+'file:///'+tempd+temp+'.out.txt)*\n\n'+msg;
+					msg='*[ \[last script\] ]('+'file:///'+temp+')* '+
+					'*[ \[last result\] ]('+'file:///'+temp+'.out.txt)*\n\n'+msg;
 					const contents=new vscode.MarkdownString('*hover exec:* '+msg);
 					contents.isTrusted = true;
 					return new vscode.Hover(contents);
@@ -87,79 +78,27 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		}})()
 	);
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+		config=vscode.workspace.getConfiguration('hover-exec'); //update config
+	}));
 }
 class MyUriHandler implements vscode.UriHandler {
 	async handleUri(uri: vscode.Uri): Promise<void | null | undefined> {
 		if (uri.query==='delete'){ deleteOutput();return; }
 		if(!suppressOutput){selectOutputCodeblock();}
-		if(lastCodeBlock.includes('=>>')||lastCodeBlock.includes('=<<')){
-			lastCodeBlock=lastCodeBlock.replace(/=<</g,'=>>');
-			swap='=>>';
-		}
-		let re=new RegExp(swap+'.*','g');
-		let s=lastCodeBlock;
-		if(swap!==''){
-			lastCodeBlock=lastCodeBlock.replace(re,swap); //remove previous in-line results
-			re=new RegExp('^(.*)'+swap,'mg');
-			s=lastCodeBlock.replace(re,swapExp);
-		}
-		writeFile(tempd+temp,cd+s);
+		lastCodeBlock=lastCodeBlock.replace(/=<<[\s\S]*?>>/g,'=>>'); //remove previous in-line results
+		//let regExp = new RegExp(myString);text.replace(regExp, ''); //use when regex is a string
+		writeFile(temp,cd+lastCodeBlock.replace(/^(.*)=>>/mg,swapExp));
 		if(ex!==''){
-			if (ex==='eval'){
-				let s1=s.split(/\r?\n/);
-				lastResult='';
-				s1.forEach((line)=>{
-					s=eval(line);
-					if(s){lastResult+=s+'\n';} //the if avoids 'undefined'
-					//if(s.includes('[object')){lastResult+='x';} this doesn't work to remove [object Promise]
-				});
-				//vscode.window.showInformationMessage('>'+s+'<');
-				//lastResult=''+eval(s);
-			}
-			else {
-				lastResult = await execShell(exec);
-			}
+			lastResult = await execShell(exec);
 			if (ex==='buddvs'){lastResult=lastResult.replace(/�/g,'î');	}
 		} else {
 			lastResult=uri.toString();
 		}
-		writeFile(tempd+temp+'.out.txt',lastResult);
+		writeFile(temp+'.out.txt',lastResult);
 		if( !suppressOutput ){paste(lastResult);}
 		removeSelection();
 	}
-}
-function paste(text:string) {
-	const {activeTextEditor}=vscode.window;
-	if(activeTextEditor && startCode>0){
-		if(ex==='eval'){text=text.replace(/\[object Promise\]/g,'');}
-		let re=new RegExp('^.*{{.*}}.*','m');
-		if(swap!==""){
-		while(lastCodeBlock.includes(swap+'\n')){
-			//copy intermediate results into the codeblock
-			let i=text.indexOf('{{')+2;
-			let j=text.indexOf('}}');
-			if (i>0 && j>i){
-				let s=text.substring(i,j).replace(/\r?\n/,';'); //remove newlines in intermediate results
-				lastCodeBlock=lastCodeBlock.replace(swap+'\n',swap+s+'\n');
-				text=text.replace(re,'');
-			} else {break;}
-		}}
-		re=new RegExp('^.*{{.*}}.*','mg');
-		text=text.replace(re,'');
-		text=text.replace(/^\s*[\r?\n]/gm,''); //remove blank lines
-		activeTextEditor.edit((selText)=>{
-			if(text===''){
-				selText.replace(activeTextEditor.selection,lastCodeBlock+"```\n");
-			} else {
-				text=text.trim()+'\n';
-				selText.replace(activeTextEditor.selection,lastCodeBlock+"```\n```output\n"+text+"```\n");
-			}
-		});
-		activeTextEditor.selection=new vscode.Selection(startCode,0,startCode,0);
-	}
-}
-function createTest(s:string){
-  return new Function;
 }
 function getcmd(s:string){
 	let len=s.indexOf(" ");
@@ -255,6 +194,32 @@ function selectOutputCodeblock(){
 		}
 	}
 	return;
+}
+function paste(text:string) {
+	const {activeTextEditor}=vscode.window;
+	if(activeTextEditor && startCode>0){
+		while(lastCodeBlock.includes('=>>')){
+			//copy intermediate results into the codeblock
+			let i=text.indexOf('=<<');
+			let j=text.indexOf('>>')+2;
+			if (i>0 && j>i){
+				let s=text.substring(i,j);
+				lastCodeBlock=lastCodeBlock.replace('=>>',s);
+				text=text.replace(/^.*=<<.*>>.?/m,'');
+			} else {break;}
+		}
+		text=text.replace(/^.*=<<.*>>.?/mg,''); //remove remaining =<<xxx>>, nb. end . removes " when output is quoted
+		text=text.replace(/^\s*[\r\n]/gm,''); //remove blank lines
+		activeTextEditor.edit((selText)=>{
+			if(text===''){
+				selText.replace(activeTextEditor.selection,lastCodeBlock+"```\n");
+			} else {
+				text=text.trim()+'\n';
+				selText.replace(activeTextEditor.selection,lastCodeBlock+"```\n```output\n"+text+"```\n");
+			}
+		});
+		activeTextEditor.selection=new vscode.Selection(startCode,0,startCode,0);
+	}
 }
 function deleteOutput() {
 	const {activeTextEditor}=vscode.window;

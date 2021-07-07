@@ -10,7 +10,7 @@ The extension is activated when a markdown file is opened.
 
 The following scripts are supported 'out of the box':
 
-- javascript
+- javascript (via node)
 - html
 - powershell
 - python
@@ -20,13 +20,15 @@ The following scripts are supported 'out of the box':
 - gnuplot
 - matlab
 - lua
+- eval (javascript internal to the extension, with vscode api)
 
-Other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below).
+Other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below). Essentially if a program can be run with 'batch file' input, and outputs to the command line (if required), it will work in *hover-exec* with the appropriate string definitions.
+
+The md files at 
 
 Hover script exec in action:
 
 ![hover-exec.gif](https://github.com/rmzetti/what/raw/master/Hover-exec.gif)
-
 
 ## Requirements
 
@@ -49,6 +51,13 @@ For each script language, `hover-exec.id`, (call it id-script) four strings are 
 - [2] a regex result string (in the appropriate scripting language) to enable the output, `$1`, to be provided in the form `=<< $1>>` for in-line display of intermediate results
 
 - [3] a string to provide the output file `name.ext` (the default is `temp.txt`) - this is optional
+
+In the strings, the following predefined strings can be embedded (quotes included)
+> %f "full_path/name.ext" of temporary file to be used for the script
+> %p "full_path" for temporary file (ends with /)
+> %n "name.ext" of temporary file
+> %c "full_path" of folder containing the original script (ends with /)
+> %r signifier for in-line result, 3 chars 'xx=', eg ##=, //= (starts comment)
 
 The easiest way to add a new script language is to (1) open `settings/extensions/hover-exec`, (2) copy and paste an existing script setting, (3) change the id (`hover-exec.id`), and (4) change the strings (as described above) as appropriate.
 
