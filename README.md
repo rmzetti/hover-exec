@@ -66,77 +66,125 @@ All strings are quoted using double quotes (json standard) so internal quotes sh
 These are the strings for the currently included scripts:
 
 ```
-"hover-exec.js":
-[0] "'node '+temp"
-[1] "'process.chdir(\"'+currentFolder+'\")\\n';"
-[2] "console.log(\"$1=<<\"+($1)+\">>\")"
-[3] "temp.js"
-```
-```
-"hover-exec.html":
-[0] "temp"
-[1] "''"
-[2] ""
-[3] "temp.html"
-```
-```
-"hover-exec.pwsh":
-[0] "'pwsh -f '+temp"
-[1] "'cd '+currentFolder+'\\n';"
-[2] "\"$1=<<\"+($1)+\">>\""
-[3] "temp.ps1"
-```
-```
-"hover-exec.python":
-[0] "'python '+temp"
-[1] "'import os\\n'+'os.chdir(\"'+currentFolder.replace(/\\//g,\"\\\\\\\\\")+'\");\\n';"
-[2] "print(\"$1=<<\"+str($1)+\">>\")"
-[3] "temp.py"
-```
-*Note: the horrifying regex replacement string above to ensure any `\` in `currentFolder` are appropriately escaped.*
-```
-"hover-exec.julia":
-[0] "'julia '+temp",
-[1] "'cd(\"'+currentFolder+'\")\\n'"
-[2] "println(string(\"$1=<<\",$1,\">>\"))"
-[3] "temp.jl"
-```
-```
-"hover-exec.octave":
-[0] "'octave '+temp"
-[1] "'cd '+currentFolder+';\\n'"
-[2] "disp([\"$1=<<\" $1 \">>\"])"
-[3] "temp.m"
-```
-```
-"hover-exec.scilab":
-[0] "'scilex -quit -nb -f '+temp"
-[1] "'cd '+currentFolder+';\\n'"
-[2] "disp(\"$1=<<\"+string($1)+\">>\")"
-[3] "temp.sci"
-```
-```
-"hover-exec.gnuplot":
-[0] "'gnuplot -p -c '+temp"
-[1] "'set loadpath \"'+currentFolder+'\"\\n'"
-[2] ""
-[3] "temp.gp"
-```
-```
-"hover-exec.matlab":
-[0] "'matlab -sd '+tempd+' -batch \"temp\"'"
-[1] "'path(path,\"'+currentFolder+'\");'"
-[2] "disp([\"$1=<<\" $1 \">>\"])"
-[3] "temp.m"
-```
-```
-"hover-exec.lua":
-[0] "'lua54 '+temp"
-[1] "''"
-[2] "print('$1=<<'..($1)..'>>')"
-[3] "temp.lua"
-```
-*Note: straight lua does not include the current working directory concept, but `LuaFileSystem` could be `require`d in [1] and then `lfs.currentdir()` utilised.*
+"contributes": {
+"configuration": {
+"type":"object",
+"title":"Hover Exec",
+"properties": {
+"hover-exec.buddvs":{
+        "type":"array",
+        "default":[
+                "buddvs %f ",
+                "chdir(%c);",
+                "//=write('{{'+$1+'}}')" ],
+        "description": "budd script"
+},
+"hover-exec.octave":{
+        "type":"array",
+        "default":[
+                "octave %f ",
+                "cd %c;",
+                "%%=disp(['{{' $1 '}}'])" ,
+                "temp.m" ],
+        "description": "octave"
+},
+"hover-exec.matlab":{
+        "type":"array",
+        "default":[
+                "matlab -sd %p -batch temp",
+                "path(path,%c);",
+                "%%=disp([\"{{\"+($1)+\"}}\"])",
+                "temp.m" ],
+        "description": "matlab"
+},
+"hover-exec.scilab":{
+        "type":"array",
+        "default":[
+                "scilex -quit -nb -f %f ",
+                "cd %c;",
+                "//=mprintf('%s\\n','{{'+$1+'}}')" ,
+                "temp.sci" ],
+        "description": "scilab"
+},
+"hover-exec.python":{
+        "type":"array",
+        "default":[
+                "python %f ",
+                "import os\nos.chdir(%c);",
+                "##=print('{{'+str($1)+'}}')" ,
+                "temp.py" ],
+        "description": "python"
+},
+"hover-exec.julia":{
+        "type":"array",
+        "default":[
+                "julia %f ",
+                "cd(%c)",
+                "##=println(string(\"{{\",$1,\"}}\"))" ,
+                "temp.jl" ],
+        "description": "julia"
+},
+"hover-exec.gnuplot":{
+        "type":"array",
+        "default":[
+                "gnuplot -p -c %f ",
+                "set loadpath %c",
+                "" ,
+                "temp.gp" ],
+        "description": "gnuplot - no intermediate results"
+},
+"hover-exec.pwsh":{
+        "type":"array",
+        "default":[
+                "pwsh -f %f",
+                "cd %c;",
+                "##='{{'+($1)+'}}'" ,
+                "temp.ps1" ],
+        "description": "powershell"
+},
+"hover-exec.lua":{
+        "type":"array",
+        "default":[
+                "lua54 %f ",
+                "",
+                "--=print('{{'..($1)..'}}')" ,
+                "temp.lua" ],
+        "description": "lua",
+        "comment":"base lua does not include the 'current working directory' concept"
+},
+"hover-exec.js":{
+        "type":"array",
+        "default":[
+                "node %f ",
+                "process.chdir(%c)",
+                "//=console.log('{{'+($1)+'}}')" ,
+                "temp.js" ],
+        "description": "javascript node"
+},
+"hover-exec.html":{
+        "type":"array",
+        "default":[
+                "%f ", "", "",
+                "temp.html" ],
+        "description": "html"
+},
+"hover-exec.eval":{
+        "type":"array",
+        "default":[
+                "",	"", 
+                "//='{{'+($1)+'}}'" ],
+        "description": "eval",
+        "comment":"eval is js run in the extension using eval - variables cannot be set" 
+},
+"hover-exec.selectOnHover":{
+        "description": "select code on hover",
+        "default": false,
+        "type": "boolean"
+}
+}
+}
+}
+````
 
 ## Known Issues
 
@@ -151,3 +199,4 @@ Matlab takes a substantial amount of time (nearly 10s on my Ryzen pc) to run a c
 ### 0.3.1
 
 Initial beta release
+Published using: vsce publish

@@ -43,7 +43,7 @@
 						"path(path,%c);",
 						"%%=disp([\"{{\"+($1)+\"}}\"])",
 						"temp.m" ],
-					"description": "octave"
+					"description": "matlab"
 				},
 				"hover-exec.scilab":{
 					"type":"array",
