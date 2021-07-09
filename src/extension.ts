@@ -51,7 +51,8 @@ export function activate(context: vscode.ExtensionContext) {
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectOutputCodeblock();}
 					let url='vscode://rmzetti.hover-exec?'+ex;
-					if(swap!==''){msg+='  ... *use '+swap+' for inline results*';}
+					if(swap===''){suppressOutput=true}
+					else{msg+='  ... *use '+swap+' for inline results*';}
 					msg='[exec '+ex+' '+msg+']('+url+')';
 					msg='*[ \[last script\] ]('+'file:///'+tempd+temp+')* '+
 					'*[ \[last result\] ]('+'file:///'+tempd+temp+'.out.txt)*\n\n'+msg;
@@ -96,7 +97,7 @@ class MyUriHandler implements vscode.UriHandler {
 			lastCodeBlock=lastCodeBlock.replace(/=<</g,'=>>');
 			swap='=>>';
 		}
-		let re=new RegExp(swap+'.*','g');
+		let re=new RegExp(swap+'.*','mg');
 		let s=lastCodeBlock;
 		if(swap!==''){
 			lastCodeBlock=lastCodeBlock.replace(re,swap); //remove previous in-line results
@@ -111,10 +112,7 @@ class MyUriHandler implements vscode.UriHandler {
 				s1.forEach((line)=>{
 					s=eval(line);
 					if(s){lastResult+=s+'\n';} //the if avoids 'undefined'
-					//if(s.includes('[object')){lastResult+='x';} this doesn't work to remove [object Promise]
 				});
-				//vscode.window.showInformationMessage('>'+s+'<');
-				//lastResult=''+eval(s);
 			}
 			else {
 				lastResult = await execShell(exec);
@@ -132,19 +130,30 @@ function paste(text:string) {
 	const {activeTextEditor}=vscode.window;
 	if(activeTextEditor && startCode>0){
 		if(ex==='eval'){text=text.replace(/\[object Promise\]/g,'');}
-		let re=new RegExp('^.*{{.*}}.*','m');
-		if(swap!==""){
-		while(lastCodeBlock.includes(swap+'\n')){
-			//copy intermediate results into the codeblock
-			let i=text.indexOf('{{')+2;
-			let j=text.indexOf('}}');
-			if (i>0 && j>i){
-				let s=text.substring(i,j).replace(/\r?\n/,';'); //remove newlines in intermediate results
-				lastCodeBlock=lastCodeBlock.replace(swap+'\n',swap+s+'\n');
-				text=text.replace(re,'');
-			} else {break;}
-		}}
-		re=new RegExp('^.*{{.*}}.*','mg');
+		let re=new RegExp(swap+'.*','mg');
+		lastCodeBlock=lastCodeBlock.replace(re,swap);
+		re=new RegExp('^.*{{.*}}$','m');
+		let re1=new RegExp(swap+'$','m');
+		if(swap!=="" && re1.test(lastCodeBlock)){
+			//vscode.window.showInformationMessage('pr>'+lastCodeBlock.includes(swap+'\n'));
+			//vscode.window.showInformationMessage('re>'+re1.test(lastCodeBlock));
+			//while(lastCodeBlock.includes(swap+'\n')){
+			while(re1.test(lastCodeBlock)){
+					//copy intermediate results into the codeblock
+				let i=text.indexOf('{{')+2;
+				let j=text.indexOf('}}\r');if(j<0){j=text.indexOf('}}\n');} //to allow \n, \r & \r\n
+				//vscode.window.showInformationMessage(''+i+'<>'+j+'<>'+text.substring(i,j)+'<');
+				if (i>0 && j>i){
+					let s=text.substring(i,j).replace(/\r?\n/,';'); //remove newlines in intermediate results
+					if(s===''){s=';';}
+					lastCodeBlock=lastCodeBlock.replace(swap+'\n',swap+s+'\n');
+					text=text.replace(re,'');
+				} else {break;}
+		}} else {
+			return;
+			//vscode.window.showInformationMessage('no swap');
+		}
+		re=new RegExp('^.*{{.*}}$','mg');
 		text=text.replace(re,'');
 		text=text.replace(/^\s*[\r?\n]/gm,''); //remove blank lines
 		activeTextEditor.edit((selText)=>{
@@ -205,16 +214,17 @@ const execShell = (cmd: string) =>
 			return resolve(out);
 		});
 	});
-function writeFile(file:string,text:string, options?:any) {
-	return new Promise <void> ((resolve, reject) => {
-		fs.writeFile(file, text, options, (error) => {
-		if (error) {
-			return reject(error.toString());
-		} else {
-			return resolve();
-		}
-		});
-	});
+async function writeFile(file:string,text:string, options?:any) {
+	await vscode.workspace.fs.writeFile(vscode.Uri.file(file), Buffer.from(text, 'utf8'));
+	// return new Promise <void> ((resolve, reject) => {
+	// 	fs.writeFile(file, text, options, (error) => {
+	// 	if (error) {
+	// 		return reject(error.toString());
+	// 	} else {
+	// 		return resolve();
+	// 	}
+	// 	});
+	// });
 }
 function getCodeBlockAt(doc: vscode.TextDocument,pos: vscode.Position) {
 	const {activeTextEditor}=vscode.window;
