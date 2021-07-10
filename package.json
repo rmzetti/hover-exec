@@ -79,7 +79,7 @@
 						"set loadpath %c",
 						"" ,
 						"temp.gp" ],
-					"description": "gnuplot - no intermediate results"
+					"description": "for gnuplot no results are returned"
 				},
 				"hover-exec.pwsh":{
 					"type":"array",
@@ -113,7 +113,8 @@
 					"default":[
 						"%f ", "", "",
 						"temp.html" ],
-					"description": "html"
+					"description": "html",
+					"comment":"for html no results are returned"
 				},
 				"hover-exec.eval":{
 					"type":"array",
