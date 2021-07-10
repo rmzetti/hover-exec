@@ -199,4 +199,4 @@ Matlab takes a substantial amount of time (nearly 10s on my Ryzen pc) to run a c
 ### 0.3.1
 
 Initial beta release
-Published using: vsce publish
+Published using: vsce package

@@ -54,8 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
 					if(swap===''){suppressOutput=true}
 					else{msg+='  ... *use '+swap+' for inline results*';}
 					msg='[exec '+ex+' '+msg+']('+url+')';
-					msg='*[ \[last script\] ]('+'file:///'+tempd+temp+')* '+
-					'*[ \[last result\] ]('+'file:///'+tempd+temp+'.out.txt)*\n\n'+msg;
+					msg='*[ \[last script\] ](/'+tempd+temp+')* '+
+					'*[ \[last result\] ](/'+tempd+temp+'.out.txt)*\n\n'+msg;
 					const contents=new vscode.MarkdownString('*hover exec:* '+msg);
 					contents.isTrusted = true;
 					return new vscode.Hover(contents);
@@ -76,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
 						await vscode.workspace.fs.stat(fileUri);
 						let temp1=line.text.trim().replace(/\s/g,'%20'); 
 						const contents = //markdown link must use %20
-							new vscode.MarkdownString('[open](file:///'+temp1+')');
+							new vscode.MarkdownString('[openrm](/'+temp1+')');
 						contents.isTrusted = true;
 						return new vscode.Hover(contents);
 					} catch {
