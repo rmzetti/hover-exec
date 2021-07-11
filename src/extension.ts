@@ -29,6 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 		  ): Promise<vscode.Hover | null> { // <vscode.Hover|null|undefined>
 			const line = doc.lineAt(pos);
 			let currentFolder=doc.uri.path.substring(1,doc.uri.path.lastIndexOf('/')+1);  //%c
+			if(currentFolder.slice(1,2)!==':'){currentFolder=fixFolder(currentFolder);} //win vs linux
 			vscode.workspace.fs.createDirectory(context.globalStorageUri);
 			let selectOnHover=config.get('selectOnHover');
 			cd='';
@@ -54,8 +55,8 @@ export function activate(context: vscode.ExtensionContext) {
 					if(swap===''){suppressOutput=true}
 					else{msg+='  ... *use '+swap+' for inline results*';}
 					msg='[exec '+ex+' '+msg+']('+url+')';
-					msg='*[ \[last script\] ](/'+tempd+temp+')* '+
-					'*[ \[last result\] ](/'+tempd+temp+'.out.txt)*\n\n'+msg;
+					msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')* '+
+					'*[ \[last result\] ]('+fixFolder(tempd)+temp+'.out.txt)*\n\n'+msg;
 					const contents=new vscode.MarkdownString('*hover exec:* '+msg);
 					contents.isTrusted = true;
 					return new vscode.Hover(contents);
@@ -63,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 					ex='delete';
 					if(selectOnHover){selectOutputCodeblock();}
 					return new vscode.Hover(new vscode.MarkdownString(
-						'*hover exec:*\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
+						'*hover exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
 					));
 				} else {
 					ex='';return null;
@@ -76,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 						await vscode.workspace.fs.stat(fileUri);
 						let temp1=line.text.trim().replace(/\s/g,'%20'); 
 						const contents = //markdown link must use %20
-							new vscode.MarkdownString('[openrm](/'+temp1+')');
+							new vscode.MarkdownString('[openrm]('+temp1+')');
 						contents.isTrusted = true;
 						return new vscode.Hover(contents);
 					} catch {
@@ -91,7 +92,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 class MyUriHandler implements vscode.UriHandler {
 	async handleUri(uri: vscode.Uri): Promise<void | null | undefined> {
-		if (uri.query==='delete'){ deleteOutput();return; }
+		if (uri.query==='delete'){ deleteOutput(false);return; }
+		if (uri.query==='remove'){ deleteOutput(true);return; }
 		if(!suppressOutput){selectOutputCodeblock();}
 		if(lastCodeBlock.includes('=>>')||lastCodeBlock.includes('=<<')){
 			lastCodeBlock=lastCodeBlock.replace(/=<</g,'=>>');
@@ -128,33 +130,27 @@ class MyUriHandler implements vscode.UriHandler {
 }
 function paste(text:string) {
 	const {activeTextEditor}=vscode.window;
+	//vscode.window.showInformationMessage('>>>'+text);
 	if(activeTextEditor && startCode>0){
 		if(ex==='eval'){text=text.replace(/\[object Promise\]/g,'');}
 		let re=new RegExp(swap+'.*','mg');
-		lastCodeBlock=lastCodeBlock.replace(re,swap);
+		lastCodeBlock=lastCodeBlock.replace(re,swap); //remove all after swap string
 		re=new RegExp('^.*{{.*}}$','m');
 		let re1=new RegExp(swap+'$','m');
 		if(swap!=="" && re1.test(lastCodeBlock)){
-			//vscode.window.showInformationMessage('pr>'+lastCodeBlock.includes(swap+'\n'));
-			//vscode.window.showInformationMessage('re>'+re1.test(lastCodeBlock));
-			//while(lastCodeBlock.includes(swap+'\n')){
 			while(re1.test(lastCodeBlock)){
-					//copy intermediate results into the codeblock
+				//copy intermediate results into the codeblock
 				let i=text.indexOf('{{')+2;
 				let j=text.indexOf('}}\r');if(j<0){j=text.indexOf('}}\n');} //to allow \n, \r & \r\n
-				//vscode.window.showInformationMessage(''+i+'<>'+j+'<>'+text.substring(i,j)+'<');
 				if (i>0 && j>i){
 					let s=text.substring(i,j).replace(/\r?\n/,';'); //remove newlines in intermediate results
 					if(s===''){s=';';}
 					lastCodeBlock=lastCodeBlock.replace(swap+'\n',swap+s+'\n');
 					text=text.replace(re,'');
 				} else {break;}
-		}} else {
-			return;
-			//vscode.window.showInformationMessage('no swap');
-		}
-		re=new RegExp('^.*{{.*}}$','mg');
-		text=text.replace(re,'');
+		}}
+		//re=new RegExp('^.*{{.*}}$','mg');
+		//text=text.replace(re,'');
 		text=text.replace(/^\s*[\r?\n]/gm,''); //remove blank lines
 		activeTextEditor.edit((selText)=>{
 			if(text===''){
@@ -170,6 +166,11 @@ function paste(text:string) {
 function createTest(s:string){
   return new Function;
 }
+function fixFolder(f:string){
+	if(f.startsWith('\\')){f=f.slice(1);}
+	if(!f.startsWith('/')){f='/'+f;}
+	return f;
+}
 function getcmd(s:string){
 	let len=s.indexOf(" ");
 	if(len<0){len=s.length;}
@@ -184,11 +185,7 @@ function getcmd(s:string){
 			ex=ex.substring(0,ipos).trim();
 		}
 	}
-	if(ex===''){
-		ex=s.replace(/.*\{(.*)\}.*/,'$1');
-		ex=s.substring(3,len);
-	}
-	//vscode.window.showInformationMessage(ex);
+	if(ex===''){ex=s.substring(3,len);}
 	return ex;
 }
 function getmsg(s:string){
@@ -253,8 +250,7 @@ function selectOutputCodeblock(){
 			n++;
 			let a=doc.lineAt(new vscode.Position(n,0)).text;
 			if(a.startsWith('```')){
-			//	if(a==='```'){
-					n++;
+				n++;
 				if(n<doc.lineCount && doc.lineAt(new vscode.Position(n,0)).text==='```output'){
 					//continue past start of output section
 				} else {
@@ -266,13 +262,25 @@ function selectOutputCodeblock(){
 	}
 	return;
 }
-function deleteOutput() {
+function deleteOutput(asText:boolean) {
 	const {activeTextEditor}=vscode.window;
 	if(activeTextEditor){
 		selectOutputCodeblock();
-		activeTextEditor.edit((selText)=>{
-			selText.replace(activeTextEditor.selection,'');
-		});
+		if(asText){
+			//vscode.window.showInformationMessage('>>>'+activeTextEditor.selection.start.line);
+			let pos1=activeTextEditor.selection.start.line+1;
+			let pos2=activeTextEditor.selection.end.line-1;;
+			let sel=new vscode.Selection(pos1,0,pos2,0);
+			//vscode.window.showInformationMessage('>>>'+activeTextEditor.document.getText(sel));
+			activeTextEditor.edit((selText)=>{ 
+				selText.replace(activeTextEditor.selection,activeTextEditor.document.getText(sel));
+			});
+		} 
+		else {
+			activeTextEditor.edit((selText)=>{
+				selText.replace(activeTextEditor.selection,'');
+			});
+		}
 	}
 }
 export function deactivate() {}
