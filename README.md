@@ -28,7 +28,7 @@ The md files at
 
 Hover script exec in action:
 
-![hover-exec.gif](https://github.com/rmzetti/what/raw/master/Hover-exec.gif)
+![hover-exec.gif](./Hover-exec.gif)
 
 ## Requirements
 
