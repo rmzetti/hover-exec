@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.3.5",
+	"version": "0.3.6",
 	"repository": "https://github.com/rmzetti/hover-exec",
 	"license": "NCSA",
 	"contributors": [
@@ -29,7 +29,7 @@
 					"default":[
 						"buddvs %f ",
 						"chdir(%c);",
-						"//=write('{{'+$1+'}}')" ],
+						"//=write('{{'+($1)+'}}')" ],
 					"description": "budd script"
 				},
 				"hover-exec.octave":{
@@ -68,6 +68,15 @@
 						"temp.py" ],
 					"description": "python"
 				},
+				"hover-exec.python3":{
+					"type":"array",
+					"default":[
+						"python3 %f ",
+						"import os\nos.chdir(%c);",
+						"##=print('{{'+str($1)+'}}')" ,
+						"temp.py" ],
+					"description": "python"
+				},
 				"hover-exec.julia":{
 					"type":"array",
 					"default":[
@@ -87,6 +96,24 @@
 					"description": "for gnuplot no results are returned"
 				},
 				"hover-exec.pwsh":{
+					"type":"array",
+					"default":[
+						"pwsh -f %f",
+						"cd %c;",
+						"##='{{'+($1)+'}}'" ,
+						"temp.ps1" ],
+					"description": "powershell"
+				},
+				"hover-exec.bash":{
+					"type":"array",
+					"default":[
+						"bash %f",
+						"cd %c;",
+						"##='{{'+($1)+'}}'" ,
+						"temp.ps1" ],
+					"description": "powershell"
+				},
+				"hover-exec.zsh":{
 					"type":"array",
 					"default":[
 						"pwsh -f %f",

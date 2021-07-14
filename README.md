@@ -71,14 +71,6 @@ These are the strings for the currently included scripts:
 "type":"object",
 "title":"Hover Exec",
 "properties": {
-"hover-exec.buddvs":{
-        "type":"array",
-        "default":[
-                "buddvs %f ",
-                "chdir(%c);",
-                "//=write('{{'+$1+'}}')" ],
-        "description": "budd script"
-},
 "hover-exec.octave":{
         "type":"array",
         "default":[
@@ -95,7 +87,8 @@ These are the strings for the currently included scripts:
                 "path(path,%c);",
                 "%%=disp([\"{{\"+($1)+\"}}\"])",
                 "temp.m" ],
-        "description": "matlab"
+        "description": "matlab",
+        "comment":"matlab has a long execution startup time"
 },
 "hover-exec.scilab":{
         "type":"array",
@@ -113,7 +106,8 @@ These are the strings for the currently included scripts:
                 "import os\nos.chdir(%c);",
                 "##=print('{{'+str($1)+'}}')" ,
                 "temp.py" ],
-        "description": "python"
+        "description": "python",
+        "comment":"a 'duplicate' entry also allows 'python3' to be used"
 },
 "hover-exec.julia":{
         "type":"array",
@@ -131,7 +125,8 @@ These are the strings for the currently included scripts:
                 "set loadpath %c",
                 "" ,
                 "temp.gp" ],
-        "description": "gnuplot - no intermediate results"
+        "description": "gnuplot",
+        "comment":"no intermediate results"
 },
 "hover-exec.pwsh":{
         "type":"array",
@@ -166,7 +161,8 @@ These are the strings for the currently included scripts:
         "default":[
                 "%f ", "", "",
                 "temp.html" ],
-        "description": "html"
+        "description": "html",
+        "comment":"no intermediate results, output is shown in the default browser
 },
 "hover-exec.eval":{
         "type":"array",
@@ -180,23 +176,32 @@ These are the strings for the currently included scripts:
         "description": "select code on hover",
         "default": false,
         "type": "boolean"
+},
+"hover-exec.buddvs":{
+        "type":"array",
+        "default":[
+                "buddvs %f ",
+                "chdir(%c);",
+                "//=write('{{'+$1+'}}')" ],
+        "description": "budd script"
+        "comment":"specialised local scripting language for testing"
 }
-}
-}
-}
+}}}
 ````
 
 ## Known Issues
 
 This is a beta version.
 
+If the edit file is clicked randomly during script execution (usually seconds) output may be written in the wrong part of the file. Use ctrl-z to recover, then re-run the script.
+
 Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. Assigned variables do not carry over into the next script execution. This kind of approach is best suited for a range of useful small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Matlab takes a substantial amount of time (nearly 10s on my Ryzen pc) to run a codeblock. The others are generally pretty fast (see the demo above).
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). The others are generally pretty fast (see the demo gif above).
 
 ## Release Notes
 
-### 0.3.1
+### 0.3.6
 
 Initial beta release
 Published using: vsce package/publish
