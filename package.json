@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.3.6",
+	"version": "0.4.1",
 	"repository": "https://github.com/rmzetti/hover-exec",
 	"license": "NCSA",
 	"contributors": [
@@ -27,16 +27,16 @@
 				"hover-exec.buddvs":{
 					"type":"array",
 					"default":[
-						"buddvs %f ",
-						"chdir(%c);",
+						"buddvs \"%f\" ",
+						"chdir(\"%c\");",
 						"//=write('{{'+($1)+'}}')" ],
 					"description": "budd script"
 				},
 				"hover-exec.octave":{
 					"type":"array",
 					"default":[
-						"octave %f ",
-						"cd %c;",
+						"octave \"%f\"",
+						"cd \"%c\";",
 						"%%=disp(['{{' $1 '}}'])" ,
 						"temp.m" ],
 					"description": "octave"
@@ -44,8 +44,8 @@
 				"hover-exec.matlab":{
 					"type":"array",
 					"default":[
-						"matlab -sd %p -batch temp",
-						"path(path,%c);",
+						"matlab -sd \"%p\" -batch temp",
+						"path(path,\"%c\");",
 						"%%=disp([\"{{\"+($1)+\"}}\"])",
 						"temp.m" ],
 					"description": "matlab"
@@ -53,8 +53,8 @@
 				"hover-exec.scilab":{
 					"type":"array",
 					"default":[
-						"scilex -quit -nb -f %f ",
-						"cd %c;",
+						"scilex -quit -nb -f \"%f\" ",
+						"cd \"%c\";",
 						"//=mprintf('%s\\n','{{'+$1+'}}')" ,
 						"temp.sci" ],
 					"description": "scilab"
@@ -62,8 +62,8 @@
 				"hover-exec.python":{
 					"type":"array",
 					"default":[
-						"python %f ",
-						"import os\nos.chdir(%c);",
+						"python \"%f\"",
+						"import os\nos.chdir(\"%c\");",
 						"##=print('{{'+str($1)+'}}')" ,
 						"temp.py" ],
 					"description": "python"
@@ -71,8 +71,8 @@
 				"hover-exec.python3":{
 					"type":"array",
 					"default":[
-						"python3 %f ",
-						"import os\nos.chdir(%c);",
+						"python3 \"%f\" ",
+						"import os\nos.chdir(\"%c\");",
 						"##=print('{{'+str($1)+'}}')" ,
 						"temp.py" ],
 					"description": "python"
@@ -80,8 +80,8 @@
 				"hover-exec.julia":{
 					"type":"array",
 					"default":[
-						"julia %f ",
-						"cd(%c)",
+						"julia \"%f\"",
+						"cd(\"%c\")",
 						"##=println(string(\"{{\",$1,\"}}\"))" ,
 						"temp.jl" ],
 					"description": "julia"
@@ -89,8 +89,8 @@
 				"hover-exec.gnuplot":{
 					"type":"array",
 					"default":[
-						"gnuplot -p -c %f ",
-						"set loadpath %c",
+						"gnuplot -p -c \"%f\"",
+						"set loadpath \"%c\"",
 						"" ,
 						"temp.gp" ],
 					"description": "for gnuplot no results are returned"
@@ -98,8 +98,8 @@
 				"hover-exec.pwsh":{
 					"type":"array",
 					"default":[
-						"pwsh -f %f",
-						"cd %c;",
+						"pwsh -f \"%f\"",
+						"cd \"%c\";",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
 					"description": "powershell"
@@ -107,8 +107,8 @@
 				"hover-exec.bash":{
 					"type":"array",
 					"default":[
-						"bash %f",
-						"cd %c;",
+						"bash \"%f\"",
+						"cd \"%c\";",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
 					"description": "powershell"
@@ -116,8 +116,8 @@
 				"hover-exec.zsh":{
 					"type":"array",
 					"default":[
-						"pwsh -f %f",
-						"cd %c;",
+						"pwsh -f \"%f\"",
+						"cd \"%c\";",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
 					"description": "powershell"
@@ -125,7 +125,7 @@
 				"hover-exec.lua":{
 					"type":"array",
 					"default":[
-						"lua54 %f ",
+						"lua54 \"%f\"",
 						"",
 						"--=print('{{'..($1)..'}}')" ,
 						"temp.lua" ],
@@ -134,8 +134,8 @@
 				"hover-exec.js":{
 					"type":"array",
 					"default":[
-						"node %f ",
-						"process.chdir(%c)",
+						"node \"%f\"",
+						"process.chdir(\"%c\")",
 						"//=console.log('{{'+($1)+'}}')" ,
 						"temp.js" ],
 					"description": "javascript node"
@@ -143,7 +143,15 @@
 				"hover-exec.html":{
 					"type":"array",
 					"default":[
-						"%f ", "", "",
+						"\"%f\" ", "", "",
+						"temp.html" ],
+					"description": "html",
+					"comment":"for html no results are returned"
+				},
+				"hover-exec.firefox":{
+					"type":"array",
+					"default":[
+						"firefox \"%f\"", "", "",
 						"temp.html" ],
 					"description": "html",
 					"comment":"for html no results are returned"

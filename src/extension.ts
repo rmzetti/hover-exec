@@ -42,53 +42,56 @@ export function activate(context: vscode.ExtensionContext) {
 				//suppressOutput=line.text.endsWith('>');
 				swap='';
 				swapExp='';
-				ex=getcmd(line.text); //command id
+				ex=getcmd(line.text); 				//command id
 				arr=config.get(ex) as string;
-				let msg=getmsg(line.text); //message for hover
-				if(arr && arr.length>=3){
+				let msg=getmsg(line.text); 		//message for hover
+				if(arr && arr.length>=3){        //predefined script engines
 					temp='temp.txt';if(arr.length>=4){temp=arr[3];}
-					exec=arr[0].replace('%f','"'+tempd+temp+'"').replace('%p','"'+tempd+'"').replace('%c','"'+currentFolder+'"').replace('%n','"'+temp+'"');
-					cd=arr[1].replace('%c','"'+currentFolder+'"').replace('%p','"'+tempd+'"');
+					exec=arr[0].replace('%f',tempd+temp).replace('%p',tempd)
+										.replace('%c',currentFolder).replace('%n',temp);
+					cd=arr[1].replace('%c',currentFolder).replace('%p',tempd);
 					if(cd!==''){cd+='\n';}
-					swap=arr[2].substr(0,3); // {{ is the start, the end is }}
+					swap=arr[2].substr(0,3);      // {{ is the start, the end is }}
 					swapExp=arr[2].substr(3);
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectCodeblock();}
 					let url='vscode://rmzetti.hover-exec?'+ex;
 					if(swap!==''){ msg+='  ... *use '+swap+' for inline results*'; }
-					msg='[exec '+ex+' '+msg+']('+url+')';
+					msg='[ '+ex+' '+msg+']('+url+')';
 					msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')* '+
 					'*[ \[last result\] ]('+fixFolder(tempd)+temp+'.out.txt)*\n\n'+msg;
-					const contents=new vscode.MarkdownString('*hover exec:* '+msg);
+					const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
 					contents.isTrusted = true;
 					return new vscode.Hover(contents);
 				} else if(ex==='output'){
 					ex='delete';
 					if(selectOnHover){selectCodeblock();}
 					return new vscode.Hover(new vscode.MarkdownString(
-						'*hover exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
+						'*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
 					));
 				} else {
-					ex='';return null;
-				}
-			}
-			else {
-				let fileUri=vscode.Uri.file(line.text.trim()); //can have internal spaces
-				if(fileUri){
-					try {
-						await vscode.workspace.fs.stat(fileUri);
-						let temp1=line.text.trim().replace(/\s/g,'%20'); 
-						const contents = //markdown link must use %20
-							new vscode.MarkdownString('[openrm]('+temp1+')');
+					temp='temp.txt';
+					if(line.text.slice(3).includes('```')){
+						exec=ex.replace(/%20/mg,' ').replace('%f',tempd+temp).replace('%p',tempd)
+													.replace('%c',currentFolder).replace('%n',temp);
+						ex='exe';
+						let url='vscode://rmzetti.hover-exec?'+ex;
+						const contents = new vscode.MarkdownString('*hover-exec:*\n\n['+exec+']('+url+')');
 						contents.isTrusted = true;
 						return new vscode.Hover(contents);
-					} catch {
-						return null;
-					} 
-				} else {
-					return null;
+					} else {
+						exec=('"'+ex+'" "'+tempd+temp+'"').replace(/%20/mg,' ');
+						lastCodeBlock=getCodeBlockAt(doc,pos);
+						let url='vscode://rmzetti.hover-exec?'+ex.replace(/\s/mg,'%20');
+						msg='['+ex+']('+url+')';
+						msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')*\n\n'+msg;
+						const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
+						contents.isTrusted = true;
+						return new vscode.Hover(contents);
+					}
 				}
-		}
+			}
+			else { return null; }
 		}})()
 	);
 }
@@ -101,9 +104,9 @@ class MyUriHandler implements vscode.UriHandler {
 			lastCodeBlock=lastCodeBlock.replace(/=<</g,'=>>');
 			swap='=>>';
 		}
-		let re=new RegExp(swap+'.*','mg');
 		let s=lastCodeBlock;
 		if(swap!==''){
+			let re=new RegExp(swap+'.*','mg');
 			lastCodeBlock=lastCodeBlock.replace(re,swap); //remove previous in-line results
 			re=new RegExp('^(.*)'+swap,'mg');
 			s=lastCodeBlock.replace(re,swapExp);
@@ -115,8 +118,13 @@ class MyUriHandler implements vscode.UriHandler {
 				lastResult='';
 				s1.forEach((line)=>{
 					s=eval(line);
-					if(s){lastResult+=s+'\n';} //the if avoids 'undefined'
+					if(s){lastResult+=s+'\n';} //if(s) avoids 'undefined'
 				});
+			}
+			else if(ex==='exe'){
+				//vscode.window.showInformationMessage(exec);
+				await execShell(exec);
+				return;
 			}
 			else {
 				lastResult = await execShell(exec);
@@ -178,9 +186,14 @@ function fixFolder(f:string){
 	return f;
 }
 function getcmd(s:string){
+	s=s.slice(3);
+	if(s.includes('```')){
+		s=s.replace(/```.*/,'');
+		return s;
+	}
 	let len=s.indexOf(" ");
 	if(len<0){len=s.length;}
-	ex="";
+	ex=s.slice(0,len);
 	if(s.includes('cmd=')){
 		ex=s.substr(s.indexOf('cmd=')+4).replace(/["']/g,'').trim();
 		let ipos=ex.indexOf('}');
@@ -191,7 +204,7 @@ function getcmd(s:string){
 			ex=ex.substring(0,ipos).trim();
 		}
 	}
-	if(ex===''){ex=s.substring(3,len);}
+	if(ex===''){ex=s;}
 	return ex;
 }
 function getmsg(s:string){
@@ -228,6 +241,9 @@ function getCodeBlockAt(doc: vscode.TextDocument,pos: vscode.Position) {
 	startCode=0;
 	if(activeTextEditor){
 		let n=doc.lineAt(pos).lineNumber+1;
+		if(doc.lineAt(pos).text.endsWith('```')) {
+			startCode=n;return '';
+		}
 		startCode=n;
 		while (n<doc.lineCount) {
 			let a=doc.lineAt(new vscode.Position(n,0)).text;

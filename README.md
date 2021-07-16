@@ -4,9 +4,46 @@ This is the README for VsCode extension *hover exec*.
 
 ## Features
 
-Hover exec facilitates execution of markdown code blocks in a variety of installed scripts.
+*Hover-exec* facilitates execution of markdown code blocks in a variety of installed scripts.
 
 The extension is activated when a markdown file is opened.
+
+Hover script exec in action:
+
+![hover-exec.gif](./Hover-exec.gif)
+
+### Basic hover-exec 
+
+```js {cmd=eval}
+'test: '+Math.random()=>>test: 0.5142428917843993
+```
+
+Hovering over lines starting ``` will trigger a hover message with an exec command as the bottom line, as above.
+
+Intermediate results can be viewed in line by appending a line with a predefined three character string. The string =>> can always be used, so long as it is used consistently throughout the script. For the predefined scripting language, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with =. This is preferred because it is compatible with the *markdown preview enhanced* extension.
+
+Note that in the above the script is an *eval* script (*cmd=eval*), and executed internally by *hover-exec*. Starting the line with *js* allows vscode to provide javascript syntax highling.
+
+The following is the same script but will be executed by *node*
+
+```js
+'test using node: '+Math.random()=>>test using node: 0.4007943483072618
+```
+
+*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. Notes can be added at the end of the line:
+
+```"C:/Program Files/Notepad++/notepad++" %caa_test.md```
+```notepad %caa_test.md```  pre-defined variables: %c = current folder
+```notepad %f.out.txt```         %p=temp file path, %n=temp file name (temp.txt)
+```explorer /select,"C:\Users\ralph\OneDrive\Documents\Notes\aa_test.md"```  open folder and select file
+```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\::{2227a280-3aea-1069-a2de-08002b30309d}``` printers
+```devmgmt.msc``` show devices
+
+```notepad
+start notepad with some text
+```
+
+### Scripts supported after hover-exec installation
 
 The following scripts are supported 'out of the box':
 
@@ -20,15 +57,12 @@ The following scripts are supported 'out of the box':
 - gnuplot
 - matlab
 - lua
-- eval (javascript internal to the extension, with vscode api)
+- eval (javascript internal to the extension, with vscode api available)
 
-Other scripts can be added by providing an id and four strings for *Hover exec* in  `settings.json` (see below). Essentially if a program can be run with 'batch file' input, and outputs to the command line (if required), it will work in *hover-exec* with the appropriate string definitions.
+## Adding more scripts
 
-The md files at 
-
-Hover script exec in action:
-
-![hover-exec.gif](./Hover-exec.gif)
+Other scripts can be added by providing an id & four strings for *Hover exec* in  `settings.json` (see below). 
+Essentially if a program can be run with 'batch file' input, and outputs to the command line (if required), it will work in *hover-exec* with the appropriate string definitions.
 
 ## Requirements
 
@@ -71,122 +105,155 @@ These are the strings for the currently included scripts:
 "type":"object",
 "title":"Hover Exec",
 "properties": {
-"hover-exec.octave":{
-        "type":"array",
-        "default":[
-                "octave %f ",
-                "cd %c;",
-                "%%=disp(['{{' $1 '}}'])" ,
-                "temp.m" ],
-        "description": "octave"
-},
-"hover-exec.matlab":{
-        "type":"array",
-        "default":[
-                "matlab -sd %p -batch temp",
-                "path(path,%c);",
-                "%%=disp([\"{{\"+($1)+\"}}\"])",
-                "temp.m" ],
-        "description": "matlab",
-        "comment":"matlab has a long execution startup time"
-},
-"hover-exec.scilab":{
-        "type":"array",
-        "default":[
-                "scilex -quit -nb -f %f ",
-                "cd %c;",
-                "//=mprintf('%s\\n','{{'+$1+'}}')" ,
-                "temp.sci" ],
-        "description": "scilab"
-},
-"hover-exec.python":{
-        "type":"array",
-        "default":[
-                "python %f ",
-                "import os\nos.chdir(%c);",
-                "##=print('{{'+str($1)+'}}')" ,
-                "temp.py" ],
-        "description": "python",
-        "comment":"a 'duplicate' entry also allows 'python3' to be used"
-},
-"hover-exec.julia":{
-        "type":"array",
-        "default":[
-                "julia %f ",
-                "cd(%c)",
-                "##=println(string(\"{{\",$1,\"}}\"))" ,
-                "temp.jl" ],
-        "description": "julia"
-},
-"hover-exec.gnuplot":{
-        "type":"array",
-        "default":[
-                "gnuplot -p -c %f ",
-                "set loadpath %c",
-                "" ,
-                "temp.gp" ],
-        "description": "gnuplot",
-        "comment":"no intermediate results"
-},
-"hover-exec.pwsh":{
-        "type":"array",
-        "default":[
-                "pwsh -f %f",
-                "cd %c;",
-                "##='{{'+($1)+'}}'" ,
-                "temp.ps1" ],
-        "description": "powershell"
-},
-"hover-exec.lua":{
-        "type":"array",
-        "default":[
-                "lua54 %f ",
-                "",
-                "--=print('{{'..($1)..'}}')" ,
-                "temp.lua" ],
-        "description": "lua",
-        "comment":"base lua does not include the 'current working directory' concept"
-},
-"hover-exec.js":{
-        "type":"array",
-        "default":[
-                "node %f ",
-                "process.chdir(%c)",
-                "//=console.log('{{'+($1)+'}}')" ,
-                "temp.js" ],
-        "description": "javascript node"
-},
-"hover-exec.html":{
-        "type":"array",
-        "default":[
-                "%f ", "", "",
-                "temp.html" ],
-        "description": "html",
-        "comment":"no intermediate results, output is shown in the default browser
-},
-"hover-exec.eval":{
-        "type":"array",
-        "default":[
-                "",	"", 
-                "//='{{'+($1)+'}}'" ],
-        "description": "eval",
-        "comment":"eval is js run in the extension using eval - variables cannot be set" 
-},
-"hover-exec.selectOnHover":{
-        "description": "select code on hover",
-        "default": false,
-        "type": "boolean"
-},
-"hover-exec.buddvs":{
-        "type":"array",
-        "default":[
-                "buddvs %f ",
-                "chdir(%c);",
-                "//=write('{{'+$1+'}}')" ],
-        "description": "budd script"
-        "comment":"specialised local scripting language for testing"
+        "hover-exec.octave":{
+                "type":"array",
+                "default":[
+                        "octave \"%f\"",
+                        "cd \"%c\";",
+                        "%%=disp(['{{' $1 '}}'])" ,
+                        "temp.m" ],
+                "description": "octave",
+                "comment":"note double quotes in quotes are escaped"
+        },
+        "hover-exec.matlab":{
+                "type":"array",
+                "default":[
+                        "matlab -sd \"%p\" -batch temp",
+                        "path(path,\"%c\");",
+                        "%%=disp([\"{{\"+($1)+\"}}\"])",
+                        "temp.m" ],
+                "description": "matlab"
+        },
+        "hover-exec.scilab":{
+                "type":"array",
+                "default":[
+                        "scilex -quit -nb -f \"%f\" ",
+                        "cd \"%c\";",
+                        "//=mprintf('%s\\n','{{'+$1+'}}')" ,
+                        "temp.sci" ],
+                "description": "scilab"
+        },
+        "hover-exec.python":{
+                "type":"array",
+                "default":[
+                        "python \"%f\"",
+                        "import os\nos.chdir(\"%c\");",
+                        "##=print('{{'+str($1)+'}}')" ,
+                        "temp.py" ],
+                "description": "python"
+        },
+        "hover-exec.python3":{
+                "type":"array",
+                "default":[
+                        "python3 \"%f\" ",
+                        "import os\nos.chdir(\"%c\");",
+                        "##=print('{{'+str($1)+'}}')" ,
+                        "temp.py" ],
+                "description": "python"
+        },
+        "hover-exec.julia":{
+                "type":"array",
+                "default":[
+                        "julia \"%f\"",
+                        "cd(\"%c\")",
+                        "##=println(string(\"{{\",$1,\"}}\"))" ,
+                        "temp.jl" ],
+                "description": "julia"
+        },
+        "hover-exec.gnuplot":{
+                "type":"array",
+                "default":[
+                        "gnuplot -p -c \"%f\"",
+                        "set loadpath \"%c\"",
+                        "" ,
+                        "temp.gp" ],
+                "description": "for gnuplot no results are returned"
+        },
+        "hover-exec.pwsh":{
+                "type":"array",
+                "default":[
+                        "pwsh -f \"%f\"",
+                        "cd \"%c\";",
+                        "##='{{'+($1)+'}}'" ,
+                        "temp.ps1" ],
+                "description": "powershell"
+        },
+        "hover-exec.bash":{
+                "type":"array",
+                "default":[
+                        "bash \"%f\"",
+                        "cd \"%c\";",
+                        "##='{{'+($1)+'}}'" ,
+                        "temp.ps1" ],
+                "description": "powershell"
+        },
+        "hover-exec.zsh":{
+                "type":"array",
+                "default":[
+                        "pwsh -f \"%f\"",
+                        "cd \"%c\";",
+                        "##='{{'+($1)+'}}'" ,
+                        "temp.ps1" ],
+                "description": "powershell"
+        },
+        "hover-exec.lua":{
+                "type":"array",
+                "default":[
+                        "lua54 \"%f\"",
+                        "",
+                        "--=print('{{'..($1)..'}}')" ,
+                        "temp.lua" ],
+                "description": "lua"
+        },
+        "hover-exec.js":{
+                "type":"array",
+                "default":[
+                        "node \"%f\"",
+                        "process.chdir(\"%c\")",
+                        "//=console.log('{{'+($1)+'}}')" ,
+                        "temp.js" ],
+                "description": "javascript node"
+        },
+        "hover-exec.html":{
+                "type":"array",
+                "default":[
+                        "\"%f\" ", "", "",
+                        "temp.html" ],
+                "description": "html",
+                "comment":"for html no results are returned"
+        },
+        "hover-exec.firefox":{
+                "type":"array",
+                "default":[
+                        "firefox \"%f\"", "", "",
+                        "temp.html" ],
+                "description": "html",
+                "comment":"for html no results are returned"
+        },
+        "hover-exec.eval":{
+                "type":"array",
+                "default":[
+                        "",	"", 
+                        "//='{{'+($1)+'}}'" ],
+                "description": "eval"
+        },
+        "hover-exec.selectOnHover":{
+                "description": "select code on hover",
+                "default": false,
+                "type": "boolean"
+        },
+        "hover-exec.buddvs":{
+                "type":"array",
+                "default":[
+                        "buddvs \"%f\" ",
+                        "chdir(\"%c\");",
+                        "//=write('{{'+($1)+'}}')" ],
+                "description": "budd script"
+                "comment":"specialised local scripting language for testing"
+        }
 }
-}}}
+}
+},
 ````
 
 ## Known Issues
