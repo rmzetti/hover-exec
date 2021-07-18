@@ -1,12 +1,12 @@
 # Hover exec
 
-This is the README for VsCode extension *hover exec*.
+This is the README for VS Code extension *hover exec* for viewing in a markdown previewer.
 
 ## Features
 
-*Hover-exec* facilitates execution of markdown code blocks in a variety of installed scripts.
+*Hover-exec* facilitates execution (from the editor) of markdown code blocks in a variety of installed scripts.
 
-The extension is activated when a markdown file is opened.
+The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
@@ -14,9 +14,10 @@ Hover script exec in action:
 
 ### Basic hover-exec 
 
-```js {cmd=eval}
-'test: '+Math.random()=>>test: 0.5142428917843993
-```
+` ```js {cmd=eval}`
+` 'test: '+Math.random()=>>test: 0.5142428 `
+` ``` `
+
 
 Hovering over lines starting ``` will trigger a hover message with an exec command as the bottom line, as above.
 
@@ -26,22 +27,30 @@ Note that in the above the script is an *eval* script (*cmd=eval*), and executed
 
 The following is the same script but will be executed by *node*
 
-```js
-'test using node: '+Math.random()=>>test using node: 0.4007943483072618
-```
+` ```js`
+` 'test using node: '+Math.random()=>>test using node: 0.4007943`
+` ``` `
 
-*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. Notes can be added at the end of the line:
+*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file) name can be used, and notes can be added aafter the closing quotes:
 
-```"C:/Program Files/Notepad++/notepad++" %caa_test.md```
-```notepad %caa_test.md```  pre-defined variables: %c = current folder
-```notepad %f.out.txt```         %p=temp file path, %n=temp file name (temp.txt)
-```explorer /select,"C:\Users\ralph\OneDrive\Documents\Notes\aa_test.md"```  open folder and select file
-```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\::{2227a280-3aea-1069-a2de-08002b30309d}``` printers
-```devmgmt.msc``` show devices
 
-```notepad
+` ```"C:/Program Files/Notepad++/notepad++" %caa_test.md``` ` // *run notepad++*
+
+` ```notepad %caa_test.md``` `  //open notepad with file in current folder
+
+` ```notepad %f``` `                    //open notepadwith temp file temp.txt
+
+` ```explorer``` `                          //open explorer to 'This pc'
+
+` ```explorer /select,"C:\Users\ralph\OneDrive\Documents\Notes\aa_test.md"``` ` //explore current folder
+
+` ```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\::{2227a280-3aea-1069-a2de-08002b30309d}``` `  //show printers
+
+` ```devmgmt.msc``` `                //show devices
+
+` ```notepad`
 start notepad with some text
-```
+` ``` `
 
 ### Scripts supported after hover-exec installation
 
@@ -76,28 +85,32 @@ This extension contributes the following settings:
 
 To add further scripting languages, identified by `hover-exec.id`, four strings are required for each:
 
-- [0] the javascript exec command to run the script from a temp file
-        - the variable `%f` will provide the appropriate temp file name and path
+[0] the javascript exec command to run the script from a temp file
+--- the variable `%f` will provide the appropriate temp file name and path
 
-- [1] a script command which will change working folder at execution start
-        - the variable `%c` provides the path of the current folder
+[1] a script command which will change working folder at execution start
+--- the variable `%c` provides the path of the current folder
 
-- [2] a string of the form `##=print('{{'+str($1)+'}}')`. The first `3 chars` will indicate where in-line output is required (usually begins with the scripting language comment signifier, and ends with =). This is followed by a command string, in the appropriate scripting language, to give output in the form `{{$1}}` to enable the extension to move the output to end of the line where it is required.
+[2] a string of the form `##=print('{{'+str($1)+'}}')`.
+--- The first `3 chars` will indicate where in-line output is required (usually begins with the scripting language comment signifier, and ends with `=`).
+--- This is followed by a command string, in the appropriate scripting language, to give output in the form `{{$1}}` to enable the extension to move the output to end of the line where it is required.
 
-- [3] a string to provide the script file used in the form `name.ext` (the default is `temp.txt`) - this is optional. As an example, for Matlab (and Octave) `temp.m` is used.
+[3] an optional string to provide the script file used in the form `name.ext`
+--- The default is `temp.txt`.
+--- As an example, for Matlab (and Octave) `temp.m` is used.
 
-In the strings, the following predefined strings can be embedded (quotes are included)
-> %f "full_path/name.ext" of temporary file to be used for the script
-> %p "full_path" for temporary file (ends with /)
-> %n "name.ext" of temporary file
-> %c "full_path" of folder containing the original script (ends with /)
-> %r signifier for in-line result, 3 chars 'xx=', eg ##=, //= (starts comment)
+In the strings, the following predefined strings can be embedded
+> %f `full_path/name.ext` of temporary file to be used for the script
+> %p `full_path` for temporary file (ends with /)
+> %n `name.ext` of temporary file
+> %c `full_path` of folder containing the original script (ends with `/`)
+> %r `3 char string` marking in-line result, eg //= (will be a comment in the script)
 
 The easiest way to add a new script language is to (1) open `settings/extensions/hover-exec`, (2) copy and paste an existing script setting, (3) change the id (`hover-exec.id`), and (4) change the strings as appropriate (see above).
 
 All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote).
 
-These are the strings for the currently included scripts:
+Following are the strings for the currently included scripts:
 
 ```
 "contributes": {
@@ -260,11 +273,11 @@ These are the strings for the currently included scripts:
 
 This is a beta version.
 
-If the edit file is clicked randomly during script execution (usually seconds) output may be written in the wrong part of the file. Use ctrl-z to recover, then re-run the script.
+If the edit file is clicked randomly (or a new hover is activated) during script execution (usually seconds) output is cancelled to avoid it being written in the wrong part of the file.
 
-Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. Assigned variables do not carry over into the next script execution. This kind of approach is best suited for a range of useful small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. Assigned variables do not carry over into the next script execution. This kind of approach is best suited for useful small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). The others are generally pretty fast (see the demo gif above).
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). The others are generally fairly fast (see the demo gif above).
 
 ## Release Notes
 

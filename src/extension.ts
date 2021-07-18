@@ -12,8 +12,11 @@ let temp='';
 let cd='';
 let ex='';
 let exec='';
+let msg='';
 let arr:string;
 let newHover=false;
+let shown=false;
+let statusBarItem=vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 let replaceSel=new vscode.Selection(0,0,0,0);
 let config=vscode.workspace.getConfiguration('hover-exec');
 const {activeTextEditor}=vscode.window;
@@ -23,41 +26,38 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 	const uriHandler = new MyUriHandler();
 	context.subscriptions.push(vscode.window.registerUriHandler(uriHandler));
+	context.subscriptions.push(statusBarItem);
+	statusBarItem.text = '$(megaphone) hover-exec active';
 	vscode.languages.registerHoverProvider(
 		'markdown',
 		new (class implements vscode.HoverProvider {
 		  async provideHover(doc: vscode.TextDocument,
 			pos: vscode.Position,token: vscode.CancellationToken
 		  ): Promise<vscode.Hover | null> { // <vscode.Hover|null|undefined>
-			newHover=true;
 			const line = doc.lineAt(pos);
+			newHover=pos.line!==startCode;;
+			if(line.text==='```'){return null;}
 			let currentFolder=doc.uri.path.substring(1,doc.uri.path.lastIndexOf('/')+1);  //%c
 			if(currentFolder.slice(1,2)!==':'){currentFolder=fixFolder(currentFolder);} //win vs linux
 			vscode.workspace.fs.createDirectory(context.globalStorageUri);
 			let selectOnHover=config.get('selectOnHover');
 			cd='';
 			startCode=pos.line;
-			if(line.text.startsWith('```')){
+			if(line.text.startsWith('```') && line.text.slice(3,4)!==' '){
+				temp='temp.txt';
 				tempd=context.globalStorageUri.fsPath+'/';
 				//suppressOutput=line.text.endsWith('>');
-				swap='';
-				swapExp='';
-				ex=getcmd(line.text); 				//command id
+				swap='';swapExp='';
+				ex=getcmd(line.text); 			//command id
+				msg=getmsg(line.text); 		//message for hover
 				arr=config.get(ex) as string;
-				let msg=getmsg(line.text); 		//message for hover
-				if(arr && arr.length>=3){        //predefined script engines
-					temp='temp.txt';if(arr.length>=4){temp=arr[3];}
-					exec=arr[0].replace('%f',tempd+temp).replace('%p',tempd)
-										.replace('%c',currentFolder).replace('%n',temp);
-					cd=arr[1].replace('%c',currentFolder).replace('%p',tempd);
-					if(cd!==''){cd+='\n';}
-					swap=arr[2].substr(0,3);      // {{ is the start, the end is }}
-					swapExp=arr[2].substr(3);
+				if(arr){  //predefined script engines
+					getScriptSettings(currentFolder);
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectCodeblock();}
 					let url='vscode://rmzetti.hover-exec?'+ex;
 					if(swap!==''){ msg+='  ... *use '+swap+' for inline results*'; }
-					msg='[ '+ex+' '+msg+']('+url+')';
+					msg='[ '+ex+msg+']('+url+')';
 					msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')* '+
 					'*[ \[last result\] ]('+fixFolder(tempd)+temp+'.out.txt)*\n\n'+msg;
 					const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
@@ -70,20 +70,19 @@ export function activate(context: vscode.ExtensionContext) {
 						'*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n[delete output](vscode://rmzetti.hover-exec?delete)'
 					));
 				} else {
-					temp='temp.txt';
 					if(line.text.slice(3).includes('```')){
 						exec=ex.replace(/%20/mg,' ').replace('%f',tempd+temp).replace('%p',tempd)
 													.replace('%c',currentFolder).replace('%n',temp);
 						ex='exe';
 						let url='vscode://rmzetti.hover-exec?'+ex;
-						const contents = new vscode.MarkdownString('*hover-exec:*\n\n['+exec+']('+url+')');
+						const contents = new vscode.MarkdownString('*hover-exec:* '+msg+'\n\n['+exec+']('+url+')');
 						contents.isTrusted = true;
 						return new vscode.Hover(contents);
 					} else {
 						exec=('"'+ex+'" "'+tempd+temp+'"').replace(/%20/mg,' ');
 						lastCodeBlock=getCodeBlockAt(doc,pos);
 						let url='vscode://rmzetti.hover-exec?'+ex.replace(/\s/mg,'%20');
-						msg='['+ex+']('+url+')';
+						msg='['+ex+msg+']('+url+')';
 						msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')*\n\n'+msg;
 						const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
 						contents.isTrusted = true;
@@ -134,12 +133,15 @@ class MyUriHandler implements vscode.UriHandler {
 			lastResult=uri.toString();
 		}
 		writeFile(tempd+temp+'.out.txt',lastResult);
+		if(lastResult!==''){
 		if(suppressOutput || newHover){
-			vscode.window.showInformationMessage('output cancelled');
+			//vscode.window.showInformationMessage('output cancelled (pos changed during exec)');
+			progress('output cancelled (pos changed during exec)');
 		} else {
 			paste(lastResult);
 		}
 		removeSelection();
+		}
 	}
 }
 function paste(text:string) {
@@ -187,9 +189,12 @@ function fixFolder(f:string){
 }
 function getcmd(s:string){
 	s=s.slice(3);
-	if(s.includes('```')){
-		s=s.replace(/```.*/,'');
-		return s;
+	if(s.includes('```')){ //one liner, remove eol note
+		return s.replace(/```.*/,'');
+	}
+	if(s.startsWith('"')){
+		s=s.slice(1);
+		return s.replace(/".*/,'');
 	}
 	let len=s.indexOf(" ");
 	if(len<0){len=s.length;}
@@ -213,8 +218,22 @@ function getmsg(s:string){
 	let ipos=s.indexOf('--');
 	if(ipos<=0){ipos=s.indexOf('<!--')-2;}
 	if(ipos<=0){ipos=s.indexOf('//');}
+	if(ipos<=0){ipos=s.indexOf('#');}
 	if(ipos>0){msg=s.substr(ipos+2);}
-	return msg;
+	return ' '+msg;
+}
+function getScriptSettings(currentFolder:string){
+	if(arr.length>3){temp=arr[3];}
+	exec=arr[0].replace('%f',tempd+temp).replace('%p',tempd)
+						.replace('%c',currentFolder).replace('%n',temp);
+	if(arr.length>1){
+		cd=arr[1].replace('%c',currentFolder).replace('%p',tempd);
+		if(cd!==''){cd+='\n';}
+	}
+	if(arr.length>2){
+		swap=arr[2].substr(0,3);      // {{ is the start, the end is }}
+		swapExp=arr[2].substr(3);
+	}
 }
 function removeSelection(){
 	const {activeTextEditor}=vscode.window;
@@ -298,5 +317,24 @@ function deleteOutput(asText:boolean) {
 		}
 	}
 }
-export function deactivate() {}
+export function deactivate() {
+	statusBarItem.hide();
+}
 
+function progress(msg:string){
+	if(shown || msg===""){return;}
+	let p=vscode.window.withProgress({
+		location: vscode.ProgressLocation.Notification,
+		title: "hover-exec",cancellable: false
+	}, (progress) => {
+		shown=true;
+		progress.report({ increment: -1,message:msg });
+		let p = new Promise<void>(resolve => {
+			setTimeout(() => {
+				resolve();shown=false;
+			}, 4000);
+		});
+		return p;
+	});
+	return p;
+}
