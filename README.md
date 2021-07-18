@@ -33,36 +33,36 @@ The following is the same script but will be executed by *node*
 
 *One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file name) can be used, and notes can be added aafter the closing quotes, for example:
 
-run notepad++
+run notepad++:
 
         ```"C:/Program Files/Notepad++/notepad++" %ctest.md```
 
-open notepad with file in current folder
+open notepad with file in current folder:
 
         ```notepad %ctest.md```
 
-open notepadwith temp file temp.txt
+open notepad with temp file:
 
         ```notepad %f```
 
-open explorer to 'This pc'
+open explorer to 'This pc':
 
         ```explorer```
 
-explore folder
+explore folder:
 
         ```explorer /select, "C:\Users\xxx\Documents\Notes"```
 
-show printers
+show printers:
 
         ```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\
                 ::{2227a280-3aea-1069-a2de-08002b30309d}```
 
-show devices
+show devices:
 
         ```devmgmt.msc```
 
-start notepad with some text
+start notepad with some text:
 
         ```notepad
         This is some text
