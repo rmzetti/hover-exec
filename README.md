@@ -35,7 +35,7 @@ The following is the same script but will be executed by *node*
 
 run notepad++
 
-        ```"C:/Program Files/Notepad++/notepad++" %caa_test.md```
+        ```"C:/Program Files/Notepad++/notepad++" %ctest.md```
 
 open notepad with file in current folder
 
