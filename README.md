@@ -39,7 +39,7 @@ run notepad++
 
 open notepad with file in current folder
 
-        ```notepad %caa_test.md```
+        ```notepad %ctest.md```
 
 open notepadwith temp file temp.txt
 
