@@ -15,7 +15,9 @@ Hover script exec in action:
 ### Basic hover-exec 
 
 ` ```js {cmd=eval}`
+
 ` 'test: '+Math.random()=>>test: 0.5142428 `
+
 ` ``` `
 
 
@@ -28,7 +30,9 @@ Note that in the above the script is an *eval* script (*cmd=eval*), and executed
 The following is the same script but will be executed by *node*
 
 ` ```js`
+
 ` 'test using node: '+Math.random()=>>test using node: 0.4007943`
+
 ` ``` `
 
 *One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file) name can be used, and notes can be added aafter the closing quotes:
