@@ -14,11 +14,9 @@ Hover script exec in action:
 
 ### Basic hover-exec 
 
-` ```js {cmd=eval}`
-
-` 'test: '+Math.random()=>>test: 0.5142428 `
-
-` ``` `
+        ```js {cmd=eval}
+        'test: '+Math.random()=>>test: 0.5142428
+        ``` 
 
 
 Hovering over lines starting ``` will trigger a hover message with an exec command as the bottom line, as above.
@@ -29,32 +27,47 @@ Note that in the above the script is an *eval* script (*cmd=eval*), and executed
 
 The following is the same script but will be executed by *node*
 
-` ```js`
+        ```js
+        'test using node: '+Math.random()=>>test using node: 0.4007943
+        ```
 
-` 'test using node: '+Math.random()=>>test using node: 0.4007943`
+*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file name) can be used, and notes can be added aafter the closing quotes, for example:
 
-` ``` `
+run notepad++
 
-*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file) name can be used, and notes can be added aafter the closing quotes:
+        ```"C:/Program Files/Notepad++/notepad++" %caa_test.md```
 
+open notepad with file in current folder
 
-` ```"C:/Program Files/Notepad++/notepad++" %caa_test.md``` ` // *run notepad++*
+        ```notepad %caa_test.md```
 
-` ```notepad %caa_test.md``` `  //open notepad with file in current folder
+open notepadwith temp file temp.txt
 
-` ```notepad %f``` `                    //open notepadwith temp file temp.txt
+        ```notepad %f```
 
-` ```explorer``` `                          //open explorer to 'This pc'
+open explorer to 'This pc'
 
-` ```explorer /select,"C:\Users\ralph\OneDrive\Documents\Notes\aa_test.md"``` ` //explore current folder
+        ```explorer```
 
-` ```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\::{2227a280-3aea-1069-a2de-08002b30309d}``` `  //show printers
+explore folder
 
-` ```devmgmt.msc``` `                //show devices
+        ```explorer /select, "C:\Users\xxx\Documents\Notes"```
 
-` ```notepad`
+show printers
+
+        ```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\
+                ::{2227a280-3aea-1069-a2de-08002b30309d}```
+
+show devices
+
+        ```devmgmt.msc```
+
 start notepad with some text
-` ``` `
+
+        ```notepad
+        This is some text
+        and this
+        ```
 
 ### Scripts supported after hover-exec installation
 
