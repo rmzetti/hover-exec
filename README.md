@@ -10,7 +10,7 @@ The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
-![hover-exec.gif](./Hover-exec.gif)
+![hover-exec.gif](https://rmzetti.github.io/Hover-exec.gif)
 
 ### Basic hover-exec 
 
