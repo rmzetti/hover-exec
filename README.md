@@ -31,99 +31,99 @@ Note that in the above, the script is an `eval` script (`cmd=eval`), and execute
 
 ### Some examples
 
-```lua --*say hello goodbye*
-print("hello") -- this outputs in the output code block below
-'hello '..(44-2+math.random())=>>hello 42.828019207949
-"goodbye "..math.pi+math.random()=>>goodbye 3.2172013694041
-```
-```output
-hello
-```
+        ```lua --*say hello goodbye*
+        print("hello") -- this outputs in the output code block below
+        'hello '..(44-2+math.random())=>>hello 42.828019207949
+        "goodbye "..math.pi+math.random()=>>goodbye 3.2172013694041
+        ```
+        ```output
+        hello
+        ```
 
-```python
-from random import random
-45-2+random()                  =>>43.00423890354297
-'hello world!'                      =>>hello world!
-```
+        ```python
+        from random import random
+        45-2+random()                  =>>43.00423890354297
+        'hello world!'                      =>>hello world!
+        ```
 
-```julia
-using LinearAlgebra, Statistics, Compat
-a=rand(Float64,3);
-a                               ##=[0.36814812612868586, 0.6866911978473123, 0.05644257070215741]
-nb=a;nb[2]=42;        # arrays are shallow copied
-a                               ##=[0.36814812612868586, 42.0, 0.05644257070215741]
-nb                            ##=[0.36814812612868586, 42.0, 0.05644257070215741]
-```
+        ```julia
+        using LinearAlgebra, Statistics, Compat
+        a=rand(Float64,3);
+        a                               ##=[0.36814812612868586, 0.6866911978473123, 0.05644257070215741]
+        nb=a;nb[2]=42;        # arrays are shallow copied
+        a                               ##=[0.36814812612868586, 42.0, 0.05644257070215741]
+        nb                            ##=[0.36814812612868586, 42.0, 0.05644257070215741]
+        ```
 
-```matlab  --matlab is slow to start (this takes nearly 10s on Asus with Ryzen 7 4700U)
-7*7-7 %%=42
-```
+        ```matlab  --matlab is slow to start (this takes nearly 10s on Asus with Ryzen 7 4700U)
+        7*7-7 %%=42
+        ```
 
-```pwsh {cmd} //*random & dir list*
-Get-Random -Min 0.0 -Max 1.0 =>>0.124692752084086
-"current dir: "+(pwd)   =>>current dir: C:\Users\xxx\.vscode\extensions\rmzetti.hover-exec
-Get-Variable c*
-```
-```output
-Name                           Value
-----                           -----
-ConfirmPreference              High
-```
+        ```pwsh {cmd} //*random & dir list*
+        Get-Random -Min 0.0 -Max 1.0 =>>0.124692752084086
+        "current dir: "+(pwd)   =>>current dir: C:\Users\xxx\.vscode\extensions\rmzetti.hover-exec
+        Get-Variable c*
+        ```
+        ```output
+        Name                           Value
+        ----                           -----
+        ConfirmPreference              High
+        ```
 
-```gnuplot 
-$charge << EOD
-10-06-2021 2138 100
-15-06-2021 2247 79
-16-06-2021 0935 79
-16-06-2021 1400 74
-16-06-2021 1439 70
-16-06-2021 2157 70
-17-06-2021 0900 69
-17-06-2021 1037 68
-19-06-2021 1000 56
-set xdata time;
-set timefmt "%d-%m-%Y %H%M"
-set format x "%d"
-set mouse mouseformat 3
-plot "$charge" using 1:3 w lp title "charge"
-```
+        ```gnuplot 
+        $charge << EOD
+        10-06-2021 2138 100
+        15-06-2021 2247 79
+        16-06-2021 0935 79
+        16-06-2021 1400 74
+        16-06-2021 1439 70
+        16-06-2021 2157 70
+        17-06-2021 0900 69
+        17-06-2021 1037 68
+        19-06-2021 1000 56
+        set xdata time;
+        set timefmt "%d-%m-%Y %H%M"
+        set format x "%d"
+        set mouse mouseformat 3
+        plot "$charge" using 1:3 w lp title "charge"
+        ```
 
 ![](gnuplotExample.png)
 
 
-```js {cmd=eval}
-//can't use variables in main, but can use inside another eval as below
-eval('let a=3;2*a*Math.random()')=>>5.8765482353295715
-vscode.window.showInformationMessage("Hello World") //vscode api call produces popup message
-'hello '+(2-1+Math.random())=>>hello 1.8956467731272915
-```
+        ```js {cmd=eval}
+        //can't use variables in main, but can use inside another eval as below
+        eval('let a=3;2*a*Math.random()')=>>5.8765482353295715
+        vscode.window.showInformationMessage("Hello World") //vscode api call produces popup message
+        'hello '+(2-1+Math.random())=>>hello 1.8956467731272915
+        ```
 
-```eval javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
-```
+        ```eval javascript regex tester
+        'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
+        ```
 
-```js //run server at http://127.0.0.1:1337  ctrl click to open server>
-var http = require('http');
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello World at last!\n');
-}).listen(1337, "127.0.0.1");
-```
+        ```js //run server at http://127.0.0.1:1337  ctrl click to open server>
+        var http = require('http');
+        http.createServer(function (req, res) {
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.end('Hello World at last!\n');
+        }).listen(1337, "127.0.0.1");
+        ```
 
-```pwsh # kill server through powershell
-# to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
-# then enter pid in kill statement below and exec again
-kill 14452
-netstat -ano | findstr :13
-```
+        ```pwsh # kill server through powershell
+        # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
+        # then enter pid in kill statement below and exec again
+        kill 14452
+        netstat -ano | findstr :13
+        ```
 
-```js {cmd=scilab} 
-//using the above instead of just ```scilab provides quick & dirty syntax highlight
-//need to use 'string' for numeric output
-rand("seed",getdate('s'));
-'def '+string(rand())+' abc'=>>def 0.4897686 abc
-disp('random: '+string(rand()))
-```
+        ```js {cmd=scilab} 
+        //using the above instead of just ```scilab provides quick & dirty syntax highlight
+        //need to use 'string' for numeric output
+        rand("seed",getdate('s'));
+        'def '+string(rand())+' abc'=>>def 0.4897686 abc
+        disp('random: '+string(rand()))
+        ```
 
 ### One-liners
 

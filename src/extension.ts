@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 			let selectOnHover=config.get('selectOnHover');
 			cd='';
 			startCode=pos.line;
-			if(line.text.startsWith('```') && line.text.slice(3,4)!==' '){
+			if(line.text.startsWith('```') && line.text.slice(3,4)!==' '){ //character following ``` should not be \s
 				temp='temp.txt';
 				tempd=context.globalStorageUri.fsPath+'/';
 				//suppressOutput=line.text.endsWith('>');
@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 				msg=getmsg(line.text); 		//message for hover
 				arr=config.get(ex) as string;
 				if(arr){  //predefined script engines
-					getScriptSettings(currentFolder);
+					getScriptSettings(currentFolder); //gets exec
 					lastCodeBlock=getCodeBlockAt(doc,pos);
 					if(selectOnHover){selectCodeblock();}
 					let url='vscode://rmzetti.hover-exec?'+ex;
@@ -71,7 +71,8 @@ export function activate(context: vscode.ExtensionContext) {
 					));
 				} else {
 					if(line.text.slice(3).includes('```')){
-						exec=ex.replace(/%20/mg,' ').replace('%f',tempd+temp).replace('%p',tempd)
+						exec=line.text.slice(3);
+						exec=exec.slice(0,exec.indexOf('```')).replace(/%20/mg,' ').replace('%f',tempd+temp).replace('%p',tempd)
 													.replace('%c',currentFolder).replace('%n',temp);
 						ex='exe';
 						let url='vscode://rmzetti.hover-exec?'+ex;
@@ -189,13 +190,10 @@ function fixFolder(f:string){
 }
 function getcmd(s:string){
 	s=s.slice(3);
-	if(s.includes('```')){ //one liner, remove eol note
-		return s.replace(/```.*/,'');
-	}
 	if(s.startsWith('"')){
-		s=s.slice(1);
-		return s.replace(/".*/,'');
+		return s.slice(1).replace(/".*/,'');
 	}
+	s=s.replace(/```.*/,'');
 	let len=s.indexOf(" ");
 	if(len<0){len=s.length;}
 	ex=s.slice(0,len);
@@ -215,6 +213,7 @@ function getcmd(s:string){
 function getmsg(s:string){
 	//message for hover
 	let msg='';
+	s=s.slice(3).replace(/.*```/,'');
 	let ipos=s.indexOf('--');
 	if(ipos<=0){ipos=s.indexOf('<!--')-2;}
 	if(ipos<=0){ipos=s.indexOf('//');}
@@ -260,6 +259,11 @@ function getCodeBlockAt(doc: vscode.TextDocument,pos: vscode.Position) {
 	startCode=0;
 	if(activeTextEditor){
 		let n=doc.lineAt(pos).lineNumber+1;
+		let s1=doc.lineAt(pos).text.slice(3);
+		if(s1.includes('```')){ //one-liner
+			startCode=n-1;
+			return s1.slice(s1.indexOf(' ')+1,s1.indexOf('```'));
+		}
 		if(doc.lineAt(pos).text.endsWith('```')) {
 			startCode=n;return '';
 		}
