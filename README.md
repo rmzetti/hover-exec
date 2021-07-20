@@ -13,41 +13,137 @@ Hover script exec in action:
 ![hover-exec.gif](https://rmzetti.github.io/Hover-exec.gif)
 
 ### Basic hover-exec 
-
-        ```js {cmd=eval}
-        'test: '+Math.random()=>>test: 0.5142428
-        ``` 
-
-
-Hovering over lines starting ``` will trigger a hover message with an exec command as the bottom line, as above.
-
-Intermediate results can be viewed in line by appending a line with a predefined three character string. The string =>> can always be used, so long as it is used consistently throughout the script. For the predefined scripting language, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with =. This is preferred because it is compatible with the *markdown preview enhanced* extension.
-
-Note that in the above the script is an *eval* script (*cmd=eval*), and executed internally by *hover-exec*. Starting the line with *js* allows vscode to provide javascript syntax highling.
-
-The following is the same script but will be executed by *node*
+Hovering over lines starting ``` will trigger a hover message with an *exec* command as the bottom line. Clicking the *exec* command will execute the code in the code block, and produce output if directed:
 
         ```js
         'test using node: '+Math.random()=>>test using node: 0.4007943
         ```
 
-*One-liners* starting and ending with ``` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file name) can be used, and notes can be added aafter the closing quotes, for example:
+The js command by default executes a javascript code block in nodejs (assuming that is installed). Javscript code blocks can aslo be executed in the vscode's internal javascript through an `eval` - note that using `js` for the codeblock produces the syntax highlighting, but setting `{cmd=eval}` resets the exec command to `eval`. Note that this use of `eval` does not allow variables to be defined, but the vscode API can be used.
 
-run notepad++:
+        ```js {cmd=eval}
+        'test: '+Math.random()=>>test: 0.5142428
+        ``` 
+
+Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `##=` for python). This is preferred because it is compatible with the *markdown preview enhanced* extension (any existing intermediate output will be treated as a comment).
+
+Note that in the above, the script is an `eval` script (`cmd=eval`), and executed internally by *hover-exec*. Starting the line with `js` allows vscode to provide javascript syntax highlighting.
+
+### Some examples
+
+```lua --*say hello goodbye*
+print("hello") -- this outputs in the output code block below
+'hello '..(44-2+math.random())=>>hello 42.828019207949
+"goodbye "..math.pi+math.random()=>>goodbye 3.2172013694041
+```
+```output
+hello
+```
+
+```python
+from random import random
+45-2+random()                  =>>43.00423890354297
+'hello world!'                      =>>hello world!
+```
+
+```julia
+using LinearAlgebra, Statistics, Compat
+a=rand(Float64,3);
+a                               ##=[0.36814812612868586, 0.6866911978473123, 0.05644257070215741]
+nb=a;nb[2]=42;        # arrays are shallow copied
+a                               ##=[0.36814812612868586, 42.0, 0.05644257070215741]
+nb                            ##=[0.36814812612868586, 42.0, 0.05644257070215741]
+```
+
+```matlab  --matlab is slow to start (this takes nearly 10s on Asus with Ryzen 7 4700U)
+7*7-7 %%=42
+```
+
+```pwsh {cmd} //*random & dir list*
+Get-Random -Min 0.0 -Max 1.0 =>>0.124692752084086
+"current dir: "+(pwd)   =>>current dir: C:\Users\xxx\.vscode\extensions\rmzetti.hover-exec
+Get-Variable c*
+```
+```output
+Name                           Value
+----                           -----
+ConfirmPreference              High
+```
+
+```gnuplot 
+$charge << EOD
+10-06-2021 2138 100
+15-06-2021 2247 79
+16-06-2021 0935 79
+16-06-2021 1400 74
+16-06-2021 1439 70
+16-06-2021 2157 70
+17-06-2021 0900 69
+17-06-2021 1037 68
+19-06-2021 1000 56
+set xdata time;
+set timefmt "%d-%m-%Y %H%M"
+set format x "%d"
+set mouse mouseformat 3
+plot "$charge" using 1:3 w lp title "charge"
+```
+
+![](gnuplotExample.png)
+
+
+```js {cmd=eval}
+//can't use variables in main, but can use inside another eval as below
+eval('let a=3;2*a*Math.random()')=>>5.8765482353295715
+vscode.window.showInformationMessage("Hello World") //vscode api call produces popup message
+'hello '+(2-1+Math.random())=>>hello 1.8956467731272915
+```
+
+```eval javascript regex tester
+'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
+```
+
+```js //run server at http://127.0.0.1:1337  ctrl click to open server>
+var http = require('http');
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello World at last!\n');
+}).listen(1337, "127.0.0.1");
+```
+
+```pwsh # kill server through powershell
+# to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
+# then enter pid in kill statement below and exec again
+kill 14452
+netstat -ano | findstr :13
+```
+
+```js {cmd=scilab} 
+//using the above instead of just ```scilab provides quick & dirty syntax highlight
+//need to use 'string' for numeric output
+rand("seed",getdate('s'));
+'def '+string(rand())+' abc'=>>def 0.4897686 abc
+disp('random: '+string(rand()))
+```
+
+### One-liners
+
+*One-liners* starting and ending with ` ``` ` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file name) can be used, and notes/comments can be added after the closing quotes, for example:
+
+exec notepad++:
 
         ```"C:/Program Files/Notepad++/notepad++" %ctest.md```
 
-open notepad with file in current folder:
+exec notepad with file in current folder:
 
         ```notepad %ctest.md```
 
-open notepad with temp file:
+exec notepad with temp file:
 
         ```notepad %f```
 
-open explorer to 'This pc':
+explore 'This pc':
 
-        ```explorer```
+        ```explorer ,```
 
 explore folder:
 
@@ -62,7 +158,13 @@ show devices:
 
         ```devmgmt.msc```
 
-start notepad with some text:
+exec default browser with href, or showing html text (note html is a built in script command, see above)
+
+        ```html <script>location.href='https://whatamigoingtodonow.net/'</script>```
+
+        ```html <h1>Hello world!</h1>```
+
+exec notepad with some text:
 
         ```notepad
         This is some text
