@@ -10,7 +10,7 @@ The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
-![hover-exec.gif](Hover-exec.gif)
+![hover-exec.gif](https://github.com/rmzetti/rmzetti.hover-exec/raw/master/Hover-exec.gif)
 
 ### Basic hover-exec 
 Hovering over lines starting ``` will trigger a hover message with an *exec* command as the bottom line. Clicking the *exec* command will execute the code in the code block, and produce output if directed:
@@ -25,7 +25,7 @@ The js command by default executes a javascript code block in nodejs (assuming t
         'test: '+Math.random()=>>test: 0.5142428
         ``` 
 
-Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `##=` for python). This is preferred because it is compatible with the *markdown preview enhanced* extension (any existing intermediate output will be treated as a comment).
+Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `##=` for python). This is preferred because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced*.
 
 Note that in the above, the script is an `eval` script (`cmd=eval`), and executed internally by *hover-exec*. Starting the line with `js` allows vscode to provide javascript syntax highlighting.
 
@@ -88,7 +88,7 @@ Note that in the above, the script is an `eval` script (`cmd=eval`), and execute
         plot "$charge" using 1:3 w lp title "charge"
         ```
 
-![](gnuplotExample.png)
+![](https://github.com/rmzetti/rmzetti.hover-exec/raw/master/gnuplotExample.png)
 
 
         ```js {cmd=eval}
@@ -198,34 +198,36 @@ The script languages to be used (eg. *python*, *gnuplot*, etc) should be install
 
 ## Extension Settings
 
-This extension contributes the following settings:
+This extension contributes the following settings to build in scripting languages. Settings are identified by `hover-exec.id`, 1-4 strings need to be provided for each:
 
-`"hover-exec.selectOnHover"`: select code on hover, default:false
-
-To add further scripting languages, identified by `hover-exec.id`, four strings are required for each:
-
-[0] the javascript exec command to run the script from a temp file
+[0] the *exec* javascript command to run the script from a temp file (required)
 --- the variable `%f` will provide the appropriate temp file name and path
+        eg. "octave \"%f\" "
 
-[1] a script command which will change working folder at execution start
+[1] an optional *startup* script command, eg. to change the working folder at execution start
 --- the variable `%c` provides the path of the current folder
 
-[2] a string of the form `##=print('{{'+str($1)+'}}')`.
+[2] an optional *swap* string of the form `##=print('{{'+str($1)+'}}')`.
 --- The first `3 chars` will indicate where in-line output is required (usually begins with the scripting language comment signifier, and ends with `=`).
 --- This is followed by a command string, in the appropriate scripting language, to give output in the form `{{$1}}` to enable the extension to move the output to end of the line where it is required.
 
-[3] an optional string to provide the script file used in the form `name.ext`
+[3] an optional *filename* string to provide the script file used in the form `name.ext`
 --- The default is `temp.txt`.
 --- As an example, for Matlab (and Octave) `temp.m` is used.
 
 In the strings, the following predefined strings can be embedded
-> %f `full_path/name.ext` of temporary file to be used for the script
-> %p `full_path` for temporary file (ends with /)
-> %n `name.ext` of temporary file
-> %c `full_path` of folder containing the original script (ends with `/`)
-> %r `3 char string` marking in-line result, eg //= (will be a comment in the script)
+- %f `full_path/name.ext` of temporary file which will be used for the script
+- %p `full_path` for temporary file (ends with /)
+- %n `name.ext` of temporary file
+- %c `full_path` of the current folder (ends with `/`)
+- %e `full_path` of the current vscode editor file
 
-The easiest way to add a new script language is to (1) open `settings/extensions/hover-exec`, (2) copy and paste an existing script setting, (3) change the id (`hover-exec.id`), and (4) change the strings as appropriate (see above).
+The easiest way to add a new script language is to
+
+        (1) open `settings/extensions/hover-exec`, 
+        (2) copy and paste an existing script language setting, 
+        (3) change the id (`hover-exec.id`), and 
+        (4) change the strings as appropriate (see above).
 
 All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote).
 
@@ -392,15 +394,11 @@ Following are the strings for the currently included scripts:
 
 This is a beta version.
 
-If the edit file is clicked randomly (or a new hover is activated) during script execution (usually seconds) output is cancelled to avoid it being written in the wrong part of the file.
+Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. Assigned variables do not carry over into the next script execution. This kind of approach is best suited for useful small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
-
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). The others are generally fairly fast (see the demo gif above).
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). Other included scripts are generally fairly fast (see the demo gif above).
 
 ## Release Notes
 
-### 0.3.6
-
-Initial beta release
+Initial beta release was 0.4.1
 Published using: vsce package/publish

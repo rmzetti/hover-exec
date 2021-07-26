@@ -30,97 +30,115 @@
 						"buddvs \"%f\" ",
 						"chdir(\"%c\");",
 						"//=write('{{'+($1)+'}}')" ],
-					"description": "budd script"
+					"description": "budd script: chdir(\"%c\");"
 				},
 				"hover-exec.octave":{
 					"type":"array",
 					"default":[
 						"octave \"%f\"",
-						"cd \"%c\";",
+						"",
 						"%%=disp(['{{' $1 '}}'])" ,
 						"temp.m" ],
-					"description": "octave"
+					"description": "octave",
+					"startup example":" cd \"%c\"; "
 				},
 				"hover-exec.matlab":{
 					"type":"array",
 					"default":[
 						"matlab -sd \"%p\" -batch temp",
-						"path(path,\"%c\");",
+						"cd '%c';",
 						"%%=disp([\"{{\"+($1)+\"}}\"])",
 						"temp.m" ],
-					"description": "matlab"
+					"description": "matlab",
+					"startup example":"path(path,\"%c\");"
 				},
 				"hover-exec.scilab":{
 					"type":"array",
 					"default":[
 						"scilex -quit -nb -f \"%f\" ",
-						"cd \"%c\";",
+						"",
 						"//=mprintf('%s\\n','{{'+$1+'}}')" ,
 						"temp.sci" ],
-					"description": "scilab"
+					"description": "scilab",
+					"startup example":"cd \"%c\";"
 				},
 				"hover-exec.python":{
 					"type":"array",
 					"default":[
 						"python \"%f\"",
-						"import os\nos.chdir(\"%c\");",
+						"",
 						"##=print('{{'+str($1)+'}}')" ,
 						"temp.py" ],
-					"description": "python"
+					"description": "python",
+					"startup example":"import os\nos.chdir(\"%c\");"
 				},
 				"hover-exec.python3":{
 					"type":"array",
 					"default":[
 						"python3 \"%f\" ",
-						"import os\nos.chdir(\"%c\");",
+						"",
 						"##=print('{{'+str($1)+'}}')" ,
 						"temp.py" ],
-					"description": "python"
+					"description": "python3",
+					"startup example":"import os\nos.chdir(\"%c\");"
+				},
+				"hover-exec.streamlit1":{
+					"type":"array",
+					"default":[
+						"streamlit run \"%f\" ",
+						"","" ,
+						"temp.py" ],
+					"description": "streamlit"
 				},
 				"hover-exec.julia":{
 					"type":"array",
 					"default":[
 						"julia \"%f\"",
-						"cd(\"%c\")",
+						"",
 						"##=println(string(\"{{\",$1,\"}}\"))" ,
 						"temp.jl" ],
-					"description": "julia"
+					"description": "julia",
+					"startup example":"cd(\"%c\")"
 				},
 				"hover-exec.gnuplot":{
 					"type":"array",
 					"default":[
 						"gnuplot -p -c \"%f\"",
-						"set loadpath \"%c\"",
+						"",
 						"" ,
 						"temp.gp" ],
-					"description": "for gnuplot no results are returned"
+					"description": "for gnuplot no results are returned",
+					"startup example":"set loadpath \"%c\""
 				},
 				"hover-exec.pwsh":{
 					"type":"array",
 					"default":[
 						"pwsh -f \"%f\"",
-						"cd \"%c\";",
+						"",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
-					"description": "powershell"
+					"description": "powershell",
+					"startup example":"cd \"%c\"; "
 				},
 				"hover-exec.bash":{
 					"type":"array",
 					"default":[
 						"bash \"%f\"",
-						"cd \"%c\";",
+						"",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
-					"description": "powershell"
+					"description": "bash",
+					"startup example":"cd \"%c\"; "
 				},
 				"hover-exec.zsh":{
 					"type":"array",
 					"default":[
 						"pwsh -f \"%f\"",
-						"cd \"%c\";",
+						"",
 						"##='{{'+($1)+'}}'" ,
 						"temp.ps1" ],
-					"description": "powershell"
+					"description": "zsh",
+					"startup example":"cd \"%c\"; "
 				},
 				"hover-exec.lua":{
 					"type":"array",
@@ -135,10 +153,11 @@
 					"type":"array",
 					"default":[
 						"node \"%f\"",
-						"process.chdir(\"%c\")",
+						"",
 						"//=console.log('{{'+($1)+'}}')" ,
 						"temp.js" ],
-					"description": "javascript node"
+					"description": "javascript node",
+					"startup example":"process.chdir(\"%c\")"
 				},
 				"hover-exec.html":{
 					"type":"array",
@@ -146,7 +165,7 @@
 						"\"%f\" ", "", "",
 						"temp.html" ],
 					"description": "html",
-					"comment":"for html no results are returned"
+					"comment":"no results are returned"
 				},
 				"hover-exec.firefox":{
 					"type":"array",
@@ -154,7 +173,7 @@
 						"firefox \"%f\"", "", "",
 						"temp.html" ],
 					"description": "html",
-					"comment":"for html no results are returned"
+					"comment":"no results are returned"
 				},
 				"hover-exec.eval":{
 					"type":"array",
@@ -162,11 +181,6 @@
 						"",	"", 
 						"//='{{'+($1)+'}}'" ],
 					"description": "eval"
-				},
-				"hover-exec.selectOnHover":{
-					"description": "select code on hover",
-					"default": false,
-					"type": "boolean"
 				}
 			}
 		}
