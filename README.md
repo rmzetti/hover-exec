@@ -4,7 +4,7 @@ This is the README for VS Code extension *hover exec* for viewing in a markdown 
 
 ## Features
 
-*Hover-exec* facilitates execution (from the editor) of markdown code blocks in a variety of installed scripts.
+*Hover-exec* facilitates execution (from within the editor) of markdown code blocks in a variety of installed scripts.
 
 The extension is activated when a markdown file is opened in the editor.
 
@@ -19,7 +19,10 @@ Hovering over lines starting ``` will trigger a hover message with an *exec* com
         'test using node: '+Math.random()=>>test using node: 0.4007943
         ```
 
-The js command by default executes a javascript code block in nodejs (assuming that is installed). Javscript code blocks can aslo be executed in the vscode's internal javascript through an `eval` - note that using `js` for the codeblock produces the syntax highlighting, but setting `{cmd=eval}` resets the exec command to `eval`. Note that this use of `eval` does not allow variables to be defined, but the vscode API can be used.
+The js command by default executes a javascript code block in nodejs (assuming that is installed).
+
+Javascript code blocks can also be executed in vscode's internal javascript by using `eval` - note that using `js` for the codeblock produces the syntax highlighting, but setting `{cmd=eval}` resets the exec command to `eval`. Note that `eval` does not allow general variables to be defined, but the vscode API can be used, and variables `a,..,z` have been made available for use.
+
 
         ```js {cmd=eval}
         'test: '+Math.random()=>>test: 0.5142428
@@ -29,7 +32,7 @@ Intermediate results can be viewed in line, as above, by appending a line with a
 
 Note that in the above, the script is an `eval` script (`cmd=eval`), and executed internally by *hover-exec*. Starting the line with `js` allows vscode to provide javascript syntax highlighting.
 
-### Some examples
+### Some examples(see [tests.md](tests.md)) to execute)
 
         ```lua --*say hello goodbye*
         print("hello") -- this outputs in the output code block below
