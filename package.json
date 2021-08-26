@@ -20,170 +20,186 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"commands": [
+			{ "command": "hover-exec.exec",
+			  "title": "Hover-exec: exec current codeblock"
+			}
+		],	
 		"configuration": {
 			"type":"object",
 			"title":"Hover Exec",
 			"properties": {
-				"hover-exec.buddvs":{
-					"type":"array",
-					"default":[
-						"buddvs \"%f\" ",
-						"chdir(\"%c\");",
-						"//=write('{{'+($1)+'}}')" ],
-					"description": "budd script: chdir(\"%c\");"
+				"hover-exec.scripts":{
+					"default":{
+				"buddvs":{
+						"exec":"buddvs \"%f\" ",
+						"cmd":"chdir(\"%c\");",
+						"inline":"//=",
+						"swap":"write('{{'+($1)+'}}')",
+						"tempf":"temp.txt"
 				},
-				"hover-exec.octave":{
-					"type":"array",
-					"default":[
-						"octave \"%f\"",
-						"",
-						"%%=disp(['{{' $1 '}}'])" ,
-						"temp.m" ],
-					"description": "octave",
-					"startup example":" cd \"%c\"; "
+				"octave":{
+						"exec":"octave \"%f\"",
+						"cmd":"",
+						"inline":"%%=",
+						"swap":"disp(['{{' $1 '}}'])",
+						"tempf":"temp.m",
+						"nb":"in-line comments %, results %%="
 				},
-				"hover-exec.matlab":{
-					"type":"array",
-					"default":[
-						"matlab -sd \"%p\" -batch temp",
-						"cd '%c';",
-						"%%=disp([\"{{\"+($1)+\"}}\"])",
-						"temp.m" ],
-					"description": "matlab",
-					"startup example":"path(path,\"%c\");"
+				"matlab":{
+						"exec":"matlab -sd \"%p\" -batch temp",
+						"cmd":"cd '%c'",
+						"inline":"%%=",
+						"swap":"disp([\"{{\"+($1)+\"}}\"])",
+						"tempf":"temp.m",
+						"nb":"in-line comments %, results %%="
 				},
-				"hover-exec.scilab":{
-					"type":"array",
-					"default":[
-						"scilex -quit -nb -f \"%f\" ",
-						"",
-						"//=mprintf('%s\\n','{{'+$1+'}}')" ,
-						"temp.sci" ],
-					"description": "scilab",
-					"startup example":"cd \"%c\";"
+				"scilab":{
+						"exec":"scilex -quit -nb -f \"%f\" ",
+						"cmd":"",
+						"inline":"//=",
+						"swap":"mprintf('%s\\n','{{'+$1+'}}')",
+						"tempf":"temp.sci",
+						"nb":"in-line comments //, results //="
 				},
-				"hover-exec.python":{
-					"type":"array",
-					"default":[
-						"python \"%f\"",
-						"",
-						"##=print('{{'+str($1)+'}}')" ,
-						"temp.py" ],
-					"description": "python",
-					"startup example":"import os\nos.chdir(\"%c\");"
+				"python":{
+						"exec":"python \"%f\"",
+						"cmd":"",
+						"inline":"##=",
+						"swap":"print('{{'+str($1)+'}}')",
+						"tempf":"temp.py",
+						"nb":"in-line comments #, results ##=",
+						"prev_cmd":"import os\nos.chdir(\"%c\");"
 				},
-				"hover-exec.python3":{
-					"type":"array",
-					"default":[
-						"python3 \"%f\" ",
-						"",
-						"##=print('{{'+str($1)+'}}')" ,
-						"temp.py" ],
-					"description": "python3",
-					"startup example":"import os\nos.chdir(\"%c\");"
+				"python3":{
+						"exec":"python3 \"%f\"",
+						"cmd":"",
+						"inline":"##=",
+						"swap":"print('{{'+str($1)+'}}')",
+						"tempf":"temp.py",
+						"nb":"in-line comments #, results ##=",
+						"prev_cmd":"import os\nos.chdir(\"%c\");"
 				},
-				"hover-exec.streamlit1":{
-					"type":"array",
-					"default":[
-						"streamlit run \"%f\" ",
-						"","" ,
-						"temp.py" ],
-					"description": "streamlit"
+				"streamlit":{
+						"exec":"streamlit run \"%f\" ",
+						"cmd":"",
+						"inline":"",
+						"swap":"",
+						"tempf":"temp.py",
+						"nb":"in-line comments #, no in-line results"
 				},
-				"hover-exec.julia":{
-					"type":"array",
-					"default":[
-						"julia \"%f\"",
-						"",
-						"##=println(string(\"{{\",$1,\"}}\"))" ,
-						"temp.jl" ],
-					"description": "julia",
-					"startup example":"cd(\"%c\")"
+				"julia":{
+						"exec":"julia \"%f\"",
+						"cmd":"",
+						"inline":"##=",
+						"swap":"println(string(\"{{\",$1,\"}}\"))",
+						"tempf":"temp.jl",
+						"nb":"in-line comments #, results ##=",
+						"prev_cmd":"cd(\"%c\")"
 				},
-				"hover-exec.gnuplot":{
-					"type":"array",
-					"default":[
-						"gnuplot -p -c \"%f\"",
-						"",
-						"" ,
-						"temp.gp" ],
-					"description": "for gnuplot no results are returned",
-					"startup example":"set loadpath \"%c\""
+				"gnuplot":{
+						"exec":"gnuplot -p -c \"%f\"",
+						"cmd":"",
+						"inline":"",
+						"swap":"",
+						"tempf":"temp.gp",
+						"nb":"no results returned",
+						"prev_cmd":"set loadpath \"%c\""
 				},
-				"hover-exec.pwsh":{
-					"type":"array",
-					"default":[
-						"pwsh -f \"%f\"",
-						"",
-						"##='{{'+($1)+'}}'" ,
-						"temp.ps1" ],
-					"description": "powershell",
-					"startup example":"cd \"%c\"; "
+				"pwsh":{
+						"exec":"pwsh -f \"%f\"",
+						"cmd":"",
+						"inline":"##=",
+						"swap":"'{{'+($1)+'}}'",
+						"tempf":"temp.ps1",
+						"nb":"##= for in-line results",
+						"prev_cmd":"cd \"%c\"; "
 				},
-				"hover-exec.bash":{
-					"type":"array",
-					"default":[
-						"bash \"%f\"",
-						"",
-						"##='{{'+($1)+'}}'" ,
-						"temp.ps1" ],
-					"description": "bash",
-					"startup example":"cd \"%c\"; "
+				"bash":{
+						"exec":"bash \"%f\"",
+						"cmd":"##=",
+						"inline":"'{{'+($1)+'}}'",
+						"swap":"",
+						"tempf":"temp.ps1",
+						"nb":"in-line results ##=",
+						"prev_cmd":"cd \"%c\";"
 				},
-				"hover-exec.zsh":{
-					"type":"array",
-					"default":[
-						"pwsh -f \"%f\"",
-						"",
-						"##='{{'+($1)+'}}'" ,
-						"temp.ps1" ],
-					"description": "zsh",
-					"startup example":"cd \"%c\"; "
+				"zsh":{
+						"exec":"zsh -f \"%f\"",
+						"cmd":"",
+						"inline":"##=",
+						"swap":"'{{'+($1)+'}}'",
+						"tempf":"temp.sh",
+						"nb":"in-line results ##=",
+						"prev_cmd":"cd \"%c\";"
 				},
-				"hover-exec.lua":{
-					"type":"array",
-					"default":[
-						"lua54 \"%f\"",
-						"",
-						"--=print('{{'..($1)..'}}')" ,
-						"temp.lua" ],
-					"description": "lua"
+				"lua":{
+						"exec":"lua54 \"%f\"",
+						"cmd":"",
+						"inline":"--=",
+						"swap":"print('{{'..($1)..'}}')",
+						"tempf":"temp.lua",
+						"nb":"in-line comments --, results --="
 				},
-				"hover-exec.js":{
-					"type":"array",
-					"default":[
-						"node \"%f\"",
-						"",
-						"//=console.log('{{'+($1)+'}}')" ,
-						"temp.js" ],
-					"description": "javascript node",
-					"startup example":"process.chdir(\"%c\")"
+				"js":{
+						"exec":"node \"%f\"",
+						"cmd":"",
+						"inline":"//=",
+						"swap":"console.log('{{'+($1)+'}}')",
+						"tempf":"temp.js",
+						"nb":"in-line comments //, results //=",
+						"prev_cmd":"process.chdir(\"%c\")"
 				},
-				"hover-exec.html":{
-					"type":"array",
-					"default":[
-						"\"%f\" ", "", "",
-						"temp.html" ],
-					"description": "html",
-					"comment":"no results are returned"
+				"node":{
+						"alt":"js"
 				},
-				"hover-exec.firefox":{
-					"type":"array",
-					"default":[
-						"firefox \"%f\"", "", "",
-						"temp.html" ],
-					"description": "html",
-					"comment":"no results are returned"
+				"javascript":{
+						"alt":"js"
 				},
-				"hover-exec.eval":{
-					"type":"array",
-					"default":[
-						"",	"", 
-						"//='{{'+($1)+'}}'",
-						"temp.js" ],
-					"description": "eval"
+				"html":{
+						"exec":"\"%f\"",
+						"cmd":"",
+						"inline":"",
+						"swap":"",
+						"tempf":"temp.html",
+						"nb":"no results returned"
+				},
+				"firefox":{
+						"exec":"firefox \"%f\"",
+						"cmd":"",
+						"inline":"",
+						"swap":"",
+						"tempf":"temp.html",
+						"nb":"no results returned",
+						"prev_cmd":""
+				},				
+				"test":{
+						"exec":"test_exec",
+						"cmd":"",
+						"inline":"",
+						"swap":"",
+						"tempf":"test.tst",
+						"nb":"no results returned"
+				},
+				"eval":{
+						"exec":"",
+						"cmd":"",
+						"inline":"//=",
+						"swap":"write('{{',($1),'}}')",
+						"swapold":"'{{'+($1)+'}}'",
+						"tempf":"temp.js",
+						"nb":"in-line comments //, results //=",
+						"prev_cmd":""
+				},
+				"go":{
+						"exec":"go run \"%f\"",
+						"cmd":"",
+						"inline":"//=",
+						"swap":"'{{'+($1)+'}}'",
+						"tempf":"temp.go",
+						"nb":"in-line comments //, results //="
 				}
-			}
+			}}}
 		}
 	},
 	"scripts": {
