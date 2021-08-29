@@ -32,39 +32,39 @@
 				"hover-exec.scripts":{
 					"default":{
 				"buddvs":{
-						"exec":"buddvs \"%f\" ",
-						"cmd":"chdir(\"%c\");",
+						"cmd":"buddvs \"%f\" ",
+						"start":"chdir(\"%c\");",
 						"inline":"//=",
 						"swap":"write('{{'+($1)+'}}')",
 						"tempf":"temp.txt"
 				},
 				"octave":{
-						"exec":"octave \"%f\"",
-						"cmd":"",
+						"cmd":"octave \"%f\"",
+						"start":"",
 						"inline":"%%=",
 						"swap":"disp(['{{' $1 '}}'])",
 						"tempf":"temp.m",
 						"nb":"in-line comments %, results %%="
 				},
 				"matlab":{
-						"exec":"matlab -sd \"%p\" -batch temp",
-						"cmd":"cd '%c'",
+						"cmd":"matlab -sd \"%p\" -batch temp",
+						"start":"cd '%c'",
 						"inline":"%%=",
 						"swap":"disp([\"{{\"+($1)+\"}}\"])",
 						"tempf":"temp.m",
 						"nb":"in-line comments %, results %%="
 				},
 				"scilab":{
-						"exec":"scilex -quit -nb -f \"%f\" ",
-						"cmd":"",
+						"cmd":"scilex -quit -nb -f \"%f\" ",
+						"start":"",
 						"inline":"//=",
 						"swap":"mprintf('%s\\n','{{'+$1+'}}')",
 						"tempf":"temp.sci",
 						"nb":"in-line comments //, results //="
 				},
 				"python":{
-						"exec":"python \"%f\"",
-						"cmd":"",
+						"cmd":"python \"%f\"",
+						"start":"",
 						"inline":"##=",
 						"swap":"print('{{'+str($1)+'}}')",
 						"tempf":"temp.py",
@@ -72,8 +72,8 @@
 						"prev_cmd":"import os\nos.chdir(\"%c\");"
 				},
 				"python3":{
-						"exec":"python3 \"%f\"",
-						"cmd":"",
+						"cmd":"python3 \"%f\"",
+						"start":"",
 						"inline":"##=",
 						"swap":"print('{{'+str($1)+'}}')",
 						"tempf":"temp.py",
@@ -81,16 +81,16 @@
 						"prev_cmd":"import os\nos.chdir(\"%c\");"
 				},
 				"streamlit":{
-						"exec":"streamlit run \"%f\" ",
-						"cmd":"",
+						"cmd":"streamlit run \"%f\" ",
+						"start":"",
 						"inline":"",
 						"swap":"",
 						"tempf":"temp.py",
 						"nb":"in-line comments #, no in-line results"
 				},
 				"julia":{
-						"exec":"julia \"%f\"",
-						"cmd":"",
+						"cmd":"julia \"%f\"",
+						"start":"",
 						"inline":"##=",
 						"swap":"println(string(\"{{\",$1,\"}}\"))",
 						"tempf":"temp.jl",
@@ -98,8 +98,8 @@
 						"prev_cmd":"cd(\"%c\")"
 				},
 				"gnuplot":{
-						"exec":"gnuplot -p -c \"%f\"",
-						"cmd":"",
+						"cmd":"gnuplot -p -c \"%f\"",
+						"start":"",
 						"inline":"",
 						"swap":"",
 						"tempf":"temp.gp",
@@ -107,8 +107,8 @@
 						"prev_cmd":"set loadpath \"%c\""
 				},
 				"pwsh":{
-						"exec":"pwsh -f \"%f\"",
-						"cmd":"",
+						"cmd":"pwsh -f \"%f\"",
+						"start":"",
 						"inline":"##=",
 						"swap":"'{{'+($1)+'}}'",
 						"tempf":"temp.ps1",
@@ -116,8 +116,8 @@
 						"prev_cmd":"cd \"%c\"; "
 				},
 				"bash":{
-						"exec":"bash \"%f\"",
-						"cmd":"##=",
+						"cmd":"bash \"%f\"",
+						"start":"##=",
 						"inline":"'{{'+($1)+'}}'",
 						"swap":"",
 						"tempf":"temp.ps1",
@@ -125,25 +125,28 @@
 						"prev_cmd":"cd \"%c\";"
 				},
 				"zsh":{
-						"exec":"zsh -f \"%f\"",
-						"cmd":"",
+						"cmd":"zsh -f \"%f\"",
+						"start":"",
 						"inline":"##=",
 						"swap":"'{{'+($1)+'}}'",
 						"tempf":"temp.sh",
 						"nb":"in-line results ##=",
 						"prev_cmd":"cd \"%c\";"
 				},
-				"lua":{
-						"exec":"lua54 \"%f\"",
-						"cmd":"",
+				"lua54":{
+						"cmd":"lua54 \"%f\"",
+						"start":"",
 						"inline":"--=",
 						"swap":"print('{{'..($1)..'}}')",
 						"tempf":"temp.lua",
 						"nb":"in-line comments --, results --="
 				},
-				"js":{
-						"exec":"node \"%f\"",
-						"cmd":"",
+				"lua":{
+						"alt":"lua54"
+			},
+			"js":{
+						"cmd":"node \"%f\"",
+						"start":"",
 						"inline":"//=",
 						"swap":"console.log('{{'+($1)+'}}')",
 						"tempf":"temp.js",
@@ -157,16 +160,16 @@
 						"alt":"js"
 				},
 				"html":{
-						"exec":"\"%f\"",
-						"cmd":"",
+						"cmd":"\"%f\"",
+						"start":"",
 						"inline":"",
 						"swap":"",
 						"tempf":"temp.html",
 						"nb":"no results returned"
 				},
 				"firefox":{
-						"exec":"firefox \"%f\"",
-						"cmd":"",
+						"cmd":"firefox \"%f\"",
+						"start":"",
 						"inline":"",
 						"swap":"",
 						"tempf":"temp.html",
@@ -174,16 +177,16 @@
 						"prev_cmd":""
 				},				
 				"test":{
-						"exec":"test_exec",
-						"cmd":"",
+						"cmd":"test_exec",
+						"start":"",
 						"inline":"",
 						"swap":"",
 						"tempf":"test.tst",
 						"nb":"no results returned"
 				},
 				"eval":{
-						"exec":"",
 						"cmd":"",
+						"start":"",
 						"inline":"//=",
 						"swap":"write('{{',($1),'}}')",
 						"swapold":"'{{'+($1)+'}}'",
@@ -192,8 +195,8 @@
 						"prev_cmd":""
 				},
 				"go":{
-						"exec":"go run \"%f\"",
-						"cmd":"",
+						"cmd":"go run \"%f\"",
+						"start":"",
 						"inline":"//=",
 						"swap":"'{{'+($1)+'}}'",
 						"tempf":"temp.go",
