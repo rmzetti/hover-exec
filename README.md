@@ -1,180 +1,64 @@
-# Hover exec
+# Hover-exec
 
-This is the README for VS Code extension *hover exec* for viewing in a markdown previewer.
+This is the README for VS Code extension *hover-exec*.
+
+- [Hover-exec](#hover-exec)
+  - [Features](#features)
+  - [Basic hover-exec](#basic-hover-exec)
+    - [Scripts supported](#scripts-supported)
+  - [Some examples](#some-examples)
+    - [lua](#lua)
+    - [python](#python)
+    - [julia](#julia)
+    - [matlab](#matlab)
+    - [powershell](#powershell)
+    - [gnuplot](#gnuplot)
+    - [eval](#eval)
+    - [node](#node)
+    - [scilab](#scilab)
+  - [One-liners](#one-liners)
+    - [One-liner examples:](#one-liner-examples)
+  - [Script configuration settings](#script-configuration-settings)
+    - [Changing script configuration](#changing-script-configuration)
+    - [Adding another script](#adding-another-script)
+    - [Requirements for scripts](#requirements-for-scripts)
+    - [Default script configuration settings](#default-script-configuration-settings)
+  - [Known Issues](#known-issues)
+  - [Release Notes](#release-notes)
 
 ## Features
 
-*Hover-exec* facilitates execution (from within the editor) of markdown code blocks in a variety of installed scripts.
+*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed scripts.
 
 The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
-![](https://github.com/rmzetti/hover-exec/blob/master/Hover-exec.gif)
+    ![](https://rmzetti.github.io/Hover-exec.gif)
+    [also here](https://github.com/rmzetti/hover-exec/blob/master/Hover-exec.gif)
+    [or here](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
 
-### Basic hover-exec 
-Hovering over lines starting ``` will trigger a hover message with an *exec* command as the bottom line. Clicking the *exec* command will execute the code in the code block, and produce output if directed:
+## Basic hover-exec 
 
-        ```js
-        'test using node: '+Math.random()=>>test using node: 0.4007943
-        ```
+Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command as the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
-The js command by default executes a javascript code block in nodejs (assuming that is installed).
+```js
+// ```js (the first comment is to show the codeblock command in markdown previews)
+ 'test using node: '+Math.random()=>>test using node: 0.995323764817126
+```
 
-Javascript code blocks can also be executed in vscode's internal javascript by using `eval` - note that using `js` for the codeblock produces the syntax highlighting, but setting `{cmd=eval}` resets the exec command to `eval`. Note that `eval` does not allow general variables to be defined, but the vscode API can be used, and variables `a,..,z` have been made available for use.
+The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
 
+Javascript code blocks can also be executed in vscode's internal javascript by using `eval` - note that using `js` for the codeblock id produces the syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then setting `{cmd=eval}` sets the actual exec command to `eval`. Note that `eval` allows the internal the vscode API can be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable. `nodejs` is not required for `eval` scripts to execute.
 
-        ```js {cmd=eval}
-        'test: '+Math.random()=>>test: 0.5142428
-        ``` 
+```js :eval
+// ```js {cmd=eval}
+'test: '+Math.random() //= test: 0.010013586462137347 
+```
 
-Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `##=` for python). This is preferred because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced*.
+Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `//=` for javascript, `##=` for python etc.). This is useful because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced* (although not updated).
 
-Note that in the above, the script is an `eval` script (`cmd=eval`), and executed internally by *hover-exec*. Starting the line with `js` allows vscode to provide javascript syntax highlighting.
-
-### Some examples(see [tests.md](tests.md)) to execute)
-
-        ```lua --*say hello goodbye*
-        print("hello") -- this outputs in the output code block below
-        'hello '..(44-2+math.random())=>>hello 42.828019207949
-        "goodbye "..math.pi+math.random()=>>goodbye 3.2172013694041
-        ```
-        ```output
-        hello
-        ```
-
-        ```python
-        from random import random
-        45-2+random()                  =>>43.00423890354297
-        'hello world!'                      =>>hello world!
-        ```
-
-        ```julia
-        using LinearAlgebra, Statistics, Compat
-        a=rand(Float64,3);
-        a                               ##=[0.36814812612868586, 0.6866911978473123, 0.05644257070215741]
-        nb=a;nb[2]=42;        # arrays are shallow copied
-        a                               ##=[0.36814812612868586, 42.0, 0.05644257070215741]
-        nb                            ##=[0.36814812612868586, 42.0, 0.05644257070215741]
-        ```
-
-        ```matlab  --matlab is slow to start (this takes nearly 10s on Asus with Ryzen 7 4700U)
-        7*7-7 %%=42
-        ```
-
-        ```pwsh {cmd} //*random & dir list*
-        Get-Random -Min 0.0 -Max 1.0 =>>0.124692752084086
-        "current dir: "+(pwd)   =>>current dir: C:\Users\xxx\.vscode\extensions\rmzetti.hover-exec
-        Get-Variable c*
-        ```
-        ```output
-        Name                           Value
-        ----                           -----
-        ConfirmPreference              High
-        ```
-
-        ```gnuplot 
-        $charge << EOD
-        10-06-2021 2138 100
-        15-06-2021 2247 79
-        16-06-2021 0935 79
-        16-06-2021 1400 74
-        16-06-2021 1439 70
-        16-06-2021 2157 70
-        17-06-2021 0900 69
-        17-06-2021 1037 68
-        19-06-2021 1000 56
-        set xdata time;
-        set timefmt "%d-%m-%Y %H%M"
-        set format x "%d"
-        set mouse mouseformat 3
-        plot "$charge" using 1:3 w lp title "charge"
-        ```
-
-![](https://github.com/rmzetti/rmzetti.hover-exec/raw/master/gnuplotExample.png)
-
-
-        ```js {cmd=eval}
-        //can't use variables in main, but can use inside another eval as below
-        eval('let a=3;2*a*Math.random()')=>>5.8765482353295715
-        vscode.window.showInformationMessage("Hello World") //vscode api call produces popup message
-        'hello '+(2-1+Math.random())=>>hello 1.8956467731272915
-        ```
-
-        ```eval javascript regex tester
-        'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
-        ```
-
-        ```js //run server at http://127.0.0.1:1337  ctrl click to open server>
-        var http = require('http');
-        http.createServer(function (req, res) {
-                res.writeHead(200, {'Content-Type': 'text/plain'});
-                res.end('Hello World at last!\n');
-        }).listen(1337, "127.0.0.1");
-        ```
-
-        ```pwsh # kill server through powershell
-        # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
-        # then enter pid in kill statement below and exec again
-        kill 14452
-        netstat -ano | findstr :13
-        ```
-
-        ```js {cmd=scilab} 
-        //using the above instead of just ```scilab provides quick & dirty syntax highlight
-        //need to use 'string' for numeric output
-        rand("seed",getdate('s'));
-        'def '+string(rand())+' abc'=>>def 0.4897686 abc
-        disp('random: '+string(rand()))
-        ```
-
-### One-liners
-
-*One-liners* starting and ending with ` ``` ` will simply be executed on click, and do not produce output. The pre-defined variables (%c current folder, %f temp file full path+name, %p temp file path, %n temp file name) can be used, and notes/comments can be added after the closing quotes, for example:
-
-exec notepad++:
-
-        ```"C:/Program Files/Notepad++/notepad++" %ctest.md```
-
-exec notepad with file in current folder:
-
-        ```notepad %ctest.md```
-
-exec notepad with temp file:
-
-        ```notepad %f```
-
-explore 'This pc':
-
-        ```explorer ,```
-
-explore folder:
-
-        ```explorer /select, "C:\Users\xxx\Documents\Notes"```
-
-show printers:
-
-        ```explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\
-                ::{2227a280-3aea-1069-a2de-08002b30309d}```
-
-show devices:
-
-        ```devmgmt.msc```
-
-exec default browser with href, or showing html text (note html is a built in script command, see above)
-
-        ```html <script>location.href='https://whatamigoingtodonow.net/'</script>```
-
-        ```html <h1>Hello world!</h1>```
-
-exec notepad with some text:
-
-        ```notepad
-        This is some text
-        and this
-        ```
-
-### Scripts supported after hover-exec installation
+### Scripts supported
 
 The following scripts are supported 'out of the box':
 
@@ -190,216 +74,462 @@ The following scripts are supported 'out of the box':
 - lua
 - eval (javascript internal to the extension, with vscode api available)
 
-## Adding more scripts
+The script language you are using (eg `julia`,`nodejs`) needs to have been installed, and some of the commands to run the scripts may need customising to suit your installation - see [Changing script configuration](#changing-script-configuration).
 
-Other scripts can be added by providing an id & four strings for *Hover exec* in  `settings.json` (see below). 
+Other script languages may be added - see [Adding another script](#adding-another-script).
+
+## Some examples
+
+### lua
+```lua --*say hello goodbye*
+-- ```lua --*say hello goodbye*
+'hello '..(44-2+math.random())=>>hello 42.172060906754
+"goodbye "..math.pi+math.random()=>>goodbye 3.3930640737882
+print("ok") -- this outputs in the output code block below
+```
+```output
+ok
+```
+---
+### python
+```python {cmd}
+ # ```python {cmd}  -- {cmd} allows execution in markdown preview enhanced
+from random import random
+45-2+random()  ##=43.72751755387742
+'hello world!'      ##=hello world!
+print('ok')
+```
+---
+### julia
+```julia
+ # ```julia
+using LinearAlgebra, Statistics, Compat
+a=rand(Float64,3);
+a      ##=[0.5019466087356721, 0.711618592089406, 0.4588246446719777]
+b=a;b[2]=42;                                # arrays are shallow copied
+println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
+```
+---
+### matlab
+```matlab      --the meaning of life is 7*7-7
+% ```matlab  --matlab is slow to start (this takes about 8s on Asus with Ryzen 7 4700U)
+7*7-7 %%=?
+```
+---
+### powershell
+```pwsh {cmd} // *random number, current dir, ..
+ # ```pwsh {cmd} // random number, current dir, ..
+Get-Random -Min 0.0 -Max 1.0 =>>0.906324071300367
+pwd
+```
+```output
+Path
+----
+C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+```
+---
+### gnuplot
+```gnuplot {cmd}
+ # ```gnuplot {cmd}
+$charge << EOD
+2-07-2021 22:32 44
+3-07-2021 13:34 42
+4-07-2021 14:22 39
+5-07-2021 15:10 32
+5-07-2021 23:57 21
+6-07-2021 18:10 100
+7-07-2021 17:02 95
+7-07-2021 22:46 93
+8-07-2021 16:38 91
+9-07-2021 16:08 87
+16-07-2021 23:30 66
+EOD
+set xdata time;
+set timefmt "%d-%m-%Y %H%M"
+set format x "%d"
+set mouse mouseformat 3
+plot "$charge" using 1:3 w lp title "charge"
+```
+---
+    ![](https://github.com/rmzetti/rmzetti.hover-exec/raw/master/gnuplotExample.png)
+
+---
+### eval
+```js :eval
+// ```js:eval -- eval is not available in mpe
+let abc="abcde"
+let a='hello variable world';
+alert(a) //not available in node
+a='goodbye'
+vscode.window.showInformationMessage(a) //not available in node
+eval('let a=3;2*a*Math.random()')=>> 5.478199624843029 
+console.log(a,Math.random())
+'hello '+(2-1+Math.random())=>> hello 1.511977441208507 
+process.cwd() =>> c:\Users\ralph\OneDrive\Documents\Notes 
+console.log(abc)
+```
+---
+```eval -- javascript regex tester
+// ```eval -- javascript regex tester
+'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
+```
+---
+### node
+```js //run server at http://127.0.0.1:1337  ctrl click to open server>
+var http = require('http');
+http.createServer(function (req, res) {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end('Hello World at last!\n');
+}).listen(1337, "127.0.0.1");
+```
+---
+```pwsh # kill server through powershell
+# to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
+# then enter pid in kill statement below and exec again
+kill 14452
+netstat -ano | findstr :13
+```
+---
+### scilab
+```js {cmd=scilab} 
+//using the above instead of just ```scilab provides quick & dirty syntax highlight
+//need to use 'string' for numeric output
+rand("seed",getdate('s'));
+'def '+string(rand())+' abc'=>>def 0.4897686 abc
+disp('random: '+string(rand()))
+```
+---
+## One-liners
+
+*One-liners* starting and ending with ` ` ` will simply be executed on click, and do not produce output. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (%C etc provides paths with \ instead of /e), and notes/comments can be added after the closing quote.
+
+### One-liner examples:
+
+exec notepad with file in current folder:
+`notepad %cREADME.md`
+
+exec notepad with temp file (%f):
+`notepad %f`
+
+exec notepad++:
+`"C:/Program Files/Notepad++/notepad++" %cREADME.md`
+
+explore 'This pc':
+`explorer ,`
+
+explore folder:
+`explorer /select, %CREADME.md`
+
+show printers:
+`explorer ::{21ec2020-3aea-1069-a2dd-08002b30309d}\
+                ::{2227a280-3aea-1069-a2de-08002b30309d}`
+
+show devices:
+`devmgmt.msc`
+
+exec default browser with href, or showing html text (note that html is a built in script command, see previous section)
+
+`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
+
+`html <h1>Hello world!</h1>`
+
+## Script configuration settings
+
+This extension utilises the following settings for each scripting language. Settings are identified by `hover-exec.scripts.id`, and several strings can be provided for each script:
+
+- `cmd` the **javascript** command to run the script from a temp file (required)
+-- *hover-exec* will place the script into the temp file and execute it using `cmd`
+-- the variable `%f` will provide the appropriate temp file name and path
+-- eg. for octave, `"cmd":"octave \"%f\" "`
+
+- `start` an optional startup script command, eg. to change the working folder at execution start
+-- the variable `%c` provides the path of the current folder
+-- eg. for matlab, `"start":"cd '%c' "` 
+
+- optional `inline` and `swap` strings to allow hover-exec to show results inline, ie. appended the corresponding statement in in the codeblock 
+-- `inline` is a `3 char string` will is used to indicate where in-line output is required (it begins with the scripting language comment signifier, and ends with `=`)
+-- `swap` is a command, in the scripting language concerned, to produce output in the form `{{$1}}` to enable the extension to use a *regex* to move the output to end of the line where it is required
+-- eg. for python, `"inline":"##="`, `"swap":"print('{{'+str($1)+'}}')"`
+
+- an optional `tempf` string to provide the name of the script file used in the form `name.ext`. The files are placed in a directory in *vscode's* standard temporary storage area.
+-- The default is `temp.txt`.
+-- eg. for Matlab (and Octave) `"tempf":"temp.m"`
+
+In the strings, the following predefined strings can be embedded
+- %f `full_path/name.ext` of temporary file which will be used for the script (`%F` to use `\` rather than `/` in the path)
+- %p `full_path/` for temporary files (%P to use `\` in path)
+- %n `name.ext` of temporary file
+- %c `full_path/` of the current folder (`%C` to use `\`)
+- %e `full_path/` of the vscode editor file (`%E` to use `\`)
+
+All strings are quoted using double quotes (`json` standard) so internal quotes should be `'` (single quote) or `\"` (escaped double quote).
+
+All the [default script configuration settings](#default-script-configuration-settings) are listed near the end of this Readme.
+
+### Changing script configuration
+
+Because *hover-exec* can execute scripts in vscode's internal javascript, it can change its own configuration settings. For the `test` script entry above, the following codeblock script will show the current settings
+
+```js :eval noinline
+// ```js {noinline} --eval is not available in mpe
+// nb. 'noinline' because some settings may include ##= etc
+console.log('Keys: '+Object.keys(config.get('scripts'))+'\n')
+let s='test';  // <-- can change 'test' to any of the keys
+let a=config.get('scripts.'+s); //get settings
+console.log("Config strings for script: "+s);
+console.log(JSON.stringify(a).replace(/","/g,'",\n"'));
+```
+```output
+Keys: buddvs,octave,matlab,scilab,python,python3,streamlit,julia,gnuplot,pwsh,bash,zsh,lua54,lua,js,node,javascript,html,firefox,test,eval,go
+
+Config strings for script: test
+{"cmd":"test_exec",
+"start":"",
+"inline":"",
+"swap":"",
+"tempf":"test.tst",
+"nb":"no results returned"}
+```
+
+And the following codeblock script will change the `start` command (check using the previous codeblock script):
+
+```js :eval noinline
+let scripts=config.get('scripts'); //get settings
+scripts.test.start='new_start';  //'test' can be any script Key, 'start' can be any string id
+if(config.update('scripts',scripts,1)){console.log('ok!')}
+```
+```output
+ok!
+```
+
+When this has been done once, all the script settings will appear in the settings.json file and can also be altered there.
+
+### Adding another script
+
+Other scripts can be added by copying, pasting and changing strings for *Hover exec* in  `settings.json`. The following codeblock script can also be used to add a new script configuration:
+
+```js :eval noinline
+let scripts=config.get('scripts'); //get settings
+let add={"newscript":{"exec":"test_exec","cmd":"","inline":"//=","swap":"{{$1}}","tempf":"test.new"}}
+//let add={"newscript":undefined}; //use this instead of the previous line to delete the script added
+let merge=Object.assign( {} ,scripts,add);     
+if(config.update('scripts',merge,1)){console.log('ok!')}
+```
+```output
+ok!
+```
+
+And check it here:
+
+```js :eval noinline
+console.log('Keys: '+Object.keys(config.get('scripts')))
+let s='newscript';  // <-- change to the key just added above
+let a=config.get('scripts.'+s);
+if(a) {   console.log("Config strings for script: "+s);
+           console.log(JSON.stringify(a).replace(/","/g,'",\n"'));
+} else { console.log('No script key '+s); }
+```
+```output
+Keys: buddvs,octave,matlab,scilab,python,python3,streamlit,julia,gnuplot,pwsh,bash,zsh,lua54,lua,js,node,javascript,html,firefox,test,eval,go
+No script key newscript
+```
+
+### Requirements for scripts
+
 Essentially if a program can be run with 'batch file' input, and outputs to the command line (if required), it will work in *hover-exec* with the appropriate string definitions.
-
-## Requirements
 
 The script languages to be used (eg. *python*, *gnuplot*, etc) should be installed, and on the path.. eg. on Windows the python repl should run if `python` is entered in a cmd/powershell window.
 
-## Extension Settings
-
-This extension contributes the following settings to build in scripting languages. Settings are identified by `hover-exec.id`, 1-4 strings need to be provided for each:
-
-[0] the *exec* javascript command to run the script from a temp file (required)
---- the variable `%f` will provide the appropriate temp file name and path
-        eg. "octave \"%f\" "
-
-[1] an optional *startup* script command, eg. to change the working folder at execution start
---- the variable `%c` provides the path of the current folder
-
-[2] an optional *swap* string of the form `##=print('{{'+str($1)+'}}')`.
---- The first `3 chars` will indicate where in-line output is required (usually begins with the scripting language comment signifier, and ends with `=`).
---- This is followed by a command string, in the appropriate scripting language, to give output in the form `{{$1}}` to enable the extension to move the output to end of the line where it is required.
-
-[3] an optional *filename* string to provide the script file used in the form `name.ext`
---- The default is `temp.txt`.
---- As an example, for Matlab (and Octave) `temp.m` is used.
-
-In the strings, the following predefined strings can be embedded
-- %f `full_path/name.ext` of temporary file which will be used for the script
-- %p `full_path` for temporary file (ends with /)
-- %n `name.ext` of temporary file
-- %c `full_path` of the current folder (ends with `/`)
-- %e `full_path` of the current vscode editor file
-
-The easiest way to add a new script language is to
-
-        (1) open `settings/extensions/hover-exec`, 
-        (2) copy and paste an existing script language setting, 
-        (3) change the id (`hover-exec.id`), and 
-        (4) change the strings as appropriate (see above).
-
-All strings are quoted using double quotes (json standard) so internal quotes should be `'` (ie. single quote) or `\"` (ie. escaped double quote).
-
-Following are the strings for the currently included scripts:
+### Default script configuration settings
 
 ```
-"contributes": {
-"configuration": {
-"type":"object",
-"title":"Hover Exec",
-"properties": {
-        "hover-exec.octave":{
-                "type":"array",
-                "default":[
-                        "octave \"%f\"",
-                        "cd \"%c\";",
-                        "%%=disp(['{{' $1 '}}'])" ,
-                        "temp.m" ],
-                "description": "octave",
-                "comment":"note double quotes in quotes are escaped"
-        },
-        "hover-exec.matlab":{
-                "type":"array",
-                "default":[
-                        "matlab -sd \"%p\" -batch temp",
-                        "path(path,\"%c\");",
-                        "%%=disp([\"{{\"+($1)+\"}}\"])",
-                        "temp.m" ],
-                "description": "matlab"
-        },
-        "hover-exec.scilab":{
-                "type":"array",
-                "default":[
-                        "scilex -quit -nb -f \"%f\" ",
-                        "cd \"%c\";",
-                        "//=mprintf('%s\\n','{{'+$1+'}}')" ,
-                        "temp.sci" ],
-                "description": "scilab"
-        },
-        "hover-exec.python":{
-                "type":"array",
-                "default":[
-                        "python \"%f\"",
-                        "import os\nos.chdir(\"%c\");",
-                        "##=print('{{'+str($1)+'}}')" ,
-                        "temp.py" ],
-                "description": "python"
-        },
-        "hover-exec.python3":{
-                "type":"array",
-                "default":[
-                        "python3 \"%f\" ",
-                        "import os\nos.chdir(\"%c\");",
-                        "##=print('{{'+str($1)+'}}')" ,
-                        "temp.py" ],
-                "description": "python"
-        },
-        "hover-exec.julia":{
-                "type":"array",
-                "default":[
-                        "julia \"%f\"",
-                        "cd(\"%c\")",
-                        "##=println(string(\"{{\",$1,\"}}\"))" ,
-                        "temp.jl" ],
-                "description": "julia"
-        },
-        "hover-exec.gnuplot":{
-                "type":"array",
-                "default":[
-                        "gnuplot -p -c \"%f\"",
-                        "set loadpath \"%c\"",
-                        "" ,
-                        "temp.gp" ],
-                "description": "for gnuplot no results are returned"
-        },
-        "hover-exec.pwsh":{
-                "type":"array",
-                "default":[
-                        "pwsh -f \"%f\"",
-                        "cd \"%c\";",
-                        "##='{{'+($1)+'}}'" ,
-                        "temp.ps1" ],
-                "description": "powershell"
-        },
-        "hover-exec.bash":{
-                "type":"array",
-                "default":[
-                        "bash \"%f\"",
-                        "cd \"%c\";",
-                        "##='{{'+($1)+'}}'" ,
-                        "temp.ps1" ],
-                "description": "powershell"
-        },
-        "hover-exec.zsh":{
-                "type":"array",
-                "default":[
-                        "pwsh -f \"%f\"",
-                        "cd \"%c\";",
-                        "##='{{'+($1)+'}}'" ,
-                        "temp.ps1" ],
-                "description": "powershell"
-        },
-        "hover-exec.lua":{
-                "type":"array",
-                "default":[
-                        "lua54 \"%f\"",
-                        "",
-                        "--=print('{{'..($1)..'}}')" ,
-                        "temp.lua" ],
-                "description": "lua"
-        },
-        "hover-exec.js":{
-                "type":"array",
-                "default":[
-                        "node \"%f\"",
-                        "process.chdir(\"%c\")",
-                        "//=console.log('{{'+($1)+'}}')" ,
-                        "temp.js" ],
-                "description": "javascript node"
-        },
-        "hover-exec.html":{
-                "type":"array",
-                "default":[
-                        "\"%f\" ", "", "",
-                        "temp.html" ],
-                "description": "html",
-                "comment":"for html no results are returned"
-        },
-        "hover-exec.firefox":{
-                "type":"array",
-                "default":[
-                        "firefox \"%f\"", "", "",
-                        "temp.html" ],
-                "description": "html",
-                "comment":"for html no results are returned"
-        },
-        "hover-exec.eval":{
-                "type":"array",
-                "default":[
-                        "",	"", 
-                        "//='{{'+($1)+'}}'" ],
-                "description": "eval"
-        },
-        "hover-exec.selectOnHover":{
-                "description": "select code on hover",
-                "default": false,
-                "type": "boolean"
-        },
-        "hover-exec.buddvs":{
-                "type":"array",
-                "default":[
-                        "buddvs \"%f\" ",
-                        "chdir(\"%c\");",
-                        "//=write('{{'+($1)+'}}')" ],
-                "description": "budd script"
-                "comment":"specialised local scripting language for testing"
-        }
-}
-}
-},
-````
+"hover-exec.scripts":{
+  "description": "NB. Edit or add scripts using code blocks (see README)",
+  "default":{
+    "octave":{
+        "cmd":"octave \"%f\"",
+        "start":"",
+        "inline":"%%=",
+        "swap":"disp(['{{' $1 '}}'])",
+        "tempf":"temp.m",
+        "nb":"% in-line comments"
+    },
+    "matlab":{
+        "cmd":"matlab -sd \"%p\" -batch temp",
+        "start":"cd '%c'",
+        "inline":"%%=",
+        "swap":"disp([\"{{\"+($1)+\"}}\"])",
+        "tempf":"temp.m",
+        "nb":"% in-line comments"
+    },
+    "scilab":{
+        "cmd":"scilex -quit -nb -f \"%f\" ",
+        "start":"",
+        "inline":"//=",
+        "swap":"mprintf('%s\\n','{{'+$1+'}}')",
+        "tempf":"temp.sci",
+        "nb":"// for in-line comments"
+    },
+    "python":{
+        "cmd":"python \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"print('{{'+str($1)+'}}')",
+        "tempf":"temp.py",
+        "nb":"# in-line comments",
+        "prev_start":"import os\nos.chdir(\"%c\");"
+    },
+    "python3":{
+        "cmd":"python3 \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"print('{{'+str($1)+'}}')",
+        "tempf":"temp.py",
+        "nb":"# in-line comments #",
+        "prev_start":"import os\nos.chdir(\"%c\");"
+    },
+    "streamlit":{
+        "cmd":"streamlit run \"%f\" ",
+        "start":"",
+        "inline":"",
+        "swap":"",
+        "tempf":"temp.py",
+        "nb":"# for in-line comments, no in-line results"
+    },
+    "julia":{
+        "cmd":"julia \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"println(string(\"{{\",$1,\"}}\"))",
+        "tempf":"temp.jl",
+        "nb":"in-line comments #, results ##=",
+        "prev_start":"cd(\"%c\")"
+    },
+    "gnuplot":{
+        "cmd":"gnuplot -p -c \"%f\"",
+        "start":"",
+        "inline":"",
+        "swap":"",
+        "tempf":"temp.gp",
+        "nb":"no results returned",
+        "prev_start":"set loadpath \"%c\""
+    },
+    "pwsh":{
+        "cmd":"pwsh -f \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"'{{'+($1)+'}}'",
+        "tempf":"temp.ps1",
+        "nb":"# for in-line comments",
+        "prev_cmd":"cd \"%c\"; "
+    },
+    "bash":{
+        "cmd":"bash \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"'{{'+($1)+'}}'",
+        "tempf":"temp.sh",
+        "nb":"# for in-line comments",
+        "prev_cmd":"cd \"%c\";"
+    },
+    "zsh":{
+        "cmd":"zsh -f \"%f\"",
+        "start":"",
+        "inline":"##=",
+        "swap":"'{{'+($1)+'}}'",
+        "tempf":"temp.sh",
+        "nb":"# for in-line comments",
+        "prev_cmd":"cd \"%c\";"
+    },
+    "lua54":{
+        "cmd":"lua54 \"%f\"",
+        "start":"",
+        "inline":"--=",
+        "swap":"print('{{'..($1)..'}}')",
+        "tempf":"temp.lua",
+        "nb":"-- for in-line comments"
+    },
+    "lua":{
+        "alt":"lua54"
+    },
+    "js":{
+        "cmd":"node \"%f\"",
+        "start":"",
+        "inline":"//=",
+        "swap":"console.log('{{'+($1)+'}}')",
+        "tempf":"temp.js",
+        "nb":"// for in-line comments",
+        "prev_cmd":"process.chdir(\"%c\")"
+    },
+    "node":{
+        "alt":"js",
+        "nb":"will use strings as in js"
+    },
+    "javascript":{
+        "alt":"js",
+        "nb":"will use strings as in js"
+      },
+    "html":{
+        "cmd":"\"%f\"",
+        "start":"",
+        "inline":"",
+        "swap":"",
+        "tempf":"temp.html",
+        "nb":"no results returned"
+    },
+    "firefox":{
+        "cmd":"firefox \"%f\"",
+        "start":"",
+        "inline":"",
+        "swap":"",
+        "tempf":"temp.html",
+        "nb":"no results returned",
+        "prev_cmd":""
+    },				
+    "test":{
+        "cmd":"test_exec",
+        "start":"",
+        "inline":"",
+        "swap":"",
+        "tempf":"test.tst",
+        "nb":"no results returned"
+    },
+    "eval":{
+        "cmd":"",
+        "start":"",
+        "inline":"//=",
+        "swap":"write('{{',($1),'}}')",
+        "swapold":"'{{'+($1)+'}}'",
+        "tempf":"temp.js",
+        "nb":"// for in-line comments",
+        "prev_cmd":""
+    },
+    "go":{
+        "cmd":"go run \"%f\"",
+        "start":"",
+        "inline":"//=",
+        "swap":"'{{'+($1)+'}}'",
+        "tempf":"temp.go",
+        "nb":"// for in-line comments"
+    },
+    "buddvs":{
+      "cmd":"buddvs \"%f\" ",
+      "start":"chdir(\"%c\");",
+      "inline":"//=",
+      "swap":"write('{{'+($1)+'}}')",
+      "tempf":"temp.txt"
+      "nb":"home-grown scripting language"
+    }
+}}
+```
 
 ## Known Issues
 
 This is a beta version.
 
-Note that in all scripting languages included, the script starts from scratch when the code block is executed, the same as if the command file were executed by a REPL from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+Note that in all scripting languages included (except the 'home-grown' one buddvs), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). Other included scripts are generally fairly fast (see the demo gif above).
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). However, other included scripts are generally fairly fast (see the demo gif above).
 
 ## Release Notes
 

@@ -22,7 +22,7 @@
 	"contributes": {
 		"commands": [
 			{ "command": "hover-exec.exec",
-			  "title": "Hover-exec: exec current codeblock"
+			  "title": "Hover-exec: execute codeblock"
 			}
 		],	
 		"configuration": {
@@ -30,180 +30,191 @@
 			"title":"Hover Exec",
 			"properties": {
 				"hover-exec.scripts":{
+          "description": "NB. Edit or add scripts using code blocks (see README)",
 					"default":{
-				"buddvs":{
-						"cmd":"buddvs \"%f\" ",
-						"start":"chdir(\"%c\");",
-						"inline":"//=",
-						"swap":"write('{{'+($1)+'}}')",
-						"tempf":"temp.txt"
-				},
-				"octave":{
-						"cmd":"octave \"%f\"",
-						"start":"",
-						"inline":"%%=",
-						"swap":"disp(['{{' $1 '}}'])",
-						"tempf":"temp.m",
-						"nb":"in-line comments %, results %%="
-				},
-				"matlab":{
-						"cmd":"matlab -sd \"%p\" -batch temp",
-						"start":"cd '%c'",
-						"inline":"%%=",
-						"swap":"disp([\"{{\"+($1)+\"}}\"])",
-						"tempf":"temp.m",
-						"nb":"in-line comments %, results %%="
-				},
-				"scilab":{
-						"cmd":"scilex -quit -nb -f \"%f\" ",
-						"start":"",
-						"inline":"//=",
-						"swap":"mprintf('%s\\n','{{'+$1+'}}')",
-						"tempf":"temp.sci",
-						"nb":"in-line comments //, results //="
-				},
-				"python":{
-						"cmd":"python \"%f\"",
-						"start":"",
-						"inline":"##=",
-						"swap":"print('{{'+str($1)+'}}')",
-						"tempf":"temp.py",
-						"nb":"in-line comments #, results ##=",
-						"prev_cmd":"import os\nos.chdir(\"%c\");"
-				},
-				"python3":{
-						"cmd":"python3 \"%f\"",
-						"start":"",
-						"inline":"##=",
-						"swap":"print('{{'+str($1)+'}}')",
-						"tempf":"temp.py",
-						"nb":"in-line comments #, results ##=",
-						"prev_cmd":"import os\nos.chdir(\"%c\");"
-				},
-				"streamlit":{
-						"cmd":"streamlit run \"%f\" ",
-						"start":"",
-						"inline":"",
-						"swap":"",
-						"tempf":"temp.py",
-						"nb":"in-line comments #, no in-line results"
-				},
-				"julia":{
-						"cmd":"julia \"%f\"",
-						"start":"",
-						"inline":"##=",
-						"swap":"println(string(\"{{\",$1,\"}}\"))",
-						"tempf":"temp.jl",
-						"nb":"in-line comments #, results ##=",
-						"prev_cmd":"cd(\"%c\")"
-				},
-				"gnuplot":{
-						"cmd":"gnuplot -p -c \"%f\"",
-						"start":"",
-						"inline":"",
-						"swap":"",
-						"tempf":"temp.gp",
-						"nb":"no results returned",
-						"prev_cmd":"set loadpath \"%c\""
-				},
-				"pwsh":{
-						"cmd":"pwsh -f \"%f\"",
-						"start":"",
-						"inline":"##=",
-						"swap":"'{{'+($1)+'}}'",
-						"tempf":"temp.ps1",
-						"nb":"##= for in-line results",
-						"prev_cmd":"cd \"%c\"; "
-				},
-				"bash":{
-						"cmd":"bash \"%f\"",
-						"start":"##=",
-						"inline":"'{{'+($1)+'}}'",
-						"swap":"",
-						"tempf":"temp.ps1",
-						"nb":"in-line results ##=",
-						"prev_cmd":"cd \"%c\";"
-				},
-				"zsh":{
-						"cmd":"zsh -f \"%f\"",
-						"start":"",
-						"inline":"##=",
-						"swap":"'{{'+($1)+'}}'",
-						"tempf":"temp.sh",
-						"nb":"in-line results ##=",
-						"prev_cmd":"cd \"%c\";"
-				},
-				"lua54":{
-						"cmd":"lua54 \"%f\"",
-						"start":"",
-						"inline":"--=",
-						"swap":"print('{{'..($1)..'}}')",
-						"tempf":"temp.lua",
-						"nb":"in-line comments --, results --="
-				},
-				"lua":{
-						"alt":"lua54"
-			},
-			"js":{
-						"cmd":"node \"%f\"",
-						"start":"",
-						"inline":"//=",
-						"swap":"console.log('{{'+($1)+'}}')",
-						"tempf":"temp.js",
-						"nb":"in-line comments //, results //=",
-						"prev_cmd":"process.chdir(\"%c\")"
-				},
-				"node":{
-						"alt":"js"
-				},
-				"javascript":{
-						"alt":"js"
-				},
-				"html":{
-						"cmd":"\"%f\"",
-						"start":"",
-						"inline":"",
-						"swap":"",
-						"tempf":"temp.html",
-						"nb":"no results returned"
-				},
-				"firefox":{
-						"cmd":"firefox \"%f\"",
-						"start":"",
-						"inline":"",
-						"swap":"",
-						"tempf":"temp.html",
-						"nb":"no results returned",
-						"prev_cmd":""
-				},				
-				"test":{
-						"cmd":"test_exec",
-						"start":"",
-						"inline":"",
-						"swap":"",
-						"tempf":"test.tst",
-						"nb":"no results returned"
-				},
-				"eval":{
-						"cmd":"",
-						"start":"",
-						"inline":"//=",
-						"swap":"write('{{',($1),'}}')",
-						"swapold":"'{{'+($1)+'}}'",
-						"tempf":"temp.js",
-						"nb":"in-line comments //, results //=",
-						"prev_cmd":""
-				},
-				"go":{
-						"cmd":"go run \"%f\"",
-						"start":"",
-						"inline":"//=",
-						"swap":"'{{'+($1)+'}}'",
-						"tempf":"temp.go",
-						"nb":"in-line comments //, results //="
-				}
-			}}}
-		}
+            "octave":{
+                "cmd":"octave \"%f\"",
+                "start":"",
+                "inline":"%%=",
+                "swap":"disp(['{{' $1 '}}'])",
+                "tempf":"temp.m",
+                "nb":"% in-line comments"
+            },
+            "matlab":{
+                "cmd":"matlab -sd \"%p\" -batch temp",
+                "start":"cd '%c'",
+                "inline":"%%=",
+                "swap":"disp([\"{{\"+($1)+\"}}\"])",
+                "tempf":"temp.m",
+                "nb":"% in-line comments"
+            },
+            "scilab":{
+                "cmd":"scilex -quit -nb -f \"%f\" ",
+                "start":"",
+                "inline":"//=",
+                "swap":"mprintf('%s\\n','{{'+$1+'}}')",
+                "tempf":"temp.sci",
+                "nb":"// for in-line comments"
+            },
+            "python":{
+                "cmd":"python \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"print('{{'+str($1)+'}}')",
+                "tempf":"temp.py",
+                "nb":"# in-line comments",
+                "prev_start":"import os\nos.chdir(\"%c\");"
+            },
+            "python3":{
+                "cmd":"python3 \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"print('{{'+str($1)+'}}')",
+                "tempf":"temp.py",
+                "nb":"# in-line comments #",
+                "prev_start":"import os\nos.chdir(\"%c\");"
+            },
+            "streamlit":{
+                "cmd":"streamlit run \"%f\" ",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"temp.py",
+                "nb":"# for in-line comments, no in-line results"
+            },
+            "julia":{
+                "cmd":"julia \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"println(string(\"{{\",$1,\"}}\"))",
+                "tempf":"temp.jl",
+                "nb":"in-line comments #, results ##=",
+                "prev_start":"cd(\"%c\")"
+            },
+            "gnuplot":{
+                "cmd":"gnuplot -p -c \"%f\"",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"temp.gp",
+                "nb":"no results returned",
+                "prev_start":"set loadpath \"%c\""
+            },
+            "pwsh":{
+                "cmd":"pwsh -f \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"'{{'+($1)+'}}'",
+                "tempf":"temp.ps1",
+                "nb":"# for in-line comments",
+                "prev_cmd":"cd \"%c\"; "
+            },
+            "bash":{
+                "cmd":"bash \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"'{{'+($1)+'}}'",
+                "tempf":"temp.sh",
+                "nb":"# for in-line comments",
+                "prev_cmd":"cd \"%c\";"
+            },
+            "zsh":{
+                "cmd":"zsh -f \"%f\"",
+                "start":"",
+                "inline":"##=",
+                "swap":"'{{'+($1)+'}}'",
+                "tempf":"temp.sh",
+                "nb":"# for in-line comments",
+                "prev_cmd":"cd \"%c\";"
+            },
+            "lua54":{
+                "cmd":"lua54 \"%f\"",
+                "start":"",
+                "inline":"--=",
+                "swap":"print('{{'..($1)..'}}')",
+                "tempf":"temp.lua",
+                "nb":"-- for in-line comments"
+            },
+            "lua":{
+                "alt":"lua54"
+            },
+            "js":{
+                "cmd":"node \"%f\"",
+                "start":"",
+                "inline":"//=",
+                "swap":"console.log('{{'+($1)+'}}')",
+                "tempf":"temp.js",
+                "nb":"// for in-line comments",
+                "prev_cmd":"process.chdir(\"%c\")"
+            },
+            "node":{
+                "alt":"js",
+                "nb":"will use strings as in js"
+            },
+            "javascript":{
+                "alt":"js",
+                "nb":"will use strings as in js"
+              },
+            "html":{
+                "cmd":"\"%f\"",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"temp.html",
+                "nb":"no results returned"
+            },
+            "firefox":{
+                "cmd":"firefox \"%f\"",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"temp.html",
+                "nb":"no results returned",
+                "prev_cmd":""
+            },				
+            "test":{
+                "cmd":"test_exec",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"test.tst",
+                "nb":"no results returned"
+            },
+            "eval":{
+                "cmd":"",
+                "start":"",
+                "inline":"//=",
+                "swap":"write('{{',($1),'}}')",
+                "swapold":"'{{'+($1)+'}}'",
+                "tempf":"temp.js",
+                "nb":"// for in-line comments",
+                "prev_cmd":""
+            },
+            "go":{
+                "cmd":"go run \"%f\"",
+                "start":"",
+                "inline":"//=",
+                "swap":"'{{'+($1)+'}}'",
+                "tempf":"temp.go",
+                "nb":"// for in-line comments"
+            },
+            "buddvs":{
+              "cmd":"buddvs \"%f\" ",
+              "start":"chdir(\"%c\");",
+              "inline":"//=",
+              "swap":"write('{{'+($1)+'}}')",
+              "tempf":"temp.txt"
+            }
+        }}}
+		},
+    "keybindings": [
+			{
+				"command": "hover-exec.exec",
+				"key": "alt+/",
+				"mac": "opt+/",
+				"when": "editorLangId == markdown"
+			}
+    ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
