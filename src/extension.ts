@@ -197,7 +197,8 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
         out='';                   //reset output buffer
         progress.report({message: 'executing'});//start execution indicator
         writeFile(tempd+temp,cd+sCode);         //saves code in temp file for execution
-        eval('process.chdir("'+currentFolder+'")');
+        //eval('process.chdir("'+currentFolder+'")');
+        process.chdir(currentFolder);
         if(cmdId!==''){
           if (cmd===''){          //use vscode internal js eval via eval
             sCode=sCode.replace(/console.log/g,'write'); //provide a console.log for eval
