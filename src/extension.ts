@@ -72,6 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
                   '[ \[*last result*\] ]('+fixFolder(tempd)+temp+'.out.txt)'+
                   '[ \[settings for *'+cmdId+'*\] ]('+url+'_settings)'+'\n\n'+'[ '+cmdId+msg+']('+url+')';
               const contents=new vscode.MarkdownString('hover-exec: '+msg);
+              contents.isTrusted = true;             //set hover links as trusted
               return new vscode.Hover(contents);//and return it
           } else if(cmdId==='output'){        //create & return message & urls for output hover  
               cmdId='delete';                   //options:delete or remove codeblock & leave text
@@ -85,6 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
               cmdId='oneliner';  //command id
               let url='vscode://rmzetti.hover-exec?'+cmdId;//create hover message, declare as trusted, and return it
               const contents = new vscode.MarkdownString('*hover-exec:* '+msg+'\n\n['+cmd+']('+url+')');
+              contents.isTrusted = true;             //set hover links as trusted
               return new vscode.Hover(contents);      //return link string
           } else {              //create and return hover message & urls for non-built-in commands
               cmd=(cmdId+' "'+tempd+temp+'"').replace(/%20/mg,' ');
@@ -93,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
               msg='['+cmdId+msg+']('+url+')';          //create hover message & url
               msg='*[ \[last script\] ]('+fixFolder(tempd)+temp+')*\n\n'+msg;
               const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
-              //contents.isTrusted = true;             //set hover links as trusted
+              contents.isTrusted = true;             //set hover links as trusted
               return new vscode.Hover(contents);     //and return it
           }
     }})()
