@@ -49,6 +49,12 @@ console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line, or alt+/ [opt+/] with\n',
                     ' the cursor in the output block will delete the output block')
 ```
+```output
+  test using node:
+  0.477252072750886
+  Note: hover-exec on ```output line, or alt+/ [opt+/] with
+  the cursor in the output block will delete the output block
+```
 
 The js command by default executes a javascript code block in `nodejs` (assuming that it is installed).
 
@@ -56,7 +62,7 @@ Javascript code blocks can also be executed in *vscode's* internal javascript by
 
 ```js :eval
 // ```js {cmd=eval}
-'test: '+Math.random() //= test: 0.010013586462137347 
+'test: '+Math.random() //= test: 0.39936728047794534 
 ```
 
 Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `//=` for javascript, `##=` for python etc.). This is useful because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced* (although the output will not be updated on execution in *mpe*).
@@ -87,8 +93,8 @@ Other script languages may be added - see [Adding another script](#adding-anothe
 
 ```lua --*say hello goodbye*
 -- ```lua --*say hello goodbye*
-'hello '..(44-2+math.random())=>>hello 42.172060906754
-"goodbye "..math.pi+math.random()=>>goodbye 3.3930640737882
+'hello '..(44-2+math.random())=>>hello 42.955814324209
+"goodbye "..math.pi+math.random()=>>goodbye 3.4400827569668
 print("ok") -- this outputs in the output code block below
 ```
 ```output
@@ -101,9 +107,12 @@ ok
 ```python {cmd}
  # ```python {cmd}  -- {cmd} allows execution in markdown preview enhanced
 from random import random
-45-2+random()  ##=43.72751755387742
+45-2+random()  ##=43.79429841854397
 'hello world!'      ##=hello world!
 print('ok')
+```
+```output
+ok
 ```
 
 ---
@@ -113,9 +122,13 @@ print('ok')
  # ```julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a      ##=[0.5019466087356721, 0.711618592089406, 0.4588246446719777]
+a      ##=[0.5699605165581023, 0.6629736942869453, 0.044006326875678736]
 b=a;b[2]=42;                                # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
+```
+```output
+a=[0.5699605165581023, 42.0, 0.044006326875678736]
+b=[0.5699605165581023, 42.0, 0.044006326875678736]
 ```
 
 ---
@@ -123,7 +136,7 @@ println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 
 ```matlab      --the meaning of life is 7*7-7
 % ```matlab  --matlab is slow to start (this takes about 8s on Asus with Ryzen 7 4700U)
-7*7-7 %%=?
+7*7-7 %%=42
 ```
 
 ---
@@ -131,13 +144,13 @@ println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 
 ```pwsh {cmd} // *random number, current dir, ..
  # ```pwsh {cmd} // random number, current dir, ..
-Get-Random -Min 0.0 -Max 1.0 =>>0.906324071300367
+Get-Random -Min 0.0 -Max 1.0 =>>0.914594859310703
 pwd
 ```
 ```output
 Path
 ----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+C:\Users\rmzetti\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
@@ -165,6 +178,8 @@ set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
 
+ ![](2021-08-31-20-28-22.png)
+
 ---
 ### eval
 
@@ -175,18 +190,22 @@ let a='hello variable world';
 alert(a) //not available in node
 a='goodbye'
 vscode.window.showInformationMessage(a) //not available in node
-eval('let a=3;2*a*Math.random()')=>> 5.478199624843029 
+eval('let a=3;2*a*Math.random()')=>> 3.380435073788188 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.511977441208507 
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\Notes 
+'hello '+(2-1+Math.random())=>> hello 1.0478422466008155 
+process.cwd() =>> c:\Users\rmzetti\OneDrive\Documents\GitHub\hover-exec 
 console.log(abc)
+```
+```output
+goodbye 0.2745069284251238
+abcde
 ```
 
 ---
 
 ```eval -- javascript regex tester
 // ```eval -- javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') //= bc--defg 
 ```
 
 ---
@@ -218,9 +237,12 @@ netstat -ano | findstr :13
 // using js :scilab instead of just ```scilab provides quick & dirty syntax highlight
 // {cmd=scilab} is for markdown preview enhanced
 rand("seed",getdate('s'));
-'def '+string(rand())+' abc'=>>def 0.4897686 abc
+'def '+string(rand())+' abc'=>>def 0.8770073 abc
 // nb. need to use 'string' for numeric output in scilab
 disp('random: '+string(rand()))
+```
+```output
+  "random: 0.5997802"
 ```
 ---
 ## One-liners
