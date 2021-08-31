@@ -22,7 +22,7 @@ This is the README for VS Code extension *hover-exec*.
     - [Changing script configuration](#changing-script-configuration)
     - [Adding another script](#adding-another-script)
     - [Requirements for scripts](#requirements-for-scripts)
-    - [Default script configuration settings](#default-script-configuration-settings)
+    - [Default script settings](#default-script-settings)
   - [Known Issues](#known-issues)
   - [Release Notes](#release-notes)
 
@@ -34,29 +34,32 @@ The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
-    ![](https://rmzetti.github.io/Hover-exec.gif)
-    [also here](https://github.com/rmzetti/hover-exec/blob/master/Hover-exec.gif)
-    [or here](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
+  ![](https://rmzetti.github.io/Hover-exec.gif)
+  [also here](https://github.com/rmzetti/hover-exec/blob/master/Hover-exec.gif)
+  [or here](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
 
 ## Basic hover-exec 
 
 Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command as the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
-```js
-// ```js (the first comment is to show the codeblock command in markdown previews)
- 'test using node: '+Math.random()=>>test using node: 0.995323764817126
+```js {cmd=node}
+// ```js   (this comment shows the codeblock command in markdown previews)
+//          {cmd=node} is for markdown preview enhanced
+console.log('  test using node:\n  '+Math.random())
+console.log('  Note: hover-exec on ```output line, or alt+/ [opt+/] with\n',
+                    ' the cursor in the output block will delete the output block')
 ```
 
-The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
+The js command by default executes a javascript code block in `nodejs` (assuming that it is installed).
 
-Javascript code blocks can also be executed in vscode's internal javascript by using `eval` - note that using `js` for the codeblock id produces the syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then setting `{cmd=eval}` sets the actual exec command to `eval`. Note that `eval` allows the internal the vscode API can be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable. `nodejs` is not required for `eval` scripts to execute.
+Javascript code blocks can also be executed in *vscode's* internal javascript by using `eval`. Note that using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal vscode API to be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable. Installation of `nodejs` is not required for `eval` scripts to execute.
 
 ```js :eval
 // ```js {cmd=eval}
 'test: '+Math.random() //= test: 0.010013586462137347 
 ```
 
-Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `//=` for javascript, `##=` for python etc.). This is useful because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced* (although not updated).
+Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `//=` for javascript, `##=` for python etc.). This is useful because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced* (although the output will not be updated on execution in *mpe*).
 
 ### Scripts supported
 
@@ -74,13 +77,14 @@ The following scripts are supported 'out of the box':
 - lua
 - eval (javascript internal to the extension, with vscode api available)
 
-The script language you are using (eg `julia`,`nodejs`) needs to have been installed, and some of the commands to run the scripts may need customising to suit your installation - see [Changing script configuration](#changing-script-configuration).
+The script language you are using (eg `julia`,`nodejs`) needs to have been installed, and ***some of the commands to run the scripts may need customising*** to suit your particular installation - see [Changing script configuration](#changing-script-configuration).
 
 Other script languages may be added - see [Adding another script](#adding-another-script).
 
 ## Some examples
 
 ### lua
+
 ```lua --*say hello goodbye*
 -- ```lua --*say hello goodbye*
 'hello '..(44-2+math.random())=>>hello 42.172060906754
@@ -90,8 +94,10 @@ print("ok") -- this outputs in the output code block below
 ```output
 ok
 ```
+
 ---
 ### python
+
 ```python {cmd}
  # ```python {cmd}  -- {cmd} allows execution in markdown preview enhanced
 from random import random
@@ -99,8 +105,10 @@ from random import random
 'hello world!'      ##=hello world!
 print('ok')
 ```
+
 ---
 ### julia
+
 ```julia
  # ```julia
 using LinearAlgebra, Statistics, Compat
@@ -109,14 +117,18 @@ a      ##=[0.5019466087356721, 0.711618592089406, 0.4588246446719777]
 b=a;b[2]=42;                                # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
+
 ---
 ### matlab
+
 ```matlab      --the meaning of life is 7*7-7
 % ```matlab  --matlab is slow to start (this takes about 8s on Asus with Ryzen 7 4700U)
 7*7-7 %%=?
 ```
+
 ---
 ### powershell
+
 ```pwsh {cmd} // *random number, current dir, ..
  # ```pwsh {cmd} // random number, current dir, ..
 Get-Random -Min 0.0 -Max 1.0 =>>0.906324071300367
@@ -127,8 +139,10 @@ Path
 ----
 C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
+
 ---
 ### gnuplot
+
 ```gnuplot {cmd}
  # ```gnuplot {cmd}
 $charge << EOD
@@ -150,11 +164,10 @@ set format x "%d"
 set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
----
-    ![](https://github.com/rmzetti/rmzetti.hover-exec/raw/master/gnuplotExample.png)
 
 ---
 ### eval
+
 ```js :eval
 // ```js:eval -- eval is not available in mpe
 let abc="abcde"
@@ -168,13 +181,17 @@ console.log(a,Math.random())
 process.cwd() =>> c:\Users\ralph\OneDrive\Documents\Notes 
 console.log(abc)
 ```
+
 ---
+
 ```eval -- javascript regex tester
 // ```eval -- javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1--') //=bc--defg
 ```
+
 ---
 ### node
+
 ```js //run server at http://127.0.0.1:1337  ctrl click to open server>
 var http = require('http');
 http.createServer(function (req, res) {
@@ -182,26 +199,33 @@ http.createServer(function (req, res) {
         res.end('Hello World at last!\n');
 }).listen(1337, "127.0.0.1");
 ```
+
 ---
+
 ```pwsh # kill server through powershell
-# to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
-# then enter pid in kill statement below and exec again
+ # ```pwsh # kill server through powershell
+ # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
+ # then enter pid in kill statement below and exec again
 kill 14452
 netstat -ano | findstr :13
 ```
+
 ---
 ### scilab
-```js {cmd=scilab} 
-//using the above instead of just ```scilab provides quick & dirty syntax highlight
-//need to use 'string' for numeric output
+
+```js :scilab {cmd=scilab} 
+// ```js :scilab {cmd=scilab} 
+// using js :scilab instead of just ```scilab provides quick & dirty syntax highlight
+// {cmd=scilab} is for markdown preview enhanced
 rand("seed",getdate('s'));
 'def '+string(rand())+' abc'=>>def 0.4897686 abc
+// nb. need to use 'string' for numeric output in scilab
 disp('random: '+string(rand()))
 ```
 ---
 ## One-liners
 
-*One-liners* starting and ending with ` ` ` will simply be executed on click, and do not produce output. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (%C etc provides paths with \ instead of /e), and notes/comments can be added after the closing quote.
+*One-liners* starting and ending with a single backtick  ` ` ` will simply be executed on hover-click, and do not produce output. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (%C etc provides paths with \ instead of /e). Comments can be added after the closing quote.
 
 ### One-liner examples:
 
@@ -235,53 +259,53 @@ exec default browser with href, or showing html text (note that html is a built 
 
 ## Script configuration settings
 
-This extension utilises the following settings for each scripting language. Settings are identified by `hover-exec.scripts.id`, and several strings can be provided for each script:
+*Hover-exec* utilises the following settings for each scripting language. These settings are identified by `hover-exec.scripts.id`, where `id` identifies the script. Several strings can be provided for each script:
 
 - `cmd` the **javascript** command to run the script from a temp file (required)
--- *hover-exec* will place the script into the temp file and execute it using `cmd`
--- the variable `%f` will provide the appropriate temp file name and path
--- eg. for octave, `"cmd":"octave \"%f\" "`
+    -- *hover-exec* will place the script into the temp file and execute it using `cmd`
+    -- the variable `%f` will provide the appropriate temp file name and path
+    -- eg. for octave, `"cmd":"octave \"%f\" "`
 
 - `start` an optional startup script command, eg. to change the working folder at execution start
--- the variable `%c` provides the path of the current folder
--- eg. for matlab, `"start":"cd '%c' "` 
+    -- the variable `%c` provides the path of the current folder
+    -- eg. for matlab, `"start":"cd '%c' "` 
 
 - optional `inline` and `swap` strings to allow hover-exec to show results inline, ie. appended the corresponding statement in in the codeblock 
--- `inline` is a `3 char string` will is used to indicate where in-line output is required (it begins with the scripting language comment signifier, and ends with `=`)
--- `swap` is a command, in the scripting language concerned, to produce output in the form `{{$1}}` to enable the extension to use a *regex* to move the output to end of the line where it is required
--- eg. for python, `"inline":"##="`, `"swap":"print('{{'+str($1)+'}}')"`
+    -- `inline` is a `3 char string` will is used to indicate where in-line output is required (it begins with the scripting language comment signifier, and ends with `=`)
+    -- `swap` is a command, in the scripting language concerned, to produce output in the form `{{$1}}` to enable the extension to use a *regex* to move the output to end of the line where it is required
+    -- eg. for python, `"inline":"##="`, `"swap":"print('{{'+str($1)+'}}')"`
 
 - an optional `tempf` string to provide the name of the script file used in the form `name.ext`. The files are placed in a directory in *vscode's* standard temporary storage area.
--- The default is `temp.txt`.
--- eg. for Matlab (and Octave) `"tempf":"temp.m"`
+    -- The default is `temp.txt`.
+    -- eg. for Matlab (and Octave) `"tempf":"temp.m"`
 
-In the strings, the following predefined strings can be embedded
-- %f `full_path/name.ext` of temporary file which will be used for the script (`%F` to use `\` rather than `/` in the path)
-- %p `full_path/` for temporary files (%P to use `\` in path)
-- %n `name.ext` of temporary file
-- %c `full_path/` of the current folder (`%C` to use `\`)
-- %e `full_path/` of the vscode editor file (`%E` to use `\`)
+In the strings, the following predefined strings can be embedded:
+
+  - %f `full_path/name.ext` of temporary file which will be used for the script  (`%F` to use `\` rather than `/` in the path)
+  - %p `full_path/` for temporary files (%P to use `\` in path)
+  - %n `name.ext` of temporary file
+  - %c `full_path/` of the current folder (`%C` to use `\`)
+  - %e `full_path/` of the vscode editor file (`%E` to use `\`)
 
 All strings are quoted using double quotes (`json` standard) so internal quotes should be `'` (single quote) or `\"` (escaped double quote).
 
-All the [default script configuration settings](#default-script-configuration-settings) are listed near the end of this Readme.
+The [predefined default script settings](#default-script-settings) are listed near the end of this README.
 
 ### Changing script configuration
 
-Because *hover-exec* can execute scripts in vscode's internal javascript, it can change its own configuration settings. For the `test` script entry above, the following codeblock script will show the current settings
+Because *hover-exec* can execute scripts in *vscode's* internal javascript, it can change its own configuration settings. For the `test` script entry, for example, the following codeblock script will show the current settings
 
 ```js :eval noinline
-// ```js {noinline} --eval is not available in mpe
+// ```js :eval noinline   (eval is not available in mpe)
 // nb. 'noinline' because some settings may include ##= etc
-console.log('Keys: '+Object.keys(config.get('scripts'))+'\n')
+console.log('Keys: '+Object.keys(config.get('scripts')))
 let s='test';  // <-- can change 'test' to any of the keys
 let a=config.get('scripts.'+s); //get settings
 console.log("Config strings for script: "+s);
 console.log(JSON.stringify(a).replace(/","/g,'",\n"'));
 ```
 ```output
-Keys: buddvs,octave,matlab,scilab,python,python3,streamlit,julia,gnuplot,pwsh,bash,zsh,lua54,lua,js,node,javascript,html,firefox,test,eval,go
-
+Keys: octave,matlab,scilab,python,python3,streamlit,julia,gnuplot,pwsh,bash,zsh,lua54,lua,js,node,javascript,html,firefox,test,eval,go,buddvs
 Config strings for script: test
 {"cmd":"test_exec",
 "start":"",
@@ -291,7 +315,7 @@ Config strings for script: test
 "nb":"no results returned"}
 ```
 
-And the following codeblock script will change the `start` command (check using the previous codeblock script):
+And the following codeblock script will change the `start` command (check the result using the previous codeblock script):
 
 ```js :eval noinline
 let scripts=config.get('scripts'); //get settings
@@ -302,11 +326,11 @@ if(config.update('scripts',scripts,1)){console.log('ok!')}
 ok!
 ```
 
-When this has been done once, all the script settings will appear in the settings.json file and can also be altered there.
+When this has been done once, all the script settings will appear in the `settings.json` file and can also be altered there.
 
 ### Adding another script
 
-Other scripts can be added by copying, pasting and changing strings for *Hover exec* in  `settings.json`. The following codeblock script can also be used to add a new script configuration:
+Other scripts can be added by copying, pasting and changing strings for *Hover exec* in  `settings.json`. But again it can be done using `eval` - the following codeblock script will add a new script configuration (and can delete it again by switching the comment line to the line above and re-executing):
 
 ```js :eval noinline
 let scripts=config.get('scripts'); //get settings
@@ -319,7 +343,7 @@ if(config.update('scripts',merge,1)){console.log('ok!')}
 ok!
 ```
 
-And check it here:
+Check it here:
 
 ```js :eval noinline
 console.log('Keys: '+Object.keys(config.get('scripts')))
@@ -338,10 +362,11 @@ No script key newscript
 
 Essentially if a program can be run with 'batch file' input, and outputs to the command line (if required), it will work in *hover-exec* with the appropriate string definitions.
 
-The script languages to be used (eg. *python*, *gnuplot*, etc) should be installed, and on the path.. eg. on Windows the python repl should run if `python` is entered in a cmd/powershell window.
+The script languages to be used (eg. *python*, *gnuplot*, etc) should be installed, and on the path. and the `id` should match command, eg. on Windows the python repl should run if `python` is entered in a cmd/powershell window.
 
-### Default script configuration settings
+### Default script settings
 
+The following are the default script configuration settings:
 ```
 "hover-exec.scripts":{
   "description": "NB. Edit or add scripts using code blocks (see README)",

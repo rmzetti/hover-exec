@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"repository": "https://github.com/rmzetti/hover-exec",
 	"license": "NCSA",
 	"contributors": [
