@@ -232,7 +232,10 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
 
 function setExecParams(context:vscode.ExtensionContext,doc: vscode.TextDocument,
   pos: vscode.Position,line: vscode.TextLine){
-    currentFile=doc.uri.path.substring(1);  //currentfile
+    currentFile=doc.uri.path; //current editor file full path
+    if(currentFile.slice(0,3).includes(':')){
+      currentFile=currentFile.slice(1);
+    }
     fsPath=doc.uri.fsPath; //os specific current file, can be used in exec commands as %e
     if(currentFile.includes('/')){currentFolder=currentFile.substring(0,currentFile.lastIndexOf('/')+1);}
       else {currentFolder=currentFile.substring(0,currentFile.lastIndexOf('\\')+1);}
@@ -300,7 +303,7 @@ function fixFolder(f:string){
     //check folder string is ok for link in popup
     //vscode seems to need a starting /
     if(f.startsWith('\\')){f=f.slice(1);}
-    if(!f.startsWith('/')){f='/'+f;}
+    if(f.includes('/') && !f.startsWith('/')){f='/'+f;}
     return f;
 }
 
