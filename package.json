@@ -111,7 +111,7 @@
             },
             "bash":{
                 "cmd":"bash \"%f\"",
-                "start":"",
+                "start":"cd %c",
                 "inline":"##=",
                 "swap":"'{{'+($1)+'}}'",
                 "tempf":"temp.sh",
@@ -128,15 +128,18 @@
                 "prev_cmd":"cd \"%c\";"
             },
             "lua54":{
-                "cmd":"lua54 \"%f\"",
+                "alt":"lua"
+            },
+            "lua53":{
+                "alt":"lua"
+            },
+            "lua":{
+                "cmd":"lua \"%f\"",
                 "start":"",
                 "inline":"--=",
                 "swap":"print('{{'..($1)..'}}')",
                 "tempf":"temp.lua",
                 "nb":"-- for in-line comments"
-            },
-            "lua":{
-                "alt":"lua54"
             },
             "js":{
                 "cmd":"node \"%f\"",
@@ -165,6 +168,15 @@
             },
             "firefox":{
                 "cmd":"firefox \"%f\"",
+                "start":"",
+                "inline":"",
+                "swap":"",
+                "tempf":"temp.html",
+                "nb":"no results returned",
+                "prev_cmd":""
+            },				
+            "chrome":{
+                "cmd":"google-chrome-stable \"%f\"",
                 "start":"",
                 "inline":"",
                 "swap":"",
