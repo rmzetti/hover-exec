@@ -26,6 +26,12 @@ let cursLine:number=0;//cursor line pos
 let cursChar:number=0;//cursor char pos
 let replaceSel=new vscode.Selection(0,0,0,0);   //section in current editor which will be replaced
 let config=vscode.workspace.getConfiguration('hover-exec'); //hover-exec settings
+let refStr='*hover-exec:* predefined strings:\n'+
+' - %n `name.ext` of temporary file\n'+
+' - %f `full_path/name.ext` of temp file (`%F` for `\\` in path)\n'+
+' - %p `full_path/` for temporary files (%P for `\\`)\n'+
+' - %c `full_path/` of the current folder (`%C` for `\\`)\n'+
+' - %e `full_path/` of the editor file (`%E` for `\\`)';
 //provide single char variables for persistence using the eval script
 let a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;  //typescript reports unused
 
@@ -80,6 +86,12 @@ export function activate(context: vscode.ExtensionContext) {
                 '*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n'+
                 '[delete output](vscode://rmzetti.hover-exec?delete)' //return output delete hover
               ));
+          } else if (cmdId==='ref'){
+            const contents = new vscode.MarkdownString(
+                refStr+'\n\n [*ref*](vscode://rmzetti.hover-exec?ref)'
+            );
+            contents.isTrusted = true;             //set hover links as trusted
+            return new vscode.Hover(contents);      //return link string
           } else if(oneLiner){  //create & return hover-message and urls for one-liners
               cmd=line.text.slice(1).replace(/{.*}/,''); //exec is start command, next line substitutes %f etc
               cmd=replaceStrVars(cmd.slice(0,cmd.indexOf('`')).replace(/%20/mg,' '));
@@ -127,6 +139,8 @@ export function activate(context: vscode.ExtensionContext) {
           hUri.handleUri(vscode.Uri.parse(url));       //execute codeblock via url
         } else if(cmdId==='output') {
           deleteOutput(false);    //for cursor in output block, simply delete the block
+        } else if (cmdId==='ref'){
+          hUri.handleUri(vscode.Uri.parse('vscode://rmzetti.hover-exec?ref'));
         } else {                  //other commands and one-liners
           line=doc.lineAt(cursLine);    //get line where command was executed  
           if(oneLiner){           //create exec string for one-liner
@@ -162,6 +176,13 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
     if (uri.query==='remove'){
         deleteOutput(true); //change output codeblock to text
         return;
+    }
+    if (uri.query==='ref'){
+        //writeFile(tempd+temp+'.out.txt',refStr); //write to output file
+        nothingToSwap=true;oneLiner=true;
+        paste(refStr);     //paste into editor
+        removeSelection();
+        return; 
     }
     if (uri.query.endsWith('_settings')){
         let s1=uri.query.slice(0,uri.query.indexOf('_settings'));
@@ -211,8 +232,9 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
           }
           else {
             out = await execShell(cmd);//execute all other commands
+            if (cmdId==='buddvs'){out=out.replace(/�/g,'î');  } //for test scripter
+            if(oneLiner){startCode-=1;}
           }
-          if (cmdId==='buddvs'){out=out.replace(/�/g,'î');  } //for test scripter
         } else {
           out=uri.toString(); //no ex, return uri
         }
@@ -221,7 +243,7 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
         //todo: {output=none} option to output only to file
         if(iexec===nexec){       //only output if this is the latest result
           writeFile(tempd+temp+'.out.txt',out); //write to output file
-          out=out.replace(/\[object Promise\]\n*/g,'');  //remove in editor
+          out=out.replace(/\[object Promise\]\n*/g,'');  //remove in editor output
           if(out!==''){
             paste(out);     //paste into editor
             removeSelection();  //deselect
@@ -258,7 +280,7 @@ function paste(text:string) {   //paste into editor
     const {activeTextEditor}=vscode.window;
     if(activeTextEditor && startCode>0){
       //remove 'object promise' messages in editor
-      if(cmdId==='eval'){text=text.replace(/\[object Promise\]/g,'');}
+      //if(cmdId==='eval'){text=text.replace(/\[object Promise\]/g,'');}
       if(!nothingToSwap){               //if doing in-line output
         let re1=new RegExp(swap+'$','m'); //indicator for any remaining swap string
         if(re1.test(codeBlock)){           //if there are any swap getScriptSettings
@@ -281,13 +303,13 @@ function paste(text:string) {   //paste into editor
       //if there is any output left, it will go into an ```output codeblock
       activeTextEditor.edit((selText)=>{
         selectCodeblock(); //select codeblock to replace
-      let lbl="```output\n"; //can start output with ``` to replace ```output
-      if(text.startsWith(' ```')){text=text.slice(1);lbl='';}
-        if(text===''){      //no unused output
+        let lbl="```output\n"; //can start output with ``` to replace ```output
+        if(text.startsWith(' ```')){text=text.slice(1);lbl='';}
+        if(text===''){      //no more output
           if(!nothingToSwap){selText.replace(replaceSel,codeBlock+"```\n");}
         } else if(oneLiner || nothingToSwap){ //only producing an output block
           selText.replace(replaceSel,lbl+text+"\n```\n");
-        } else {  //replace the codeblock text/output (codeblock now includes inline results)
+        } else {  //replace the codeblock text/output (ie. codeblock includes inline results)
           selText.replace(replaceSel,codeBlock+"```\n"+lbl+text+"\n```\n");
         }
       });
@@ -305,8 +327,8 @@ function write() {           //provide a console.log() for the eval block
 function fixFolder(f:string){
     //check folder string is ok for link in popup
     //vscode seems to need a starting /
-    if(f.startsWith('\\')){f=f.slice(1);}
-    if(f.includes('/') && !f.startsWith('/')){f='/'+f;}
+    f=f.replace(/\\/,'/').replace(/\/\//,'/');
+    if(!f.startsWith('/')){f='/'+f;}
     return f;
 }
 
@@ -459,35 +481,39 @@ function selectCodeblock(){ //select codeblock appropriately depending on type
     const {activeTextEditor}=vscode.window;
     if(activeTextEditor && startCode>0){
       const doc=activeTextEditor.document;
-      let output=false;  //records when an output line reached
       let n=startCode;   //selection starts from startCode
-      if(oneLiner){n-=1;}//for oneliner
-      while (n<doc.lineCount) {
-        n++;         //work through the block 
-        let a=doc.lineAt(new vscode.Position(n,0)).text;
-        if(a.startsWith('```')){
-          n++;  //when a triple backtick is found.. 
-          if(oneLiner && n===startCode+1 && a.startsWith('```output')){
-                //continue past start of output section
-          } else if(!oneLiner && n<doc.lineCount && 
-          doc.lineAt(new vscode.Position(n,0)).text.startsWith('```output')){
-                //continue past start of output section, if not swapping then select starts here
-            if(nothingToSwap){startCode=n;output=true;}
-          } else {
-            if(oneLiner && n===startCode+1) {
-              replaceSel=new vscode.Selection(startCode,0,n-1,0);
-            } else {
-              if(nothingToSwap && !output && !oneLiner){startCode=n;} //if no swapping & no output block, select starts here
-              replaceSel=new vscode.Selection(startCode,0,n,0);
+      if(oneLiner){
+        n++;
+        if(!(n===doc.lineCount) && doc.lineAt(new vscode.Position(n,0)).text.startsWith('```output')){
+          let m=n;
+          while (m<doc.lineCount) { //find the end of the output section
+            m++;
+            if(doc.lineAt(new vscode.Position(m,0)).text.startsWith('```')){
+              replaceSel=new vscode.Selection(n,0,m+1,0);
+              activeTextEditor.selection=replaceSel;
+              break;  
             }
-            activeTextEditor.selection=replaceSel;
-            break;
           }
-        } else if(oneLiner && n===startCode){
+        } else {
           replaceSel=new vscode.Selection(n,0,n,0);
-          break;
+          activeTextEditor.selection=replaceSel;
         }
-      }
+      } else {
+        let output=false;  //records when an output line reached
+        while (n<doc.lineCount) {
+          n++; //work through the block 
+          if(doc.lineAt(new vscode.Position(n,0)).text.startsWith('```')){
+            n++;
+            if(n<doc.lineCount && 
+              doc.lineAt(new vscode.Position(n,0)).text.startsWith('```output')){
+              if(nothingToSwap){startCode=n;output=true;}
+            } else {
+              if(nothingToSwap && !output){startCode=n;} //if no swapping & no output block, select starts here
+              if(oneLiner){startCode-=1;} 
+              replaceSel=new vscode.Selection(startCode,0,n,0);
+              activeTextEditor.selection=replaceSel;
+              break;
+      }}}}
     }
     return;
 } //end function selectCodeblock
