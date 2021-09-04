@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"repository": "https://github.com/rmzetti/hover-exec",
 	"license": "NCSA",
 	"contributors": [
@@ -41,12 +41,13 @@
                 "nb":"% in-line comments"
             },
             "matlab":{
-                "cmd":"matlab -sd \"%p\" -batch temp",
+                "cmd":"matlab -sd \"%p/\" -batch temp",
                 "start":"cd '%c'",
                 "inline":"%%=",
                 "swap":"disp([\"{{\"+($1)+\"}}\"])",
                 "tempf":"temp.m",
-                "nb":"% in-line comments"
+                "nb":"% in-line comments",
+                "todo":"why the extra / in cmd after %p"
             },
             "scilab":{
                 "cmd":"scilex -quit -nb -f \"%f\" ",
@@ -62,8 +63,7 @@
                 "inline":"##=",
                 "swap":"print('{{'+str($1)+'}}')",
                 "tempf":"temp.py",
-                "nb":"# in-line comments",
-                "prev_start":"import os\nos.chdir(\"%c\");"
+                "nb":"# in-line comments"
             },
             "python3":{
                 "cmd":"python3 \"%f\"",
@@ -71,8 +71,7 @@
                 "inline":"##=",
                 "swap":"print('{{'+str($1)+'}}')",
                 "tempf":"temp.py",
-                "nb":"# in-line comments #",
-                "prev_start":"import os\nos.chdir(\"%c\");"
+                "nb":"# in-line comments #"
             },
             "streamlit":{
                 "cmd":"streamlit run \"%f\" ",
@@ -144,8 +143,7 @@
                 "inline":"//=",
                 "swap":"console.log('{{'+($1)+'}}')",
                 "tempf":"temp.js",
-                "nb":"// for in-line comments",
-                "prev_cmd":"process.chdir(\"%c\")"
+                "nb":"// for in-line comments"
             },
             "node":{
                 "alt":"js",
