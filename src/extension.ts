@@ -208,13 +208,18 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
         removeSelection();
         return; 
     }
-    if (uri.query.endsWith('_settings')){
+    if (uri.query.endsWith('_settings')){ 
+        //show current script settings in a script that can update them if required
         let s1=uri.query.slice(0,uri.query.indexOf('_settings'));
-        let s2=JSON.stringify(config.get('scripts.'+s1));
-        out=` \`\`\`output :eval noinline\nlet s=JSON.parse( /*to change, modify the next line & exec this block*/\n'`+s2+`'\n);\nlet scripts=config.get('scripts');scripts.`+s1+`=s;\nif(config.update('scripts',scripts,1)){}`;
-        writeFile(tempPath+tempFile+'.out.txt',out); //write to output file
-        nilToSwap=true;
-        paste(out);     //paste into editor
+        let s2=JSON.stringify(config.get('scripts.'+s1)); //stringify for output
+        out="```output :eval noinline\n"+  //output :eval is an exec script which will:
+        "let s=String.raw`"+s2+"`;\n"+     //1. use String.raw to avoid obscuring settings
+        "let scripts=config.get('scripts');\n"+ //2. get current settings for all scripts
+        "scripts."+s1+"=JSON.parse(s);\n"+ //3. update settings for current script
+        "if(config.update('scripts',scripts,1)){}"; //4. finally update hover-exec config. 
+        writeFile(tempPath+tempFile+'.out.txt',out);//write to output file
+        nilToSwap=true; //ignore anything that looks like it is a swap
+        paste(out);     //paste into editor as 'output :exec' script
         removeSelection();
         return;
     }
