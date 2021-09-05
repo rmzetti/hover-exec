@@ -210,7 +210,8 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
     }
     if (uri.query.endsWith('_settings')){
         let s1=uri.query.slice(0,uri.query.indexOf('_settings'));
-        out='Settings for '+s1+':\n'+JSON.stringify(config.get('scripts.'+s1)).replace(/\"\,\"/g,'",\n"');
+        let s2=JSON.stringify(config.get('scripts.'+s1));
+        out=` \`\`\`output :eval noinline\nlet s=JSON.parse( /*to change, modify the next line & exec this block*/\n'`+s2+`'\n);\nlet scripts=config.get('scripts');scripts.`+s1+`=s;\nif(config.update('scripts',scripts,1)){}`;
         writeFile(tempPath+tempFile+'.out.txt',out); //write to output file
         nilToSwap=true;
         paste(out);     //paste into editor
@@ -282,17 +283,19 @@ function setExecParams(context:vscode.ExtensionContext,doc: vscode.TextDocument,
   pos: vscode.Position,line: vscode.TextLine){
     currentFile=doc.uri.path;    //current editor file full path /c:...
     currentFsFile=doc.uri.fsPath;//os specific currentFile c:\...  (%e)
+    windows=currentFsFile.slice(1,2)===':'; //true if os is windows
     if(vscode.workspace.workspaceFolders){ 
       currentPath=vscode.workspace.workspaceFolders[0].uri.path+'/';
-      currentFsPath=vscode.workspace.workspaceFolders[0].uri.fsPath+'\\';
+      currentFsPath=vscode.workspace.workspaceFolders[0].uri.fsPath;
+      if(windows){currentFsPath+='\\';} else {currentFsPath+='/';}
     } else {alert('workspace undefined');}
     vscode.workspace.fs.createDirectory(context.globalStorageUri);  //create temp folder if necessary
     cd='';                    //reset code default start line
     startCode=pos.line;       //save start of code line number
     tempFile='temp.txt';      //temporary file name, can be used as (%n)
-    tempPath=context.globalStorageUri.path+'/';     //temp folder path,
-    tempFsPath=context.globalStorageUri.fsPath+'\\';//temp folder path, %p
-    windows=tempFsPath.slice(1,2)===':'; //true if os is windows
+    tempPath=context.globalStorageUri.path+'/';     //temp folder path
+    tempFsPath=context.globalStorageUri.fsPath;//temp folder path, %p
+    if(windows){tempFsPath+='\\';} else {tempFsPath+='/';}
     swap='';swapExp='';       //default is empty string
     nilToSwap=false;          //set true if no in-line swaps required
     cmdId=getCmdId(line.text);//command id, performs {...} changes
