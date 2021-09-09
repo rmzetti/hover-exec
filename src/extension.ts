@@ -4,13 +4,13 @@ import internal = require('stream');
 let codeBlock="";     //code f or execution
 let startCode=0;      //start line of code
 let out:string='';    //output from code execution
-let swap='';          //3 char string to indicate pos for in-line result
+const swap='=>>';          //3 char string to indicate pos for in-line result
 let swapExp='';       //expression in script language to produce in-line result
-let nilToSwap=false;  //no swaps so leave code as is
+let needSwap=false;  //no swaps so leave code as is
 let windows=false;    //os is windows
 let tempPath:string='';  //  path for temp files (provided by vscode)
 let tempFsPath:string='';  //fsPath for temp files (provided by vscode)
-let tempFile:string='';  //file name of temp file for current script
+let tempName:string='';  //file name of temp file for current script
 let cd='';            //code default start line for current script
 let cmdId='';         //execution id for current script
 let cmd='';           //javascript to start current script execution
@@ -23,7 +23,7 @@ let currentFsPath='';//folder containing current edit file fsPath
 let executing=false;  //code is executing
 let nexec=0;          //number of currently executing code (auto incremented)
 let oneLiner=false;   //current script is a 'one-liner'
-let noInline=false;   //if true disallows inline results
+let inline=false;   //if true disallows inline results
 let ch:cp.ChildProcess;//child process executing current script
 let cursLine:number=0;//cursor line pos
 let cursChar:number=0;//cursor char pos
@@ -35,7 +35,8 @@ let refStr='*hover-exec:* predefined strings:\n'+
 ' - %p `full_path/` for temporary files\n'+
 ' - %c `full_path/` of the current folder\n'+
 ' - %e `full_path/` of the editor file\n'+
-' - for windows paths, use /%f etc to get /c:/linux/web.. form';
+' - (for windows, use /%f etc for /c:/linux/web/style path)\n'+
+' =>> for in-line result (for *md-preview-enhanced* use // =>> etc)';
 //all single char variables declared for persistence over several eval scripts
 let a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;  //typescript reports unused
 
@@ -58,30 +59,34 @@ export function activate(context: vscode.ExtensionContext) {
               '*hover-exec:* executing...\n\n[cancel execution](vscode://rmzetti.hover-exec?abort)'
             ));
           }
+          let output=line.text.startsWith('```output'); //will include 'delete' in options
           if(line.text==='```'){  //allow hover-exec from end of codeblock
             let n=getStartOfBlock(doc,pos); //if at end, get start of block
             if(n<0){return null;}           //if can't find start ignore
             pos=new vscode.Position(n,0);   //adjust pos and line
             line = doc.lineAt(pos);         //to refer to start of block
           }
-          setExecParams(context,doc,pos,line);//reset basic exec parameters
+          setExecParams(context,doc,pos,line);//reset basic exec parameters inc cmdId
           cursLine=0;                         //do not reset cursor pos for hover click 
           let cmd1=cmdId.replace(/\s.*/,'');  //check for predefined commands (no spaces)
           let script=config.get('scripts.'+cmd1); //is json object if cmd1 is a 'built-in' script
-          msg=getmsg(line.text);          //begin message for hover
-          if(script){                     //if predefined script engine
+          msg=getmsg(line.text);       //begin message for hover
+          if(script){                  //if predefined script engine
             cmdId=cmd1;                  
-            getScriptSettings(script);    //get predefined command strings (& expand %f etc)
-            if(!script){return null;}     //ignore if redirect (script.alt) didn't work
+            getScriptSettings(script);//get predefined command strings (& expand %f etc)
+            if(!script){ //eg. redirect (script.alt) didn't work
+              return new vscode.Hover(new vscode.MarkdownString(
+                '*hover-exec:*\n\n'+cmdId+' script config problem'
+            ));}
             codeBlock=getCodeBlockAt(doc,pos);//save codeblock
-            let url='vscode://rmzetti.hover-exec?'+cmdId; //url for hover
-            if(swap!==''){  //get msg etc for hover info
-              msg+='  ... *for inline results use =>> or '+swap+'*'; 
-            } 
-            msg='[ \[*last script*\] ]('+tempPath+tempFile+') '+    //create last script & result urls
-                '[ \[*last result*\] ]('+tempPath+tempFile+'.out.txt)'+
-                '[ \[settings for *'+cmdId+'*\] ]('+url+'_settings)'+'\n\n'+'[ '+cmdId+msg+']('+url+')';
-            const contents=new vscode.MarkdownString('hover-exec: '+msg);
+            let url='vscode://rmzetti.hover-exec?'+cmdId;       //url for hover
+            msg=cmdId+'[ \[*config*\] ]('+url+'_config) '+ //add hover info
+                 '[ \[*ref*\] ](vscode://rmzetti.hover-exec?ref)\n\n';
+            if(output){msg+='[delete \[*output*\] ](vscode://rmzetti.hover-exec?delete)';}
+            msg+='open: [ \[*last script*\] ]('+tempPath+tempName+') '+    //create last script & result urls
+                 '[ \[*last result*\ ] ]('+tempPath+tempName+'.out.txt)\n\n'+
+                 '['+cmdId+getmsg(line.text)+']('+url+')';
+            const contents=new vscode.MarkdownString('hover-exec:'+msg);
             contents.isTrusted = true;             //set hover links as trusted
             return new vscode.Hover(contents);//and return it
           } else if(cmdId==='output'){        //create & return message & urls for output hover  
@@ -90,12 +95,6 @@ export function activate(context: vscode.ExtensionContext) {
               '*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n'+
               '[delete output](vscode://rmzetti.hover-exec?delete)' //return output delete hover
             ));
-          } else if (cmdId==='ref'){
-            const contents = new vscode.MarkdownString(
-                refStr+'\n\n [*ref*](vscode://rmzetti.hover-exec?ref)'
-            );
-            contents.isTrusted = true;             //set hover links as trusted
-            return new vscode.Hover(contents);      //return link string
           } else if(oneLiner){  //create & return hover-message and urls for one-liners
             cmd=line.text.slice(1).replace(/{.*}/,''); //exec is start command, next line substitutes %f etc
             cmd=replaceStrVars(cmd.slice(0,cmd.indexOf('`')).replace(/%20/mg,' '));
@@ -104,24 +103,14 @@ export function activate(context: vscode.ExtensionContext) {
             const contents = new vscode.MarkdownString('*hover-exec:* '+msg+'\n\n['+cmd+']('+url+')');
             contents.isTrusted = true;             //set hover links as trusted
             return new vscode.Hover(contents);      //return link string
-          } else if(cmdId==='{cmd}'){ //use {cmd=...} for settings as in md preview enhanced
-            let s=line.text.slice(3,line.text.indexOf('}')+1);
-            if(getEnhCmd(s)===''){return new vscode.Hover('not well formed:'+s);}
-            codeBlock=getCodeBlockAt(doc,pos);//save codeblock
-            let url='vscode://rmzetti.hover-exec?cmd';
-            msg='[ \[*last script*\] ]('+tempPath+tempFile+') '+    //create last script & result urls
-            '[ \[*last result*\] ]('+tempPath+tempFile+'.out.txt)'+
-            '\n\n'+'[ '+cmd+']('+url+')';
-            const contents=new vscode.MarkdownString('hover-exec: '+msg);
-            contents.isTrusted = true;             //set hover links as trusted
-            return new vscode.Hover(contents);//and return it
           } else {              //create and return hover message & urls for non-built-in commands
-            cmd=(cmdId+' "'+tempPath+tempFile+'"').replace(/%20/mg,' ');
+            cmd=replaceStrVars(cmdId);
             codeBlock=getCodeBlockAt(doc,pos);    //save codeblock
-            let url='vscode://rmzetti.hover-exec?'+cmdId.replace(/\s/mg,'%20');
-            msg='['+cmdId+msg+']('+url+')';          //create hover message & url
-            msg='*[ \[last script\] ]('+tempPath+tempFile+')*\n\n'+msg;
-            const contents=new vscode.MarkdownString('*hover-exec:* '+msg);
+            let url='vscode://rmzetti.hover-exec?other';//+cmdId.replace(/\s/mg,'%20');
+            msg='['+cmd+']('+url+')';          //create hover message & url
+            msg=cmdId+' [ \[*config*\] ]('+url+'_config) '+ //add hover info
+                '*[ \[last script\] ]('+tempPath+tempName+')*\n\n'+msg;
+            const contents=new vscode.MarkdownString('hover-exec:'+msg);
             contents.isTrusted = true;             //set hover links as trusted
             return new vscode.Hover(contents);     //and return it
           }
@@ -153,28 +142,18 @@ export function activate(context: vscode.ExtensionContext) {
           if(!script){return null;}       //redirect (script.alt) didn't work
           codeBlock=getCodeBlockAt(doc,pos);       //save codeblock
           url='vscode://rmzetti.hover-exec?'+cmdId;//url as for hover-execute
-        } else if(cmdId==='{cmd}'){       //use {cmd=...} as in md preview enhanced
-          let s=line.text.slice(3,line.text.indexOf('}')+1);
-          if(getEnhCmd(s)===''){
-            return new vscode.Hover('not well formed:'+s);
-          }
-          codeBlock=getCodeBlockAt(doc,pos);//save codeblock
-          url='vscode://rmzetti.hover-exec?cmd';
         } else if(cmdId==='output') {
           deleteOutput(false);            //cursor in output block: delete the block
           return;
-        } else if (cmdId==='ref'){
-          url='vscode://rmzetti.hover-exec?ref';
+        } else if(oneLiner){
+          cmd=line.text.slice(1).replace(/{.*}/,''); //remove {..} exec is start command, next line substitutes %f etc
+          cmd=replaceStrVars(cmd.slice(0,cmd.indexOf('`')).replace(/%20/mg,' '));
+          cmdId='oneliner';             //set command for exec by hUri.handleUri
+          url='vscode://rmzetti.hover-exec?oneLiner';
         } else {                          //other commands and one-liners
           line=doc.lineAt(cursLine);      //get line where command was executed  
-          if(oneLiner){                   //create exec string for one-liner
-            cmd=line.text.slice(1).replace(/{.*}/,''); //remove {..} exec is start command, next line substitutes %f etc
-            cmd=replaceStrVars(cmd.slice(0,cmd.indexOf('`')).replace(/%20/mg,' '));
-            cmdId='oneliner';             //set command for exec by hUri.handleUri
-          } else {
-            cmd=line.text.slice(3).replace(/{.*}/,''); //exec is start command, next line substitutes %f etc
-            cmd=replaceStrVars(cmd.slice(0,cmd.indexOf('```')).replace(/%20/mg,' '));
-          }
+          cmd=replaceStrVars(cmdId);
+          codeBlock=getCodeBlockAt(doc,pos);    //save codeblock
           url='vscode://rmzetti.hover-exec?ex'; //using url enables re-use of hover-execute code
         }
         hUri.handleUri(vscode.Uri.parse(url)); //execute codeblock via url
@@ -202,67 +181,65 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
         return;
     }
     if (uri.query==='ref'){
-        //writeFile(tempPath+tempFile+'.out.txt',refStr); //write to output file
-        nilToSwap=true;oneLiner=true;
+        needSwap=false;
         paste(refStr);     //paste into editor
         removeSelection();
         return; 
     }
-    if (uri.query.endsWith('_settings')){ 
-        //show current script settings in a script that can update them if required
-        let s1=uri.query.slice(0,uri.query.indexOf('_settings'));
-        let s2=JSON.stringify(config.get('scripts.'+s1)); //stringify for output
-        out="```output :eval noinline\n"+  //output :eval is an exec script which will:
-        "let s=String.raw`"+s2+"`;\n"+     //1. use String.raw to avoid obscuring settings
-        "let scripts=config.get('scripts');\n"+ //2. get current settings for all scripts
-        "scripts."+s1+"=JSON.parse(s);\n"+ //3. update settings for current script
-        "if(config.update('scripts',scripts,1)){}"; //4. finally update hover-exec config. 
-        writeFile(tempPath+tempFile+'.out.txt',out);//write to output file
-        nilToSwap=true; //ignore anything that looks like it is a swap
+    if (uri.query.endsWith('_config')){ 
+        //show current script config in a script that can update it if required
+        let s1=uri.query.slice(0,uri.query.indexOf('_config'));
+        let s2="";
+        if(config.get('scripts.'+s1)){
+          s2=JSON.stringify(config.get('scripts.'+s1));//stringify for output
+        }
+        else {
+          s2='{"cmd":"change_this_sample! \\"%f\\" "}';
+        } 
+        out='```js :eval noInline\n'+     //output :eval is an exec script which will:
+        'let s={"'+s1+'":'+s2+'};\n'+     //1. show current config, or an example
+        '//let s={"'+s1+'":undefined}; //will undefine '+s1+' completely\n'+
+        "let scripts=config.get('scripts');\n"+     //2. get current settings for all scripts
+        "let merge=Object.assign({},scripts,s)\n"+  //3. update settings for current script
+        "if(config.update('scripts',merge,1)){}";   //4. finally update hover-exec config. 
+        needSwap=false; //ignore anything that looks like it is a swap
         paste(out);     //paste into editor as 'output :exec' script
         removeSelection();
         return;
     }
-    if(!noInline && (codeBlock.includes('=>>')||codeBlock.includes('=<<'))){
-        //if 'noinline' has been set in command line do not process in-line markers
-        //also allows for earlier version in-line output in form =<< ... >>
-        codeBlock=codeBlock.replace(/=<</g,'=>>');
-        swap='=>>'; //use =>> as swap indicator (overrides presets)
-    }
     let sCode=codeBlock;
-    nilToSwap= noInline || swap==='' || !codeBlock.includes(swap);
-    if(!nilToSwap){
-        let re=new RegExp('(.+'+swap+').*','mg');      //regex to remove previous results
-        codeBlock=codeBlock.replace(re,'$1'); //remove previous in-line results
-        re=new RegExp('^(.+)'+swap,'mg');     //insert swap code into code block script as needed
-        sCode=codeBlock.replace(re,swapExp); //update sCode
-        re=new RegExp('\{\{(.*)'+swap+'(.*)','mg');
-        sCode=sCode.replace(re,'{{$1$2'); //update sCode
+    needSwap=inline && codeBlock.includes(swap);
+    if(needSwap){
+        let re=new RegExp('(.+'+swap+').*','mg');//regex finds previous results
+        codeBlock=codeBlock.replace(re,'$1');    //remove them
+        re=new RegExp('[-#%/ ]*'+swap,'mg'); //find any comment chars preceding the swap
+        sCode=codeBlock.replace(re,swap);   //remove them
+        re=new RegExp('^(.+)'+swap,'mg');   //regex finds swap lines, sets $1 to expr
+        sCode=sCode.replace(re,swapExp);    //replace all with swapExp (uses $1)
     }
     vscode.window.withProgress({  //set up status bar exec indicator
       location: vscode.ProgressLocation.Window,
-      title: 'Hover-exec'         //title for progress display
-    },async progress =>{
-        executing=true;           //set 'executing' flag
-        let iexec=nexec;          //& save exec number for this script
-        out='';                   //reset output buffer
+      title: 'Hover-exec'     //title for progress display
+        },async progress =>{
+        executing=true;       //set 'executing' flag
+        let iexec=nexec;      //& save exec number for this script
+        out='';               //reset output buffer
         progress.report({message: 'executing'});//start execution indicator
-        writeFile(tempPath+tempFile,cd+sCode);         //saves code in temp file for execution
+        writeFile(tempPath+tempName,cd+sCode);//saves code in temp file for execution
         process.chdir(currentFsPath);
         if(cmdId!==''){
-          if (cmd===''){          //use vscode internal js eval via eval
-            sCode=sCode.replace(/console.log/g,'write'); //provide a console.log for eval
-            eval(sCode);          //execute codeblock with eval
+          if (cmd===''){      //eval: use vscode internal js
+            sCode=sCode.replace(/console.log/g,'write');//provide a console.log for eval
+            eval(sCode);      //execute codeblock with eval
           }
           else if(cmdId==='oneliner'){  //execute one-liner
-            await execShell(cmd); //cmd has one-liner
-            executing=false;      //exec complete  
-            return;               //one-liners do not produce output
+            await execShell(cmd);//cmd is one-liner
+            executing=false;  //exec complete  
+            return;           //one-liners do not produce output
           }
-          else {
+          else { // getCmdId
             out = await execShell(cmd);//execute all other commands
             if (cmdId==='buddvs'){out=out.replace(/�/g,'î');  } //for test scripter
-            if(oneLiner){startCode-=1;}
           }
         } else {
           out=uri.toString(); //no ex, return uri
@@ -271,7 +248,7 @@ let hUri=new class MyUriHandler implements vscode.UriHandler {
         //output to both output file and editor
         //todo: {output=none} option to output only to file
         if(iexec===nexec){       //only output if this is the latest result
-          writeFile(tempPath+tempFile+'.out.txt',out); //write to output file
+          writeFile(tempPath+tempName+'.out.txt',out); //write to output file
           out=out.replace(/\[object Promise\]\n*/g,'');  //remove in editor output
           if(out!==''){
             paste(out);     //paste into editor
@@ -295,14 +272,14 @@ function setExecParams(context:vscode.ExtensionContext,doc: vscode.TextDocument,
       if(windows){currentFsPath+='\\';} else {currentFsPath+='/';}
     } else {alert('workspace undefined');}
     vscode.workspace.fs.createDirectory(context.globalStorageUri);  //create temp folder if necessary
-    cd='';                    //reset code default start line
+    cd='';cmd='';             //reset code default start line
     startCode=pos.line;       //save start of code line number
-    tempFile='temp.txt';      //temporary file name, can be used as (%n)
+    tempName='temp.txt';      //temporary file name, can be used as (%n)
     tempPath=context.globalStorageUri.path+'/';     //temp folder path
     tempFsPath=context.globalStorageUri.fsPath;//temp folder path, %p
     if(windows){tempFsPath+='\\';} else {tempFsPath+='/';}
-    swap='';swapExp='';       //default is empty string
-    nilToSwap=false;          //set true if no in-line swaps required
+    swapExp='';       //default is empty string
+    needSwap=false;   //set true if in-line swaps required
     cmdId=getCmdId(line.text);//command id, performs {...} changes
 } //end function setExecParams
 
@@ -311,7 +288,7 @@ function paste(text:string) {   //paste into editor
     if(activeTextEditor && startCode>0){
       //remove 'object promise' messages in editor
       //if(cmdId==='eval'){text=text.replace(/\[object Promise\]/g,'');}
-      if(!nilToSwap){               //if doing in-line output
+      if(needSwap){               //if doing in-line output
         let re1=new RegExp(swap+'$','m'); //indicator for any remaining swap string
         if(re1.test(codeBlock)){           //if there are any swap getScriptSettings
           //copy in-line results into the codeblock
@@ -336,8 +313,8 @@ function paste(text:string) {   //paste into editor
         let lbl="```output\n"; //can start output with ``` to replace ```output
         if(text.startsWith(' ```')){text=text.slice(1);lbl='';}
         if(text===''){      //no more output
-          if(!nilToSwap){selText.replace(replaceSel,codeBlock+"```\n");}
-        } else if(oneLiner || nilToSwap){ //only producing an output block
+          if(needSwap){selText.replace(replaceSel,codeBlock+"```\n");}
+        } else if(oneLiner || !needSwap){ //only producing an output block
           selText.replace(replaceSel,lbl+text+"\n```\n");
         } else {  //replace the codeblock text/output (ie. codeblock includes inline results)
           selText.replace(replaceSel,codeBlock+"```\n"+lbl+text+"\n```\n");
@@ -355,57 +332,47 @@ function write() {           //provide a console.log() for the eval block
 }
 
 function getCmdId(s:string){ //get command from ```command line
-    if(s.startsWith('```{')){return '{cmd}';}
-    noInline=s.includes('noinline');//allows //= etc to be used normally
+    inline=!s.toLowerCase().includes('noinline');//allows normal use of =>>
     if(s.includes('temp=')){ //allow specification of the temp file name, eg {temp=temp.py}
-      tempFile=s.replace(/.*temp=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'');
+      tempName=s.slice(s.indexOf('temp=')+5)  
+                .replace(/(.*?)[, }].*/,'$1') //get chars until space, comma or }
+                .replace(/["']/g,'');         //remove quotes
     }
-    let s1=s.replace(/\s+/,' ').replace(/\s(?!:).*/,'');
+    if(oneLiner){s=s.replace(/^`(.*?)`.*/,'$1');}//get backtick content
+      else {s=s.slice(3);}       //or remove initial triple backtick
+    //first check for switched cmdId (leave s for later)
+    let s1=s.replace(/\s+/,' ')       // collapse spaces
+            .replace(/\s(?!:).*/,''); // remove \s(not followed by :).*
     if(s1.includes(':')){  //check for command id switch, eg. ```js:eval
-    s1=s1.slice(s1.indexOf(':')+1).replace(/.*?\W.*/,'');
-    if(s1!==''){return s1;}
+      s1=s1.slice(s1.indexOf(':')+1)
+           .replace(/.*?\W.*/,'');
+      if(s1!=='' && config.get('scripts.'+s1)){
+        return s1;  //if it is a switched id, return it
+      }
     }
-    if(oneLiner){s=s.slice(1);} //oneliners (only) start with single backticks
-    else {s=s.slice(3);}       //remove initial triple backtick
-    if(s.startsWith('"')){       //return quoted bit as command
-      return s.slice(1).replace(/".*/,'');
-    }
-    s=s.replace(/`.*/,'');//remove end backticks (if on the start line) and all after
-    let ipos=posComment(s);    //find comment in cmd line (std comment formats)
-    if(ipos>0){s=s.slice(0,ipos);}     //and remove it
-    cmdId=s.replace(/{.*}/,'').trim(); //return trimmed line as command
+    //back to s
+    let ipos=posComment(s); //find comment in cmd line (std 2ch comment formats)
+    if(ipos>0){s=s.slice(0,ipos);}    //and remove it
+    cmdId=s.replace(/{.*}/,'').trim();//return trimmed line as command
     return cmdId;
 } //end function getCmdId
-
-function getEnhCmd(s:string) {
-    noInline=true;
-    cmd=s.replace(/.*cmd=(.+?)[,;}].*/,'$1');
-    if(s.includes('temp=')){
-      s=s.replace(/.*temp=['"]+(.+?)['"]+[,;}].*/,'$1');
-    } else {s='';}
-    if(cmd==='' || cmd.includes('=') || s.includes('=') ||
-      s.includes('\\') || s.includes('/')){
-      return "";
-    }
-    if(s!==''){tempFile=s;}
-    cmd=replaceStrVars(cmd);
-    return cmd;  vscode.UIKind.Desktop
-} //end function getEnhCmd
 
 function getmsg(s:string){ //get message for hover from ```command line
     let msg='';
     if(oneLiner){s=s.slice(1).replace(/.*`/,'');} //oneliners use single backticks
     else {s=s.slice(3).replace(/.*```/,'');}       //remove triple backticks
     let ipos=posComment(s);         //find comment in command line
-    if(ipos>0){msg=' '+s.substr(ipos);} //use comments in hover message
+    if(ipos>0){msg=' '+s.slice(ipos);} //use comments in hover message
+    for(i=msg.length;i<12;i++){msg+='&emsp;';}
     return msg;
 }
 
 function posComment(s:string){ //find start of any comment in command line
-    let ipos=s.indexOf('<!--');//using any of these standard comment indicators
+    let ipos=s.indexOf('<!--');//using any of these 'standard' comment indicators
     if(ipos<=0){ipos=s.indexOf('--');}
     if(ipos<=0){ipos=s.indexOf('//');}
-    if(ipos<=0){ipos=s.indexOf('#');}
+    if(ipos<=0){ipos=s.indexOf('%%');}
+    if(ipos<=0){ipos=s.indexOf('##');}
     return ipos;
 }
 
@@ -415,24 +382,23 @@ function getScriptSettings(script:any){ //get temp,exec,cd,swap & swapExp
       if(!script||script.alt){  //but only once
         return undefined;
     }}
-    tempFile=script.tempf;  //temp file name to use
-    cmd=replaceStrVars(script.cmd); //js command to execute script processor
-    cd=replaceStrVars(script.start);//script default start line, if needed
+    if(script.tempf){tempName=script.tempf;}  //temp file name to use
+    if(script.cmd){cmd=replaceStrVars(script.cmd);} //js command to execute script processor
+    if(script.start){cd=replaceStrVars(script.start);};//script default start line, if needed
     if(cd!==''){cd+='\n';}  //if start line used, terminate line
-    swap=script.inline;     // inline result indicator (eg. //=)
-    swapExp=script.swap;    // {{ put double curly brackets round line result, $1 }}
+    if(script.swap){swapExp=script.swap;}    // {{ put double curly brackets round line result, $1 }}
 }
 
 function replaceStrVars(s:string){ //replace %f etc with the appropriate string
-    return s.replace(/\/%f/g,tempPath+tempFile) // /%f switches to /
+    return s.replace(/\/%f/g,tempPath+tempName) // /%f switches to /
             .replace(/\/%p/g,tempPath)          // /%p switches to /
             .replace(/\/%c/g,currentPath)       // /%c switches to /
             .replace(/\/%e/g,currentFile)       // /%e switches to /
-            .replace(/%f/g,tempFsPath+tempFile) //%f temp file path/name
+            .replace(/%f/g,tempFsPath+tempName) //%f temp file path/name
             .replace(/%p/g,tempFsPath)          //%p temp folder path
             .replace(/%c/g,currentFsPath)       //%c current file path
             .replace(/%e/g,currentFsFile)       //%e current file path/name
-            .replace(/%n/g,tempFile);           //%n temp file name only
+            .replace(/%n/g,tempName);           //%n temp file name only
 }
 
 function removeSelection(){ //deselect current selection
@@ -481,10 +447,8 @@ function getCodeBlockAt(  //return code in code block depending on type
   doc: vscode.TextDocument,pos: vscode.Position) {
     const {activeTextEditor}=vscode.window;
     let s='';
-    startCode=0;
     if(activeTextEditor){
       let n=pos.line+1;
-      startCode=n;
       if(oneLiner){ //return all after first space up to backtick
         let s1=doc.lineAt(pos).text.slice(1);
         s1=replaceStrVars(s1.slice(s1.indexOf(' ')+1,s1.indexOf('`')));//.replace(/\\/g,'/');
@@ -510,39 +474,49 @@ function selectCodeblock(){ //select codeblock appropriately depending on type
     const {activeTextEditor}=vscode.window;
     if(activeTextEditor && startCode>0){
       const doc=activeTextEditor.document;
-      let n=startCode;   //selection starts from startCode
+      let m=startCode;   //selection will be from lines m to n
       if(oneLiner){
-        n++;
-        if(!(n===doc.lineCount) && doc.lineAt(new vscode.Position(n,0)).text.startsWith('```output')){
-          let m=n;
-          while (m<doc.lineCount) { //find the end of the output section
-            m++;
-            if(doc.lineAt(new vscode.Position(m,0)).text.startsWith('```')){
-              replaceSel=new vscode.Selection(n,0,m+1,0);
-              activeTextEditor.selection=replaceSel;
+        m++;//oneliner selection begins at 1st line after the command line
+        if(m<doc.lineCount && doc.lineAt(new vscode.Position(m,0)).text.startsWith('```output')){
+          let n=m;                  //if there is a following output section
+          while (n<doc.lineCount) { //find the end of it
+            n++;
+            if(doc.lineAt(new vscode.Position(n,0)).text.startsWith('```')){
+              replaceSel=new vscode.Selection(m,0,n+1,0);
               break;  
+            } else if(n===doc.lineCount){
+              replaceSel=new vscode.Selection(m,0,n,0);
             }
           }
         } else {
-          replaceSel=new vscode.Selection(n,0,n,0);
-          activeTextEditor.selection=replaceSel;
+          replaceSel=new vscode.Selection(m,0,m,0);
         }
-      } else {
-        let output=false;  //records when an output line reached
-        while (n<doc.lineCount) {
-          n++; //work through the block 
+        activeTextEditor.selection=replaceSel;
+      } else { //not a one-liner 
+        let output=doc.lineAt(new vscode.Position(m,0)).text.startsWith('```output');
+        //records when an output line reached
+        if(output){ //output block selection starts at command line
+          n=m+1;
+        } else { 
+          m+=1;n=m; //otherwise at the line after
+        } 
+        while (n<doc.lineCount) { //work through the block and look for end
           if(doc.lineAt(new vscode.Position(n,0)).text.startsWith('```')){
-            n++;
-            if(n<doc.lineCount && 
-              doc.lineAt(new vscode.Position(n,0)).text.startsWith('```output')){
-              if(nilToSwap){startCode=n;output=true;}
-            } else {
-              if(nilToSwap && !output){startCode=n;} //if no swapping & no output block, select starts here
-              if(oneLiner){startCode-=1;} 
-              replaceSel=new vscode.Selection(startCode,0,n,0);
-              activeTextEditor.selection=replaceSel;
-              break;
-      }}}}
+            if(n+1<doc.lineCount && 
+              doc.lineAt(new vscode.Position(n+1,0)).text.startsWith('```output')){
+                output=true;n++;//skip output line
+                if(!needSwap){m=n;}
+            } else { //not an output block start, so it is the end of the block
+                n++; //move to the next line  //if no swap & not output then
+                if(!needSwap && !output){m=n;}//select pos just after block end
+                break;
+            }
+          }
+          n++;
+        }
+        replaceSel=new vscode.Selection(m,0,n,0);
+        activeTextEditor.selection=replaceSel;
+      }
     }
     return;
 } //end function selectCodeblock

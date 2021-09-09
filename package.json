@@ -35,7 +35,6 @@
             "octave":{
                 "cmd":"octave \"%f\"",
                 "start":"",
-                "inline":"%%=",
                 "swap":"disp(['{{' $1 '}}'])",
                 "tempf":"temp.m",
                 "nb":"% in-line comments"
@@ -43,7 +42,6 @@
             "matlab":{
                 "cmd":"matlab -sd \"%p/\" -batch temp",
                 "start":"cd '%c'",
-                "inline":"%%=",
                 "swap":"disp([\"{{\"+($1)+\"}}\"])",
                 "tempf":"temp.m",
                 "nb":"% in-line comments",
@@ -52,7 +50,6 @@
             "scilab":{
                 "cmd":"scilex -quit -nb -f \"%f\" ",
                 "start":"",
-                "inline":"//=",
                 "swap":"mprintf('%s\\n','{{'+$1+'}}')",
                 "tempf":"temp.sci",
                 "nb":"// for in-line comments"
@@ -60,7 +57,6 @@
             "python":{
                 "cmd":"python \"%f\"",
                 "start":"",
-                "inline":"##=",
                 "swap":"print('{{'+str($1)+'}}')",
                 "tempf":"temp.py",
                 "nb":"# in-line comments"
@@ -68,7 +64,6 @@
             "python3":{
                 "cmd":"python3 \"%f\"",
                 "start":"",
-                "inline":"##=",
                 "swap":"print('{{'+str($1)+'}}')",
                 "tempf":"temp.py",
                 "nb":"# in-line comments #"
@@ -76,7 +71,6 @@
             "streamlit":{
                 "cmd":"streamlit run \"%f\" ",
                 "start":"",
-                "inline":"",
                 "swap":"",
                 "tempf":"temp.py",
                 "nb":"# for in-line comments, no in-line results"
@@ -84,7 +78,6 @@
             "julia":{
                 "cmd":"julia \"%f\"",
                 "start":"",
-                "inline":"##=",
                 "swap":"println(string(\"{{\",$1,\"}}\"))",
                 "tempf":"temp.jl",
                 "nb":"in-line comments #, results ##=",
@@ -93,7 +86,6 @@
             "gnuplot":{
                 "cmd":"gnuplot -p -c \"%f\"",
                 "start":"",
-                "inline":"",
                 "swap":"",
                 "tempf":"temp.gp",
                 "nb":"no results returned",
@@ -102,7 +94,6 @@
             "pwsh":{
                 "cmd":"pwsh -f \"%f\"",
                 "start":"",
-                "inline":"##=",
                 "swap":"'{{'+($1)+'}}'",
                 "tempf":"temp.ps1",
                 "nb":"# for in-line comments",
@@ -111,7 +102,6 @@
             "bash":{
                 "cmd":"bash \"%f\"",
                 "start":"cd %c",
-                "inline":"##=",
                 "swap":"'{{'+($1)+'}}'",
                 "tempf":"temp.sh",
                 "nb":"# for in-line comments",
@@ -120,7 +110,6 @@
             "zsh":{
                 "cmd":"zsh -f \"%f\"",
                 "start":"",
-                "inline":"##=",
                 "swap":"'{{'+($1)+'}}'",
                 "tempf":"temp.sh",
                 "nb":"# for in-line comments",
@@ -135,7 +124,6 @@
             "lua":{
                 "cmd":"lua \"%f\"",
                 "start":"",
-                "inline":"--=",
                 "swap":"print('{{'..($1)..'}}')",
                 "tempf":"temp.lua",
                 "nb":"-- for in-line comments"
@@ -143,7 +131,6 @@
             "js":{
                 "cmd":"node \"%f\"",
                 "start":"",
-                "inline":"//=",
                 "swap":"console.log('{{'+($1)+'}}')",
                 "tempf":"temp.js",
                 "nb":"// for in-line comments"
@@ -159,7 +146,6 @@
             "html":{
                 "cmd":"\"%f\"",
                 "start":"",
-                "inline":"",
                 "swap":"",
                 "tempf":"temp.html",
                 "nb":"no results returned"
@@ -167,7 +153,6 @@
             "firefox":{
                 "cmd":"firefox \"%f\"",
                 "start":"",
-                "inline":"",
                 "swap":"",
                 "tempf":"temp.html",
                 "nb":"no results returned",
@@ -176,42 +161,38 @@
             "chrome":{
                 "cmd":"google-chrome-stable \"%f\"",
                 "start":"",
-                "inline":"",
                 "swap":"",
                 "tempf":"temp.html",
                 "nb":"no results returned",
                 "prev_cmd":""
             },				
             "test":{
-                "cmd":"test_exec",
-                "start":"",
-                "inline":"",
-                "swap":"",
+                "cmd":"test -c \"%f\"",
                 "tempf":"test.tst",
-                "nb":"no results returned"
+                "nb":"if no tempf temp.txt is used"
+            },
+            "go":{
+                "cmd":"go run \"%f\"",
+                "start":"",
+                "swap":"'{{'+($1)+'}}'",
+                "tempf":"temp.go",
+                "nb":"// for in-line comments"
             },
             "eval":{
                 "cmd":"",
                 "start":"",
-                "inline":"//=",
                 "swap":"write('{{',($1),'}}')",
                 "swapold":"'{{'+($1)+'}}'",
                 "tempf":"temp.js",
                 "nb":"// for in-line comments",
                 "prev_cmd":""
             },
-            "go":{
-                "cmd":"go run \"%f\"",
-                "start":"",
-                "inline":"//=",
-                "swap":"'{{'+($1)+'}}'",
-                "tempf":"temp.go",
-                "nb":"// for in-line comments"
+            "config":{
+              "cmd":""
             },
             "buddvs":{
               "cmd":"buddvs \"%f\" ",
               "start":"chdir(\"%c\");",
-              "inline":"//=",
               "swap":"write('{{'+($1)+'}}')",
               "tempf":"temp.txt"
             }
