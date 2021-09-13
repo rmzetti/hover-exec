@@ -1,11 +1,13 @@
 # Hover-exec
 
-This is the README for VS Code extension *hover-exec*.
+This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
 
 - [Hover-exec](#hover-exec)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
-    - [Scripts supported](#scripts-supported)
+    - [with nodejs](#with-nodejs)
+    - [with vscode's eval](#with-vscodes-eval)
+    - [Scripts with default command lines](#scripts-with-default-command-lines)
   - [Some examples](#some-examples)
     - [lua](#lua)
     - [python](#python)
@@ -28,7 +30,7 @@ This is the README for VS Code extension *hover-exec*.
 
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed scripts.
+*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages.
 
 The extension is activated when a markdown file is opened in the editor.
 
@@ -40,23 +42,28 @@ Hover script exec in action:
 
 ## Basic hover-exec 
 
-Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command as the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over lines starting with ` ``` `  (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command as the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
-```js {cmd=node}
-// ```js   (this comment shows the codeblock command in markdown previews)
-//          {cmd=node} is for markdown preview enhanced
+---
+### with nodejs
+
+The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
+
+```js //will execute if node is installed
+// ```js   this comment shows the command in markdown previews`
 console.log('  test using node:\n  '+Math.random())
-console.log('  Note: hover-exec on ```output line, or alt+/ [opt+/] with\n',
-                    ' the cursor in the output block will delete the output block')
+console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
+    ' the cursor in the output block will delete the output block')
 ```
 ```output
   test using node:
-  0.477252072750886
-  Note: hover-exec on ```output line, or alt+/ [opt+/] with
+  0.46554087643238673
+  Note: hover-exec on ```output line`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
 
-The js command by default executes a javascript code block in `nodejs` (assuming that it is installed).
+
+### with vscode's eval
 
 Javascript code blocks can also be executed in *vscode's* internal javascript by using `eval`. Note that using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal vscode API to be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable. Installation of `nodejs` is not required for `eval` scripts to execute.
 
@@ -64,16 +71,19 @@ Javascript code blocks can also be executed in *vscode's* internal javascript by
 // ```js {cmd=eval}
 'test: '+Math.random() //= test: 0.39936728047794534 
 ```
+Intermediate results can be viewed in line by appending a line with a three character `=>>` . To be compatible with the *markdown preview enhanced* extension (*mpe*) put a 2 character comment character before the `=>>', eg. for javascript use `// =>>', for python '## =>>'.  *mpe* will not update the inline comment. 
 
-Intermediate results can be viewed in line, as above, by appending a line with a predefined three character string. The string `=>>` can always be used, so long as it is used consistently throughout the script. For the predefined scripting languages, the preferred 3 char string (shown on hover) starts with a comment indicator and ends with `=` (eg. `//=` for javascript, `##=` for python etc.). This is useful because, as a comment, it is compatible with the scripting language, and therefore with extensions like *markdown preview enhanced* (although the output will not be updated on execution in *mpe*).
+---
+### Scripts with default command lines
 
-### Scripts supported
-
-The following scripts are supported 'out of the box':
+Command lines to start a number of scripts are included:
 
 - javascript (via node)
+- eval (built in javascript, with vscode api available)
 - html
 - powershell
+- bash
+- zsh
 - python
 - julia
 - octave
@@ -81,7 +91,7 @@ The following scripts are supported 'out of the box':
 - gnuplot
 - matlab
 - lua
-- eval (javascript internal to the extension, with vscode api available)
+- go
 
 The script language you are using (eg `julia`,`nodejs`) needs to have been installed, and ***some of the commands to run the scripts may need customising*** to suit your particular installation - see [Changing script configuration](#changing-script-configuration).
 
