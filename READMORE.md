@@ -570,13 +570,13 @@ Use ` ```scilab` to run scilab, or ` ```js :scilab` for some quick and dirty syn
 ```js :scilab
 // ```js:scilab {cmd=scilab}
 // need to use 'string()' for numeric output
-pwd()   =>>c:\Users\ralph\OneDrive\Documents\Notes
+pwd()   =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.8899741, 0.9891288
+string(rand())+', '+string(rand())   =>>0.4944074, 0.8478804
 mprintf('%s',string(rand()))
 ```
 ```output
-0.9368113
+0.468022
 ```
 
 ---
