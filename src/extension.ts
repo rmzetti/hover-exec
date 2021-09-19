@@ -46,37 +46,8 @@ const msgOut =
   "[delete output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
 
 //all single char variables declared for persistence over several eval scripts
-let a,
-  b,
-  c,
-  d,
-  e,
-  f,
-  g,
-  h,
-  i,
-  j,
-  k,
-  l,
-  m,
-  n,
-  o,
-  p,
-  q,
-  r,
-  s,
-  t,
-  u,
-  v,
-  w,
-  x,
-  y,
-  z; //typescript reports unused
-let msg = "",
-  cmda = "",
-  mpe = "",
-  comment = "",
-  full = "";
+let a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z; //typescript reports unused
+let msg = "",cmda = "",mpe = "",comment = "",full = "";  //cmd line parse result
 
 export function activate(context: vscode.ExtensionContext) {
   vscode.languages.registerHoverProvider(
@@ -122,29 +93,12 @@ export function activate(context: vscode.ExtensionContext) {
           cmd = replaceStrVars(script as string); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
             "open: [ [*last script*] ](" +
-            tempPath +
-            tempName +
-            ") " +
-            "[ [*last result* ] ](" +
-            tempPath +
-            tempName +
-            ".out.txt)\n\n";
+            tempPath + tempName + ") " + "[ [*last result* ] ](" + tempPath + tempName + ".out.txt)\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
-            cmdId +
-            "[ [*config*] ](" +
-            url +
-            "_config) " + //add hover info
-            msgDel +
-            msgOpen +
-            "[" +
-            cmdId +
-            " " +
-            comment +
-            "](" +
-            url +
-            ")";
+            cmdId + "[ [*config*] ](" + url + "_config) " + //add hover info
+            msgDel + msgOpen + "[" + cmdId + " " + comment + "](" + url + ")";
           const contents = new vscode.MarkdownString("hover-exec:" + msg);
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //and return it
@@ -169,24 +123,9 @@ export function activate(context: vscode.ExtensionContext) {
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?"; //create hover message
           let msg =
-            "&nbsp; [ [*config*] ](" +
-            url +
-            cmdId +
-            "_config) " +
-            "[ [*last script*] ](" +
-            tempPath +
-            tempName +
-            ")" +
-            "[ [*last result* ] ](" +
-            tempPath +
-            tempName +
-            ".out.txt)\n\n" +
-            "[" +
-            pad(cmd + comment) +
-            "](" +
-            url +
-            cmdId +
-            ")";
+            "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
+            tempPath + tempName + ")" + "[ [*last result* ] ](" + tempPath + tempName +
+            ".out.txt)\n\n" + "[" + pad(cmd + comment) + "](" + url + cmdId + ")";
           const contents = new vscode.MarkdownString(
             "hover-exec:" + cmdId + msg
           );
@@ -497,17 +436,9 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       out =
         "```js :eval noInline\n" + //output :eval is an exec script which will:
-        "//this script can change, add or undefine a config setting\n" +
-        'let s={"' +
-        s1 +
-        '":' +
-        s2 +
-        "};\n" + //1. show current config, or an example
-        '//let s={"' +
-        s1 +
-        '":undefined}; //will undefine ' +
-        s1 +
-        "\n" +
+        "//this script can change, add or undefine a config setting\n" + 
+        'let s={"' + s1 + '":' + s2 + "};\n" + //1. show current config, or an example
+        '//let s={"' + s1 + '":undefined}; //will undefine ' + s1 + "\n" +
         "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
         "let merge=Object.assign({},scripts,s)\n" + //3. update settings for current script
         "if(config.update('scripts',merge,1)){}"; //4. finally update hover-exec config.
