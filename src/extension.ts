@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import internal = require("stream");
+import _=require("lodash");
+import math=require("mathjs");  
+import moment=require("moment"); //lodash, mathjs & moment for eval scripting
 let codeBlock = ""; //code f or execution
 let startCode = 0; //start line of code
 let out: string = ""; //output from code execution
@@ -23,7 +26,7 @@ let oneLiner = false; //current script is a 'one-liner'
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let showKey = false; //show keypressed meesage
-let showOk = true; //show ok whne command completes successfully
+let showOk = false; //show ok whne command completes successfully
 let ch: cp.ChildProcess; //child process executing current script
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
@@ -58,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
         pos: vscode.Position,
         token: vscode.CancellationToken
       ): Promise<vscode.Hover | null> {
+        status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
         oneLiner = false; //check for a one-liner
         if (!line.text.startsWith("```")) {
@@ -135,13 +139,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })()
   );
-  context.subscriptions.push(
+  context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
-      //preocess exec command (default shortcut Alt+/ ) -- find start of block and execute
+      //process exec command (default shortcut Alt+/ ) -- find start of block and execute
+      status(''); //clear status message
       let editor = vscode.window.activeTextEditor;
       if (editor) {
         if (showKey) {
-          progress1("\u00A0\u00A0\u00A0\u00A0 Alt + /", 1);
+          progress("\u00A0\u00A0\u00A0\u00A0 Alt + /", 1);
         }
         let doc = editor.document; //get document
         let pos = editor.selection.active; //and position
@@ -155,7 +160,7 @@ export function activate(context: vscode.ExtensionContext) {
         let line = doc.lineAt(pos); //get command line contents
         if (executing) {
           hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?abort"));
-          progress1("previous exec aborted", 500);
+          progress("previous exec aborted", 500);
           return; //if processing cancel job and ignore
         }
         setExecParams(context, doc, pos, line); //reset basic execute parameters
@@ -186,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-  context.subscriptions.push(
+  context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
     })
@@ -388,14 +393,15 @@ export function activate(context: vscode.ExtensionContext) {
     merge = Object.assign({}, scripts, s);
     config.update("swappers", merge, 1);
   }
-  checkJsonVisible();
 
-  //let hStatusBarItem: vscode.StatusBarItem;
-  //let startTime=new Date().getTime();
-  // const hCommandId='time';
-  // hStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  // hStatusBarItem.command = hCommandId;
-  // context.subscriptions.push(hStatusBarItem);
+  checkJsonVisible();
+  statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
+  context.subscriptions.push(statusBarItem);
+  status(''+math.round(5.6)); //activate 'unused' imports
+  status(''+_.range(0,1));
+  status(''+moment.now());
+  status('ok');
+
 } //end function activate
 
 let hUri = new (class MyUriHandler implements vscode.UriHandler {
@@ -438,10 +444,11 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         "```js :eval noInline\n" + //output :eval is an exec script which will:
         "//this script can change, add or undefine a config setting\n" + 
         'let s={"' + s1 + '":' + s2 + "};\n" + //1. show current config, or an example
-        '//let s={"' + s1 + '":undefined}; //will undefine ' + s1 + "\n" +
+        '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
         "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
-        "let merge=Object.assign({},scripts,s)\n" + //3. update settings for current script
-        "if(config.update('scripts',merge,1)){}"; //4. finally update hover-exec config.
+        "let merge=Object.assign({},scripts,s);\n" + //3. update settings for current script
+        "if(await config.update('scripts',merge,1)){}\n"+ //4. finally update hover-exec config
+        "console.log('new config:',config.get('scripts."+s1+"'))";
       needSwap = false; //ignore anything that looks like it is a swap
       paste(out); //paste into editor as 'output :exec' script
       removeSelection();
@@ -471,19 +478,20 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         location: vscode.ProgressLocation.Window,
         title: "Hover-exec", //title for progress display
       },
-      async (progress) => {
+      async (prog) => {
         executing = true; //set 'executing' flag
         let iexec = nexec; //& save exec number for this script
         out = ""; //reset output buffer
-        // updateStatusBarItem();
-        progress.report({ message: "executing" }); //start execution indicator
+        prog.report({ message: "executing" }); //start execution indicator
         writeFile(tempPath + tempName, sCode); //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== "") {
           if (cmd === "eval") {
             //eval: use vscode internal js
             sCode = sCode.replace(/console.log/g, "write"); //provide a console.log for eval
-            eval(sCode); //execute codeblock with eval
+            //wrap with an async function to allow use of await (eg for input, delays,etc) 
+            sCode=`async function __main(){`+sCode+`};__main();`;
+            await eval(sCode);
           } else {
             out = await execShell(cmd); //execute all other commands
             if (cmdId === "buddvs") {
@@ -504,17 +512,11 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
             removeSelection(); //deselect
           }
           if (showOk) {
-            progress1("ok", 500);
+            progress("ok", 500);
           } //report successful completion
         }
-        // hStatusBarItem.hide();
       }
     );
-    //function updateStatusBarItem(): void {
-    //  const t = new Date().getTime();
-    //  hStatusBarItem.text = `$(megaphone) ${(t-startTime)/1000}`;
-    //  hStatusBarItem.show();
-    // }
   }
 })(); //end hUri=new class MyUriHandler
 
@@ -583,6 +585,8 @@ function paste(text: string) {
         //no more output
         if (needSwap) {
           selText.replace(replaceSel, codeBlock + "```\n");
+        } else {
+          selText.replace(replaceSel, '');//lbl + text + "\n```\n");  
         }
       } else if (oneLiner || !needSwap) {
         //only producing an output block
@@ -709,9 +713,7 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-const execShell = (
-  cmd: string //execute shell command (to start scripts)
-) =>
+const execShell = (cmd: string) => //execute shell command (to start scripts)
   new Promise<string>((resolve, reject) => {
     ch = cp.exec(cmd, (err1, out1, stderr1) => {
       if (err1 && stderr1 === "") {
@@ -719,11 +721,48 @@ const execShell = (
       }
       return resolve(out1 + stderr1);
     });
-  });
+});
 
-async function writeFile(file: string, text: string) {
+async function writeFile(path: string, text: string) {
   //`text` to `file' (full path)
-  await vscode.workspace.fs.writeFile(vscode.Uri.file(file), Buffer.from(text));
+  //alert('bbb '+vscode.Uri.file(file));
+  await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(text));
+}
+
+function utf8ArrayToStr(array:Uint8Array) {
+  var out, i, len, c;
+  var char2, char3;
+  out = "";
+  len = array.length;
+  i = 0;
+  while(i < len) {
+    c = array[i++];
+    switch(c >> 4) { 
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+        break;
+      case 12: case 13:
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+        break;
+      case 14:
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0F) << 12) |
+                      ((char2 & 0x3F) << 6) |
+                      ((char3 & 0x3F) << 0));
+        break;
+    }
+  }
+  return out;
+}
+
+async function readFile(path:string){
+  //alert('aaa '+vscode.Uri.file(path));
+  return utf8ArrayToStr(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
 }
 
 function write() {
@@ -737,12 +776,28 @@ function write() {
   out += "\n";
 }
 
+let statusBarItem: vscode.StatusBarItem;
+function status(s:string): void {
+  if(s!==undefined && s!==''){
+    statusBarItem.text = `=>>`+s;
+    statusBarItem.show();
+  } else {
+    statusBarItem.hide();
+  }
+}
+
 function alert(s: string) {
   //provide an alert function for eval scripts
   vscode.window.showInformationMessage(s);
 }
 
-function progress1(msg: string, timeout: number) {
+async function input(s:string) {
+  //provide a simple input box for eval scripts
+  let what = await vscode.window.showInputBox({ placeHolder: s });
+  return what;
+}
+
+function progress(msg: string, timeout: number) {
   //show a 'progress' pop up for eval scripts, timeout in ms
   if (shown || msg === "") {
     return;

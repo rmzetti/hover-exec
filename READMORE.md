@@ -1,37 +1,24 @@
 # Hover exec
 
-This is the READMORE for VS Code extension *hover exec*. If tldr, check [the README](README.md) instead.
+This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files follow the same structure, this one just goes into more detail.
 
 - [Hover exec](#hover-exec)
-  - [Tester](#tester)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
-    - [with nodejs](#with-nodejs)
-    - [with vscode's eval](#with-vscodes-eval)
-    - [Scripts with default command lines](#scripts-with-default-command-lines)
-    - [Using eval](#using-eval)
-    - [Using eval for configuration settings](#using-eval-for-configuration-settings)
-      - [Check settings](#check-settings)
-      - [Add new script language](#add-new-script-language)
-      - [Show other vscode config settings](#show-other-vscode-config-settings)
+    - [Using vscode's eval](#using-vscodes-eval)
+    - [Using nodejs](#using-nodejs)
+    - [Scripts with built-in commands](#scripts-with-built-in-commands)
     - [Using node or eval for general calculation](#using-node-or-eval-for-general-calculation)
-  - [Quick scripts](#quick-scripts)
-  - [One-liners](#one-liners)
-    - [One-liners & non built-in command examples](#one-liners--non-built-in-command-examples)
-    - [Windows - control panel](#windows---control-panel)
-    - [html & javascript](#html--javascript)
-    - [audio one-liners](#audio-one-liners)
-    - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
-  - [Links](#links)
-  - [Some examples for built-in scripts](#some-examples-for-built-in-scripts)
-      - [Lua](#lua)
-      - [Powershell](#powershell)
-      - [Gnuplot](#gnuplot)
-      - [Buddvs](#buddvs)
-      - [Javascript using eval](#javascript-using-eval)
-      - [Javascript using node](#javascript-using-node)
-      - [More eval and node examples](#more-eval-and-node-examples)
-  - [More Hover-exec examples](#more-hover-exec-examples)
+  - [Some examples](#some-examples)
+    - [Lua](#lua)
+    - [Powershell](#powershell)
+    - [Gnuplot](#gnuplot)
+    - [Buddvs](#buddvs)
+    - [Javascript using eval](#javascript-using-eval)
+    - [Javascript using node](#javascript-using-node)
+    - [More eval and node examples](#more-eval-and-node-examples)
+  - [More examples](#more-examples)
+    - [Running other programs](#running-other-programs)
     - [Octave](#octave)
     - [Scilab](#scilab)
     - [Python](#python)
@@ -45,81 +32,91 @@ This is the READMORE for VS Code extension *hover exec*. If tldr, check [the REA
     - [Go](#go)
     - [Vitamin b12, dosage vs uptake](#vitamin-b12-dosage-vs-uptake)
     - [Chaining execution codeblocks](#chaining-execution-codeblocks)
-
-## Tester
-
-
-`notepad %caa.html`                   //exec notepad with current file using shortcut
-`notepad {temp=temp.py} %f`     //exec notepad with temp file `temp.py`
-`notepad %f.out.txt`        //& with temp output file (temp.txt.out.txt)
-`js console.log(7*7-7)` //make room
-`eval progress1(''+(7*7-7),4000)`  //calculator output via message
-`"C:/Program Files/Notepad++/notepad++" %e`  //exec notepad++ with current editor file
-`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <script>location.href="/%caa.html"</script>` //browser with html file - %c etc in one-liners only
-`html <h1 align='center' >Hello %c</h1><br><h1 align='center' >Hello /%c</h1>`    //default browser text
-
-```js :eval
-// ```js :eval`
-console.log('current directory: '+process.cwd())
-eval('let a=5;a+Math.random()')=>> 5.487612665312444
-```
-```python {cmd matplotlib}
-// ```python  {cmd matplotlib}`
-import numpy as np
-import matplotlib.pyplot as plt
-randnums= np.random.randint(1,101,150)
-plt.plot(randnums)
-plt.show()
-```
-```newscript
-this is a test of newscript
-```
-```notepad %f
-Use %f to open this codeblock in notepad
-```
-```>"C:\Program Files\Notepad++\notepad++" %f.py
-this is now in the temp.py file
-```
-```matlab
-pwd   =>>C:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec
-7*7-7 =>>42
-% Speedtest
-```
-```orpr
-```
+  - [One-liners](#one-liners)
+    - [One-liners examples](#one-liners-examples)
+    - [Windows - control panel](#windows---control-panel)
+    - [html & javascript](#html--javascript)
+    - [audio one-liners](#audio-one-liners)
+    - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
+  - [Configuration settings](#configuration-settings)
+    - [Using eval for configuration settings](#using-eval-for-configuration-settings)
+      - [Check settings](#check-settings)
+      - [Add new script language](#add-new-script-language)
+      - [Show other vscode config settings](#show-other-vscode-config-settings)
+  - [Known Issues](#known-issues)
+  - [Release Notes](#release-notes)
 
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added or used without configuration. 
+*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration.  This is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
 The extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
-  ![](https://rmzetti.github.io/Hover-exec.gif)
-  [also here](https://github.com/rmzetti/hover-exec/blob/master/Hover-exec.gif)
-  [or here](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
-
-## Basic hover-exec 
-
-Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command in the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+  ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
 
 ---
-### with nodejs
+## Basic hover-exec 
+
+Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command in the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+
+---
+### Using vscode's eval
+
+Javascript code blocks can also be executed in *vscode's* internal javascript by using `eval`.
+
+In the command line, using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal *vscode* API to be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable, and provide a method to link different `eval` codeblocks. Installation of `nodejs` is not required for `eval` scripts to execute.
+
+```js :eval
+// ```js   -- this comment shows the command line in markdown previews`
+'test: '+Math.random() =>> test: 0.39936728047794534 
+```
+
+Intermediate results can be viewed in line by appending `=>>` . If it is wished also to be compatible with the *markdown preview enhanced* extension (*mpe*) put a comment marker before the `=>>', eg. for javascript use `// =>>', for python '# =>>'.  *mpe* will not update the inline comment. 
+
+---
+A couple more examples using `eval`, showing use of *vscode* api functions and some extra functions  published by `hover-exec` (eg. `alert`)
+
+```js :eval
+// ```js:eval -- as before, this line shows the command in markdown previews`
+let abc="hello, world 3"
+let a='hello variable world';
+alert(a) //not available in node scripts
+a='goodbye world'
+vscode.window.showInformationMessage(a) //not available in node scripts
+eval('let a=3;2*a*Math.random()')=>> 5.231912417124746
+console.log(a,Math.random())
+'hello '+(2-1+Math.random())=>> hello 1.2502863151022285
+process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+console.log(abc)
+```
+```output
+goodbye world 0.33656154000167615
+hello, world 3
+```
+
+---
+```js :eval -- javascript regex tester
+// ```eval -- javascript regex tester`
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
+```
+
+---
+### Using nodejs
 
 The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
 
-```js //will execute if node is installed
-// ```js   this comment shows the command in markdown previews`
+```js
+// ```js   -- as before, this line shows the command in markdown previews`
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
 ```output
   test using node:
-  0.5661140404337932
-  Note: hover-exec on ```output line`, or alt+/ (opt+/) with
+  0.7287736120819583
+  Note: hover-exec on ```output`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
 
@@ -128,9 +125,7 @@ Notes:
 - Include `{cmd=node}` in the command line to allow execution also in *markdown preview enhanced* (in-line output will not be available)
 
 ---
-Another example:
-
-Note that either of these codeblocks can be executed in either *hover-exec* or *markdown preview enhanced* (if you're viewing this also in *mpe*, you can try it both ways)
+Note that codeblocks with {cmd...}, as appropriate, can be executed in either *hover-exec* or *markdown preview enhanced* (if you're viewing this also in *mpe*, you can try it both ways)
 
 ```js {cmd=node}
 //```js {cmd=node}`
@@ -139,18 +134,8 @@ console.log('test using node: '+Math.random())
 let a=5;console.log(a+Math.random())
 ```
 
-### with vscode's eval
-
-Javascript code blocks can also be executed in *vscode's* internal javascript by using `eval`. Note that using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal vscode API to be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable. Installation of `nodejs` is not required for `eval` scripts to execute.
-
-```js :eval
-// ```js {cmd=eval}
-'test: '+Math.random() //= test: 0.39936728047794534 
-```
-Intermediate results can be viewed in line by appending a line with a three character `=>>` . To be compatible with the *markdown preview enhanced* extension (*mpe*) put a 2 character comment character before the `=>>', eg. for javascript use `// =>>', for python '## =>>'.  *mpe* will not update the inline comment. 
-
 ---
-### Scripts with default command lines
+### Scripts with built-in commands
 
 Command lines to start a number of scripts are included:
 
@@ -173,92 +158,7 @@ The script language you are using (eg `julia`,`nodejs`) needs to have been insta
 
 Other script languages may be added - see [Adding another script](#adding-another-script).
 
-
-
-
 ---
-### Using eval
-The `eval` command allows the use of vscode's internal javascript and the vscode api. This command is not available in *markdown preview enhanced*.
-
-Again, using ` ```js :eval` rather than ` ```eval` provides syntax highlighting. The space befor the `:` will also produce syntax highlighting in *mpe* (although, as noted, `eval` can't be execute in *mpe*)
-
-```js :eval
-// ```js :eval`
-let s='abcd efg hik'
-s.indexOf('ef') // =>> 5
-s.slice(0,s.indexOf('fg')) // =>> abcd e
-//console log writes to output codeblock
-console.log('current directory: '+process.cwd())
-let a=5;console.log('a= '+a+Math.random())
-//alert('hello') //this can be used in eval, but not js (node)
-let b=10; //inline output statements must stand on their own
-'b= '+(b+Math.random()) // =>> b= 10.327066158992954
-```
-```output
-current directory: c:\Users\ralph\OneDrive\Documents\Notes
-a= 50.3214014190202372
-```
-
----
-### Using eval for configuration settings
-
-*hover-exec* has the ability to view and alter its own config settings via the *eval* script (*node* can't access the vscode api)
-
-#### Check settings
-
-For a given codeblock, in the hover message for the command line there is a `config` link, If this is clicked, a new (executable) codeblock will be produced. In that codeblock will be the current setting for the codeblock script. For `python`:
-
-```python
- # this is python 'code' example for config check
-```
-```js :eval noInline
-//to get this block, click the 'config' link at the top of the python hover
-//this script can change a config setting, or add/undefine a new one
-let s={"python":"python \"%f.py\""};
-//let s={"python":undefined}; //will undefine python
-let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s)
-if(config.update('scripts',merge,1)){}
-```
-
-The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
-
-#### Add new script language
-
-If there is a need to add a new scripting language, say `newlang`, first write a fenced codeblock labelled newlang:
-
-```newlang
-//a newlang comment line
-```
-
-Then hover over the command line and click config. In this case, we get the following: 
-
-```js :eval noInline
-//this script can change a config setting, or add/undefine a new one
-let s={"newlang":"put_start_command_here %f.txt"};
-//let s={"newlang":undefined}; //will undefine newlang
-let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s)
-if(config.update('scripts',merge,1)){}
-```
-
-The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end if necessary. If backslashes are used in a path, they should be doubled (ie. escaped) `\\`. Similarly if `"` is used it should be entered as `\"`
-
-Once the script has been set up, execute using the hover in the usual way, then delete the block. Check it as in the previous section or open *hover-exec* settings and view the JSON settings file. All settings can also be changed using that file.
-
----
-#### Show other vscode config settings
-Other configuration settings can also be viewed
-```js :eval noinline
-// ```js:eval {noinline}  --eval is not available in mpe`
-let c=vscode.workspace.getConfiguration('');
-console.log("editor font size= "+c.get("editor.fontSize"))
-//c.update("editor.fontSize",12,1) //to change it
-```
-```output
-editor font size= 12
-```
-
 ### Using node or eval for general calculation
 
 ```js {cmd=node}
@@ -268,109 +168,10 @@ process.cwd()                  =>>c:\Users\ralph\OneDrive\Documents\Notes
 let a=5;console.log(a+Math.random())
 ```
 ---
-## Quick scripts
-
-These examples do not use any predefined configs,  just a command and %f to indicate the codeblock temp file is to be used (the default %f ext is `.txt` ... this can be changed by appending the desired ext as in the first example - many programs will need a specific ext to run)
-
-```lua51.exe %f.lua
-print("hello & goodbye")
-math.randomseed(os.time())
-```
-
-```notepad %f   //this is a comment
-print("hello & goodbye")
-math.randomseed(os.time())
-```
-
-```"C:\Program Files\Notepad++\notepad++" %f
-Check this out
-```
-
-
----
-## One-liners
-
-*One-liners* starting and ending with single backticks will simply be executed on click, and usually do not produce output back into the editor. Pre-defined variables (`%c` current folder, `%e` current file pathname, `%f` temp file pathname, `%p` temp files path, `%n` temp file name) can be used in the line, and notes/comments can be added after the closing quotes:
-
-### One-liners & non built-in command examples
-NB. Note only *single* backticks for one-liners
-
-`notepad aa_test.md`       //exec notepad
-`notepad %caa.html`      //exec notepad with file from current folder
-`notepad %f.py`     //exec notepad with temp file `temp.py`
-`notepad %f.out.txt`        //& with temp output file (temp.txt.out.txt)
-`"C:/Program Files/Notepad++/notepad++" %e`  //exec notepad++ with %e editor file
-`explorer`                         //explore
-`explorer /select,"%f"`     //explore temp folder
-
----
-### Windows - control panel
-`control /name Microsoft.DevicesAndPrinters`
-`control mouse`
-`control /name Microsoft.ProgramsAndFeatures`
-`pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
-`devmgmt.msc`               //devices
-`mmc diskmgmt.msc`     //disk management
-
----
-### html & javascript
-
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %c/aa.html` //chrome with html file - can use %c etc in one-liners
-`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <script>location.href="/%caa.html"</script>` //browser with html file - %c etc in one-liners only
-`html <h1 align='center' >Hello %c</h1><br><h1 align='center' >Hello /%c</h1>`    //default browser text
-`streamlit run heatmap_time_series.py`    //exec with spaces and filename
-`js console.log(7*7-7)`
-`eval progress1(''+(7*7-7),4000)`  //quick calculator output via message
-
----
-### audio one-liners
-
-`html <audio id="a2" controls autoplay src="%cassets/clear.mp3"/>`
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cassets/clear.mp3"`
-`pwsh start wmplayer  "%cassets/clear.mp3"`
-
----
-### One-liners for microsoft management console mmc
-`mmc azman.msc`	Authorization Manager	Manage Authorization Stores
-`mmc certlm.msc`	Certificates Local Computer	Loads the list of certificates of the local computer.
-`mmc certmgr.msc`	Certificates	Loads the list of certificates of the user
-`mmc comexp.msc`	Component Services	Loads Component Services, Event Viewer, and Services.
-`mmc compmgmt.msc`	Computer Management	Includes System Tools (Task Scheduler, Event Viewer, Shared Folders, Local Users and Groups, Performance and Device Manager), Storage (Disk Management), and Services and Applications (Services and WMI Control)
-`mmc devmgmt.msc`	Device Manager	Opens the Device Manager to manage hardware and devices.
-`mmc diskmgmt.msc`	Disk Management	Opens Disk Management to administrate connected storage devices.
-`mmc eventvwr.msc`	Event Viewer	Opens the Event Viewer which displays operating system, software, and hardware events.
-`mmc fsmgmt.msc`	Shared Folders	Loads the list of shared folders, sessions, and open files
-`mmc gpedit.msc`	Group Policy Editor	Loads the Group Policy Editor to manage system policies
-`mmc lusrmgr.msc`	Local Users and Groups	Interface to manage local users and user groups.
-`mmc perfmon.msc`	Performance Monitor	Loads the Windows Performance Monitor
-`mmc printmanagement.msc`	Print Management	Manage printers.
-`mmc rsop.msc`	Resultant Set of Policies	List policies, full results only available through command line tool gpresult
-`mmc secpol.msc`	Local Security Policy	- account policies, public key policies, or advanced audit policy configuration
-`mmc services.msc`	Services Manager	Loads the list of installed services to manage them.
-`mmc taskschd.msc`	Task Scheduler	Loads the Task Scheduler to manage tasks
-`mmc tpm.msc`	Trusted Platform Module Management	Manage the TPM on the local device.
-`mmc wf.msc`	Windows Firewall	Starts Windows Firewall with Advanced Security.
-`mmc wmimgmt.msc`	WMI Management	Configure and Control the Windows Management Instrumentation Service.
-
----
-## Links
-
-1. 'Today we handle all link click handlers and if the link starts with http://command, then we execute the command (provided its a link we generated - by looking at a white list).'  [quote from here](https://github.com/microsoft/vscode/issues/98100)
-2. Results of last execution: file:///C:/Users/ralph/VSWork/zetti.temp.txt
-3. Markdown memo [[aadiary]] [[aa_reference]]
-4. Doesn't work: C:\Users\ralph\.vscode-insiders\extensions\svsool.markdown-memo-0.3.8\help
-5. [works but error message](C:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\temp.js)
-6. [now works](file:///C:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\temp.txt.out.txt)
-7. [test ok](heat%20map%20time%20series.md)
-8. [[heat map time series]]
-9. [test ok](file:///C:\Users\ralph\OneDrive\Documents\Notes\heat%20map%20time%20series.md)
-  
----
-## Some examples for built-in scripts
+## Some examples
 In these examples, random numbers & time are used so updated output is easier to spot
 
-#### Lua
+### Lua
 ```lua {cmd=lua54} --*say hello goodbye*
 -- ```lua  {cmd=lua54} --*say hello goodbye*`
 print("hello & goodbye")
@@ -382,7 +183,6 @@ print('hello '..(44-2+math.random()))
 print("goodbye "..math.pi+math.random())
 ```
 
----
 ```lua {cmd=lua54} --10 million random number calls
 -- ```lua {cmd=lua54} --10 million random number calls`
 local t = os.clock();
@@ -400,8 +200,15 @@ print(os.clock()-t)
 0.317
 ```
 
+The following example does not use any predefined configs,  just a command and %f to indicate the codeblock temp file is to be used. The default %f ext is `.txt`, but this can be changed by appending the desired ext as in this `lua51` example - many programs will need a specific ext to run.
+
+```lua51.exe %f.lua
+print("hello & goodbye")
+math.randomseed(os.time())
+```
+
 ---
-#### Powershell
+### Powershell
 Powershell can be used in *mpe*
 
 ```pwsh {cmd}
@@ -411,7 +218,7 @@ Get-Random -Min 0.0 -Max 1.0 =>>0.583402059778293
 ```
 
 ---
-#### Gnuplot
+### Gnuplot
 Also works in *mpe*
 
 ```gnuplot {cmd}
@@ -457,7 +264,7 @@ plot "$charge" using 1:3 w lp title "charge"
 ```
 
 ---
-#### Buddvs
+### Buddvs
 Using buddvs (a personal scripting language). Also works in *mpe*.
 
 ```js:buddvs {cmd=buddvs}
@@ -470,7 +277,7 @@ b=4;c=a+b
 ```
 
 ---
-#### Javascript using eval
+### Javascript using eval
 Eval uses vscode's built in javascript. It is ***not*** available in *mpe*.
 
 ```js :eval
@@ -488,7 +295,7 @@ console.log(abc)
 ```
 
 ---
-#### Javascript using node
+### Javascript using node
 Run a server on localhost ([click here after running it](http://127.0.0.1:1337))
 Also works in *markdown preview enhanced*, (ie. *mpe*)
 
@@ -512,7 +319,7 @@ netstat -ano | findstr :13
 ```
 
 ---
-#### More eval and node examples
+### More eval and node examples
 Various time and date functions using `eval`
 
 ```js :eval //internal, time & date
@@ -547,9 +354,20 @@ console.log(new Date().toLocaleDateString())
 ```
 
 ---
-## More Hover-exec examples
-(In these examples, random numbers & time are used so updated output is easier to spot)
+## More examples
 
+### Running other programs
+Here are a couple of very simple examples for sending the contents of a codeblock to other applications. These examples do not use any predefined configs. The other apps here are not scripts and will **not** send changed text back to the codeblock - changed content will need to be saved in the file system in the normal way.
+
+```notepad %f
+This is a test
+```
+
+```"c:\program files\notepad++\notepad++" %f
+This is another test
+```
+
+---
 ### Octave
 Use ` ```octave` or ` ```python:octave` to run octave.
 
@@ -595,9 +413,9 @@ print('hello world '+str(3*random()+1))
 ```output
 hello world 1.0873912369021377
 ```
+
 ---
 This one-liner can be used to install packages:
-
 `pwsh python -m pip install pyformulas`
 
 ---
@@ -1071,7 +889,6 @@ func main() {
 ```
 
 ---
-
 ### Vitamin b12, dosage vs uptake
 
 ```js {cmd=node}
@@ -1085,6 +902,7 @@ console.log(u)
 10.484273589615576
 ```
 
+---
 ### Chaining execution codeblocks
 
 Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
@@ -1156,3 +974,178 @@ set logscale x
 plot "$speed" w lp title "speed"
 ```
 
+---
+## One-liners
+
+*One-liners* starting and ending with single backticks will simply be executed on click, and usually do not produce output back into the editor. Pre-defined variables (`%c` current folder, `%e` current file pathname, `%f` temp file pathname, `%p` temp files path, `%n` temp file name) can be used in the line (and the default `.txt` extension can be changed by appending, for example, `.ext` to the variable). Notes/comments can be added after the closing quote:
+
+### One-liners examples
+NB. Note only *single* backticks for one-liners
+
+`notepad aa_test.md`       //exec notepad
+`notepad %caa.html`      //exec notepad with file from current folder
+`notepad %f.py`     //exec notepad with temp file `temp.py`
+`notepad %f.out.txt`        //& with temp output file (temp.txt.out.txt)
+`"C:/Program Files/Notepad++/notepad++" %e`  //exec notepad++ with %e editor file
+`explorer`                         //explore
+`explorer /select,"%f"`     //explore temp folder
+
+---
+### Windows - control panel
+`control /name Microsoft.DevicesAndPrinters`
+`control mouse`
+`control /name Microsoft.ProgramsAndFeatures`
+`pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
+`devmgmt.msc`               //devices
+`mmc diskmgmt.msc`     //disk management
+
+---
+### html & javascript
+
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" %c/aa.html` //chrome with html file - can use %c etc in one-liners
+`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
+`html <script>location.href="/%caa.html"</script>` //browser with html file - %c etc in one-liners only
+`html <h1 align='center' >Hello %c</h1><br><h1 align='center' >Hello /%c</h1>`    //default browser text
+`streamlit run heatmap_time_series.py`    //exec with spaces and filename
+`js console.log(7*7-7)`
+`eval progress1(''+(7*7-7),4000)`  //quick calculator output via message
+
+---
+### audio one-liners
+
+`html <audio id="a2" controls autoplay src="%cassets/clear.mp3"/>`
+`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cassets/clear.mp3"`
+`pwsh start wmplayer  "%cassets/clear.mp3"`
+
+---
+### One-liners for microsoft management console mmc
+`mmc azman.msc`	Authorization Manager	Manage Authorization Stores
+`mmc certlm.msc`	Certificates Local Computer	Loads the list of certificates of the local computer.
+`mmc certmgr.msc`	Certificates	Loads the list of certificates of the user
+`mmc comexp.msc`	Component Services	Loads Component Services, Event Viewer, and Services.
+`mmc compmgmt.msc`	Computer Management	Includes System Tools (Task Scheduler, Event Viewer, Shared Folders, Local Users and Groups, Performance and Device Manager), Storage (Disk Management), and Services and Applications (Services and WMI Control)
+`mmc devmgmt.msc`	Device Manager	Opens the Device Manager to manage hardware and devices.
+`mmc diskmgmt.msc`	Disk Management	Opens Disk Management to administrate connected storage devices.
+`mmc eventvwr.msc`	Event Viewer	Opens the Event Viewer which displays operating system, software, and hardware events.
+`mmc fsmgmt.msc`	Shared Folders	Loads the list of shared folders, sessions, and open files
+`mmc gpedit.msc`	Group Policy Editor	Loads the Group Policy Editor to manage system policies
+`mmc lusrmgr.msc`	Local Users and Groups	Interface to manage local users and user groups.
+`mmc perfmon.msc`	Performance Monitor	Loads the Windows Performance Monitor
+`mmc printmanagement.msc`	Print Management	Manage printers.
+`mmc rsop.msc`	Resultant Set of Policies	List policies, full results only available through command line tool gpresult
+`mmc secpol.msc`	Local Security Policy	- account policies, public key policies, or advanced audit policy configuration
+`mmc services.msc`	Services Manager	Loads the list of installed services to manage them.
+`mmc taskschd.msc`	Task Scheduler	Loads the Task Scheduler to manage tasks
+`mmc tpm.msc`	Trusted Platform Module Management	Manage the TPM on the local device.
+`mmc wf.msc`	Windows Firewall	Starts Windows Firewall with Advanced Security.
+`mmc wmimgmt.msc`	WMI Management	Configure and Control the Windows Management Instrumentation Service.
+
+---
+## Configuration settings
+
+The startup commands for scripts included by default are as follows (nb. `%f` provides the appropriate temporary file path & name, and the notation `%f.py`, for example, indicates that the temporary file extension `.py` should be used - the default is `.txt` ):
+
+  "octave":"octave \"%f.m\"",
+  "matlab":"matlab -sd %p.m -batch temp",
+  "matlab_comment":"if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
+  "scilab":"scilex -quit -nb -f \"%f.sci\" ",
+  "python":"python \"%f.py\"",
+  "python3":"python3 \"%f.py\"",
+  "streamlit":"streamlit run \"%f.py\" ",
+  "julia":"julia \"%f.jl\"",
+  "gnuplot":"gnuplot -p -c \"%f.gp\"",
+  "pwsh":"pwsh -f \"%f.ps1\"",
+  "bash":"bash \"%f.sh\"",
+  "zsh":"zsh -f \"%f.sh\"",
+  "lua54":"lua54 \"%f.lua\"",
+  "lua53":"lua53 \"%f.lua\"",
+  "lua":"lua54 \"%f.lua\"",
+  "js":"node \"%f.js\"",
+  "eval":"eval",
+  "node":"node \"%f.js\"",
+  "javascript":"node \"%f.js\"",
+  "html":"\"%f.html\"",
+  "firefox":"firefox \"%f.html\"",
+  "chrome":"google-chrome-stable \"%f.html\"",
+  "test":"test -c \"%f.tst\"",
+  "go":"go run \"%f.go\"",
+  "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
+
+Any of these can be changed to suit the system in use using vscode `settings`.
+
+There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
+
+---
+### Using eval for configuration settings
+
+*hover-exec* has the ability to view and alter its own config settings via the *eval* script (*node* can't access the vscode api)
+
+#### Check settings
+
+For a given codeblock, in the hover message for the command line there is a `config` link, If this is clicked, a new (executable) codeblock will be produced. In that codeblock will be the current setting for the codeblock script. For `python`:
+
+```python
+ # this is python 'code' example for config check
+```
+```js :eval noInline
+//to get this block, click the 'config' link at the top of the python hover
+//this script can change a config setting, or add/undefine a new one
+let s={"python":"python \"%f.py\""};
+//let s={"python":undefined}; //will undefine python
+let scripts=config.get('scripts');
+let merge=Object.assign({},scripts,s)
+if(config.update('scripts',merge,1)){}
+```
+
+The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
+
+#### Add new script language
+
+If there is a need to add a new scripting language, say `newlang`, first write a fenced codeblock labelled newlang:
+
+```newlang
+//a newlang comment line
+```
+
+Then hover over the command line and click config. In this case, we get the following: 
+
+```js :eval noInline
+//this script can change a config setting, or add/undefine a new one
+let s={"newlang":"put_start_command_here %f.txt"};
+//let s={"newlang":undefined}; //will undefine newlang
+let scripts=config.get('scripts');
+let merge=Object.assign({},scripts,s)
+if(config.update('scripts',merge,1)){}
+```
+
+The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end if necessary. If backslashes are used in a path, they should be doubled (ie. escaped) `\\`. Similarly if `"` is used it should be entered as `\"`
+
+Once the script has been set up, execute using the hover in the usual way, then delete the block. Check it as in the previous section or open *hover-exec* settings and view the JSON settings file. All settings can also be changed using that file.
+
+---
+#### Show other vscode config settings
+Other configuration settings can also be viewed
+```js :eval noinline
+// ```js:eval {noinline}  --eval is not available in mpe`
+let c=vscode.workspace.getConfiguration('');
+console.log("editor font size= "+c.get("editor.fontSize"))
+//c.update("editor.fontSize",12,1) //to change it
+```
+```output
+editor font size= 12
+```
+
+---
+## Known Issues
+
+This is a beta version.
+
+Note that in all scripting languages included (except the 'home-grown' one *buddvs*, and to some extent *eval*), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). However, other included scripts are generally fairly fast (see the demo gif above).
+
+---
+## Release Notes
+
+Initial beta release was 0.6.1
+Published using: vsce package/publish

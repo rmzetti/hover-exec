@@ -1,15 +1,18 @@
-{   
+{
 	"name": "hover-exec",
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.6.1",
-	"repository": "https://github.com/rmzetti/hover-exec",
+	"version": "0.6.2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rmzetti/hover-exec"
+	},
 	"license": "NCSA",
 	"contributors": [
 		"rmzetti"
 	],
-    "engines": {
+	"engines": {
 		"vscode": "^1.60.0"
 	},
 	"categories": [
@@ -21,71 +24,73 @@
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
-			{ "command": "hover-exec.exec",
-			  "title": "Hover-exec: execute codeblock"
+			{
+				"command": "hover-exec.exec",
+				"title": "Hover-exec: execute codeblock"
 			}
-		],	
+		],
 		"configuration": {
-			"type":"object",
-			"title":"Hover Exec",
+			"type": "object",
+			"title": "Hover Exec",
 			"properties": {
-        "hover-exec.scripts":{
-          "description": "NB. Edit or add scripts using code blocks (see README)",
-					"default":{
-            "octave":"octave \"%f.m\"",
-            "matlab":"matlab -sd %p.m -batch temp",
-            "matlab_comment":"if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
-            "scilab":"scilex -quit -nb -f \"%f.sci\" ",
-            "python":"python \"%f.py\"",
-            "python3":"python3 \"%f.py\"",
-            "streamlit":"streamlit run \"%f.py\" ",
-            "julia":"julia \"%f.jl\"",
-            "gnuplot":"gnuplot -p -c \"%f.gp\"",
-            "pwsh":"pwsh -f \"%f.ps1\"",
-            "bash":"bash \"%f.sh\"",
-            "zsh":"zsh -f \"%f.sh\"",
-            "lua54":"lua54 \"%f.lua\"",
-            "lua53":"lua53 \"%f.lua\"",
-            "lua":"lua54 \"%f.lua\"",
-            "js":"node \"%f.js\"",
-            "eval":"eval",
-            "node":"node \"%f.js\"",
-            "javascript":"node \"%f.js\"",
-            "html":"\"%f.html\"",
-            "firefox":"firefox \"%f.html\"",
-            "chrome":"google-chrome-stable \"%f.html\"",
-            "test":"test -c \"%f.tst\"",
-            "go":"go run \"%f.go\"",
-            "buddvs":"buddvs \"%f.txt\" "
-          }},
-        "hover-exec.swappers":{
-          "description": "NB. Edit or add swappers using code blocks (see README)",
-          "default":{
-            "octave":"disp(['>>' $1])",
-            "matlab":"disp([\">>\"+($1)])",
-            "scilab":"mprintf('%s\\n','>>'+$1)",
-            "python":"print('>>'+str($1))",
-            "python3":"print('>>'+str($1))",
-            "julia":"println(string(\">>\",$1))",
-            "pwsh":"'>>'+($1)",
-            "zsh":"'>>'+($1)",
-            "lua":"print('>>'..($1))",
-            "js":"console.log('>>'+($1))",
-            "eval":"console.log('>>',($1))",
-            "go":"'>>'+($1)",
-            "buddvs":"write('>>'+($1))"
-          }
-        }
-      }
+				"hover-exec.scripts": {
+					"description": "NB. Edit or add scripts using code blocks (see README)",
+					"default": {
+						"octave": "octave \"%f.m\"",
+						"matlab": "matlab -sd %p.m -batch temp",
+						"matlab_comment": "if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
+						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
+						"python": "python \"%f.py\"",
+						"python3": "python3 \"%f.py\"",
+						"streamlit": "streamlit run \"%f.py\" ",
+						"julia": "julia \"%f.jl\"",
+						"gnuplot": "gnuplot -p -c \"%f.gp\"",
+						"pwsh": "pwsh -f \"%f.ps1\"",
+						"bash": "bash \"%f.sh\"",
+						"zsh": "zsh -f \"%f.sh\"",
+						"lua54": "lua54 \"%f.lua\"",
+						"lua53": "lua53 \"%f.lua\"",
+						"lua": "lua54 \"%f.lua\"",
+						"js": "node \"%f.js\"",
+						"eval": "eval",
+						"node": "node \"%f.js\"",
+						"javascript": "node \"%f.js\"",
+						"html": "\"%f.html\"",
+						"firefox": "firefox \"%f.html\"",
+						"chrome": "google-chrome-stable \"%f.html\"",
+						"test": "test -c \"%f.tst\"",
+						"go": "go run \"%f.go\"",
+						"buddvs": "buddvs \"%f.txt\" "
+					}
+				},
+				"hover-exec.swappers": {
+					"description": "NB. Edit or add swappers using code blocks (see README)",
+					"default": {
+						"octave": "disp(['>>' $1])",
+						"matlab": "disp([\">>\"+($1)])",
+						"scilab": "mprintf('%s\\n','>>'+$1)",
+						"python": "print('>>'+str($1))",
+						"python3": "print('>>'+str($1))",
+						"julia": "println(string(\">>\",$1))",
+						"pwsh": "'>>'+($1)",
+						"zsh": "'>>'+($1)",
+						"lua": "print('>>'..($1))",
+						"js": "console.log('>>'+($1))",
+						"eval": "console.log('>>',($1))",
+						"go": "'>>'+($1)",
+						"buddvs": "write('>>'+($1))"
+					}
+				}
+			}
 		},
-    "keybindings": [
+		"keybindings": [
 			{
 				"command": "hover-exec.exec",
 				"key": "alt+/",
 				"mac": "opt+/",
 				"when": "editorLangId == markdown"
 			}
-    ]
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
@@ -100,6 +105,7 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
+		"@types/lodash": "^4.14.174",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.56.0",
@@ -107,7 +113,10 @@
 		"@typescript-eslint/parser": "^4.14.1",
 		"eslint": "^7.19.0",
 		"glob": "^7.1.6",
+		"lodash": "^4.17.21",
+		"mathjs": "^9.5.0",
 		"mocha": "^8.2.1",
+		"moment": "^2.29.1",
 		"ts-loader": "^8.3.0",
 		"typescript": "^4.1.3",
 		"vscode-test": "^1.5.0",
@@ -120,7 +129,7 @@
 			"webpack --mode production --devtool hidden-source-map",
 			"for hover, did not need under contributes:",
 			"  'capabilities':{'hoverProvider':'true'},",
-      "Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
+			"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
 		]
 	}
 }
