@@ -1,9 +1,11 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import internal = require("stream");
+//import { ESLint } from "eslint";
 import _=require("lodash");
 import math=require("mathjs");  
 import moment=require("moment"); //lodash, mathjs & moment for eval scripting
+let vm=require('vm');
 let codeBlock = ""; //code f or execution
 let startCode = 0; //start line of code
 let out: string = ""; //output from code execution
@@ -26,12 +28,13 @@ let oneLiner = false; //current script is a 'one-liner'
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let showKey = false; //show keypressed meesage
-let showOk = false; //show ok whne command completes successfully
+let showOk = false; //show ok when command completes successfully
 let ch: cp.ChildProcess; //child process executing current script
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
+//const eslint=new ESLint();
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -491,7 +494,13 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
             sCode = sCode.replace(/console.log/g, "write"); //provide a console.log for eval
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
             sCode=`async function __main(){`+sCode+`};__main();`;
-            await eval(sCode);
+            try {
+              new vm.Script(sCode); //syntax check
+              await eval(sCode);    //execute
+            } catch (e) {           //if syntax error
+              needSwap=false;       //then don't do swap
+              out='error '+e; //report error in output block
+            }
           } else {
             out = await execShell(cmd); //execute all other commands
             if (cmdId === "buddvs") {
@@ -521,14 +530,15 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
 })(); //end hUri=new class MyUriHandler
 
 function replaceStrVars(s: string) {
+  if(cmdId==='eval'){tempName='temp.js';}
   //replace %f etc with the appropriate string
   //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
   if (/%[fp]\.\w/.test(s)) {
     //this allows %f.ext notation to replace ext
-    tempName = "temp." + s.replace(/.*%[fp]\.(\w*)\W?.*/, "$1");
-    s = s.replace(/(%[fp])\.\w*(\W?)/, "$1$2"); //remove .ext
+    tempName= "temp." + s.replace(/.*%[fp]\.(\w*)\W?.*/, "$1");
+    s= s.replace(/(%[fp])\.\w*(\W?)/, "$1$2"); //remove .ext
   }
-  s = s
+  s= s
     .replace(/\/%f/g, tempPath + tempName) // /%f uses /
     .replace(/\/%p/g, tempPath) // /%p uses /
     .replace(/\/%c/g, currentPath) // /%c uses /
@@ -795,6 +805,10 @@ async function input(s:string) {
   //provide a simple input box for eval scripts
   let what = await vscode.window.showInputBox({ placeHolder: s });
   return what;
+}
+
+async function delay(msec: number){
+  await new Promise(res => setTimeout(res,msec));
 }
 
 function progress(msg: string, timeout: number) {
