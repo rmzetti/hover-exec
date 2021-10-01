@@ -302,8 +302,9 @@ export function activate(context: vscode.ExtensionContext) {
       cmda = s.replace(/^(\w*).*/, "$1");
       if (/^\w+\s?:\w/.test(s)) {
         cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
+                      //eg. for '```js:asdf' cmdId is 'asdf'
       } else {
-        cmdId = cmda;
+        cmdId = cmda; //eg. for '```js asdf' cmdId is 'js'
       }
     }
     if (
