@@ -205,8 +205,8 @@ disp('scilab random: '+string(rand()))
 ```
 
 ---
-```html {cmd="C:/Program Files/Google/Chrome/Application/chrome.exe" stdin}
-<!-- ```html  --`*what am I going to do now* tunnel-->
+```html
+<!-- ```html tunnel *what am I going to do now* -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
 <canvas id="c"></canvas> 
