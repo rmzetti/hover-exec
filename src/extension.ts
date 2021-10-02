@@ -487,6 +487,7 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         let iexec = nexec; //& save exec number for this script
         out = ""; //reset output buffer
         prog.report({ message: "executing" }); //start execution indicator
+        sCode=hrefSrcRepl(sCode);
         writeFile(tempPath + tempName, sCode); //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== "") {
@@ -529,6 +530,20 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
     );
   }
 })(); //end hUri=new class MyUriHandler
+
+function hrefSrcRepl(s:string) {
+  s=s.replace(/(href\s*=\s*['"`]\s*)(https?:)/g,'$1:$2'); //avoid http in href
+  s=s.replace(/(href\s*=\s*['"`]\s*)(\w)/g,'$1'+currentFsPath+'$2');//add path to direct href
+  s=s.replace(/(href\s*=\s*['"`]\s*):(https?:)/g,'$1$2'); //replace http
+  s=s.replace(/(src\s*=\s*['"`]\s*)(https?:)/g,'$1:$2');  //avoid http in src
+  s=s.replace(/(src\s*=\s*['"`]\s*)(\w)/g,'$1'+currentFsPath+'$2'); //add path to direct src
+  s=s.replace(/(src\s*=\s*['"`]\s*):(https?:)/g,'$1$2');  //replace http
+  s=s.replace(/(href\s*=\s*['"`]\s*)\.\./g,'$1'+currentFsPath+'..'); //replace ".." in href
+  s=s.replace(/(href\s*=\s*['"`]\s*)\./g,'$1'+currentFsPath); //replace "." in href
+  s=s.replace(/(src\s*=\s*['"`]\s*)\.\./g,'$1'+currentFsPath+'..'); //replace ".." in src
+  s=s.replace(/(src\s*=\s*['"`]\s*)\./g,'$1'+currentFsPath);  //replace "." in src
+  return s;
+}
 
 function replaceStrVars(s: string) {
   if(cmdId==='eval'){tempName='temp.js';}
