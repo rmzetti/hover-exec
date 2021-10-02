@@ -104,45 +104,31 @@ Other script languages may be added. And as an alternative to the standard *vsco
 
 The js command by default executes a javascript code block in `nodejs` (assuming that is installed). 
 
-```js  {cmd=node} //the {..} allows execution in markdown preview enhanced
-// ```js  {cmd=node} //the {..} is for execution in markdown preview enhanced`
+```js  {cmd=node}     //the {..} allows execution in *mpe*
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
-```
-```output
-  test using node:
-  0.0003450823829989069
-  Note: hover-exec on ```output line`, or alt+/ (opt+/) with
-  the cursor in the output block will delete the output block
 ```
 
 ---
 ### lua
 
 ```lua -- say hello & goodbye
--- ```lua -- say hello & goodbye`
-'hello '..(44-2+math.random())=>>hello 42.209272271111
-"goodbye "..math.pi+math.random()=>>goodbye 4.0295093638344
-print("ok") -- this outputs in the output code block below
-```
-```output
-ok
+'hello '..(44-2+math.random())=>>hello 42.127742051917
+"goodbye "..math.pi+math.random()=>>goodbye 3.2751978374685
+print("lua ok") -- this outputs in the output code block below
 ```
 
 ---
 ### python
 
 ```python {cmd}
- # ```python {cmd}  -- {cmd} allows execution in markdown preview enhanced`
 from random import random
-45-2+random()      # =>>43.01562724147673
+45-2+random()      # =>>43.15413667632507
 'hello, world 3!'      # =>>hello, world 3!
-print('ok')
+print('python ok')
 ```
-```output
-ok
-```
+
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` so that *markdown previw enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
 
@@ -151,23 +137,21 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ### julia
 
 ```julia {cmd}
- # ```julia`
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.5179441968220773, 0.8068507970096026, 0.29683197373999337]
+a   # =>>[0.3156198287231369, 0.5283403303110237, 0.3800719246097075]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.5179441968220773, 42.0, 0.29683197373999337]
-b=[0.5179441968220773, 42.0, 0.29683197373999337]
+a=[0.3156198287231369, 42.0, 0.3800719246097075]
+b=[0.3156198287231369, 42.0, 0.3800719246097075]
 ```
 
 ---
 ### powershell
 
-```pwsh {cmd} // random number, current dir, ..
- # ```pwsh {cmd} // random number, current dir, ..`
+```js :pwsh {cmd} // random number, current dir, ..
 Get-Random -Min 0.0 -Max 1.0 # =>>0.176738379605458
 pwd
 ```
@@ -181,7 +165,6 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ### gnuplot
 
 ```gnuplot {cmd}
- # ```gnuplot {cmd}`
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -202,7 +185,7 @@ set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
 
- ![](2021-08-31-20-28-22.png)
+![[2021-08-31-20-28-22.png]]  (this 'wiki' type link is enabled using *markdown memo*)
 
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
@@ -210,19 +193,34 @@ plot "$charge" using 1:3 w lp title "charge"
 ### scilab
 
 ```js :scilab {cmd=scilab} 
-// ```js :scilab {cmd=scilab}` 
 // using js :scilab instead of just scilab provides quick & dirty syntax highlight
 // {cmd=scilab} is for markdown preview enhanced
 rand("seed",getdate('s'));
 'def '+string(rand())+' abc'=>>def 0.8770073 abc
 // nb. need to use 'string' for numeric output in scilab
-disp('random: '+string(rand()))
+disp('scilab random: '+string(rand()))
 ```
 ```output
-  "random: 0.5997802"
+  "scilab random: 0.5997802"
 ```
 
-![[2021-08-31-20-28-22.png]]  (this 'wiki' type link is enabled using *markdown memo*)
+---
+```html {cmd="C:/Program Files/Google/Chrome/Application/chrome.exe" stdin}
+<!-- ```html  --`*what am I going to do now* tunnel-->
+<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
+<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
+<canvas id="c"></canvas> 
+<script> 
+lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
+o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
+r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
+v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
+w=-20,x=2*b.PI/30,y=.1875;
+function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
+setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
+</script></body>
+```
+
 
 ---
 ## One-liners

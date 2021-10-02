@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import internal = require("stream");
-//import { ESLint } from "eslint";
 import _=require("lodash");
 import math=require("mathjs");  
 import moment=require("moment"); //lodash, mathjs & moment for eval scripting
@@ -34,7 +33,6 @@ let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
-//const eslint=new ESLint();
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -398,7 +396,7 @@ export function activate(context: vscode.ExtensionContext) {
     config.update("swappers", merge, 1);
   }
 
-  checkJsonVisible();
+  checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(''+math.round(5.6)); //activate 'unused' imports
