@@ -104,7 +104,9 @@ Other script languages may be added. And as an alternative to the standard *vsco
 
 The js command by default executes a javascript code block in `nodejs` (assuming that is installed). 
 
-```js  {cmd=node}     //the {..} allows execution in *mpe*
+```js  {cmd=node}  
+// ```js  {cmd=node}  //This comment line is for command visibility in markdown previews.
+                                 //NB. {cmd=node} is included to also allow execution in *mpe*.
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
@@ -114,6 +116,7 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ### lua
 
 ```lua -- say hello & goodbye
+// ```lua
 'hello '..(44-2+math.random())=>>hello 42.127742051917
 "goodbye "..math.pi+math.random()=>>goodbye 3.2751978374685
 print("lua ok") -- this outputs in the output code block below
@@ -123,6 +126,7 @@ print("lua ok") -- this outputs in the output code block below
 ### python
 
 ```python {cmd}
+  # ```python {cmd}  ## {cmd is only to allow execution also in *mpe*}
 from random import random
 45-2+random()      # =>>43.15413667632507
 'hello, world 3!'      # =>>hello, world 3!
@@ -137,21 +141,23 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ### julia
 
 ```julia {cmd}
+  # ```julia {cmd}
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.3156198287231369, 0.5283403303110237, 0.3800719246097075]
+a   # =>>[0.19104707134627685, 0.37870819903566955, 0.06382850245606453]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.3156198287231369, 42.0, 0.3800719246097075]
-b=[0.3156198287231369, 42.0, 0.3800719246097075]
+a=[0.19104707134627685, 42.0, 0.06382850245606453]
+b=[0.19104707134627685, 42.0, 0.06382850245606453]
 ```
 
 ---
 ### powershell
 
-```js :pwsh {cmd} // random number, current dir, ..
+```pwsh {cmd}
+  #  ```pwsh {cmd} // random number, show current directory.
 Get-Random -Min 0.0 -Max 1.0 # =>>0.176738379605458
 pwd
 ```
@@ -165,6 +171,7 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ### gnuplot
 
 ```gnuplot {cmd}
+  # ```gnuplot {cmd}`
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -193,6 +200,7 @@ plot "$charge" using 1:3 w lp title "charge"
 ### scilab
 
 ```js :scilab {cmd=scilab} 
+// ```js :scilab {cmd=scilab} 
 // using js :scilab instead of just scilab provides quick & dirty syntax highlight
 // {cmd=scilab} is for markdown preview enhanced
 rand("seed",getdate('s'));
