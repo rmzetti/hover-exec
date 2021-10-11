@@ -5,18 +5,18 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
 - [Hover exec](#hover-exec)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
-    - [Using vscode's eval](#using-vscodes-eval)
+    - [Using vscode's vm and eval](#using-vscodes-vm-and-eval)
+    - [using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
     - [Scripts with built-in commands](#scripts-with-built-in-commands)
-    - [Using node or eval for general calculation](#using-node-or-eval-for-general-calculation)
   - [Some examples](#some-examples)
     - [Lua](#lua)
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
     - [Buddvs](#buddvs)
-    - [Javascript using eval](#javascript-using-eval)
+    - [Javascript using vm](#javascript-using-vm)
     - [Javascript using node](#javascript-using-node)
-    - [More eval and node examples](#more-eval-and-node-examples)
+    - [More vm, eval and node examples](#more-vm-eval-and-node-examples)
   - [More examples](#more-examples)
     - [Running other programs](#running-other-programs)
     - [Octave](#octave)
@@ -39,7 +39,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [audio one-liners](#audio-one-liners)
     - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
   - [Configuration settings](#configuration-settings)
-    - [Using eval for configuration settings](#using-eval-for-configuration-settings)
+    - [Using vm for configuration settings](#using-vm-for-configuration-settings)
       - [Check settings](#check-settings)
       - [Add new script language](#add-new-script-language)
       - [Show other vscode config settings](#show-other-vscode-config-settings)
@@ -62,44 +62,83 @@ Hover script exec in action:
 Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command in the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
-### Using vscode's eval
+### Using vscode's vm and eval
 
-Javascript code blocks can also be executed in *vscode's* internal javascript by using `eval`.
+Javascript code blocks can also be executed in *vscode*'s `vm` module, or by using `eval`.
 
-In the command line, using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal *vscode* API to be used. Variables `a,..,z` have been made available for use by the eval script without fear of overwriting an internal variable, and provide a method to link different `eval` codeblocks. Installation of `nodejs` is not required for `eval` scripts to execute.
+In the command line, using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :vm` sets the actual exec command to `vm`. Note that `vm` and `eval` allow the internal *vscode* API to be used.  Global objects, including variable and functions, can be used by the '`vm` or `eval` scripts for persisting values to another instance, and provide a method to link several codeblocks. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
-```js :eval
-// ```js   -- this comment shows the command line in markdown previews`
-'test: '+Math.random() =>> test: 0.39936728047794534 
+```js :vm
+// ```js :vm   -- this comment shows the command line in markdown previews`
+'test: '+Math.random() =>> test: 0.2498913762272168
+a = function (fruit){alert('I like ' + fruit);}
+//to use predefined variables a..z, don't use 'let'
+b = function (animal){alert('he likes ' + animal);}
 ```
 
-Intermediate results can be viewed in line by appending `=>>` . If it is wished also to be compatible with the *markdown preview enhanced* extension (*mpe*) put a comment marker before the `=>>', eg. for javascript use `// =>>', for python '# =>>'.  *mpe* will not update the inline comment. 
+```js :vm //execute the previous *vm* block first
+b('dogs');a('pears');
+```
+
+Intermediate results can be viewed in line by appending `=>>`  (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Not that *mpe* will not update intermediate results.
 
 ---
-A couple more examples using `eval`, showing use of *vscode* api functions and some extra functions  published by `hover-exec` (eg. `alert`)
+A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`)
 
-```js :eval
-// ```js:eval -- as before, this line shows the command in markdown previews`
+```js :vm
+// ```js :vm -- as before, this line shows the command in markdown previews`
 let abc="hello, world 3"
 let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>> 5.231912417124746
+eval('let a=3;2*a*Math.random()')=>> 1.4918238662752863
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.2502863151022285
+'hello '+(2-1+Math.random())=>> hello 1.8543022521380952
 process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.33656154000167615
+goodbye world 0.3203055947514437
 hello, world 3
 ```
 
 ---
-```js :eval -- javascript regex tester
-// ```eval -- javascript regex tester`
+```js :vm -- javascript regex tester
+// ```js :vm -- javascript regex tester`
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
+```
+
+---
+### using require and globals with vm and eval
+
+Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
+
+A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted using, eg. `delete global.a;`
+
+```js :eval
+function xrange(){
+   let x1=_.range(0,6.1,6/10);
+   let x=math.round(math.exp(math.multiply(x1,math.log(10))));
+   return x
+}
+xrange()=>> 1,4,16,63,251,1000,3981,15849,63096,251189,1000000
+```
+
+```js:eval
+let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
+cd =>> c:/Users/ralph/OneDrive/Documents/Notes
+//cd can be used in require, eg. 
+```
+
+```js:vm
+f=global.f=function(m){return 'the meaning of life is '+m;};
+f(44-2)=>> the meaning of life is 42
+```
+
+```js:eval
+f(42)=>> the meaning of life is 42
+_.range(0,4)=>> 0,1,2,3
 ```
 
 ---
@@ -115,8 +154,8 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ```
 ```output
   test using node:
-  0.7287736120819583
-  Note: hover-exec on ```output`, or alt+/ (opt+/) with
+  0.8527953952843936
+  Note: hover-exec on ```output line`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
 
@@ -134,13 +173,22 @@ console.log('test using node: '+Math.random())
 let a=5;console.log(a+Math.random())
 ```
 
+```js {cmd=node}
+// ```js {cmd=node}`
+process.cwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'test: '+Math.random() =>>test: 0.5163466685702758
+let a=5;
+a+Math.random() =>>5.034082252509589
+```
+
 ---
 ### Scripts with built-in commands
 
-Command lines to start a number of scripts are included:
+Command lines to start a number of scripts are included, eg:
 
 - javascript (via node)
 - eval (built in javascript, with vscode api available)
+- vm (built in vm javascript, with vscode api available)
 - html
 - powershell
 - bash
@@ -154,20 +202,11 @@ Command lines to start a number of scripts are included:
 - lua
 - go
 
-The script language you are using (eg `julia`,`nodejs`) needs to have been installed, and ***some of the commands to run the scripts may need customising*** to suit your particular installation - see [Changing script configuration](#changing-script-configuration).
+Notes:
+- The script language you wish to use (eg `julia`,`nodejs`) needs to have been installed
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation.. see [Changing script configuration](#changing-script-configuration)
+- Other script languages may be added - see [Adding another script](#adding-another-script).
 
-Other script languages may be added - see [Adding another script](#adding-another-script).
-
----
-### Using node or eval for general calculation
-
-```js {cmd=node}
-// ```js {cmd=node}`
-process.cwd()                  =>>c:\Users\ralph\OneDrive\Documents\Notes
-'test: '+Math.random()   =>>test: 0.2614999096087096
-let a=5;console.log(a+Math.random())
-```
----
 ## Some examples
 In these examples, random numbers & time are used so updated output is easier to spot
 
@@ -277,21 +316,25 @@ b=4;c=a+b
 ```
 
 ---
-### Javascript using eval
-Eval uses vscode's built in javascript. It is ***not*** available in *mpe*.
+### Javascript using vm
+The `vm` and `eval` commands use vscode's built in capabilities. They are not available in *mpe*.
 
-```js :eval
-// ```js:eval -- eval is not available in mpe
+```js :vm
+// ```js :vm  -- not available in mpe
 let abc="abcde"
 let a='hello variable world';
 alert(a) //nb. alert is not available in node
 a='goodbye'
 vscode.window.showInformationMessage(a) //not available in node
-eval('let a=3;2*a*Math.random()')=>> 1.2891315802905625 
+eval('let a=3;2*a*Math.random()')=>> 1.2718966757113455
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.957582914214939 
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\Notes 
+'hello '+(2-1+Math.random())=>> hello 1.558627474451321
+process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
+```
+```output
+goodbye 0.37481206560391467
+abcde
 ```
 
 ---
@@ -319,38 +362,39 @@ netstat -ano | findstr :13
 ```
 
 ---
-### More eval and node examples
-Various time and date functions using `eval`
+### More vm, eval and node examples
+Various time and date functions using `vm`
 
-```js :eval //internal, time & date
-// ```js:eval  --vscode internal time & date  - not in *mpe*
-(44-Math.random())=>> 43.40829133167448 
+```js :vm //internal, time & date
+// ```js :vm  --vscode internal time & date  - not in *mpe*
+(44-Math.random())=>> 43.70036379934795
 //show information message via vscode api, needs cmd eval, not js
-progress1('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>> 2021-09-08 
-new Date().toLocaleDateString()=>> 08/09/2021 
-new Date().toString()=>> Wed Sep 08 2021 17:57:03 GMT+1200 (New Zealand Standard Time) 
-new Date().toLocaleString()=>> 08/09/2021, 17:57:03 
+progress('Hello whole World',4000)
+new Date().toISOString().slice(0,10)=>> 2021-10-09
+new Date().toLocaleDateString()=>> 09/10/2021
+new Date().toString()=>> Sat Oct 09 2021 21:23:25 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>> 09/10/2021, 21:23:25
+new Date().getTime()=>> 1633767805966
 ```
 
 ---
 Time and date using node ` ```js`
 
-```eval
-new Date().getTime()=>> 1631332562267
+```js
+new Date().getTime()=>>1633767809508
 ```
 
 ```js {cmd=node} //through nodejs
 //```js {cmd=node} //through nodejs
 a=44
 // in-line results are calculated but not output in mpe
-'answer='+(a-Math.random()) =>>answer=43.042707710450664
+'answer='+(a-Math.random()) =>>answer=43.79585152762694
 console.log(new Date().toISOString().slice(0, 10))
 console.log(new Date().toLocaleDateString())
 ```
 ```output
-2021-09-08
-08/09/2021
+2021-10-09
+09/10/2021
 ```
 
 ---
@@ -804,29 +848,23 @@ console.log(randch(36))
 ---
 ### Regular expression test and usage
 
-Internal vscode javascript using ```js {cmd=eval}`
-
----
-
-```js :eval //javascript regex tester
-// ```js :eval //javascript regex tester, use node in mpe instead`
+```js :vm //javascript regex tester
+// ```js :vm //javascript regex tester, use node in mpe instead`
 // if not using md preview enhanced, use = >> instead of // = (less faint)
-"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js 
-Math.random()*100   =>> 22.886167168051653 
+"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js
+Math.random()*100   =>> 88.421425704524
 ```
 
 ---
 
-javascript using *nodejs* ```js {cmd=node}`
-
-```js {cmd=node} //javascript regex tester
+```js {cmd=node} //javascript regex tester using node
 // ```js {cmd=node} //javascript regex tester`
 'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
-Math.random()*100   =>>85.43353472028699
+Math.random()*100   =>>36.993060297486615
 console.log(Math.random()*100) //this for *mpe*
 ```
 ```output
-41.65356728170715
+9.777445434760335
 ```
 
 ---
@@ -1008,7 +1046,7 @@ NB. Note only *single* backticks for one-liners
 `html <h1 align='center' >Hello %c</h1><br><h1 align='center' >Hello /%c</h1>`    //default browser text
 `streamlit run heatmap_time_series.py`    //exec with spaces and filename
 `js console.log(7*7-7)`
-`eval progress1(''+(7*7-7),4000)`  //quick calculator output via message
+`vm progress(''+(7*7-7),4000)`  //quick calculator output via message
 
 ---
 ### audio one-liners
@@ -1061,6 +1099,7 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
   "lua53":"lua53 \"%f.lua\"",
   "lua":"lua54 \"%f.lua\"",
   "js":"node \"%f.js\"",
+  "vm":"vm",
   "eval":"eval",
   "node":"node \"%f.js\"",
   "javascript":"node \"%f.js\"",
@@ -1076,9 +1115,9 @@ Any of these can be changed to suit the system in use using vscode `settings`.
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
 
 ---
-### Using eval for configuration settings
+### Using vm for configuration settings
 
-*hover-exec* has the ability to view and alter its own config settings via the *eval* script (*node* can't access the vscode api)
+*hover-exec* has the ability to view and alter its own config settings via *vm* or *eval* script (*node* can't access the vscode api)
 
 #### Check settings
 
@@ -1086,15 +1125,19 @@ For a given codeblock, in the hover message for the command line there is a `con
 
 ```python
  # this is python 'code' example for config check
+ # the following codeblock is produced by clicking *config* in the python hover
 ```
-```js :eval noInline
-//to get this block, click the 'config' link at the top of the python hover
-//this script can change a config setting, or add/undefine a new one
+```js :vm noInline
+//this script can change, add or undefine a config setting
 let s={"python":"python \"%f.py\""};
-//let s={"python":undefined}; //will undefine python
+//s={"python":undefined}; //uncomment this to undefine python
 let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s)
-if(config.update('scripts',merge,1)){}
+let merge=Object.assign({},scripts,s);
+if(await config.update('scripts',merge,1)){}
+console.log('new config:',config.get('scripts.python'))
+```
+```output
+new config: python "%f.py"
 ```
 
 The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
@@ -1109,13 +1152,14 @@ If there is a need to add a new scripting language, say `newlang`, first write a
 
 Then hover over the command line and click config. In this case, we get the following: 
 
-```js :eval noInline
-//this script can change a config setting, or add/undefine a new one
+```js :vm noInline
+//this script can change, add or undefine a config setting
 let s={"newlang":"put_start_command_here %f.txt"};
-//let s={"newlang":undefined}; //will undefine newlang
+//s={"newlang":undefined}; //uncomment this to undefine newlang
 let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s)
-if(config.update('scripts',merge,1)){}
+let merge=Object.assign({},scripts,s);
+if(await config.update('scripts',merge,1)){}
+console.log('new config:',config.get('scripts.newlang'))
 ```
 
 The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end if necessary. If backslashes are used in a path, they should be doubled (ie. escaped) `\\`. Similarly if `"` is used it should be entered as `\"`
@@ -1125,8 +1169,8 @@ Once the script has been set up, execute using the hover in the usual way, then 
 ---
 #### Show other vscode config settings
 Other configuration settings can also be viewed
-```js :eval noinline
-// ```js:eval {noinline}  --eval is not available in mpe`
+```js :vm noinline
+// ```js :vm noinline  --eval is not available in mpe`
 let c=vscode.workspace.getConfiguration('');
 console.log("editor font size= "+c.get("editor.fontSize"))
 //c.update("editor.fontSize",12,1) //to change it
@@ -1140,7 +1184,7 @@ editor font size= 12
 
 This is a beta version.
 
-Note that in all scripting languages included (except the 'home-grown' one *buddvs*, and to some extent *eval*), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+Note that in all scripting languages included (except the 'home-grown' one *buddvs*, and to some extent *vm* & *eval*), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
 Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on my Ryzen pc). However, other included scripts are generally fairly fast (see the demo gif above).
 

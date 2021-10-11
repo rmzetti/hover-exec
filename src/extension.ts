@@ -3,8 +3,9 @@ import * as cp from "child_process";
 import internal = require("stream");
 import _=require("lodash");
 import math=require("mathjs");  
-import moment=require("moment"); //lodash, mathjs & moment for eval scripting
-let vm=require('vm');
+import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
+import vm = require('vm');
+import { type } from "os";
 let codeBlock = ""; //code f or execution
 let startCode = 0; //start line of code
 let out: string = ""; //output from code execution
@@ -48,9 +49,6 @@ const msgDel =
 const msgOut =
   "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
   "[delete output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
-
-//all single char variables declared for persistence over several eval scripts
-let a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z; //typescript reports unused
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //cmd line parse result
 
 export function activate(context: vscode.ExtensionContext) {
@@ -92,10 +90,10 @@ export function activate(context: vscode.ExtensionContext) {
         setExecParams(context, doc, pos, line); //reset basic exec parameters inc getSpecialPath
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
-        let script = config.get("scripts." + cmdId); //is json object if cmd1 is a 'built-in' script
+        let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
         if (script) {
           //if predefined script engine
-          cmd = replaceStrVars(script as string); //expand %f etc & get tempName
+          cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
             "open: [ [*last script*] ](" +
             tempPath + tempName + ") " + "[ [*last result* ] ](" + tempPath + tempName + ".out.txt)\n\n";
@@ -322,7 +320,7 @@ export function activate(context: vscode.ExtensionContext) {
       //remove previous padding
       s = s.slice(0, s.indexOf("&emsp;"));
     } // pad out to 16 ch with em spaces (for bottom line of hover)
-    for (i = s.length; i < 16; i++) {
+    for (let i = s.length; i < 16; i++) {
       s += "&emsp;";
     }
     return s;
@@ -399,14 +397,14 @@ export function activate(context: vscode.ExtensionContext) {
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
-  status(''+math.round(5.6)); //activate 'unused' imports
-  status(''+_.range(0,1));
-  status(''+moment.now());
+  // status(''+math.round(5.6)); //activate 'unused' imports
+  // status(''+_.range(0,1));
+  // status(''+moment.now());
   status('ok');
 
 } //end function activate
 
-let hUri = new (class MyUriHandler implements vscode.UriHandler {
+const hUri = new (class MyUriHandler implements vscode.UriHandler {
   //handle hover exec commands (command is in uri.query)
   async handleUri(uri: vscode.Uri): Promise<void | null | undefined> {
     nexec += 1; //script exec number for check to ensure output is from latest script
@@ -443,7 +441,7 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         s2 = '"put_start_command_here %f.txt"';
       }
       out =
-        "```js :eval noInline\n" + //output :eval is an exec script which will:
+        "```js :vm noInline\n" + //output :eval is an exec script which will:
         "//this script can change, add or undefine a config setting\n" + 
         'let s={"' + s1 + '":' + s2 + "};\n" + //1. show current config, or an example
         '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
@@ -474,8 +472,7 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         sCode = sCode.replace(re, "$1");
       }
     }
-    vscode.window.withProgress(
-      {
+    vscode.window.withProgress({
         //set up status bar exec indicator
         location: vscode.ProgressLocation.Window,
         title: "Hover-exec", //title for progress display
@@ -488,41 +485,52 @@ let hUri = new (class MyUriHandler implements vscode.UriHandler {
         sCode=hrefSrcRepl(sCode);
         writeFile(tempPath + tempName, sCode); //saves code in temp file for execution
         process.chdir(currentFsPath);
-        if (cmd !== "") {
-          if (cmd === "eval") {
-            //eval: use vscode internal js
-            sCode = sCode.replace(/console.log/g, "write"); //provide a console.log for eval
+        if (cmd !== '') {
+          if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
+            sCode = sCode.replace(/console.log/g, "write"); //provide a console.log for vm
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
             sCode=`async function __main(){`+sCode+`};__main();`;
             try {
-              new vm.Script(sCode); //syntax check
-              await eval(sCode);    //execute
-            } catch (e) {           //if syntax error
-              needSwap=false;       //then don't do swap
-              out='error '+e; //report error in output block
+              if(cmd === 'eval'){
+                status('using eval');
+                //new vm.Script(sCode);
+                await eval(sCode);
+              } else {
+                status('using vm');
+                function vmRequire(src:string){
+                   return eval('require("'+src+'")');
+                }
+                let vc={execShell,process,config,vscode,alert,input,delay,status,readFile,writeFile,
+                  progress,showOk,showKey,write,abort,global,globalThis,require:vmRequire,_,math,moment};
+                let vcContext=vm.createContext(vc); //prepare context
+                let script=new vm.Script(sCode);//syntax check
+                await script.runInContext(vcContext);//execute, out produced by 'write'
+                showOk=vc.showOk;showKey=vc.showKey; //save changes to context variables
+              }
+            } catch (e) {      //if syntax error
+              needSwap=false;  //then don't do swap
+              out='error '+e;  //report error in output block
             }
           } else {
             out = await execShell(cmd); //execute all other commands
-            if (cmdId === "buddvs") {
+            if (cmdId === "buddvs") {   //local script tester
               out = out.replace(/�/g, "î");
-            } //for test scripter
+            }
           }
         } else {
           out = uri.toString(); //no ex, return uri
         }
-        executing = false; //execution finished
-        if (iexec === nexec) {
-          //only output if this is the latest result
-          writeFile(tempPath + tempName + ".out.txt", out); //write to output file
+        executing = false;     //execution finished
+        if (iexec === nexec) { //only output if this is the latest result
+          writeFile(tempPath + tempName + ".out.txt", out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
           if (!noOutput) {
-            //out!=='' &&
             paste(out); //paste into editor
             removeSelection(); //deselect
           }
-          if (showOk) {
+          if (showOk) { //report successful completion
             progress("ok", 500);
-          } //report successful completion
+          } 
         }
       }
     );
@@ -544,7 +552,7 @@ function hrefSrcRepl(s:string) {
 }
 
 function replaceStrVars(s: string) {
-  if(cmdId==='eval'){tempName='temp.js';}
+  if(cmdId==='eval' || cmdId==='vm'){tempName='temp.js';}
   //replace %f etc with the appropriate string
   //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
   if (/%[fp]\.\w/.test(s)) {
@@ -672,6 +680,7 @@ function selectCodeblock(force: boolean) {
         .lineAt(new vscode.Position(m, 0))
         .text.startsWith("```output");
       //records when an output line reached
+      let n=0;
       if (force || output) {
         n = m + 1; //output block selection starts at command line
       } else {
@@ -737,19 +746,21 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-const execShell = (cmd: string) => //execute shell command (to start scripts)
-  new Promise<string>((resolve, reject) => {
+async function execShell(cmd: string){ //execute shell command (to start scripts)
+  return new Promise<string>((resolve, reject) => {
     ch = cp.exec(cmd, (err1, out1, stderr1) => {
-      if (err1 && stderr1 === "") {
+      if (err1 && stderr1 !== "") {
+        //alert('1. '+err1+',<'+stderr1+'>')
+        needSwap=false;
         return resolve(out1 + err1 + "," + stderr1);
       }
       return resolve(out1 + stderr1);
     });
-});
+  });
+}
 
 async function writeFile(path: string, text: string) {
-  //`text` to `file' (full path)
-  //alert('bbb '+vscode.Uri.file(file));
+  //`text` to file at path (full path)
   await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(text));
 }
 
@@ -813,6 +824,10 @@ function status(s:string): void {
 function alert(s: string) {
   //provide an alert function for eval scripts
   vscode.window.showInformationMessage(s);
+}
+
+function abort(){
+  return !executing;
 }
 
 async function input(s:string) {

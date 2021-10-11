@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute codeblocks",
-	"version": "0.6.2",
+	"version": "0.6.3",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rmzetti/hover-exec"
@@ -53,6 +53,7 @@
 						"lua": "lua54 \"%f.lua\"",
 						"js": "node \"%f.js\"",
 						"eval": "eval",
+						"vm": "vm",
 						"node": "node \"%f.js\"",
 						"javascript": "node \"%f.js\"",
 						"html": "\"%f.html\"",
@@ -77,6 +78,7 @@
 						"lua": "print('>>'..($1))",
 						"js": "console.log('>>'+($1))",
 						"eval": "console.log('>>',($1))",
+						"vm": "console.log('>>',($1))",
 						"go": "'>>'+($1)",
 						"buddvs": "write('>>'+($1))"
 					}
@@ -131,5 +133,8 @@
 			"  'capabilities':{'hoverProvider':'true'},",
 			"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
 		]
+	},
+	"dependencies": {
+		"vm2": "^3.9.3"
 	}
 }
