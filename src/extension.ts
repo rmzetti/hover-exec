@@ -27,13 +27,15 @@ let nexec = 0; //number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
-let showKey = false; //show keypressed meesage
-let showOk = false; //show ok when command completes successfully
 let ch: cp.ChildProcess; //child process executing current script
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
+let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
+const vmDefault={execShell,process,config,vscode,alert,input,delay,status,readFile,writeFile,
+  progress,write,abort,global,globalThis,require:vmRequire,_,math,moment};
+let vmContext={...vmDefault}; //only shallow clone needed
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -397,9 +399,6 @@ export function activate(context: vscode.ExtensionContext) {
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
-  // status(''+math.round(5.6)); //activate 'unused' imports
-  // status(''+_.range(0,1));
-  // status(''+moment.now());
   status('ok');
 
 } //end function activate
@@ -493,19 +492,15 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
             try {
               if(cmd === 'eval'){
                 status('using eval');
-                //new vm.Script(sCode);
                 await eval(sCode);
               } else {
                 status('using vm');
-                function vmRequire(src:string){
-                   return eval('require("'+src+'")');
+                if(vmContext===undefined){
+                  vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
                 }
-                let vc={execShell,process,config,vscode,alert,input,delay,status,readFile,writeFile,
-                  progress,showOk,showKey,write,abort,global,globalThis,require:vmRequire,_,math,moment};
-                let vcContext=vm.createContext(vc); //prepare context
+                let vcContext=vm.createContext(vmContext);//prepare context 
                 let script=new vm.Script(sCode);//syntax check
                 await script.runInContext(vcContext);//execute, out produced by 'write'
-                showOk=vc.showOk;showKey=vc.showKey; //save changes to context variables
               }
             } catch (e) {      //if syntax error
               needSwap=false;  //then don't do swap
@@ -528,7 +523,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
             paste(out); //paste into editor
             removeSelection(); //deselect
           }
-          if (showOk) { //report successful completion
+          if (config.showOk) { //report successful completion
             progress("ok", 500);
           } 
         }
@@ -798,6 +793,10 @@ function utf8ArrayToStr(array:Uint8Array) {
 async function readFile(path:string){
   //alert('aaa '+vscode.Uri.file(path));
   return utf8ArrayToStr(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
+}
+
+function vmRequire(src:string){
+  return eval('require("'+src+'")');
 }
 
 function write() {

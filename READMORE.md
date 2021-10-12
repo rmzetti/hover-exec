@@ -6,6 +6,8 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
     - [Using vscode's vm and eval](#using-vscodes-vm-and-eval)
+    - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
+    - [The `vm` context](#the-vm-context)
     - [using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
     - [Scripts with built-in commands](#scripts-with-built-in-commands)
@@ -64,7 +66,7 @@ Hovering over lines starting with ` ``` ` (or starting with a single backtick an
 ---
 ### Using vscode's vm and eval
 
-Javascript code blocks can also be executed in *vscode*'s `vm` module, or by using `eval`.
+Javascript code blocks can be executed in *vscode*'s `vm` module, or by using `eval`. `nodejs` can also be used .. see [Using nodejs](#using-nodejs).
 
 In the command line, using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :vm` sets the actual exec command to `vm`. Note that `vm` and `eval` allow the internal *vscode* API to be used.  Global objects, including variable and functions, can be used by the '`vm` or `eval` scripts for persisting values to another instance, and provide a method to link several codeblocks. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
@@ -83,7 +85,7 @@ b('dogs');a('pears');
 Intermediate results can be viewed in line by appending `=>>`  (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Not that *mpe* will not update intermediate results.
 
 ---
-A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`)
+A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`). See the next section for other available functions.
 
 ```js :vm
 // ```js :vm -- as before, this line shows the command in markdown previews`
@@ -108,6 +110,104 @@ hello, world 3
 // ```js :vm -- javascript regex tester`
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
 ```
+
+---
+### available functions in `vm` and `eval`
+
+The following functions are included in `vmContext` by default (and are also available for `eval`):
+- abort(): abort current script
+- alert(string): provide an alert box (bottom right)
+- config: access to *hover-exec* configuration
+- delay(usec): delay for specified number of usec
+- execShell(string): exec shell command
+- global: define and access global functions and variables (persistent over separate script execs)
+- globalThis: as for global
+- input(string): wait for input (box at top of screen)
+- process: access to process module, eg. `process.cwd()` 
+- progress(string,usec): show a progress bar (bottom right) for specified usec
+- readFile(path): read local file
+- writeFile(path,string): write string to local file at full path
+- require: for `xyx=require("package")`
+- showKey: boolean, show keypressed
+- showOk: boolean, show successful execution
+- status(string): show `=>string` on status bar
+- vscode: access to vscode objects
+- write(string): `console.log` to output block
+- math: access to `mathjs` objects
+- moment: access to `moment` objects
+- _ : access to `lodash` objects
+
+---
+### The `vm` context
+The context for `vm` can be restricted, enlarged or set back to the default. The easiest method is to directly change the `vmContext` object using `eval`. Examples:
+
+```js:eval //show the current context for vm
+for (let x in vmContext){
+  write(''+x);
+}
+```
+```output
+execShell
+process
+config
+vscode
+alert
+input
+delay
+status
+readFile
+writeFile
+progress
+write
+abort
+global
+globalThis
+require
+_
+math
+moment
+```
+
+With this context, for example, the following works in `vm`:
+
+```js:vm
+_.range(0,5)=>> 0,1,2,3,4
+```
+
+Now reduce the context using `eval`:
+
+```js:eval //reduce the current context for vm (leave 'write' so vm's 'console.log' works)
+vmContext={write}
+for (let x in vmContext){
+  console.log(''+x);
+}
+```
+```output
+write
+```
+
+Now lodash is not available to `vm` scripts:
+
+```js:vm
+_.range(0,5)=>>
+```
+```output
+error ReferenceError: _ is not defined
+```
+
+To get the default back, set `vmContext` to `undefined`:
+
+```js:eval
+vmContext=undefined
+```
+
+Now `lodash`, part of the default `vmContext` works again
+
+```js:vm
+_.range(0,5)=>> 0,1,2,3,4
+```
+
+In this way, the context used for vm_scripts can be adjusted to be restricted or permissive as necessary.
 
 ---
 ### using require and globals with vm and eval

@@ -7,6 +7,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
     - [Using vm and eval](#using-vm-and-eval)
+    - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
     - [Scripts with default command lines](#scripts-with-default-command-lines)
   - [Some examples](#some-examples)
@@ -74,6 +75,34 @@ hello, world 3
 // ```js :vm -- javascript regex tester`
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
 ```
+
+---
+### available functions in `vm` and `eval`
+
+The following functions are included in `vmContext` by default (and are also available for `eval`):
+- abort(): abort current script
+- alert(string): provide an alert box (bottom right)
+- config: access to *hover-exec* configuration
+- delay(usec): delay for specified number of usec
+- execShell(string): exec shell command
+- global: define and access global functions and variables (persistent over separate script execs)
+- globalThis: as for global
+- input(string): wait for input (box at top of screen)
+- process: access to process module, eg. `process.cwd()` 
+- progress(string,usec): show a progress bar (bottom right) for specified usec
+- readFile(path): read local file
+- writeFile(path,string): write string to local file at full path
+- require: for `xyx=require("package")`
+- showKey: boolean, show keypressed
+- showOk: boolean, show successful execution
+- status(string): show `=>string` on status bar
+- vscode: access to vscode objects
+- write(string): `console.log` to output block
+- math: access to `mathjs` objects
+- moment: access to `moment` objects
+- _ : access to `lodash` objects
+
+See readMore for information on restricting or enlarging the vm context.
 
 ---
 ### using require and globals with vm and eval

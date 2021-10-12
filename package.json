@@ -82,7 +82,12 @@
 						"go": "'>>'+($1)",
 						"buddvs": "write('>>'+($1))"
 					}
-				}
+				},
+        "hover-exec.showOk":{
+          "description": "show message when script completed successfully",
+          "type":"boolean",
+          "default":false
+        }
 			}
 		},
 		"keybindings": [
