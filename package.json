@@ -51,7 +51,7 @@
 						"lua54": "lua54 \"%f.lua\"",
 						"lua53": "lua53 \"%f.lua\"",
 						"lua": "lua54 \"%f.lua\"",
-						"js": "node \"%f.js\"",
+						"js": "vm",
 						"eval": "eval",
 						"vm": "vm",
 						"node": "node \"%f.js\"",
