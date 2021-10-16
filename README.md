@@ -41,62 +41,62 @@ Hovering over lines starting with ` ``` `  (or starting with a single backtick a
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, or by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, with `hover-exec` providing a reasonably substantial context. 
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
 
 ### Examples using `vm` and `eval`
 
 ```js
-//```js :vm  //this comment line is to show the command line in markdown previews`
+//```js  //this comment is to show the command line in markdown previews`
 console.log("Hello world")
 'test: '+Math.random() =>>test: 0.6805919081208904
 ```
 ```output
 Hello world
 ```
-Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produce in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
+Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
+---
 A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions  published by `hover-exec` (eg. `alert`)
 
-```js  //using vm various examples
-//```js //using vm various examples`
+```js  //using javascript vm various examples
+//```js //using javascript vm, various examples`
 let abc="hello, world 3"
 let a='hello variable world';
 alert(a) //not available in nodejs scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>4.861628323047675
-eval('let b=3; 2*b*Math.random()')=>>5.692120029891326
+2*b*Math.random() =>>3.7623965494041895
+eval('let b=3; 2*b*Math.random()')=>>5.986797001365053
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.6271180982018558
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>>hello 1.2340280006733695
+process.cwd() =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.7151960780172062
+goodbye world 0.9222454670539713
 hello, world 3
 ```
 
 ---
 ```js  //javascript regex tester
 //```js  //javascript regex tester`
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
 
-Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
-
 ---
-All the above codeblocks can be executed using `eval` instead of `vm`, eg.
+All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
-```js :eval
-//```js :eval -- javascript regex tester using eval`
+```js :eval // javascript regex tester using eval
+//```js :eval // javascript regex tester using eval`
 'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> bcde--fg
 ```
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
 
-In the command line, using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal *vscode* API to be used.
+In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal *vscode* API to be used.
 
+Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
 ---
 ### Available functions in `vm` and `eval`
@@ -142,7 +142,7 @@ function xrange(){
 }
 xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec
+cd =>>c:/Users/xxx/OneDrive/Documents/GitHub/hover-exec
 ```
 
 ```js //declare a global function
@@ -245,7 +245,7 @@ pwd
 ```output
 Path
 ----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+C:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---

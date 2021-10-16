@@ -6,8 +6,11 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
     - [Using vscode's vm and eval](#using-vscodes-vm-and-eval)
+    - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
+  - [Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.](#note-that-vm-and-eval-allow-the-internal-vscode-api-to-be-used-installation-of-nodejs-is-not-required-for-vm-or-eval-scripts-to-execute)
     - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [The `vm` context](#the-vm-context)
+    - [Quick specification of `vm` context](#quick-specification-of-vm-context)
     - [using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
     - [Scripts with built-in commands](#scripts-with-built-in-commands)
@@ -66,29 +69,32 @@ Hovering over lines starting with ` ``` ` (or starting with a single backtick an
 ---
 ### Using vscode's vm and eval
 
-Javascript code blocks can be executed in *vscode*'s `vm` module, or by using `eval`. `nodejs` can also be used .. see [Using nodejs](#using-nodejs).
+Javascript code blocks can be executed using the `vm` module, or by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
 
-In the command line, using `js` for the codeblock id produces syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :vm` sets the actual exec command to `vm`. Note that `vm` and `eval` allow the internal *vscode* API to be used.  Global objects, including variable and functions, can be used by the '`vm` or `eval` scripts for persisting values to another instance, and provide a method to link several codeblocks. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
+### Examples using `vm` and `eval`
 
-```js :vm
-// ```js :vm   -- this comment shows the command line in markdown previews`
-'test: '+Math.random() =>> test: 0.2498913762272168
-a = function (fruit){alert('I like ' + fruit);}
+```js
+//```js  //this comment is to show the command line in markdown previews`
+'test: '+Math.random() =>>test: 0.2549981720136758
+aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates a global
 //to use predefined variables a..z, don't use 'let'
-b = function (animal){alert('he likes ' + animal);}
+bb = function (animal){alert('he likes ' + animal);}
 ```
 
-```js :vm //execute the previous *vm* block first
-b('dogs');a('pears');
+```js //execute the previous *vm* block first
+//```js //execute the previous *vm* block first
+bb('dogs');aa('pears'); //uses the globals defined in the previous code block
 ```
 
 Intermediate results can be viewed in line by appending `=>>`  (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Not that *mpe* will not update intermediate results.
 
+Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
+
 ---
 A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`). See the next section for other available functions.
 
-```js :vm
-// ```js :vm -- as before, this line shows the command in markdown previews`
+```js  //using vm various examples
+//```js //using vm, various examples`
 let abc="hello, world 3"
 let a='hello variable world';
 alert(a) //not available in node scripts
@@ -97,7 +103,7 @@ vscode.window.showInformationMessage(a) //not available in node scripts
 eval('let a=3;2*a*Math.random()')=>> 1.4918238662752863
 console.log(a,Math.random())
 'hello '+(2-1+Math.random())=>> hello 1.8543022521380952
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+process.cwd() =>> c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
@@ -106,11 +112,24 @@ hello, world 3
 ```
 
 ---
-```js :vm -- javascript regex tester
-// ```js :vm -- javascript regex tester`
+```js  //javascript regex tester using vm
+// ```js //javascript regex tester using vm`
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
 ```
 
+---
+All the above codeblocks can be executed using `eval` instead of `vm`, eg.
+
+```js :eval  //javascript regex tester using eval
+//```js :eval //javascript regex tester using eval`
+'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> bcde--fg
+```
+
+The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
+
+In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. 
+
+Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 ---
 ### available functions in `vm` and `eval`
 
@@ -139,7 +158,7 @@ The following functions are included in `vmContext` by default (and are also ava
 
 ---
 ### The `vm` context
-The context for `vm` can be restricted, enlarged or set back to the default. The easiest method is to directly change the `vmContext` object using `eval`. Examples:
+The context for `vm` can be restricted, enlarged or set back to the default. The `vmContext` object can be directly specified by using `eval`. Examples:
 
 ```js:eval //show the current context for vm
 for (let x in vmContext){
@@ -166,11 +185,13 @@ require
 _
 math
 moment
+__main
 ```
 
 With this context, for example, the following works in `vm`:
 
-```js:vm
+```js //can use lodash
+//```js //can use lodash
 _.range(0,5)=>> 0,1,2,3,4
 ```
 
@@ -179,16 +200,19 @@ Now reduce the context using `eval`:
 ```js:eval //reduce the current context for vm (leave 'write' so vm's 'console.log' works)
 vmContext={write}
 for (let x in vmContext){
-  console.log(''+x);
+  console.log('reduced context:')
+  console.log('  {'+x+'}');
 }
 ```
 ```output
-write
+reduced context:
+  {write}
 ```
 
 Now lodash is not available to `vm` scripts:
 
-```js:vm
+```js    //can't use lodash in reduced context
+//```js //can't use lodash in reduced context
 _.range(0,5)=>>
 ```
 ```output
@@ -203,20 +227,45 @@ vmContext=undefined
 
 Now `lodash`, part of the default `vmContext` works again
 
-```js:vm
+```js    //can now use lodash (etc) again in vm
+//```js //can now use lodash (etc) again in vm
 _.range(0,5)=>> 0,1,2,3,4
 ```
 
 In this way, the context used for vm_scripts can be adjusted to be restricted or permissive as necessary.
+
+### Quick specification of `vm` context
+
+By default the `js` command utilises a default context which is progressively expanded by 'naked' function declarations and variable assignments (eg. `a=43;` rather than `let a=43;` or `var a=43;`). So successive codeblocks can build on previously executed ones.
+
+Any `js/vm` codeblock can utilise the following options:
+
+```js:vmdf     //set 'vmContext' to default
+//```js:vmdf  //set 'vmContext' to default
+//On execution, the vmContext returns to its default
+```
+
+and
+
+```js:vmin     //set 'vmContext' to minimum
+//```js:vmin  //set 'vmContext' to minimum
+//This will set the vmContext to a minimum (basically
+//  just including 'write' which enables 'console.log' for output)
+```
+
+Apart from resetting `vmContext` at the start, these are normal `js` codeblocks.
 
 ---
 ### using require and globals with vm and eval
 
 Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
 
-A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted using, eg. `delete global.a;`
+A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted (undefined) using, eg. `delete global.a;`
 
-```js :eval
+'Naked' assignments (ie. no `let`or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'exec' codeblocks. 
+
+```js :eval //use of lodash and mathjs 
+//```js :eval //use of lodash and mathjs 
 function xrange(){
    let x1=_.range(0,6.1,6/10);
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
@@ -225,20 +274,37 @@ function xrange(){
 xrange()=>> 1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 ```
 
-```js:eval
-let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>> c:/Users/ralph/OneDrive/Documents/Notes
-//cd can be used in require, eg. 
-```
-
-```js:vm
+```js //global function definition
+//```js //global function definition
 f=global.f=function(m){return 'the meaning of life is '+m;};
 f(44-2)=>> the meaning of life is 42
 ```
 
-```js:eval
+```js:eval //use of global from 'vm' in 'eval'
+//```js:eval //use of global from 'vm' in 'eval'
 f(42)=>> the meaning of life is 42
 _.range(0,4)=>> 0,1,2,3
+```
+
+```js    //naked function definition (no 'let')
+//```js //naked function definition (no 'let')
+test = function () {
+  console.log('test works')
+}
+```
+```js    //function available to subsequent codeblocks
+//```js //function available to subsequent codeblocks
+test()
+```
+```output
+test works
+```
+```eval     //but not to 'eval' codeblocks
+//```eval  //but not to 'eval' codeblocks
+test()
+```
+```output
+error ReferenceError: test is not defined
 ```
 
 ---
@@ -246,39 +312,43 @@ _.range(0,4)=>> 0,1,2,3
 
 The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
 
-```js
-// ```js   -- as before, this line shows the command in markdown previews`
+```js :node
+// ```js :node  //as before, this line shows the command in markdown previews`
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
 ```output
   test using node:
-  0.8527953952843936
+  0.5360235800978341
   Note: hover-exec on ```output line`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
 
 Notes:
-- ` ```node` or ` ```javascript` can also be used
-- Include `{cmd=node}` in the command line to allow execution also in *markdown preview enhanced* (in-line output will not be available)
+- Including `{cmd=node}` in the command line to allow execution also in *markdown preview enhanced* (in-line output will not be available)
 
 ---
 Note that codeblocks with {cmd...}, as appropriate, can be executed in either *hover-exec* or *markdown preview enhanced* (if you're viewing this also in *mpe*, you can try it both ways)
 
-```js {cmd=node}
-//```js {cmd=node}`
+```js :node {cmd=node}
+//```js :node {cmd=node}`
 console.log(process.cwd())
 console.log('test using node: '+Math.random())
 let a=5;console.log(a+Math.random())
 ```
+```output
+c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+test using node: 0.47027243015214704
+5.679301773478228
+```
 
-```js {cmd=node}
-// ```js {cmd=node}`
-process.cwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-'test: '+Math.random() =>>test: 0.5163466685702758
+```js :node {cmd=node}
+// ```js :node {cmd=node}`
+process.cwd()  =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+'test: '+Math.random() =>>test: 0.9716829485200404
 let a=5;
-a+Math.random() =>>5.034082252509589
+a+Math.random() =>>5.907325870290402
 ```
 
 ---
@@ -316,10 +386,15 @@ In these examples, random numbers & time are used so updated output is easier to
 print("hello & goodbye")
 math.randomseed(os.time())
 --maybe hover-exec could execute commented lines with in-line
-"hello "..math.pi+math.random() =>>hello 3.4996308621715
+"hello "..math.pi+math.random() =>>hello 3.4279444887858
 print('hello '..(44-2+math.random()))
-"goodbye"..math.pi+math.random() =>>goodbye4.0981838339863
+"goodbye"..math.pi+math.random() =>>goodbye3.3987259842488
 print("goodbye "..math.pi+math.random())
+```
+```output
+hello & goodbye
+hello 42.995219859293
+goodbye 3.4225625205094
 ```
 
 ```lua {cmd=lua54} --10 million random number calls
@@ -342,8 +417,12 @@ print(os.clock()-t)
 The following example does not use any predefined configs,  just a command and %f to indicate the codeblock temp file is to be used. The default %f ext is `.txt`, but this can be changed by appending the desired ext as in this `lua51` example - many programs will need a specific ext to run.
 
 ```lua51.exe %f.lua
+--```lua51.exe %f.lua
 print("hello & goodbye")
 math.randomseed(os.time())
+```
+```output
+hello & goodbye
 ```
 
 ---
@@ -353,7 +432,7 @@ Powershell can be used in *mpe*
 ```pwsh {cmd}
  # ```pwsh {cmd}`
 Get-Random -Min 0.0 -Max 1.0 =>>0.583402059778293
-"current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\Notes
+"current dir: "+(pwd) =>>current dir: C:\Users\xxx\OneDrive\Documents\Notes
 ```
 
 ---
@@ -408,7 +487,7 @@ Using buddvs (a personal scripting language). Also works in *mpe*.
 
 ```js:buddvs {cmd=buddvs}
 // ```js:buddvs {cmd=buddvs}  --the {..} is for mpe
-chdir=>>c:\Users\ralph\OneDrive\Documents\Notes
+chdir=>>c:\Users\xxx\OneDrive\Documents\Notes
 a=61.5+random*10;
 a=>>64.33917299
 b=4;c=a+b
@@ -419,7 +498,7 @@ b=4;c=a+b
 ### Javascript using vm
 The `vm` and `eval` commands use vscode's built in capabilities. They are not available in *mpe*.
 
-```js :vm
+```js :vm //or just 'js'
 // ```js :vm  -- not available in mpe
 let abc="abcde"
 let a='hello variable world';
@@ -429,7 +508,7 @@ vscode.window.showInformationMessage(a) //not available in node
 eval('let a=3;2*a*Math.random()')=>> 1.2718966757113455
 console.log(a,Math.random())
 'hello '+(2-1+Math.random())=>> hello 1.558627474451321
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+process.cwd() =>> c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
@@ -442,8 +521,8 @@ abcde
 Run a server on localhost ([click here after running it](http://127.0.0.1:1337))
 Also works in *markdown preview enhanced*, (ie. *mpe*)
 
-```js {cmd=node}
-// ```js {cmd=node} -- works in mpe
+```js :node {cmd=node}
+// ```js :node {cmd=node} -- works in mpe
 var http = require('http');
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -465,8 +544,8 @@ netstat -ano | findstr :13
 ### More vm, eval and node examples
 Various time and date functions using `vm`
 
-```js :vm //internal, time & date
-// ```js :vm  --vscode internal time & date  - not in *mpe*
+```js      //internal, time & date
+// ```js  //internal, time & date  - not in *mpe*
 (44-Math.random())=>> 43.70036379934795
 //show information message via vscode api, needs cmd eval, not js
 progress('Hello whole World',4000)
@@ -480,12 +559,12 @@ new Date().getTime()=>> 1633767805966
 ---
 Time and date using node ` ```js`
 
-```js
+```js :node
 new Date().getTime()=>>1633767809508
 ```
 
-```js {cmd=node} //through nodejs
-//```js {cmd=node} //through nodejs
+```js :node {cmd=node} //through nodejs
+//```js :node {cmd=node} //through nodejs
 a=44
 // in-line results are calculated but not output in mpe
 'answer='+(a-Math.random()) =>>answer=43.79585152762694
@@ -521,7 +600,7 @@ Use ` ```octave` or ` ```python:octave` to run octave.
  # nb. need mat2str or num2str for numeric output
 num2str(7.1+rand(1))  =>>7.4225
 'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\ralph\OneDrive\Documents\Notes
+pwd()  =>>c:\Users\xxx\OneDrive\Documents\Notes
 disp('hello world in output section!')
 ```
 
@@ -532,7 +611,7 @@ Use ` ```scilab` to run scilab, or ` ```js :scilab` for some quick and dirty syn
 ```js :scilab
 // ```js:scilab {cmd=scilab}
 // need to use 'string()' for numeric output
-pwd()   =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+pwd()   =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
 rand("seed",getdate('s')); //set new random sequence
 string(rand())+', '+string(rand())   =>>0.4944074, 0.8478804
 mprintf('%s',string(rand()))
@@ -550,7 +629,7 @@ Use ` ```python` to run python. ` ```python3` can be used if that is the python 
 import os
 from random import random
  # the in-line results are effectively commented out for mpe
-os.getcwd() =>>c:\Users\ralph\OneDrive\Documents\Notes
+os.getcwd() =>>c:\Users\xxx\OneDrive\Documents\Notes
 45-2+random() =>>43.64590817490019
 print('hello world '+str(3*random()+1))
 ```
@@ -611,7 +690,7 @@ Julia also works in *mpe*
 ```julia {cmd}
  # ```julia {cmd}  # works in mpe`
 using LinearAlgebra, Statistics, Compat
-pwd()  # =>>c:\Users\ralph\OneDrive\Documents\Notes
+pwd()  # =>>c:\Users\xxx\OneDrive\Documents\Notes
 a=rand(Float64,3);
 a         # =>>[0.008669275390885911, 0.6887025891465031, 0.0825857184524883]
 b=a;b[2]=42;        # nb. arrays are shallow copied
@@ -629,7 +708,7 @@ And `matlab` can be used to run *matlab*, although it's a slow starter... The ar
 
 ```matlab {cmd args=["-sd", "$input_file", "-batch temp"]}
 % ```matlab {cmd args=["-sd", "$input_file"]}`
-pwd   =>>C:\Users\ralph\OneDrive\Documents\Notes
+pwd   =>>C:\Users\xxx\OneDrive\Documents\Notes
 7*7-7 =>>42
 % Speedtest
 ```
@@ -907,8 +986,8 @@ pwd
 ---
 ### Random strings in javascript
 
-```js {cmd=node} //works in mpe
-// ```js {cmd=node} //works in mpe`
+```js :node {cmd=node} //works in mpe
+// ```js :node {cmd=node} //works in mpe`
 //random string generation see https://gist.github.com/6174/6062387
 a=Math.random().toString(36).substring(2, 15)
 a =>>yelvv0rat5
@@ -921,8 +1000,8 @@ Math.random(36).toString(36).substring(2,3) =>>b
 ```
 
 ---
-```js {cmd=node} //string jumbler, works in mpe
-// ```js {cmd=node} //string jumbler, works in mpe`
+```js :node {cmd=node} //string jumbler, works in mpe
+// ```js :node {cmd=node} //string jumbler, works in mpe`
 function swapStr(str,n){
     var arr = [...str];
     for (let k = 0; k<n; k++) {
@@ -936,8 +1015,8 @@ console.log(swapStr('portsmouth',100))
 ```
 
 ---
-```js {cmd=node} //generate random string
-// ```js {cmd=node} //generate random string`
+```js :node {cmd=node} //generate random string
+// ```js :node {cmd=node} //generate random string`
 function randch(n){
   return ''+Math.random().toString(36).substring(2,2+n)
 }
@@ -948,8 +1027,8 @@ console.log(randch(36))
 ---
 ### Regular expression test and usage
 
-```js :vm //javascript regex tester
-// ```js :vm //javascript regex tester, use node in mpe instead`
+```js     //javascript regex tester using vm
+// ```js //javascript regex tester (use node for mpe)`
 // if not using md preview enhanced, use = >> instead of // = (less faint)
 "xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js
 Math.random()*100   =>> 88.421425704524
@@ -957,8 +1036,8 @@ Math.random()*100   =>> 88.421425704524
 
 ---
 
-```js {cmd=node} //javascript regex tester using node
-// ```js {cmd=node} //javascript regex tester`
+```js :node {cmd=node} //javascript regex tester using node
+// ```js :node {cmd=node} //javascript regex tester`
 'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
 Math.random()*100   =>>36.993060297486615
 console.log(Math.random()*100) //this for *mpe*
@@ -970,8 +1049,8 @@ console.log(Math.random()*100) //this for *mpe*
 ---
 another regex example
 
-```js {cmd=node}
-// ```js {cmd=node}`
+```js :node {cmd=node}
+// ```js :node {cmd=node}`
 var myRe = new RegExp('d(b+)d', 'g');
 var myArray = myRe.exec('xxdbbbdwerwr');
 myArray =>>dbbbd,bbb
@@ -989,10 +1068,10 @@ console.log(myRe)
 ```
 
 ---
-and again ```js {cmd=node}`
+and again ```js :node {cmd=node}`
 
-```js  {cmd=node} //find one+ chars followed by a space 
-// ```js  {cmd=node} //find one+ chars followed by a space`
+```js :node  {cmd=node} //find one+ chars followed by a space 
+// ```js :node  {cmd=node} //find one+ chars followed by a space`
 var re = /\w+\s/g;
 var str = 'fee fi fo fum';
 var myArray = str.match(re); 
@@ -1029,15 +1108,15 @@ func main() {
 ---
 ### Vitamin b12, dosage vs uptake
 
-```js {cmd=node}
-// ```js {cmd=node}`
-let d=1000 //dosage ug
+```js    //using 'vm' for input
+//```js //using 'vm' for input
+let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=10.484273589615576
+' uptake='+u  =>> uptake=5.982053838484545
 console.log(u)
 ```
 ```output
-10.484273589615576
+5.982053838484545
 ```
 
 ---
@@ -1045,8 +1124,8 @@ console.log(u)
 
 Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
 
-```js {cmd=node}
-// ```js {cmd=node}`
+```js :node {cmd=node}
+// ```js :node {cmd=node}`
 //to execute this, need the following 3 libraries in a subfolder called 'lib'
 let s=process.cwd().replace(/\\/,'/'); //current folder using / not \
 _=require(s+"/lib/lodash.js")

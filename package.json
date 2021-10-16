@@ -2,7 +2,7 @@
 	"name": "hover-exec",
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
-	"description": "execute codeblocks",
+	"description": "execute code blocks",
 	"version": "0.6.3",
 	"repository": {
 		"type": "git",
@@ -78,6 +78,7 @@
 						"lua": "print('>>'..($1))",
 						"js": "console.log('>>'+($1))",
 						"eval": "console.log('>>',($1))",
+						"node": "console.log('>>'+($1))",
 						"vm": "console.log('>>',($1))",
 						"go": "'>>'+($1)",
 						"buddvs": "write('>>'+($1))"

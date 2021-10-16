@@ -33,9 +33,9 @@ let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
-const vmDefault={execShell,process,config,vscode,alert,input,delay,status,readFile,writeFile,
-  progress,write,abort,global,globalThis,require:vmRequire,_,math,moment};
-let vmContext={...vmDefault}; //only shallow clone needed
+const vmDefault={global,globalThis,config,process,vscode,abort,alert,delay,execShell,
+  input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -300,9 +300,13 @@ export function activate(context: vscode.ExtensionContext) {
       cmda = s.replace(/^(\w*).*/, "$1");
       if (/^\w+\s?:\w/.test(s)) {
         cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
-                      //eg. for '```js:asdf' cmdId is 'asdf'
+                      //eg. for 'js:asdf' cmdId is 'asdf'
+        if(cmdId==='vmdf'){vmContext=undefined;cmdId='vm';}
+                      //for 'js:def' set default context & cmdId='vm'
+        else if (cmdId==='vmin'){vmContext={write};cmdId='vm';}
+                      //for 'js:min' set min context & cmdId='vm'
       } else {
-        cmdId = cmda; //eg. for '```js asdf' cmdId is 'js'
+        cmdId = cmda; //eg. for 'js asdf' cmdId is 'js'
       }
     }
     if (
@@ -673,7 +677,7 @@ function selectCodeblock(force: boolean) {
       //not a one-liner
       let output = doc
         .lineAt(new vscode.Position(m, 0))
-        .text.startsWith("```output");
+        .text==="```output"; //simple ```output line
       //records when an output line reached
       let n=0;
       if (force || output) {
@@ -689,7 +693,7 @@ function selectCodeblock(force: boolean) {
             n + 1 < doc.lineCount &&
             doc
               .lineAt(new vscode.Position(n + 1, 0))
-              .text.startsWith("```output")
+              .text.startsWith("```output") //allows composite output lines
           ) {
             output = true;
             n++; //skip output line
