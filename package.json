@@ -61,7 +61,8 @@
 						"chrome": "google-chrome-stable \"%f.html\"",
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
-						"buddvs": "buddvs \"%f.txt\" "
+						"buddvs": "buddvs \"%f.txt\" ",
+            "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp.exe\" "
 					}
 				},
 				"hover-exec.swappers": {
@@ -81,7 +82,8 @@
 						"node": "console.log('>>'+($1))",
 						"vm": "console.log('>>',($1))",
 						"go": "'>>'+($1)",
-						"buddvs": "write('>>'+($1))"
+						"buddvs": "writeln('>>'+($1));",
+            "pascal": "writeln('>>',$1);"
 					}
 				},
         "hover-exec.showOk":{

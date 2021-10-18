@@ -555,15 +555,15 @@ function replaceStrVars(s: string) {
   //replace %f etc with the appropriate string
   //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
   if (/%[fp]\.\w/.test(s)) {
-    //this allows %f.ext notation to replace ext
-    tempName= "temp." + s.replace(/.*%[fp]\.(\w*)\W?.*/, "$1");
-    s= s.replace(/(%[fp])\.\w*(\W?)/, "$1$2"); //remove .ext
+    //this allows %f.ext notation to replace ext in %f etc
+    tempName= "temp." + s.replace(/.*?%[fp]\.(\w*).*/, "$1"); // \W? before last .
+    s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
-    .replace(/\/%f/g, tempPath + tempName) // /%f uses /
-    .replace(/\/%p/g, tempPath) // /%p uses /
-    .replace(/\/%c/g, currentPath) // /%c uses /
-    .replace(/\/%e/g, currentFile) // /%e uses /
+    .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
+    .replace(/\/%p/g, tempPath) // '/%p' uses /
+    .replace(/\/%c/g, currentPath) // '/%c' uses /
+    .replace(/\/%e/g, currentFile) // '/%e' uses /
     .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
     .replace(/%p/g, tempFsPath) //%p temp folder path
     .replace(/%c/g, currentFsPath) //%c current file path
@@ -603,6 +603,7 @@ function paste(text: string) {
       }
     }
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove start blank line if any
+    text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
     //if there is any output left, it will go into an ```output codeblock
     activeTextEditor.edit((selText) => {
