@@ -178,6 +178,7 @@ Command lines to start a number of scripts are included (see [Configuration sett
 - matlab
 - lua
 - go
+- pascal
 
 The script language (eg `julia`, `nodejs` ..) needs to have been installed, and ***some of the commands to run the scripts may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
 
@@ -361,7 +362,7 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "lua54":"lua54 \"%f.lua\"",
 - "lua53":"lua53 \"%f.lua\"",
 - "lua":"lua54 \"%f.lua\"",
-- "js":"node \"%f.js\"",
+- "js":"vm",
 - "eval":"eval",
 - "vm":"vm",
 - "node":"node \"%f.js\"",
@@ -371,6 +372,7 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "chrome":"google-chrome-stable \"%f.html\"",
 - "test":"test -c \"%f.tst\"",
 - "go":"go run \"%f.go\"",
+- "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 - "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
 Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.

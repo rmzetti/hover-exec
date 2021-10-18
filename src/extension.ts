@@ -551,7 +551,7 @@ function hrefSrcRepl(s:string) {
 }
 
 function replaceStrVars(s: string) {
-  if(cmdId==='eval' || cmdId==='vm'){tempName='temp.js';}
+  if(cmdId==='eval' || cmdId==='js' || cmdId==='vm'){tempName='temp.js';}
   //replace %f etc with the appropriate string
   //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
   if (/%[fp]\.\w/.test(s)) {

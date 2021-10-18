@@ -62,7 +62,7 @@
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-            "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp.exe\" "
+            "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 					}
 				},
 				"hover-exec.swappers": {
