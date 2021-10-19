@@ -132,7 +132,7 @@ Also note that lines with `=>>` appended are not actually legal javascript. To p
 
 ### Final comments
 
-The above bassic tests should all produce identical results to the  above after `hover-exec` has been installed in `vscode`.
+The above basic tests should all produce identical results to the  above after `hover-exec` has been installed in `vscode`.
 
 Other 'test' files will look at a broader range of script languages, but the techniques above essentially apply to all.
 
