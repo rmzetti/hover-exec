@@ -3,7 +3,7 @@
 The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
 
 ### Hover
-Opening a markdown file (eg. this one) in the vscode editor should activate the `hover-exec` extension. To check, hover over the start or end line of the following code block:
+Opening a markdown file (eg. this one) in the vscode editor should activate the `hover-exec` extension. To check, hover over the start or end line of the following code block (in the editor, of course):
 
 -------------------------
 ```js //click this line in the hover message to execute the code
