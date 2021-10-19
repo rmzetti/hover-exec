@@ -20,11 +20,11 @@ The following hover message should appear:
 The message shows `hover-exec` followed by the code block id (`js`). The bottom line (with the comment) provides the main `exec` function.
 
 ### Exec
-When the bottom line is clicked the script should execute, and an 'alert' box appear (bottom right) with `(i) hello world` in it.
+When the bottom line is clicked the script should execute, and, in accordance with the script,  an 'alert' box will appear (bottom right) with `(i) hello world` in it.
 
 Other 'clickable' areas should provide information as follows:
 
-Hover over [`last script`] to show the `path/name` of the code to be executed. Clicking that will open the file in the editor. The contents of the block will be in the file if the script has been executed. Similarly, `last result` will show any text output that has been produced. There will be no content for the above case, when the following script is executed, the `last result` command should show the same output seen in the editor:
+Hover over [`last script`] to show the `path/name` of the code to be executed. Clicking that will open the file in the editor. The contents of the block will be in the file if the script has been executed. Similarly, `last result` will show any text output that was produced. There will be no content for the above case, but when the following script is executed, the `last result` command should show the same output seen in the editor:
 
 ```js //when executed 'hello world' should be visible in a following code block titled 'output' (if you execute again there will be no 'visible' change, because the new content is identical to the old.)
 console.log('> ***hello world***')
@@ -33,7 +33,7 @@ console.log('> ***hello world***')
 > ***hello world***
 ```
 
-and the file accessed via `last result` will also show 'hello world'. Hovering  over the first or last linne of the output block will show ttwo options, `delete output` or `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
+and the file accessed via `last result` will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
 
 > ***hello world***
 
@@ -50,7 +50,7 @@ the meaning of life:  42
 
 The right hand `[delete block]` option will delete the code block (`ctrl-z` if it's an accident!)
 
-The `[ref]` option will provide some further information on possible shortcuts that can be used in command lines:
+The `[ref]` option will provide some further information on possible shortcuts that can be used in command lines (none of these are useful for `js`):
 
 ```js
 //show the [ref] output
@@ -87,7 +87,7 @@ if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.js'))
 ```
 
-Note that the `[config]` output is in the form of another executable `js` code block. All of the entries  that have been predefined can be viewed in this way, or by simply viewing the configuration entries in `vscode` settings for `hover-exec` (in the `settings.json` file). The script above offers the opportunity to change the setting (not recommended for the `js`  command above, at least not right now...)
+Note that the `[config]` output is in the form of another executable `js` code block. All of the entries that have been predefined can be viewed in this way, or by simply viewing the configuration entries in `vscode` settings for `hover-exec` (in the `settings.json` file). The script above offers the opportunity to change the setting (not recommended for the `js`  command above, at least not right now...)
 
 ### Execution via the keyboard, and in-line output
 
@@ -110,11 +110,11 @@ For successive results it can be useful to display results
 next to the calculation which produced them
 ```
 
-Inline results are produced by using `=>>` at the end of a script line (as above). Note that in-line results do not need `console.log`, this is provided by the config section called `swappers`, whicj=h in effect 'swap' the output from the `output` block to the appropriate line in the original script.
+Inline results are produced by using `=>>` at the end of a script line (as above). Note that in-line results do not need `console.log`, this is provided by the config section called `swappers`, which in effect 'swap' the output from the `output` block to the appropriate line in the original script.
 
 Note that no checking is performed for in-line output. For example, it is not particularly useful to have in-line results produced inside a loop:
 
-```js
+```js //in-line results in a loop (not recommended)
 for (let i=0;i<5;i++){
     'i='+i+', i**2='+(i**2) =>>i=0, i**2=0
 }
