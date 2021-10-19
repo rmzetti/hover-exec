@@ -26,7 +26,7 @@ Other 'clickable' areas should provide information as follows:
 
 Hover over [`last script`] to show the `path/name` of the code to be executed. Clicking that will open the file in the editor. The contents of the block will be in the file if the script has been executed. Similarly, `last result` will show any text output that has been produced. There will be no content for the above case, when the following script is executed, the `last result` command should show the same output seen in the editor:
 
-```js //when executed 'hello world' should be visible in a following code block titled 'output'
+```js //when executed 'hello world' should be visible in a following code block titled 'output' (if you execute again there will be no 'visible' change, because the new content is identical to the old.)
 console.log('> ***hello world***')
 ```
 ```output
