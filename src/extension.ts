@@ -497,7 +497,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               if(cmd === 'eval'){
                 status('using eval');
                 await eval(sCode);
-              } else {
+                } else {
                 status('using vm');
                 if(vmContext===undefined){
                   vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
@@ -511,6 +511,10 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               out='error '+e;  //report error in output block
             }
           } else {
+            if (config.clearPrevious){
+              clear();
+              removeSelection();
+            }
             out = await execShell(cmd); //execute all other commands
             if (cmdId === "buddvs") {   //local script tester
               out = out.replace(/�/g, "î");
@@ -572,6 +576,28 @@ function replaceStrVars(s: string) {
   return s;
 }
 
+function clear(){
+  //paste into editor
+  const { activeTextEditor } = vscode.window;
+  if (activeTextEditor && startCode > 0) {
+    let temp='';
+    if (needSwap) {
+      temp = codeBlock.replace(/=>>.*?(\r?\n)/mg,'=>> $1');
+    }
+    activeTextEditor.edit((selText) => {
+      selectCodeblock(false); //select codeblock to replace
+      if (needSwap) {
+        selText.replace(replaceSel, temp + "```\n");
+      } else {
+        selText.replace(replaceSel, '');  
+      }
+    });
+  }  
+  //not able to use clear() when using js:vm or js:eval
+  //the final paste seems to do all the right things,
+  //and the output is in the file, but doesn't appear in the editor
+} //end function clear
+
 function paste(text: string) {
   //paste into editor
   const { activeTextEditor } = vscode.window;
@@ -624,7 +650,7 @@ function paste(text: string) {
         //only producing an output block
         selText.replace(replaceSel, lbl + text + "\n```\n");
       } else {
-        //replace the codeblock text/output (ie. codeblock includes inline results)
+        //replace codeblock (has inline results) & output
         selText.replace(
           replaceSel,
           codeBlock + "```\n" + lbl + text + "\n```\n"

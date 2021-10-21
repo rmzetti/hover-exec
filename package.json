@@ -90,6 +90,11 @@
           "description": "show message when script completed successfully",
           "type":"boolean",
           "default":false
+        },
+        "hover-exec.clearPrevious":{
+          "description": "clear previous output just before execution (not for vm or eval)",
+          "type":"boolean",
+          "default":false
         }
 			}
 		},
