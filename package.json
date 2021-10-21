@@ -68,22 +68,22 @@
 				"hover-exec.swappers": {
 					"description": "NB. Edit or add swappers using code blocks (see README)",
 					"default": {
-						"octave": "disp(['>>' $1])",
-						"matlab": "disp([\">>\"+($1)])",
-						"scilab": "mprintf('%s\\n','>>'+$1)",
-						"python": "print('>>'+str($1))",
-						"python3": "print('>>'+str($1))",
-						"julia": "println(string(\">>\",$1))",
-						"pwsh": "'>>'+($1)",
-						"zsh": "'>>'+($1)",
-						"lua": "print('>>'..($1))",
-						"js": "console.log('>>'+($1))",
-						"eval": "console.log('>>',($1))",
-						"node": "console.log('>>'+($1))",
-						"vm": "console.log('>>',($1))",
-						"go": "'>>'+($1)",
-						"buddvs": "writeln('>>'+($1));",
-            "pascal": "writeln('>>',$1);"
+						"octave": "disp(['=>>' $1])",
+						"matlab": "disp([\"=>>\"+($1)])",
+						"scilab": "mprintf('%s\\n','=>>'+$1)",
+						"python": "print('=>>'+str($1))",
+						"python3": "print('=>>'+str($1))",
+						"julia": "println(string(\"=>>\",$1))",
+						"pwsh": "'=>>'+($1)",
+						"zsh": "'=>>'+($1)",
+						"lua": "print('=>>'..($1))",
+						"js": "console.log('=>>'+($1))",
+						"eval": "console.log('=>>',($1))",
+						"node": "console.log('=>>'+($1))",
+						"vm": "console.log('=>>',($1))",
+						"go": "'=>>'+($1)",
+						"buddvs": "write('=>>'+$1);",
+            "pascal": "writeln('=>>',$1);"
 					}
 				},
         "hover-exec.showOk":{

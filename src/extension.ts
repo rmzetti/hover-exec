@@ -465,7 +465,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       re = new RegExp("[-#%/ ]*" + swap, "mg"); //find any comment chars directly preceding the swap
       sCode = codeBlock.replace(re, swap); //remove them
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
-      let re1 = new RegExp("[`'\"]>>", "");
+      let re1 = new RegExp("[`'\"]=>>", "");
       let swapper = config.get("swappers." + cmdId) as string;
       if (swapper && !re1.test(sCode)) {
         //replace all with swapper (uses $1)
@@ -584,16 +584,16 @@ function paste(text: string) {
       if (re1.test(codeBlock)) {
         //if there are any swaps
         //copy in-line results into the codeblock
-        let re = new RegExp(">>.*?\r?\n", ""); //regex to remove swapped output line was ('^.*{{.*}}$','')
+        let re = new RegExp("=>>.*?\r?\n", ""); //regex to remove swapped output line
         while (re1.test(codeBlock)) {
           //while there is a swap string to replace
-          let i = text.indexOf(">>") + 2; //check if there is a swappable line
+          let i = text.indexOf("=>>") + 3; //check if there is a swappable line
           if (i > 0) {
             //if so
             let s = text.slice(i).replace(/\n[\s\S]*/, "");
             if (s === "") {
               s = ";";
-            } //if the remainder is empty just provide ;
+            } //if the remainder is empty just provide ';'
             codeBlock = codeBlock.replace(/=>>$/m, "=>>" + s); //do the swap
             text = text.replace(re, ""); //remove the swapped output to clear for the next
           } else {
