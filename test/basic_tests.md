@@ -3,43 +3,40 @@
 The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
 
 ### Hover
-Opening a markdown file (eg. this one) in the vscode editor should activate the `hover-exec` extension. To check, hover over the start or end line of the following code block (in the editor, of course):
+Opening a markdown file (eg. this one) in the vscode editor will activate the `hover-exec` extension. To check, after opening the editor, hover over the start line `js ...` or end line of the code block. The following hover message will appear:
 
--------------------------
-```js //click this line in the hover message to execute the code
-alert('hello world')
-```
--------------------------
-
-The following hover message should appear:
-
->   hover-exec:js [`config`] [`ref`] [`delete block`]
->   open: [`last script`] [`last result`]
->   `js //click this line in the hover message to execute the code`
+      >   hover-exec: js [`config`] [`ref`] [`delete block`]
+      >   open: [`last script`] [`last result`]
+      >   `js //this is a code block with id 'js'`
 
 The message shows `hover-exec` followed by the code block id (`js`). The bottom line (with the comment) provides the main `exec` function.
 
-### Exec
-When the bottom line is clicked the script should execute, and, in accordance with the script,  an 'alert' box will appear (bottom right) with `(i) hello world` in it.
+```js   //this is a code block with id 'js'
+alert('hello world')
+```
 
-Other 'clickable' areas should provide information as follows:
+### Exec
+When the bottom line of the hover message is clicked the script will execute, and, in accordance with the script,  an 'alert' box will appear (bottom right of the vscode window) with `(i) hello world` in it.
+
+Other 'clickable' areas will provide information as follows:
 
 Hover over [`last script`] to show the `path/name` of the code to be executed. Clicking that will open the file in the editor. The contents of the block will be in the file if the script has been executed. Similarly, `last result` will show any text output that was produced. There will be no content for the above case, but when the following script is executed, the `last result` command should show the same output seen in the editor:
 
-```js //when executed 'hello world' should be visible in a following code block titled 'output' (if you execute again there will be no 'visible' change, because the new content is identical to the old.)
-console.log('> ***hello world***')
+```js //when executed 'hello world' will be visible in a following code block titled 'output'.
+// The 'random' function call is included so changes to the output are noticeable
+console.log('    > hello world '+(3+Math.random()))
 ```
 ```output
-> ***hello world***
+    > hello world 3.59393394036271
 ```
 
-and the file accessed via `last result` will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
+The file accessed via `last result` in the hover message will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
 
 > ***hello world***
 
 ### Other information from the hover
 
-Again, hovering over the main code block lines below
+When hovering over the main code block start or end lines below:
 
 ```js
 console.log('the meaning of life: ', 7*7-7)
@@ -96,12 +93,12 @@ The `hover-exec` extension offers two further facilities. The first is that code
 The second is that output can be positioned in-line (within the code block) if this is appropriate:
 
 ```js //show calculation results in-line
-console.log('Normally output is shown in an output block')
-console.log('which is positioned after the script.')
-console.log('For successive results it can be useful to display results')
-console.log('next to the calculation which produced them')
-'the meaning of life is '+(7*7-7) =>>the meaning of life is 42
-42*7=>>294
+let a='the meaning of life';
+console.log('Normally output is shown in an output block');
+console.log('which is positioned after the script.');
+a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.675063474666565
+console.log('For successive results it can be useful to display results');
+console.log('next to the calculation which produced them');
 ```
 ```output
 Normally output is shown in an output block
@@ -120,19 +117,19 @@ for (let i=0;i<5;i++){
 }
 ```
 ```output
->>i=1, i**2=1
->>i=2, i**2=4
->>i=3, i**2=9
->>i=4, i**2=16
+=>>i=1, i**2=1
+=>>i=2, i**2=4
+=>>i=3, i**2=9
+=>>i=4, i**2=16
 ```
 
-Here, only the first result of the loop execution is made available in-line, the rest are left in the `output` block.
+Note that only the first result of the loop execution will made available in-line, the rest are left in the `output` block. If there are further in-line results requested, they will not appear in the right place. So: `do not request in-line results for statements in a loop!`
 
 Also note that lines with `=>>` appended are not actually legal javascript. To produce legal javascript simply precede `=>>` with a comment marker, ie for javascript use `// =>>` This will still be updated on execution in the same way.
 
 ### Final comments
 
-The above basic tests should all produce identical results to the  above after `hover-exec` has been installed in `vscode`.
+The above basic tests should all produce identical results to those shown after `hover-exec` has been installed in `vscode`.
 
 Other 'test' files will look at a broader range of script languages, but the techniques above essentially apply to all.
 
