@@ -1,6 +1,6 @@
 ## Hover-exec script tests 1
 
-The following tests will use an implementation of a (very) simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file.
+The following tests will use an implementation of a simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file Don't panic *python* users, it's a very simple benchmark - vary similar to that from [javascript is fast](https://jyelewis.com/blog/2021-09-28-javascript-is-fast/) , adjusted to avoid potential floating point overflow.
 
 - [Hover-exec script tests 1](#hover-exec-script-tests-1)
   - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
@@ -18,7 +18,7 @@ The following tests will use an implementation of a (very) simple 'benchmark' to
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js  //can use 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 let s=process.cwd().replace(/\\/g,'/');
 //this 'require' is not actually required for 'vm' and 'eval' (moment is pre-installed), but only for `node`

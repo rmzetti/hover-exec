@@ -25,6 +25,8 @@ let currentFsPath = ""; //folder containing current edit file fsPath
 let executing = false; //code is executing
 let nexec = 0; //number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
+let quickmath = false; //current script is 'quickmath' (executed by hover)
+let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
@@ -64,13 +66,14 @@ export function activate(context: vscode.ExtensionContext) {
       ): Promise<vscode.Hover | null> {
         status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
-        oneLiner = false; //check for a one-liner
+        oneLiner = false; //one-liner
+        quickmath=false;  //quick evaluate using mathjs
         if (!line.text.startsWith("```")) {
-          oneLiner =
-            line.text.startsWith("`") && line.text.slice(2).includes("`");
-          if (!oneLiner) {
-            return null;
-          } //ignore if not a code block or oneLiner
+          oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
+          quickmath=/`.+=`/.test(line.text);
+          if (!(oneLiner || quickmath)) {
+              return null;
+          } //ignore if not a code block, oneLiner or quicki
         }
         if (executing) {
           //if already executing code block, show cancel option
@@ -79,6 +82,21 @@ export function activate(context: vscode.ExtensionContext) {
               "*hover-exec:* executing...\n\n[cancel execution](vscode://rmzetti.hover-exec?abort)"
             )
           );
+        }
+        if(quickmath){ //evaluate math expressions like `44-2=` using mathjs
+          let s=line.text;
+          if(s[pos.character]==='`'){return null;} //have to over over the expression
+          if(!s.slice(pos.character).includes('=`')){return null;}
+          let s2=s.slice(pos.character); //there may be more than one expression in a line
+          s2=s2.slice(0,s2.indexOf('=`'));
+          let s1=s.slice(0,pos.character);
+          if(!s1.includes('`')){return null;}
+          s1=s1.slice(s1.lastIndexOf('`')+1)+s2;
+          quickmathResult=''+math.evaluate(s1); //save result for copy to clipboard
+          s1= "[ " + quickmathResult + " ](vscode://rmzetti.hover-exec?copyToClipboard)";;
+          const contents = new vscode.MarkdownString("via mathjs:\n\n"+s1);
+          status(quickmathResult);
+          return new vscode.Hover(contents);
         }
         if (line.text === "```") {
           //allow hover-exec from end of codeblock
@@ -434,6 +452,11 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       removeSelection();
       return;
     }
+    if (uri.query === "copyToClipboard") {
+      status('copied '+quickmathResult);
+      await vscode.env.clipboard.writeText(quickmathResult);
+      return;
+    }
     if (uri.query.endsWith("_config")) {
       //show current script config in a script that can update it if required
       let s1 = cmdId;
@@ -497,7 +520,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               if(cmd === 'eval'){
                 status('using eval');
                 await eval(sCode);
-                } else {
+              } else {
                 status('using vm');
                 if(vmContext===undefined){
                   vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
@@ -751,7 +774,7 @@ function deleteOutput(asText: boolean) {
   if (activeTextEditor) {
     selectCodeblock(true);
     if (asText) {
-      //remove start and end lines, ie. with backticks
+      //remove start and end lines, ie. the lines with backticks
       let pos1 = activeTextEditor.selection.start.line + 1;
       let pos2 = activeTextEditor.selection.end.line - 1;
       let sel = new vscode.Selection(pos1, 0, pos2, 0);
@@ -763,8 +786,6 @@ function deleteOutput(asText: boolean) {
       });
     } else {
       //remove whole output block
-      //alert('here '+activeTextEditor.selection.start.line.toString()+','+
-      //  activeTextEditor.selection.end.line.toString());
       activeTextEditor.edit((selText) => {
         selText.replace(activeTextEditor.selection, "");
       });
@@ -772,7 +793,8 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-async function execShell(cmd: string){ //execute shell command (to start scripts)
+async function execShell(cmd: string){
+  //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {
     ch = cp.exec(cmd, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {
@@ -786,7 +808,8 @@ async function execShell(cmd: string){ //execute shell command (to start scripts
 }
 
 async function writeFile(path: string, text: string) {
-  //`text` to file at path (full path)
+  //write a file in vm & eval. Usage: await writeFile(path,text)
+  //`text` is written to the file at path (full path)
   await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(text));
 }
 
@@ -822,16 +845,18 @@ function utf8ArrayToStr(array:Uint8Array) {
 }
 
 async function readFile(path:string){
-  //alert('aaa '+vscode.Uri.file(path));
+  //read a file in vm & eval. Usage: await readFile(path)
   return utf8ArrayToStr(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
 }
 
 function vmRequire(src:string){
+  //provide a 'require' for vm blocks
+  //note: just use 'require', the context will link to this
   return eval('require("'+src+'")');
 }
 
 function write() {
-  //provide a console.log() for the eval block
+  //provide a console.log() for vm & eval blocks
   for (var i = 0; i < arguments.length; i++) {
     if (i > 0) {
       out += " ";
@@ -843,6 +868,7 @@ function write() {
 
 let statusBarItem: vscode.StatusBarItem;
 function status(s:string): void {
+  //put a string in the status bar for vm & eval
   if(s!==undefined && s!==''){
     statusBarItem.text = `=>>`+s;
     statusBarItem.show();
@@ -852,21 +878,26 @@ function status(s:string): void {
 }
 
 function alert(s: string) {
-  //provide an alert function for eval scripts
+  //provide an alert function for vm & eval scripts
   vscode.window.showInformationMessage(s);
 }
 
 function abort(){
+  //allows to abort vm & eval scripts when 'cancel' is clicked
+  //eg.  while (true) do {..; ..; ..; if(abort()){break;} };
   return !executing;
 }
 
 async function input(s:string) {
-  //provide a simple input box for eval scripts
+  //provide a simple input box for vm & eval scripts
+  //eg. d=await('how many items?')/1
+  //    where /1 converts the string response to a number
   let what = await vscode.window.showInputBox({ placeHolder: s });
   return what;
 }
 
 async function delay(msec: number){
+  //provide a delay in the script, eg. await delay(4000) //4 sec
   await new Promise(res => setTimeout(res,msec));
 }
 
