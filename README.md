@@ -20,7 +20,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [gnuplot](#gnuplot)
     - [scilab](#scilab)
   - [One-liners](#one-liners)
-    - [One-liner examples:](#one-liner-examples)
+    - [One-liner and quickmath examples:](#one-liner-and-quickmath-examples)
   - [Configuration settings](#configuration-settings)
   - [Known Issues](#known-issues)
   - [Release Notes](#release-notes)
@@ -313,10 +313,12 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 ---
 ## One-liners
 
-*One-liners* starting (in col 1) and ending with a single backtick can also be executed on hover-click. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed on hover-click. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+
+Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
 
 ---
-### One-liner examples:
+### One-liner and quickmath examples:
 
 exec notepad with file in current folder:
 `notepad %cREADME.md`
@@ -328,7 +330,7 @@ exec notepad++:
 `"C:/Program Files/Notepad++/notepad++" %cREADME.md`
 
 explore 'This pc':
-`explorer ,`>
+`explorer ,`
 
 explore folder:
 `explorer /select, %cREADME.md`>
@@ -341,6 +343,8 @@ open default browser with href, or showing html text (note that html is a built 
 `html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
 
 `html <h1>Hello world!</h1>`
+
+And finally, another *quickmath* expression `254cm in inches=` will show 100inches in the hover message.
 
 ---
 ## Configuration settings
