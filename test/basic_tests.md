@@ -27,7 +27,7 @@ Hover over [`last script`] to show the `path/name` of the code to be executed. C
 console.log('    > hello world '+(3+Math.random()))
 ```
 ```output
-    > hello world 3.59393394036271
+    > hello world 3.232059103649493
 ```
 
 The file accessed via `last result` in the hover message will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
@@ -44,6 +44,8 @@ console.log('the meaning of life: ', 7*7-7)
 ```output
 the meaning of life:  42
 ```
+
+A brief note (see later) that `hover-exec` *quickmath* is enabled also - just type a math expression inside single backticks and end with `=`, eg. `7*7-7=`. Hovering over the expression will show the answer (using *mathjs evaluate*). Clicking the answer will copy it to the clipboard.
 
 The right hand `[delete block]` option will delete the code block (`ctrl-z` if it's an accident!)
 
