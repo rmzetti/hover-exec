@@ -551,7 +551,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           writeFile(tempPath + tempName + ".out.txt", out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
           if (!noOutput) {
-            paste(out); //paste into editor
+            if(!tempName.endsWith('.html')){out='';}
+            paste(out);   //paste into editor
             removeSelection(); //deselect
           }
           if (config.showOk) { //report successful completion

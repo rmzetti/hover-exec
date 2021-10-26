@@ -49,9 +49,7 @@ speed  212.3  million iterations per sec
 
 ### Javascript in the browser
 
-This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster.
-
-```explorer.exe```
+This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster. 
 
 ```firefox
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -63,17 +61,19 @@ let t1=moment.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
 let t2=moment.now();
 let tot=(t2-t1)/1000;
-res1.innerText=""+Math.round(tot*100)/100+" sec";
-res2.innerText=""+Math.round(iter/tot/1e6*10)/10+" million iterations per sec";
+r1.innerText=""+Math.round(tot*100)/100+" sec";
+r2.innerText=""+Math.round(iter/tot/1e6*10)/10+" million iterations per sec";
 }
 </script>
-<h1>Test results</h1>
-<p>Total time: <div id="res1"></div></p>
-<p>Speed: <div id="res2"></div></p>
+<h1 align="center"><br>Test results</h1>
+<p align="center"><b>Total time:</b>
+<div id="r1" align="center"><i>calculating ...</i></div>
+<p align="center"><b>Speed:</b>
+<div id="r2" align="center"></div>
 <script>
-res1=document.getElementById("res1");
-res2=document.getElementById("res2");
-document.onload=test();
+r1=document.getElementById("r1");
+r2=document.getElementById("r2");
+window.setTimeout(function() {test();},150);
 </script>
 ```
 
@@ -88,11 +88,6 @@ A similar speed to `js`, `eval` and `node`.
 If `go` is installed, it can be used as a scripting language (`go` should be executable in a terminal using the command `go`)
 
 ```go //speed test 2
-```output
-Error: Command failed: google-chrome-stable "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.html"
-/bin/sh: 1: google-chrome-stable: not found
-,/bin/sh: 1: google-chrome-stable: not found
-```
 package main
 import ("fmt";"time")
 func main() {
@@ -153,7 +148,7 @@ ie. for this test javascript is about 30x faster than python
 
 ### Test using 'lua'
 
-Lua must be installed, and the config startup script should match the installation. For this system, `lua54` is installed, and so the config start command uses `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the id `js:lua54` is used to provide some simple-minded syntax highlighting (via the `js` highlighter)
+Lua must be installed, and the config startup script should match the installation. If `lua54` is installed, the config start command should use `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the the first bit of the id `js:lua` is used to provide some simple-minded syntax highlighting (via the `js` highlighter) - the hover message makes it clear that `lua` is the actual command.
 
 ```js:lua  //10 million random number calls
 -- ```lua {cmd=lua53} //10 million random number calls`
@@ -170,9 +165,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-Error: Command failed: lua54 "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.lua"
-/bin/sh: 1: lua54: not found
-,/bin/sh: 1: lua54: not found
+total time 	2.3	 sec
+speed 	43.46	 million iterations per sec
 ```
 
 > Example output:
@@ -185,7 +179,7 @@ So about 15x faster than python on this benchmark, and about half the speed of j
 
 ```js:pascal
 program Hello;
-  uses Math,SysUtils,DateUtils,Windows;
+  uses Math,SysUtils,DateUtils;
   var i,m:int64;
         a,t1:extended;
 begin //30
@@ -205,8 +199,9 @@ begin //30
 end.
 ```
 ```output
-time=   1.04 sec
-speed=  96.25 million iterations per sec
+time=   1.65 sec
+speed=  60.64 million iterations per sec
+/usr/bin/ld.bfd: warning: link.res contains output sections; did you forget -T?
 ```
 
 > Example output:
