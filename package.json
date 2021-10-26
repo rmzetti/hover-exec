@@ -50,7 +50,7 @@
 						"zsh": "zsh -f \"%f.sh\"",
 						"lua54": "lua54 \"%f.lua\"",
 						"lua53": "lua53 \"%f.lua\"",
-						"lua": "lua54 \"%f.lua\"",
+						"lua": "lua \"%f.lua\"",
 						"js": "vm",
 						"eval": "eval",
 						"vm": "vm",
@@ -62,7 +62,7 @@
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-            "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
+						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 					}
 				},
 				"hover-exec.swappers": {
@@ -83,19 +83,19 @@
 						"vm": "console.log('=>>',($1))",
 						"go": "'=>>'+($1)",
 						"buddvs": "write('=>>'+$1);",
-            "pascal": "writeln('=>>',$1);"
+						"pascal": "writeln('=>>',$1);"
 					}
 				},
-        "hover-exec.showOk":{
-          "description": "show message when script completed successfully",
-          "type":"boolean",
-          "default":false
-        },
-        "hover-exec.clearPrevious":{
-          "description": "clear previous output just before execution (not for vm or eval)",
-          "type":"boolean",
-          "default":false
-        }
+				"hover-exec.showOk": {
+					"description": "show message when script completed successfully",
+					"type": "boolean",
+					"default": false
+				},
+				"hover-exec.clearPrevious": {
+					"description": "clear previous output just before execution (not for vm or eval)",
+					"type": "boolean",
+					"default": false
+				}
 			}
 		},
 		"keybindings": [
@@ -120,7 +120,7 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
-		"@types/lodash": "^4.14.174",
+		"@types/lodash": "^4.14.176",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.56.0",

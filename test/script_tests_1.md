@@ -21,8 +21,8 @@ The following code block can be executed with the code block identifier set to `
 ```js  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 let s=process.cwd().replace(/\\/g,'/');
-//this 'require' is not actually required for 'vm' and 'eval' (moment is pre-installed), but only for `node`
-let moment=require(s+"/node_modules/moment");
+//the following 'require' is not required for 'vm' or 'eval' (moment is pre-installed), but only for `node`
+//let moment=require(s+"/node_modules/moment");
 //the `require` may need tailoring for your system (eg. something like the following could be necessary)
 //let moment=require(s+"/moment.min.js");
 let iter=1e9;
@@ -39,8 +39,8 @@ console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  5.22  sec
-speed  191.7  million iterations per sec
+total time  4.71  sec
+speed  212.3  million iterations per sec
 ```
 
 > Example output
@@ -51,7 +51,9 @@ speed  191.7  million iterations per sec
 
 This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster.
 
-```html //javascript in the browser
+```explorer.exe```
+
+```firefox
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script>
 function test(){
@@ -71,7 +73,7 @@ res2.innerText=""+Math.round(iter/tot/1e6*10)/10+" million iterations per sec";
 <script>
 res1=document.getElementById("res1");
 res2=document.getElementById("res2");
-test();
+document.onload=test();
 </script>
 ```
 
@@ -86,6 +88,11 @@ A similar speed to `js`, `eval` and `node`.
 If `go` is installed, it can be used as a scripting language (`go` should be executable in a terminal using the command `go`)
 
 ```go //speed test 2
+```output
+Error: Command failed: google-chrome-stable "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.html"
+/bin/sh: 1: google-chrome-stable: not found
+,/bin/sh: 1: google-chrome-stable: not found
+```
 package main
 import ("fmt";"time")
 func main() {
@@ -120,7 +127,7 @@ ie. about 6 times faster than javascript.
 
 Again, the appropriate `python` needs to be executed when the `python` command is executed in a terminal. For this run, 'python 3.8.7` was used. Note that fewer iterations have been used because it takes rather longer.
 
-```python //speed test
+```python3 //speed test
 from time import time
 m=1e7  # note: fewer iterations than for js or go
 n=0.01
@@ -134,8 +141,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.68  sec
-speed  5.958  million iterations per sec
+total time  1.4  sec
+speed  7.1417  million iterations per sec
 ```
 
 > Example output
@@ -148,8 +155,8 @@ ie. for this test javascript is about 30x faster than python
 
 Lua must be installed, and the config startup script should match the installation. For this system, `lua54` is installed, and so the config start command uses `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the id `js:lua54` is used to provide some simple-minded syntax highlighting (via the `js` highlighter)
 
-```js:lua54  //10 million random number calls
--- ```lua {cmd=lua54} //10 million random number calls`
+```js:lua  //10 million random number calls
+-- ```lua {cmd=lua53} //10 million random number calls`
 local m=1e8;  -- note: fewer iterations than for js or go
 local n=0.01;
 local tt = os.clock();
@@ -163,8 +170,9 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.05	 sec
-speed 	94.87	 million iterations per sec
+Error: Command failed: lua54 "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.lua"
+/bin/sh: 1: lua54: not found
+,/bin/sh: 1: lua54: not found
 ```
 
 > Example output:

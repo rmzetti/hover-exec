@@ -49,7 +49,7 @@ the meaning of life:  42
 
 The right hand `[delete block]` option will delete the code block (`ctrl-z` if it's an accident!)
 
-The `[ref]` option will provide some further information on possible shortcuts that can be used in command lines (none of these are useful for `js`):
+The `[ref]` option will provide some further information on possible shortcuts that can be used in command lines (none of these are useful for `js` itself though)
 
 ```js
 //show the [ref] output
