@@ -18,11 +18,11 @@ The following tests will use an implementation of a simple 'benchmark' to demons
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js:node  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 let s=process.cwd().replace(/\\/g,'/');
 //the following 'require' is not required for 'vm' or 'eval' (moment is pre-installed), but only for `node`
-//let moment=require(s+"/node_modules/moment");
+let moment=require(s+"/node_modules/moment");
 //the `require` may need tailoring for your system (eg. something like the following could be necessary)
 //let moment=require(s+"/moment.min.js");
 let iter=1e9;
@@ -38,10 +38,6 @@ let tot=(t2-t1)/1000;
 console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
-```output
-total time  4.71  sec
-speed  212.3  million iterations per sec
-```
 
 > Example output
 > total time  5.22  sec
@@ -51,7 +47,7 @@ speed  212.3  million iterations per sec
 
 This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster. 
 
-```firefox
+```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script>
 function test(){
