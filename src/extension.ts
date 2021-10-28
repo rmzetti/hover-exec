@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as cp from "child_process";
 import internal = require("stream");
 import _=require("lodash");
-import math=require("mathjs");  
+import math=require("mathjs");
 import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
 import vm = require('vm');
 import { type } from "os";
@@ -36,8 +36,9 @@ let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
 const vmDefault={global,globalThis,config,process,vscode,abort,alert,delay,execShell,
-  input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+  input,progress,status,readFile,writeFile,write,require:vmRequire,console,log,_,math,moment};
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
+const hookSave=process.stdout.write; //to replace stdout after hook
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -498,6 +499,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         sCode = sCode.replace(re, "$1");
       }
     }
+    process.stdout.write=hookSave;
     vscode.window.withProgress({
         //set up status bar exec indicator
         location: vscode.ProgressLocation.Window,
@@ -513,7 +515,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         process.chdir(currentFsPath);
         if (cmd !== '') {
           if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
-            sCode = sCode.replace(/console.log/g, "write"); //provide a console.log for vm
+            //sCode = sCode.replace(/console.log/g, "log"); //provide a console.log for vm
+            //hookStdout(()=>{out+='x ';});
+            hookStdout(); //hook stdout to also view in editor
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
             sCode=`async function __main(){`+sCode+`};__main();`;
             try {
@@ -533,6 +537,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               needSwap=false;  //then don't do swap
               out='error '+e;  //report error in output block
             }
+            process.stdout.write=hookSave; //replace normal stdout
           } else {
             if (config.clearPrevious){
               clear();
@@ -563,6 +568,18 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     );
   }
 })(); //end hUri=new class MyUriHandler
+
+let iHooknum=0; //only interested in second call of process.stdout.write
+function hookStdout() {
+  // @ts-ignore
+  process.stdout.write = (() => {
+      return function() {
+          iHooknum+=1;
+          if(iHooknum===2){out+=arguments[0];}
+          if(iHooknum>=3){iHooknum=0;}
+      };
+  })();
+}
 
 function hrefSrcRepl(s:string) {
   s=s.replace(/(href\s*=\s*['"`]\s*)(https?:)/g,'$1:$2'); //avoid http in href
@@ -856,15 +873,20 @@ function vmRequire(src:string){
   return eval('require("'+src+'")');
 }
 
-function write() {
-  //provide a console.log() for vm & eval blocks
-  for (var i = 0; i < arguments.length; i++) {
+function write(...args: any[]) {
+  for (var i = 0; i < args.length; i++) {
     if (i > 0) {
       out += " ";
     }
-    out += arguments[i];
+    out += args[i];
   }
   out += "\n";
+}
+
+function log() {
+  //provide a visible console.log() for vm & eval blocks
+  console.log(arguments); //do normal console.log
+  write(...arguments);  //plus write to output block via 'out'
 }
 
 let statusBarItem: vscode.StatusBarItem;
