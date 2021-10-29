@@ -1,11 +1,14 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
 import internal = require("stream");
+import { performance } from 'perf_hooks'; 
 import _=require("lodash");
 import math=require("mathjs");
 import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
 import vm = require('vm');
 import { type } from "os";
+import util = require('util');
+import { utils } from "mocha";
 let codeBlock = ""; //code f or execution
 let startCode = 0; //start line of code
 let out: string = ""; //output from code execution
@@ -35,10 +38,9 @@ let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
-const vmDefault={global,globalThis,config,process,vscode,abort,alert,delay,execShell,
-  input,progress,status,readFile,writeFile,write,require:vmRequire,console,log,_,math,moment};
+const vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
+  execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
-const hookSave=process.stdout.write; //to replace stdout after hook
 const refStr =
   "*hover-exec:* predefined strings:\n" +
   " - %f `full_path/name.ext` of temp file\n" +
@@ -422,7 +424,8 @@ export function activate(context: vscode.ExtensionContext) {
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
-  status('ok');
+  performance.now();
+  status('ok v2');
 
 } //end function activate
 
@@ -489,7 +492,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       re = new RegExp("[-#%/ ]*" + swap, "mg"); //find any comment chars directly preceding the swap
       sCode = codeBlock.replace(re, swap); //remove them
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
-      let re1 = new RegExp("[`'\"]=>>", "");
+      let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");
       let swapper = config.get("swappers." + cmdId) as string;
       if (swapper && !re1.test(sCode)) {
         //replace all with swapper (uses $1)
@@ -499,7 +502,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         sCode = sCode.replace(re, "$1");
       }
     }
-    process.stdout.write=hookSave;
     vscode.window.withProgress({
         //set up status bar exec indicator
         location: vscode.ProgressLocation.Window,
@@ -515,11 +517,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         process.chdir(currentFsPath);
         if (cmd !== '') {
           if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
-            //sCode = sCode.replace(/console.log/g, "log"); //provide a console.log for vm
-            //hookStdout(()=>{out+='x ';});
-            hookStdout(); //hook stdout to also view in editor
+            //reassign console.log to write to view logs in output
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
-            sCode=`async function __main(){`+sCode+`};__main();`;
+            sCode=`async function __main(){console.log=write;`+sCode+`};__main();`;
             try {
               if(cmd === 'eval'){
                 status('using eval');
@@ -531,13 +531,12 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 }
                 let vcContext=vm.createContext(vmContext);//prepare context 
                 let script=new vm.Script(sCode);//syntax check
-                await script.runInContext(vcContext);//execute, out produced by 'write'
+                await script.runInContext(vcContext);//execute, out produced by 'console.log'
               }
             } catch (e) {      //if syntax error
               needSwap=false;  //then don't do swap
               out='error '+e;  //report error in output block
             }
-            process.stdout.write=hookSave; //replace normal stdout
           } else {
             if (config.clearPrevious){
               clear();
@@ -568,18 +567,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     );
   }
 })(); //end hUri=new class MyUriHandler
-
-let iHooknum=0; //only interested in second call of process.stdout.write
-function hookStdout() {
-  // @ts-ignore
-  process.stdout.write = (() => {
-      return function() {
-          iHooknum+=1;
-          if(iHooknum===2){out+=arguments[0];}
-          if(iHooknum>=3){iHooknum=0;}
-      };
-  })();
-}
 
 function hrefSrcRepl(s:string) {
   s=s.replace(/(href\s*=\s*['"`]\s*)(https?:)/g,'$1:$2'); //avoid http in href
@@ -873,22 +860,10 @@ function vmRequire(src:string){
   return eval('require("'+src+'")');
 }
 
-function write(...args: any[]) {
-  for (var i = 0; i < args.length; i++) {
-    if (i > 0) {
-      out += " ";
-    }
-    out += args[i];
-  }
-  out += "\n";
+function write(...args:any) {
+  out+=util.format(...args)+'\n';
+  return false;
 }
-
-function log() {
-  //provide a visible console.log() for vm & eval blocks
-  console.log(arguments); //do normal console.log
-  write(...arguments);  //plus write to output block via 'out'
-}
-
 let statusBarItem: vscode.StatusBarItem;
 function status(s:string): void {
   //put a string in the status bar for vm & eval

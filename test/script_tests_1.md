@@ -18,29 +18,25 @@ The following tests will use an implementation of a simple 'benchmark' to demons
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js:node  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 let s=process.cwd().replace(/\\/g,'/');
-//the following 'require' is not required for 'vm' or 'eval' (moment is pre-installed), but only for `node`
-//let moment=require(s+"/node_modules/moment");
+//the following 'require' is required for `node` but not for 'vm' or 'eval' (moment is pre-installed)
+let moment=require(s+"/node_modules/moment");
 //the `require` may need tailoring for your system (eg. something like the following could be necessary)
 //let moment=require(s+"/moment.min.js");
 let iter=1e9;
 let n=0;
 let t1=moment.now();
-for (let i=1;i<=iter;i++){ 
-  n*=i;
-  n++; 
-  n=n/i;
-}
+for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
 let t2=moment.now();
 let tot=(t2-t1)/1000;
 console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  5.68  sec
-speed  176.2  million iterations per sec
+total time  4.71  sec
+speed  212.4  million iterations per sec
 ```
 
 > Example output
@@ -52,14 +48,13 @@ speed  176.2  million iterations per sec
 This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster. 
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script>
 function test(){
 let iter=1e9;
 let n=0;
-let t1=moment.now();
+let t1=performance.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
-let t2=moment.now();
+let t2=performance.now();
 let tot=(t2-t1)/1000;
 r1.innerText=""+Math.round(tot*100)/100+" sec";
 r2.innerText=""+Math.round(iter/tot/1e6*10)/10+" million iterations per sec";
@@ -136,8 +131,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.4  sec
-speed  7.1417  million iterations per sec
+total time  1.82  sec
+speed  5.4801  million iterations per sec
 ```
 
 > Example output
@@ -150,7 +145,7 @@ ie. for this test javascript is about 30x faster than python
 
 Lua must be installed, and the config startup script should match the installation. If `lua54` is installed, the config start command should use `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the the first bit of the id `js:lua` is used to provide some simple-minded syntax highlighting (via the `js` highlighter) - the hover message makes it clear that `lua` is the actual command.
 
-```js:lua  //10 million random number calls
+```js:lua54  //10 million random number calls
 -- ```lua {cmd=lua53} //10 million random number calls`
 local m=1e8;  -- note: fewer iterations than for js or go
 local n=0.01;
@@ -165,8 +160,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	2.3	 sec
-speed 	43.46	 million iterations per sec
+total time 	1.06	 sec
+speed 	93.63	 million iterations per sec
 ```
 
 > Example output:
@@ -278,8 +273,8 @@ println("time= ",round(t,digits=2)," sec")
 println("speed= ",round(m/t/1e6,digits=3)," million iterations per sec")
 ```
 ```output
-time= 1.79 sec
-speed= 5.583 million iterations per sec
+time= 1.81 sec
+speed= 5.537 million iterations per sec
 ```
 
 >Example output:

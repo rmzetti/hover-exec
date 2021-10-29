@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute code blocks",
-	"version": "0.6.3",
+	"version": "0.6.4",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rmzetti/hover-exec"
