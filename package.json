@@ -77,6 +77,7 @@
 						"pwsh": "'=>>'+($1)",
 						"zsh": "'=>>'+($1)",
 						"lua": "print('=>>'..($1))",
+						"lua54": "print('=>>'..($1))",
 						"js": "console.log('=>>'+($1))",
 						"eval": "console.log('=>>',($1))",
 						"node": "console.log('=>>'+($1))",
@@ -123,6 +124,7 @@
 		"@types/lodash": "^4.14.176",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
+		"@types/request-promise": "^4.1.48",
 		"@types/vscode": "^1.56.0",
 		"@typescript-eslint/eslint-plugin": "^4.14.1",
 		"@typescript-eslint/parser": "^4.14.1",
@@ -148,6 +150,6 @@
 		]
 	},
 	"dependencies": {
-		"vm2": "^3.9.3"
+		"vm2": "^3.9.5"
 	}
 }

@@ -38,6 +38,7 @@ let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
+const log=console.log;
 const vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
   execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
@@ -71,12 +72,13 @@ export function activate(context: vscode.ExtensionContext) {
         let line = doc.lineAt(pos); //user is currently hovering over this line
         oneLiner = false; //one-liner
         quickmath=false;  //quick evaluate using mathjs
+        setExecParams(context,doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) {
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
-          quickmath=/`.+=`/.test(line.text);
-          if (!(oneLiner || quickmath)) {
+          quickmath=/`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text);
+          if (!oneLiner && !quickmath) {
               return null;
-          } //ignore if not a code block, oneLiner or quicki
+          } //ignore if not a code block, oneLiner or quickmath
         }
         if (executing) {
           //if already executing code block, show cancel option
@@ -87,18 +89,38 @@ export function activate(context: vscode.ExtensionContext) {
           );
         }
         if(quickmath){ //evaluate math expressions like `44-2=` using mathjs
+                       //also evaluate re eg. `/($speed << EOD.*EOD)/`
           let s=line.text;
-          if(s[pos.character]==='`'){return null;} //have to over over the expression
-          if(!s.slice(pos.character).includes('=`')){return null;}
-          let s2=s.slice(pos.character); //there may be more than one expression in a line
-          s2=s2.slice(0,s2.indexOf('=`'));
-          let s1=s.slice(0,pos.character);
-          if(!s1.includes('`')){return null;}
-          s1=s1.slice(s1.lastIndexOf('`')+1)+s2;
-          quickmathResult=''+math.evaluate(s1); //save result for copy to clipboard
+          if(s[pos.character]==='`'){return null;} //hover over the expression not backticks
+          let s1=s.slice(0,pos.character);//there may be more than one expression in a line
+          let s2=s.slice(pos.character);  //so isolate parts before & after hover pos
+          if(!s1.includes('`') || !s2.includes('`')){return null;}
+          s2=s2.slice(0,s2.indexOf('`'));
+          quickmath=s2.endsWith('='); //otherwise regex
+          let f='';
+          if(!quickmath){ // then if an inhere line get the file name if present
+            f=s1.replace(/.*inhere (.*?)`.*/,'$1').trim();
+            if(f===''){f=doc.getText();}
+            else {f=await readFile(replaceStrVars(f));}
+          }
+          s1=s1.slice(s1.lastIndexOf('`')+1);
+          if(!quickmath){s1=s1.slice(1);}
+          s2=s2.slice(0,s2.length-1);
+          s1=s1+s2;
+          if(quickmath){
+            s2='hover-exec via mathjs';
+            quickmathResult=''+math.evaluate(s1);
+          } else { //evaluate 'simplified' regex on file contents
+            //which specifies what is being looked for, & interprets . as [\s\S] 
+            s2='hover-exec via regex';
+            s1=s1.replace(/\./g,'[\\s\\S]'); //make . mean all chars
+            s1=s1.replace(/[*]([^?])/g,'*?$1');   //make * not greedy
+            let re = new RegExp('[\\s\\S]*?('+s1+')[\\s\\S]*',"m");
+            quickmathResult=f.replace(re,'$1');
+          } //save result for copy to clipboard
           s1= "[ " + quickmathResult + " ](vscode://rmzetti.hover-exec?copyToClipboard)";;
-          const contents = new vscode.MarkdownString("via mathjs:\n\n"+s1);
-          status(quickmathResult);
+          const contents = new vscode.MarkdownString(s2+":\n\n"+s1);
+          if(quickmath){status(quickmathResult);}
           return new vscode.Hover(contents);
         }
         if (line.text === "```") {
@@ -110,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
           pos = new vscode.Position(n, 0); //adjust pos and line
           line = doc.lineAt(pos); //to refer to start of block
         }
-        setExecParams(context, doc, pos, line); //reset basic exec parameters inc getSpecialPath
+        startCode = pos.line; //save start of code line number
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
@@ -178,6 +200,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (n < 0) {
           return null;
         } //if not in codeblock ignore
+        setExecParams(context, doc); //reset basic execute parameters
         pos = new vscode.Position(n, 0); //set position at start of block
         let line = doc.lineAt(pos); //get command line contents
         if (executing) {
@@ -185,7 +208,7 @@ export function activate(context: vscode.ExtensionContext) {
           progress("previous exec aborted", 500);
           return; //if processing cancel job and ignore
         }
-        setExecParams(context, doc, pos, line); //reset basic execute parameters
+        startCode = pos.line; //save start of code line number
         parseLine(line.text);
         let url = "";
         let script = config.get("scripts." + cmdId); //json object if cmd1 is a 'built-in' script
@@ -222,9 +245,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   function setExecParams(
     context: vscode.ExtensionContext,
-    doc: vscode.TextDocument,
-    pos: vscode.Position,
-    line: vscode.TextLine
+    doc: vscode.TextDocument
   ) {
     currentFile = doc.uri.path; //current editor file full path /c:...
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
@@ -247,7 +268,6 @@ export function activate(context: vscode.ExtensionContext) {
     comment = "";
     full = "";
     mpe = ""; //reset start line parameters
-    startCode = pos.line; //save start of code line number
     tempName = "temp.txt"; //temp file name, can be used as (%n)
     tempPath = context.globalStorageUri.path + "/"; //temp folder path
     tempFsPath = context.globalStorageUri.fsPath; //temp folder path, %p
@@ -256,12 +276,7 @@ export function activate(context: vscode.ExtensionContext) {
     } else {
       tempFsPath += "/";
     }
-    // let s=doc.lineAt(pos.line+1).text;
-    // if(/^\s*[/%#-][/%#-]?>/.test(s)){
-    //   getSpecialPath(s); //get path in 1st code line
-    // }
     needSwap = false; //set true if in-line swaps required
-    noOutput = line.text.includes("`>");
     codeBlock = "";
   } //end function setExecParams
 
@@ -295,6 +310,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       return ipos;
     }
+    noOutput = s.includes("`>");    
     inline = !s.toLowerCase().includes("noinline"); //allows normal use of =>>
     if (!inline) {
       s = s.replace(/noInline|noinline/, "");
@@ -513,6 +529,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         out = ""; //reset output buffer
         prog.report({ message: "executing" }); //start execution indicator
         sCode=hrefSrcRepl(sCode);
+        sCode=await inHere(sCode);        
         writeFile(tempPath + tempName, sCode); //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
@@ -542,7 +559,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               clear();
               removeSelection();
             }
-            out = await execShell(cmd); //execute all other commands
+            //console.log=write;
+            out=await execShell(cmd); //execute all other commands
             if (cmdId === "buddvs") {   //local script tester
               out = out.replace(/�/g, "î");
             }
@@ -602,6 +620,33 @@ function replaceStrVars(s: string) {
     .replace(/%e/g, currentFsFile) //%e current file path/name
     .replace(/%n/g, tempName); //%n temp file name only
   return s;
+}
+
+async function inHere(sCode: string): Promise<string> {
+  if(vscode.window.activeTextEditor){//handle `inhere` sections
+    //an `inhere` (include h-e regex) is a file name with a regex appended
+    //if there is no filename the current file is assumed
+    //there must be a regex at the end (use /.*/ to include the whole file)
+    //simplified regex: . means any char inc linefeeds etc -> [\s\S]
+    //                  * is always non-greedy ->*?
+    //                  if ( ) not present it is the whole expression
+    //the format is: inhere pathname`/regex/` (single backticks)
+    //and %e etc can be used as (part of) the pathname
+    //the whole 'inhere' line will be replaced by the result 
+    let re1=new RegExp("^([\\s\\S]*?)inhere(.*?) `?/([\\s\\S]*?)/`?([\\s\\S]*)$",'m');
+    //let re1=new RegExp("^(.*?)inhere(.*?)`/(.*?)/`(.*)$",'m');
+    while (re1.test(sCode)){  //paste any `inhere` sections
+       let f=sCode.replace(re1,'$2').trim();
+       if (f==='') {f=vscode.window.activeTextEditor.document.getText();}
+       else {f=await readFile(replaceStrVars(f));}
+       let s1=sCode.replace(re1,'$3');
+       s1=s1.replace(/\./g,'[\\s\\S]'); //make . mean all chars
+       s1=s1.replace(/[*]([^?])/g,'*?$1');   //make * not greedy
+       let re = new RegExp('[\\s\\S]*?('+s1+')[\\s\\S]*',"m"); //removed \n before (
+       s1=f.replace(re,'$1');
+       sCode = sCode.replace(re1,'$1\n'+s1+'\n$4');
+  }};
+  return sCode;
 }
 
 function clear(){
@@ -803,11 +848,12 @@ async function execShell(cmd: string){
   return new Promise<string>((resolve, reject) => {
     ch = cp.exec(cmd, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {
-        //alert('1. '+err1+',<'+stderr1+'>')
-        needSwap=false;
-        return resolve(out1 + err1 + "," + stderr1);
+        needSwap=false; //turn of swaps for errors
+        console.log(out1+err1+","+stderr1);   //see this in developer tools
+        return resolve(out1+err1+","+stderr1);//return to out buffer
       }
-      return resolve(out1 + stderr1);
+      console.log('\n'+out1+stderr1);//see this in developer tools
+      return resolve(out1+stderr1);  //return to out buffer
     });
   });
 }
@@ -815,6 +861,7 @@ async function execShell(cmd: string){
 async function writeFile(path: string, text: string) {
   //write a file in vm & eval. Usage: await writeFile(path,text)
   //`text` is written to the file at path (full path)
+  path=path.replace(/^['"]|['"]$/g,'');
   await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(text));
 }
 
@@ -851,7 +898,12 @@ function utf8ArrayToStr(array:Uint8Array) {
 
 async function readFile(path:string){
   //read a file in vm & eval. Usage: await readFile(path)
-  return utf8ArrayToStr(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
+  path=path.replace(/^['"]|['"]$/g,'');
+  try {
+    return utf8ArrayToStr(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
+  } catch {
+    return '';
+  }
 }
 
 function vmRequire(src:string){
@@ -862,6 +914,7 @@ function vmRequire(src:string){
 
 function write(...args:any) {
   out+=util.format(...args)+'\n';
+  log(...args);
   return false;
 }
 let statusBarItem: vscode.StatusBarItem;
@@ -926,3 +979,4 @@ function progress(msg: string, timeout: number) {
 }
 
 export function deactivate() {}
+
