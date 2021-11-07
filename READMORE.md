@@ -39,6 +39,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [Chaining execution codeblocks](#chaining-execution-codeblocks)
   - [One-liners](#one-liners)
     - [One-liners examples](#one-liners-examples)
+    - [Quickmath examples](#quickmath-examples)
     - [Windows - control panel](#windows---control-panel)
     - [html & javascript](#html--javascript)
     - [audio one-liners](#audio-one-liners)
@@ -292,13 +293,14 @@ test = function () {
   console.log('test works')
 }
 ```
-```js    //function available to subsequent codeblocks
+```js    //function available to subsequent vm codeblocks
 //```js //function available to subsequent codeblocks
 test()
 ```
 ```output
 test works
 ```
+
 ```eval     //but not to 'eval' codeblocks
 //```eval  //but not to 'eval' codeblocks
 test()
@@ -1208,6 +1210,14 @@ NB. Note only *single* backticks for one-liners
 `explorer`                         //explore
 `explorer /select,"%f"`     //explore temp folder
 
+### Quickmath examples
+
+Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks (backticks are the norm for *hover-exec*), and there needs to be `=` before the last backtick (essentially to stop popups for other backtick quoted strings).
+
+A few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message,  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`.
+
+More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
+
 ---
 ### Windows - control panel
 `control /name Microsoft.DevicesAndPrinters`
@@ -1291,7 +1301,28 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
   "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
   "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings`.
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no need to include a script startup command in the configuration file for the script to be used - for example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file (use "double quotes" if there are spaces in the command) because `.bat` files autostart `cmd.exe`.  Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command.
+
+```%f.bat
+@echo off
+dir *.json
+echo Congratulations! Your first batch file was executed successfully.
+```
+```output
+ Volume in drive C is OS
+ Volume Serial Number is B054-2449
+
+ Directory of c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+
+26/07/2021  09:08 pm               485 .eslintrc.json
+02/11/2021  12:27 pm           116,622 package-lock.json
+07/11/2021  09:15 am             4,518 package.json
+09/10/2021  06:00 pm               619 tsconfig.json
+               4 File(s)        122,244 bytes
+               0 Dir(s)  252,360,884,224 bytes free
+Congratulations! Your first batch file was executed successfully.
+```
+
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
 

@@ -1,6 +1,6 @@
 ## Hover-exec script tests 1
 
-The following tests will use an implementation of a simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file Don't panic *python* users, it's a very simple benchmark - vary similar to that from [javascript is fast](https://jyelewis.com/blog/2021-09-28-javascript-is-fast/) , adjusted to avoid potential floating point overflow.
+The following tests will use an implementation of a simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file Don't panic *python* users, it's a very simple benchmark - very similar to that from [javascript is fast](https://jyelewis.com/blog/2021-09-28-javascript-is-fast/) , adjusted to avoid potential floating point overflow.
 
 - [Hover-exec script tests 1](#hover-exec-script-tests-1)
   - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
@@ -18,39 +18,35 @@ The following tests will use an implementation of a simple 'benchmark' to demons
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js:node  //can change to 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js:node  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
-let s=process.cwd().replace(/\\/g,'/');
-//the following 'require' is required for `node` but not for 'vm' or 'eval' (moment is pre-installed)
-let moment=require(s+"/node_modules/moment");
-//the `require` may need tailoring for your system (eg. something like the following could be necessary)
-//let moment=require(s+"/moment.min.js");
-let iter=1e9;
+const {performance}=require('perf_hooks'); //ignored by eval & vm
+let iter=1e8;
 let n=0;
-let t1=moment.now();
+let t1=performance.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
-let t2=moment.now();
+let t2=performance.now();
 let tot=(t2-t1)/1000;
 console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  4.71  sec
-speed  212.4  million iterations per sec
+total time  0.47  sec
+speed  212.6  million iterations per sec
 ```
 
-> Example output
-> total time  5.22  sec
-> speed  191.7  million iterations per sec
+> Example output (similar for vm, eval or node)
+> total time  0.47  sec
+> speed  212.3  million iterations per sec
 
 ### Javascript in the browser
 
-This will execute the same javascript code in the default browser - it uses `moment` from a cdn - a local source would load rather faster. 
+This will execute the same javascript code in the default browser:
 
 ```html
 <script>
 function test(){
-let iter=1e9;
+let iter=1e8;
 let n=0;
 let t1=performance.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
@@ -68,13 +64,14 @@ r2.innerText=""+Math.round(iter/tot/1e6*10)/10+" million iterations per sec";
 <script>
 r1=document.getElementById("r1");
 r2=document.getElementById("r2");
-window.setTimeout(function() {test();},150);
+//window.setTimeout(function() {test();},150);
+test()
 </script>
 ```
 
 > Example output
-> Total time: 4.81 sec
-> Speed: 208.1 million iterations per sec
+> Total time: 0.47 sec
+> Speed: 210.7 million iterations per sec
 
 A similar speed to `js`, `eval` and `node`.
 
@@ -103,21 +100,21 @@ func main() {
 }
 ```
 ```output
-total time 0.24 sec
-speed  4170 million iterations per sec
+total time 0.251 sec
+speed  3983.7 million iterations per sec
 ```
 
 > Example output
 > total time 0.24 sec
 > speed  4170 million iterations per sec
 
-ie. about 6 times faster than javascript.
+ie. about 20 times faster than javascript.
 
 ### Test using 'python'
 
 Again, the appropriate `python` needs to be executed when the `python` command is executed in a terminal. For this run, 'python 3.8.7` was used. Note that fewer iterations have been used because it takes rather longer.
 
-```python3 //speed test
+```python //speed test
 from time import time
 m=1e7  # note: fewer iterations than for js or go
 n=0.01
@@ -131,8 +128,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.82  sec
-speed  5.4801  million iterations per sec
+total time  1.86  sec
+speed  5.3692  million iterations per sec
 ```
 
 > Example output
@@ -160,8 +157,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.06	 sec
-speed 	93.63	 million iterations per sec
+total time 	1.12	 sec
+speed 	88.73	 million iterations per sec
 ```
 
 > Example output:
@@ -194,9 +191,8 @@ begin //30
 end.
 ```
 ```output
-time=   1.65 sec
-speed=  60.64 million iterations per sec
-/usr/bin/ld.bfd: warning: link.res contains output sections; did you forget -T?
+time=   1.06 sec
+speed=  94.61 million iterations per sec
 ```
 
 > Example output:
@@ -207,10 +203,10 @@ That's about half the speed of the javascript code
 
 ### Octave test
 
-```python:octave
+```octave
 a=1.0;
 t=time;
-m=1000000; //1e6
+m=1000000; # 1e6
 for i=1:m
   a=a*i;
   a=a+1.1;
@@ -220,8 +216,8 @@ disp(strcat('time= ',num2str(time-t),' sec'))
 disp(strcat('speed= ',num2str(m/(time-t)/1e6),' million iterations per sec'))
 ```
 ```output
-time=1.7275 sec
-speed=0.57593 million iterations per sec
+time=1.7142 sec
+speed=0.5582 million iterations per sec
 ```
 
 > Example output:
@@ -246,8 +242,8 @@ mprintf('Time: %.2f sec\n',t)
 mprintf('Speed: %.2f  million iterations per sec\n',m/t/1e6)
 ```
 ```output
-Time: 1.15 sec
-Speed: 0.87  million iterations per sec
+Time: 1.18 sec
+Speed: 0.85  million iterations per sec
 ```
 
 > Example output:
@@ -273,8 +269,8 @@ println("time= ",round(t,digits=2)," sec")
 println("speed= ",round(m/t/1e6,digits=3)," million iterations per sec")
 ```
 ```output
-time= 1.81 sec
-speed= 5.537 million iterations per sec
+time= 1.77 sec
+speed= 5.64 million iterations per sec
 ```
 
 >Example output:

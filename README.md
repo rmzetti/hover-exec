@@ -15,11 +15,12 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [nodejs](#nodejs)
     - [lua](#lua)
     - [python](#python)
+    - [scilab](#scilab)
     - [julia](#julia)
     - [powershell](#powershell)
     - [gnuplot](#gnuplot)
-    - [scilab](#scilab)
-  - [One-liners](#one-liners)
+    - [Html](#html)
+  - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner and quickmath examples:](#one-liner-and-quickmath-examples)
   - [Configuration settings](#configuration-settings)
   - [Known Issues](#known-issues)
@@ -48,7 +49,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 ```js
 //```js  //this comment is to show the command line in markdown previews`
 console.log("Hello world")
-'test: '+Math.random() =>>test: 0.6805919081208904
+'test: '+Math.random() =>>test: 0.34008714553506403
 ```
 ```output
 Hello world
@@ -66,15 +67,15 @@ alert(a) //not available in nodejs scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>3.7623965494041895
-eval('let b=3; 2*b*Math.random()')=>>5.986797001365053
+2*b*Math.random() =>>1.1247352414958809
+eval('let b=3; 2*b*Math.random()')=>>4.888174050922626
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.2340280006733695
-process.cwd() =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>>hello 1.272208191159485
+process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.9222454670539713
+goodbye world 0.35347099837885465
 hello, world 3
 ```
 
@@ -120,9 +121,9 @@ The following functions are included in `vmContext` by default (and are also ava
 - status(string): show `=>string` on status bar
 - vscode: access to vscode objects
 - write(string): `console.log` to output block
-- math: access to `mathjs` objects
-- moment: access to `moment` objects
-- _ : access to `lodash` objects
+- math: access to `mathjs` objects (no need to `require('mathjs')`)
+- moment: access to `moment` objects (no need to `require('moment')`)
+- _ : access to `lodash` objects (no need to `require('lodash')`)
 
 See [READMORE](READMORE.md) for information on restricting or enlarging the vm context.
 
@@ -131,7 +132,7 @@ See [READMORE](READMORE.md) for information on restricting or enlarging the vm c
 
 Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
 
-A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval`, and is then available during the session in both. A global can be removed using, eg. `delete global.a;`
+When using `vm`, function and variable definitions persist across `vm` scripts during the session. A function or variable can be also set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval`, and is then available during the session in both. A global can be removed using, eg. `delete global.a;`
 
 ```js //using lodash, mathjs and process in vm
 //```js //using lodash, mathjs and process in vm
@@ -142,11 +143,11 @@ function xrange(){
 }
 xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>c:/Users/xxx/OneDrive/Documents/GitHub/hover-exec
+cd =>>c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec
 ```
 
 ```js //declare a global function
-//```js //declare a global function
+//```js //declare a global function (not needed if just using vm scripts)
 f=global.f=function(m){return 'the meaning of life is '+m;};
 f(44-2)=>>the meaning of life is 42
 ```
@@ -199,11 +200,14 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ---
 ### lua
 
-```lua -- say hello & goodbye
-//```lua -- say hello & goodbye
-'hello '..(44-2+math.random())=>>hello 42.127742051917
-"goodbye "..math.pi+math.random()=>>goodbye 3.2751978374685
+```lua54 -- say hello & goodbye
+--```lua54 -- say hello & goodbye
+'hello '..(44-2+math.random())=>>hello 42.979975482313
+"goodbye "..math.pi+math.random()=>>goodbye 3.4165589101204
 print("lua ok") -- this outputs in the output code block below
+```
+```output
+lua ok
 ```
 
 ---
@@ -212,12 +216,34 @@ print("lua ok") -- this outputs in the output code block below
 ```python {cmd} ## {cmd} allows execution also in *markdown preview enhanced*}
   # ```python {cmd} 
 from random import random
-45-2+random()      # =>>43.88661558966725
+45-2+random()      # =>>43.218692458312425
 'hello, world 3!'      # =>>hello, world 3!
 print('python ok')
 ```
+```output
+python ok
+```
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` so that *markdown previw enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
+
+---
+### scilab
+
+```js :scilab 
+// ```js:scilab //using js :scilab instead of just scilab provides quick & dirty syntax highlight
+// can also append {cmd=scilab} to allow execution in markdown preview enhanc
+// scilab needs to use 'string()' for numeric output
+pwd()   =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+rand("seed",getdate('s')); //set new random sequence
+'def '+string(rand())+' abc '+string(rand())   =>>def 0.7051907 abc 0.4123716
+mprintf('%s',string(rand()))
+// nb. need to use 'string' for numeric output in scilab
+disp('scilab random: '+string(rand()))
+```
+```output
+0.3370951
+  "scilab random: 0.4830914"
+```
 
 ---
 ### julia
@@ -226,13 +252,13 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
   # ```julia {cmd}
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.19104707134627685, 0.37870819903566955, 0.06382850245606453]
+a   # =>>[0.587876207657146, 0.8975660150756739, 0.07017355839916006]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.19104707134627685, 42.0, 0.06382850245606453]
-b=[0.19104707134627685, 42.0, 0.06382850245606453]
+a=[0.587876207657146, 42.0, 0.07017355839916006]
+b=[0.587876207657146, 42.0, 0.07017355839916006]
 ```
 
 ---
@@ -240,13 +266,13 @@ b=[0.19104707134627685, 42.0, 0.06382850245606453]
 
 ```pwsh {cmd}
   #  ```pwsh {cmd} // random number, show current directory.
-Get-Random -Min 0.0 -Max 1.0 # =>>0.176738379605458
+Get-Random -Min 0.0 -Max 1.0 # =>>0.225810305786231
 pwd
 ```
 ```output
 Path
 ----
-C:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
@@ -279,21 +305,8 @@ plot "$charge" using 1:3 w lp title "charge"
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
 ---
-### scilab
+### Html
 
-```js :scilab //using js :scilab instead of just scilab provides quick & dirty syntax highlight
-//```js :scilab //using js :scilab instead of just scilab provides quick & dirty syntax highlight
-// can also append {cmd=scilab} to allow execution in markdown preview enhanced
-rand("seed",getdate('s'));
-'def '+string(rand())+' abc'=>>def 0.8770073 abc
-// nb. need to use 'string' for numeric output in scilab
-disp('scilab random: '+string(rand()))
-```
-```output
-  "scilab random: 0.5997802"
-```
-
----
 ```html //all required html is in the codeblock
 <!-- ```html tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
@@ -311,11 +324,11 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 ```
 
 ---
-## One-liners
+## One-liners and quickmath
 
 *One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed on hover-click. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
-Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
+Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
 
 ---
 ### One-liner and quickmath examples:
@@ -344,7 +357,7 @@ open default browser with href, or showing html text (note that html is a built 
 
 `html <h1>Hello world!</h1>`
 
-And finally, another *quickmath* expression `254cm in inches=` will show 100inches in the hover message.
+And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=` ...
 
 ---
 ## Configuration settings
@@ -364,8 +377,8 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "bash":"bash \"%f.sh\"",
 - "zsh":"zsh -f \"%f.sh\"",
 - "lua54":"lua54 \"%f.lua\"",
-- "lua53":"lua53 \"%f.lua\"",
-- "lua":"lua54 \"%f.lua\"",
+- "lua51":"lua51 \"%f.lua\"",
+- "lua":"lua \"%f.lua\"",
 - "js":"vm",
 - "eval":"eval",
 - "vm":"vm",
@@ -379,7 +392,27 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 - "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no need to include a script startup command in the configuration file for the script to be used - for example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file (use "double quotes" if there are spaces in the command) because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command.
+
+```%f.bat
+@echo off
+dir *.json
+echo Congratulations! Your first batch file was executed successfully.
+```
+```output
+ Volume in drive C is OS
+ Volume Serial Number is B054-2449
+
+ Directory of c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+
+26/07/2021  09:08 pm               485 .eslintrc.json
+02/11/2021  12:27 pm           116,622 package-lock.json
+07/11/2021  09:15 am             4,518 package.json
+09/10/2021  06:00 pm               619 tsconfig.json
+               4 File(s)        122,244 bytes
+               0 Dir(s)  252,368,457,728 bytes free
+Congratulations! Your first batch file was executed successfully.
+```
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
 
@@ -388,7 +421,7 @@ There is also a set of strings called `swappers` which enable moving the output 
 
 This is a beta version.
 
-Note that in all scripting languages included (except a 'home-grown' one *buddvs*, and to some extent *vm* and *eval*, which allow definition of *global* variables and functions), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+Note that in all scripting languages included (except a 'home-grown' one *buddvs*, and to some extent *vm* and *eval*, which allow definition of *global* variables and functions), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages. To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md).
 
 Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on a Ryzen laptop). However, other included scripts are generally fairly fast (see the demo gif above). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. 
 
@@ -397,3 +430,6 @@ Matlab takes a substantial amount of time to run a codeblock (ie. the startup ti
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+
+
+

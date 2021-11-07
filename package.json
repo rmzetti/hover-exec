@@ -49,7 +49,7 @@
 						"bash": "bash \"%f.sh\"",
 						"zsh": "zsh -f \"%f.sh\"",
 						"lua54": "lua54 \"%f.lua\"",
-						"lua53": "lua53 \"%f.lua\"",
+						"lua51": "lua51 \"%f.lua\"",
 						"lua": "lua \"%f.lua\"",
 						"js": "vm",
 						"eval": "eval",
