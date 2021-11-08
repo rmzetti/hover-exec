@@ -1,3 +1,17 @@
+# Typescript
+
+First install typescript and ts-node globally with
+npm i -g typescript ts-node
+Then set ts-node as the cmd in your code block:
+'''typescript {cmd="ts-node" output="text"}
+```js
+let this_works = true;
+    if (this_works) {
+        console.log('It works!');
+    }
+```
+
+
 # Javascript tests
 
 Commands:
@@ -78,25 +92,28 @@ hello Fred, how are you 3 doing , ok?
 
 ---
 
-## getting user input
-```js
-let userInput = "2+4";
+## speed of eval vs Function within code
+
+```js:eval
+let expr = "7*7-7";
 let result;
 let p = Date.now();
-for (let i = 0; i < 1e6; i++) {
-  result = eval(userInput);
-  //result = Function("return " + userInput)();
+for (let i = 0; i < 1e6; i++) { //speed test loop
+  //result = eval( expr );
+  result = Function("return " + expr)();
 }
-console.log(Date.now() - p);
+console.log('check, result=',result)
+console.log(Date.now() - p,'msec');
 ```
 ```output
-382
+check, result= 42
+582 msec
 ```
 Note:
 - 1e6 `js:node`: using Function, 644msec, using eval, 180msec
 - 1e6 `js:eval`:   using Function, 550msec, using eval, 158msec
 - 1e6 `js` (vm):  using Function, 840msec, using eval, 370msec
-- in the debugger, `vm, eval` much slower (use 1e5,  crashes for 1e6)
+- in the debugger use 1e5 (crashes for 1e6), `vm, eval` much slower
 
 
 ---
@@ -143,6 +160,9 @@ r1=document.getElementById("r1");
 window.setTimeout(function() {test();},150);
 </script>
 ```
+
+
+
 
 
 

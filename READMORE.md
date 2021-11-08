@@ -356,7 +356,7 @@ a+Math.random() =>>5.907325870290402
 ---
 ### Scripts with built-in commands
 
-Command lines to start a number of scripts are included, eg:
+Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `READMORE` for the actual commands):
 
 - javascript (via node)
 - eval (built in javascript, with vscode api available)
@@ -718,17 +718,16 @@ pwd   =>>C:\Users\xxx\OneDrive\Documents\Notes
 
 ---
 ### Gnuplot
-Use `gnuplot` to run *gnuplot* - note that a file in the current folder is used here
 
-```gnuplot {cmd}
- # ```gnuplot {cmd}`
-set xdata time
-set timefmt "%d-%m-%Y %H%M"
-set format x "%d"
-plot "plotdata.txt" using 1:3 w lp 
- # nb 3 columns of data but 1 2 make the xdata 
+Gnuplot is a very useful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted.
+
+Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
+
+```output :gnuplot
+#inhere `#tag_speed`
+set logscale x
+plot "$speed" w lp title "speed"
 ```
-![[2021-09-12-22-49-00.png]]
 
 ---
 ### Html and in-browser javascript
@@ -1159,15 +1158,18 @@ for (ii=0;ii<x.length;ii++) {
   tim[j++]=2/t1/1e6;
 }
 console.log('```output :gnuplot noinline')
+console.log('#tag_speed') //id tag for other scripts to use the data
 console.log('$speed << EOD')
 for (ii=0;ii<x.length;ii++) {
 console.log(x[ii],tim[ii])
 }
 console.log('EOD')
+console.log('#tag_speed') //same id tag at end of data
 console.log('set logscale x')
 console.log('plot "$speed" w lp title "speed"')
 ```
 ```output :gnuplot noinline
+#tag_speed
 $speed << EOD
 1 0.40816326530612246
 2 2.3529411764705883
@@ -1190,6 +1192,7 @@ $speed << EOD
 483293 39.99114604882085
 1000000 38.677238445175014
 EOD
+#tag_speed
 set logscale x
 plot "$speed" w lp title "speed"
 ```
@@ -1301,7 +1304,7 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
   "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
   "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no need to include a script startup command in the configuration file for the script to be used - for example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file (use "double quotes" if there are spaces in the command) because `.bat` files autostart `cmd.exe`.  Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command.
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier. For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
 
 ```%f.bat
 @echo off

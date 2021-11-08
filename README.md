@@ -162,7 +162,7 @@ f(42)=>> the meaning of life is 42
 
 ### Scripts with command execution strings included
 
-Command lines to start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual commands):
+Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual commands):
 
 - vm (vm script, with vscode api included in context)
 - eval (built-in javascript, with vscode api available)
@@ -278,6 +278,8 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ---
 ### gnuplot
 
+Gnuplot is a veryuseful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
+
 ```gnuplot {cmd} # as above {cmd} allows execution in *markdown preview enhanced*
   # ```gnuplot {cmd} as above {cmd} allows execution in *markdown preview enhanced*
 $charge << EOD
@@ -392,7 +394,7 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 - "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no need to include a script startup command in the configuration file for the script to be used - for example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file (use "double quotes" if there are spaces in the command) because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command.
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier. For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
 
 ```%f.bat
 @echo off
@@ -414,7 +416,7 @@ echo Congratulations! Your first batch file was executed successfully.
 Congratulations! Your first batch file was executed successfully.
 ```
 
-There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
+There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md).
 
 ---
 ## Known Issues
