@@ -112,9 +112,9 @@ Note:
 ---
 
 ## Javascript in the browser
-On windows use `html` to use the default browser, on linux use `html:firefox` or whatever is installed, and check the *hover-exec* configuration for `firefox` (or `chrome`)
+On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and check the *hover-exec* configuration for `firefox` (or `chrome`)
 
-```html:firefox
+```html:chrome
 <script>
 function test(){
   let t='\n Live:';
