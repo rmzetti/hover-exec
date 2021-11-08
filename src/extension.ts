@@ -156,8 +156,8 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
-            "open: [ [*last script*] ](" +
-            tempPath + tempName + ") " + "[ [*last result* ] ](" + tempPath + tempName + ".out.txt)\n\n";
+            "open: [ [*last script*] ](file://" +
+            tempPath + tempName + ") " + "[ [*last result* ] ](file://" + tempPath + tempName + ".out.txt)\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
