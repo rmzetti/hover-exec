@@ -100,7 +100,7 @@ console.log(Date.now() - p,'msec');
 ```
 ```output
 check, result= 42
-165 msec
+190 msec
 ```
 Note:
 - 1e6 `js:node`: using Function, 644msec, using eval, 180msec
@@ -111,37 +111,41 @@ Note:
 
 ---
 
-```chrome
+## Javascript in the browser
+On windows use `html` to use the default browser, on linux use `html:firefox` or whatever is installed, and check the *hover-exec* configuration for `firefox` (or `chrome`)
+
+```html:firefox
 <script>
 function test(){
   let t='\n Live:';
+  const t1='\n >> ';
   let a=[1,2,3,4,5,6,7,8];
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.slice(2);
-  t=t+'\n >> '+a.slice(0,2);
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.splice(2);
-  t=t+'\n >> '+a;
+  t+=t1+a;
+  t+=t1+a.slice(2);
+  t+=t1+a.slice(0,2);
+  t+=t1+a;
+  t+=t1+a.splice(2);
+  t+=t1+a;
   a=[1,2,3,4,5,6,7,8];
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.includes(6);
-  t=t+'\n >> '+a.includes(5,-3);
-  t=t+'\n >> '+a.includes(6,-3);
-  t=t+'\n >> '+a.shift(1);
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.pop(1);
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.pop(1)
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.unshift(12);
-  t=t+'\n >> '+a;
-  t=t+'\n >> '+a.push(13);
-  t=t+'\n >> '+a;
+  t+=t1+a;
+  t+=t1+a.includes(6);
+  t+=t1+a.includes(5,-3);
+  t+=t1+a.includes(6,-3);
+  t+=t1+a.shift(1);
+  t+=t1+a;
+  t+=t1+a.pop(1);
+  t+=t1+a;
+  t+=t1+a.pop(1)
+  t+=t1+a;
+  t+=t1+a.unshift(12);
+  t+=t1+a;
+  t+=t1+a.push(13);
+  t+=t1+a;
   let p=performance.now();
   let array1 = Array(30000000).fill(42);
   array1=array1.map(String)
-  t=t+'\n\n >> '+Math.round(performance.now()-p)+'ms';
-  t=t+'\n >> '+array1.slice(0,5);
+  t+='\n\n >> '+Math.round(performance.now()-p)+'ms';
+  t+=t1+array1.slice(0,5);
   let expr = "7*7-7";
   let result=0;
   p = performance.now();
@@ -149,8 +153,8 @@ function test(){
     result = eval( expr );
     //result = Function("return " + expr)();
   }
-  t=t+'\n\n >> '+result;
-  t=t+'\n >> '+Math.round(performance.now()-p)+'ms';
+  t+='\n\n >> '+result;
+  t+=t1+Math.round(performance.now()-p)+'ms';
   r2.innerText=t;
 }
 </script>

@@ -43,7 +43,7 @@ speed  195.1  million iterations per sec
 
 This will execute the same javascript code in the default browser:
 
-```html
+```html:chrome
 <script>
 function test(){
 let iter=1e8;

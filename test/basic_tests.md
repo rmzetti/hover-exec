@@ -13,6 +13,10 @@ The message shows `hover-exec` followed by the code block id (`js`). The bottom 
 
 ```js   //this is a code block with id 'js'
 alert('hello world')
+console.log('goodbye world')
+```
+```output
+goodbye world
 ```
 
 ### Exec
