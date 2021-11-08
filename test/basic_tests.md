@@ -27,7 +27,7 @@ Hover over [`last script`] to show the `path/name` of the code to be executed. C
 console.log('    > hello world '+(3+Math.random()))
 ```
 ```output
-    > hello world 3.232059103649493
+    > hello ... 3.4412757907251947
 ```
 
 The file accessed via `last result` in the hover message will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
@@ -98,15 +98,9 @@ The second is that output can be positioned in-line (within the code block) if t
 let a='the meaning of life';
 console.log('Normally output is shown in an output block');
 console.log('which is positioned after the script.');
-a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.675063474666565
+a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.78284961854512
 console.log('For successive results it can be useful to display results');
 console.log('next to the calculation which produced them');
-```
-```output
-Normally output is shown in an output block
-which is positioned after the script.
-For successive results it can be useful to display results
-next to the calculation which produced them
 ```
 
 Inline results are produced by using `=>>` at the end of a script line (as above). Note that in-line results do not need `console.log`, this is provided by the config section called `swappers`, which in effect 'swap' the output from the `output` block to the appropriate line in the original script.
@@ -114,15 +108,17 @@ Inline results are produced by using `=>>` at the end of a script line (as above
 Note that no checking is performed for in-line output. For example, it is not particularly useful to have in-line results produced inside a loop:
 
 ```js //in-line results in a loop (not recommended)
+'this is ok...'=>>this is ok...
 for (let i=0;i<5;i++){
     'i='+i+', i**2='+(i**2) =>>i=0, i**2=0
 }
+'but this ends up in the wrong place'=>>i=1, i**2=1
 ```
 ```output
-=>>i=1, i**2=1
-=>>i=2, i**2=4
-=>>i=3, i**2=9
-=>>i=4, i**2=16
+>>i=2, i**2=4
+>>i=3, i**2=9
+>>i=4, i**2=16
+>>but this ends up in the wrong place
 ```
 
 Note that only the first result of the loop execution will made available in-line, the rest are left in the `output` block. If there are further in-line results requested, they will not appear in the right place. So: `do not request in-line results for statements in a loop!`
