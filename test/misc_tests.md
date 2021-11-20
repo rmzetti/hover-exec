@@ -202,7 +202,7 @@ window.setTimeout(function() {test();},150);
 
 https://github.com/observablehq/plot 
 
-```html:safari  //chartjs
+```html  //chartjs
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 <script>
@@ -225,7 +225,7 @@ new Chart("myChart", {
 </script>
 ```
 
-```html:safari //plotly
+```html //plotly
  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
  <!-- Plots go in blank <div> elements. You can size them in the plot layout,  or size the div-->
 <div id="plot" style="width:70%;height:400px"></div>
@@ -247,7 +247,7 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 ```
 
 
-```html:safari //google charts
+```html //google charts
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
