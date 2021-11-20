@@ -202,7 +202,7 @@ window.setTimeout(function() {test();},150);
 
 https://github.com/observablehq/plot 
 
-```html  //chartjs
+```html:safari  //chartjs
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 <script>
@@ -225,7 +225,7 @@ new Chart("myChart", {
 </script>
 ```
 
-```html //plotly
+```html:safari //plotly
  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
  <!-- Plots go in blank <div> elements. You can size them in the plot layout,  or size the div-->
 <div id="plot" style="width:70%;height:400px"></div>
@@ -246,14 +246,15 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 <a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
 ```
 
-```html //google charts
+
+```html:safari //google charts
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-  let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+  let a=[ #inhere  `#p1` ]
   let b=[ #inhere  `#j1` ] 
   let c=[ #inhere  `#go` ] 
   let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
@@ -261,13 +262,13 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
   d=[['x','pascal','javascript','go'], ...d]
   var data = google.visualization.arrayToDataTable(d);
   var options = {
-    title: 'Speed Comparison',
-    hAxis: {title: 'log10(Buffer size)',  titleTextStyle: {color: '#222'}},
-    vAxis: {minValue: 0}
+    title:'Speed Comparison',
+    hAxis: {title: 'log10(Buffer size)',titleTextStyle:{color: '#222'}},
+    vAxis: {minValue: 0}
   };
   var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
   chart.draw(data, options);
-}
+  }
 </script>
 ```
 
