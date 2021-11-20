@@ -60,16 +60,17 @@ console.time('console timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>536.840372000006
+performance.now()-p=>>1564.4390000011772
 console.timeEnd('console timer')
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
 console.log('abc',Date.now(),'def')
 ```
 ```output
-0.5222716816069242,0.8364862987362658
-hello  537
-abc 1636333406714 def
+console timer: 1.566s
+[ '0.42284083411200335', '0.0791851273341857' ]
+hello  1569
+abc 1637199109775 def
 ```
 
 ## using console.log
@@ -79,13 +80,11 @@ let name='Fred'
 'hello '+name+', how are you '+3+' doing, ok?'=>>hello Fred, how are you 3 doing, ok?
 console.log('hello %s, how are you %s doing', name,3,', ok?')
 ```
-```output
-hello Fred, how are you 3 doing , ok?
-```
+
 
 ---
 
-## speed of eval vs Function within code
+## speed of eval vs Function within javascript code
 
 ```js:eval
 let expr = "7*7-7";
@@ -100,7 +99,7 @@ console.log(Date.now() - p,'msec');
 ```
 ```output
 check, result= 42
-190 msec
+157 msec
 ```
 Note:
 - 1e6 `js:node`: using Function, 644msec, using eval, 180msec
@@ -112,9 +111,9 @@ Note:
 ---
 
 ## Javascript in the browser
-On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and check the *hover-exec* configuration for `firefox` (or `chrome`)
+On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and, if needed, check the *hover-exec* configuration for `firefox` (or `chrome`)
 
-```html:chrome
+```html
 <script>
 function test(){
   let t='\n Live:';
@@ -199,9 +198,167 @@ window.setTimeout(function() {test();},150);
 ```
 
 
+## Plotting comparison
+
+https://github.com/observablehq/plot 
+
+```html  //chartjs
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+<script>
+let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
+let x=Array(a.length/2).fill(0).map((x,i) => a[i*2])
+let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
+let b=[ #inhere  `#j1` ] 
+let y2=Array(b.length/2).fill(0).map((x,i) => b[i*2+1])
+let c=[ #inhere  `#go` ] 
+let y3=Array(c.length/2).fill(0).map((x,i) => c[i*2+1])
+new Chart("myChart", {
+  type: "line",
+  data: { labels: x, datasets: 
+              [{ data:y1, borderColor: "red", fill: false },
+               { data:y2, borderColor: "blue", fill: false },
+               { data:y3, borderColor: "green", fill: false },
+              ] },
+  options: { legend: {display: false} }
+});
+</script>
+```
+
+```html //plotly
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <!-- Plots go in blank <div> elements. You can size them in the plot layout,  or size the div-->
+<div id="plot" style="width:70%;height:400px"></div>
+<script>
+let lm='lines+markers'
+let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
+let b=[ #inhere  `#j1` ] 
+let c=[ #inhere  `#go` ] 
+let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
+let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
+let y2=Array(b.length/2).fill(0).map((x,i) => b[i*2+1])
+let y3=Array(c.length/2).fill(0).map((x,i) => c[i*2+1])
+plot1 = document.getElementById('plot');
+Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
+                  { x: x, y: y2, mode: lm, name:'javascript' },
+                  { x: x, y: y3, mode: lm, name:'go' },]);
+</script>
+<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+```
+
+```html //google charts
+<div id="chart_div" style="width: 100%; height: 500px;"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+  let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
+  let b=[ #inhere  `#j1` ] 
+  let c=[ #inhere  `#go` ] 
+  let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
+  let d=Array(a.length/2).fill(0).map((e,i)=>[x[i],a[i*2+1],b[i*2+1],c[i*2+1]])
+  d=[['x','pascal','javascript','go'], ...d]
+  var data = google.visualization.arrayToDataTable(d);
+  var options = {
+    title: 'Speed Comparison',
+    hAxis: {title: 'log10(Buffer size)',  titleTextStyle: {color: '#222'}},
+    vAxis: {minValue: 0}
+  };
+  var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+}
+</script>
+```
 
 
+```gnuplot
+ # first \n needed to distinguish from previous go1 in script etc 
+$go1 <<EOD
+ #inhere  `#go`
+EOD
+$pascal1 <<EOD
+ #inhere  `#p1`
+EOD
+$javascript1 <<EOD
+ #inhere  `#j1` 
+EOD
+set logscale x
+plot "$javascript1" w lp title "javascript",\
+       "$pascal1" w lp title "pascal",\
+       "$go1" w lp title "go"
+```
 
 
+### Some data for plots
+
+#p1
+1,  2.8481913984619769E+002,
+2,  3.2000000000000006E+002,
+4,  5.3930160442227304E+002,
+9,  5.5069448693630306E+002,
+18,  4.9220672682526657E+002,
+38,  4.4362464685143249E+002,
+78,  4.2469318639675049E+002,
+162,  3.8850784210273861E+002,
+336,  4.1373705532501759E+002,
+695,  4.0941356661070370E+002,
+1438,  4.0981270590381087E+002,
+2976,  4.0774328614234560E+002,
+6158,  4.1207063150259239E+002,
+12743,  4.1257614187723925E+002,
+26367,  4.1326873674591815E+002,
+54556,  4.0725164114438951E+002,
+112884,  4.0667517359097167E+002,
+233572,  4.0144779152324566E+002,
+483293,  3.9295922011303855E+002,
+1000000,  3.9015515260938304E+002,
+#p1
+
+#j1
+1, 25,
+2, 36.36363636363636,
+4, 800,
+9, 900,
+18, 1200,
+38, 1266.6666666666667,
+78, 1300,
+162, 270.00000000000006,
+336, 1344.0000000000002,
+695, 1390,
+1438, 1369.5238095238096,
+2976, 1384.186046511628,
+6158, 1256.734693877551,
+12743, 1554.0243902439024,
+26367, 1550.9999999999998,
+54556, 1515.4444444444443,
+112884, 1495.1523178807947,
+233572, 1150.6009852216748,
+483293, 668.9176470588236,
+1000000, 664.8936170212766,
+#j1
+
+#go
+1,  180.6195249706493,
+2.0691380811147897,  761.2722888575386,
+4.281332398719393,  804.3837292098438,
+8.858667904100825,  1112.4088534062691,
+18.32980710832436,  1379.9448248380909,
+37.926901907322495,  1374.2129029067175,
+78.47599703514611,  1604.760480862666,
+162.3776739188721,  1467.356532792988,
+335.981828628378,  1973.2297446900686,
+695.1927961775605,  1813.4675783945756,
+1438.449888287663,  1747.260753938808,
+2976.351441631319,  1971.883729329512,
+6158.48211066026,  1640.8616941970215,
+12742.749857031347,  1962.098385087474,
+26366.508987303558,  1925.588743440195,
+54555.947811685146,  1963.9029643128854,
+112883.78916846885,  1840.5875915896195,
+233572.14690901214,  945.4551695526003,
+483293.0238571752,  662.0673675355384,
+1e+06,  660.4684782172212,
+#go
 
 

@@ -9,7 +9,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
   - [Javascript scripts](#javascript-scripts)
     - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
     - [Available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
-    - [Using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
+    - [Using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
     - [nodejs](#nodejs)
@@ -30,14 +30,14 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
 
 *Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. This is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
-The extension is activated when a markdown file is opened in the editor.
+The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
 
 ---
 ## Basic hover-exec 
-Hovering over lines starting with ` ``` `  (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command as the bottom line, as in the *gif* above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over lines starting with ` ``` `  (or lines which start with a single backtick and include an end backtick) will trigger a hover message with an *exec* command as the bottom line, as in the *gif* above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
 ## Javascript scripts
@@ -46,14 +46,16 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 ### Examples using `vm` and `eval`
 
-```js
+```js      //click this line in the *hover* to execute the block
 //```js  //this comment is to show the command line in markdown previews`
-console.log("Hello world")
-'test: '+Math.random() =>>test: 0.34008714553506403
+//        //the default for the `js` command is to execute using the `vm` module
+console.log("Notice the in-line random number result ")
+'test: '+Math.random() =>>test: 0.614698803823033
 ```
 ```output
-Hello world
+Notice the in-line random number result
 ```
+
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
@@ -67,15 +69,15 @@ alert(a) //not available in nodejs scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>1.1247352414958809
-eval('let b=3; 2*b*Math.random()')=>>4.888174050922626
+2*b*Math.random() =>>2.5445875920480696
+eval('let b=3; 2*b*Math.random()')=>>4.497114158871566
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.272208191159485
+'hello '+(2-1+Math.random())=>>hello 1.057844967468851
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.35347099837885465
+goodbye world 0.44111402501110897
 hello, world 3
 ```
 
@@ -95,9 +97,9 @@ All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
 
-In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. Note that `eval` allows the internal *vscode* API to be used.
+In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`.
 
-Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
+Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
 ---
 ### Available functions in `vm` and `eval`
@@ -128,7 +130,7 @@ The following functions are included in `vmContext` by default (and are also ava
 See [READMORE](READMORE.md) for information on restricting or enlarging the vm context.
 
 ---
-### Using require and globals with vm and eval
+### Using require & globals with vm and eval
 
 Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
 
@@ -156,6 +158,8 @@ f(44-2)=>>the meaning of life is 42
 //```js:eval //use the global function (can be used in both *eval* & *vm*)
 f(42)=>> the meaning of life is 42
 ```
+
+See [READMORE](READMORE.md) for more information and examples.
 
 ---
 ## Other scripts
@@ -190,7 +194,7 @@ Other script languages may be added. And as an alternative to the standard *vsco
 
 The `js:node` command executes a javascript code block in `nodejs` (assuming that is installed). 
 
-```js :node
+```js:node {cmd=node} //the {..} allows exec in *markdown preview enhanced*
 //```js  This comment line is for command visibility in markdown previews.
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
@@ -202,8 +206,8 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 
 ```lua54 -- say hello & goodbye
 --```lua54 -- say hello & goodbye
-'hello '..(44-2+math.random())=>>hello 42.979975482313
-"goodbye "..math.pi+math.random()=>>goodbye 3.4165589101204
+'hello '..(44-2+math.random())=>>hello 42.796766108745
+"& goodbye "..math.pi+math.random()=>>& goodbye 3.5714404599399
 print("lua ok") -- this outputs in the output code block below
 ```
 ```output
@@ -216,7 +220,7 @@ lua ok
 ```python {cmd} ## {cmd} allows execution also in *markdown preview enhanced*}
   # ```python {cmd} 
 from random import random
-45-2+random()      # =>>43.218692458312425
+45-2+random()      # =>>43.5529097568658
 'hello, world 3!'      # =>>hello, world 3!
 print('python ok')
 ```
@@ -231,7 +235,7 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 
 ```js :scilab 
 // ```js:scilab //using js :scilab instead of just scilab provides quick & dirty syntax highlight
-// can also append {cmd=scilab} to allow execution in markdown preview enhanc
+// can also append {cmd=scilab} to allow execution in markdown preview enhanced
 // scilab needs to use 'string()' for numeric output
 pwd()   =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 rand("seed",getdate('s')); //set new random sequence
@@ -249,16 +253,16 @@ disp('scilab random: '+string(rand()))
 ### julia
 
 ```julia {cmd}
-  # ```julia {cmd}
+  # ```julia {cmd} //also works in *mpe*
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.587876207657146, 0.8975660150756739, 0.07017355839916006]
+a   # =>>[0.14768143874148132, 0.5034031296926165, 0.48417880381873646]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.587876207657146, 42.0, 0.07017355839916006]
-b=[0.587876207657146, 42.0, 0.07017355839916006]
+a=[0.14768143874148132, 42.0, 0.48417880381873646]
+b=[0.14768143874148132, 42.0, 0.48417880381873646]
 ```
 
 ---
@@ -266,7 +270,7 @@ b=[0.587876207657146, 42.0, 0.07017355839916006]
 
 ```pwsh {cmd}
   #  ```pwsh {cmd} // random number, show current directory.
-Get-Random -Min 0.0 -Max 1.0 # =>>0.225810305786231
+Get-Random -Min 0.0 -Max 1.0 # =>>0.103490540340306
 pwd
 ```
 ```output
@@ -278,7 +282,7 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ---
 ### gnuplot
 
-Gnuplot is a veryuseful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
+Gnuplot is a very useful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
 ```gnuplot {cmd} # as above {cmd} allows execution in *markdown preview enhanced*
   # ```gnuplot {cmd} as above {cmd} allows execution in *markdown preview enhanced*
@@ -309,7 +313,7 @@ plot "$charge" using 1:3 w lp title "charge"
 ---
 ### Html
 
-```html //all required html is in the codeblock
+```html //all required html is in the codeblock below
 <!-- ```html tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -359,7 +363,7 @@ open default browser with href, or showing html text (note that html is a built 
 
 `html <h1>Hello world!</h1>`
 
-And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=` ...
+And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=` .
 
 ---
 ## Configuration settings
@@ -394,26 +398,18 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
 - "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 - "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier. For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.
+
+Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier.
+
+Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+
+For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
 ```%f.bat
 @echo off
 dir *.json
 echo Congratulations! Your first batch file was executed successfully.
-```
-```output
- Volume in drive C is OS
- Volume Serial Number is B054-2449
-
- Directory of c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-
-26/07/2021  09:08 pm               485 .eslintrc.json
-02/11/2021  12:27 pm           116,622 package-lock.json
-07/11/2021  09:15 am             4,518 package.json
-09/10/2021  06:00 pm               619 tsconfig.json
-               4 File(s)        122,244 bytes
-               0 Dir(s)  252,368,457,728 bytes free
-Congratulations! Your first batch file was executed successfully.
 ```
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md).

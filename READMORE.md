@@ -1,24 +1,22 @@
 # Hover exec
 
-This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files follow the same structure, this one just goes into more detail.
+This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and content, this one just goes into more detail.
 
 - [Hover exec](#hover-exec)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
-    - [Using vscode's vm and eval](#using-vscodes-vm-and-eval)
+  - [Javascript scripts](#javascript-scripts)
     - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
-  - [Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.](#note-that-vm-and-eval-allow-the-internal-vscode-api-to-be-used-installation-of-nodejs-is-not-required-for-vm-or-eval-scripts-to-execute)
     - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [The `vm` context](#the-vm-context)
     - [Quick specification of `vm` context](#quick-specification-of-vm-context)
-    - [using require and globals with vm and eval](#using-require-and-globals-with-vm-and-eval)
+    - [using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
     - [Scripts with built-in commands](#scripts-with-built-in-commands)
   - [Some examples](#some-examples)
     - [Lua](#lua)
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
-    - [Buddvs](#buddvs)
     - [Javascript using vm](#javascript-using-vm)
     - [Javascript using node](#javascript-using-node)
     - [More vm, eval and node examples](#more-vm-eval-and-node-examples)
@@ -44,11 +42,12 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [html & javascript](#html--javascript)
     - [audio one-liners](#audio-one-liners)
     - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
+  - [inhere - including tagged sections](#inhere---including-tagged-sections)
   - [Configuration settings](#configuration-settings)
     - [Using vm for configuration settings](#using-vm-for-configuration-settings)
       - [Check settings](#check-settings)
       - [Add new script language](#add-new-script-language)
-      - [Show other vscode config settings](#show-other-vscode-config-settings)
+      - [Other vscode config settings](#other-vscode-config-settings)
   - [Known Issues](#known-issues)
   - [Release Notes](#release-notes)
 
@@ -56,7 +55,9 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
 
 *Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration.  This is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
-The extension is activated when a markdown file is opened in the editor.
+There is also an intention to have a certain compatability with the excellent *markdown preview enhanced* extension. The idea would be to simply include *mpe* requirements in the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec@ (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
+
+The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
 
@@ -65,17 +66,18 @@ Hover script exec in action:
 ---
 ## Basic hover-exec 
 
-Hovering over lines starting with ` ``` ` (or starting with a single backtick and including an end one) will trigger a hover message with an *exec* command in the bottom line, as above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over lines starting with ` ``` ` (or lines which start with a single backtick and include an end backtck) will trigger a hover message with an *exec* command in the bottom line. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
-### Using vscode's vm and eval
+## Javascript scripts
 
 Javascript code blocks can be executed using the `vm` module, or by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
 
 ### Examples using `vm` and `eval`
 
-```js
+```js      //click this line in the *hover* to execute the block
 //```js  //this comment is to show the command line in markdown previews`
+//        //the default for the `js` command is to execute using the `vm` module
 'test: '+Math.random() =>>test: 0.2549981720136758
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates a global
 //to use predefined variables a..z, don't use 'let'
@@ -87,7 +89,7 @@ bb = function (animal){alert('he likes ' + animal);}
 bb('dogs');aa('pears'); //uses the globals defined in the previous code block
 ```
 
-Intermediate results can be viewed in line by appending `=>>`  (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Not that *mpe* will not update intermediate results.
+Intermediate results can be viewed in line by appending `=>>` instead of using `console.log()` (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Note that *mpe* will not produce the results in-line.
 
 Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
@@ -101,21 +103,21 @@ let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>> 1.4918238662752863
+eval('let a=3;2*a*Math.random()')=>>0.12542115380232666
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.8543022521380952
-process.cwd() =>> c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>>hello 1.720885574862449
+process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.3203055947514437
+goodbye world 0.24137261061263482
 hello, world 3
 ```
 
 ---
 ```js  //javascript regex tester using vm
 // ```js //javascript regex tester using vm`
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>> bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
 
 ---
@@ -131,6 +133,7 @@ The difference is that `vm` scripts are executed within a more restricted *conte
 In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. 
 
 Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
+
 ---
 ### available functions in `vm` and `eval`
 
@@ -167,21 +170,24 @@ for (let x in vmContext){
 }
 ```
 ```output
-execShell
-process
+global
+globalThis
 config
 vscode
+console
+util
+process
+performance
+abort
 alert
-input
 delay
+execShell
+input
+progress
 status
 readFile
 writeFile
-progress
 write
-abort
-global
-globalThis
 require
 _
 math
@@ -193,7 +199,7 @@ With this context, for example, the following works in `vm`:
 
 ```js //can use lodash
 //```js //can use lodash
-_.range(0,5)=>> 0,1,2,3,4
+_.range(0,5)=>>0,1,2,3,4
 ```
 
 Now reduce the context using `eval`:
@@ -257,7 +263,7 @@ and
 Apart from resetting `vmContext` at the start, these are normal `js` codeblocks.
 
 ---
-### using require and globals with vm and eval
+### using require & globals with vm and eval
 
 Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
 
@@ -272,7 +278,15 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>> 1,4,16,63,251,1000,3981,15849,63096,251189,1000000
+console.log(xrange())
+```
+```output
+[
+       1,       4,    16,
+      63,     251,  1000,
+    3981,   15849, 63096,
+  251189, 1000000
+]
 ```
 
 ```js //global function definition
@@ -301,13 +315,7 @@ test()
 test works
 ```
 
-```eval     //but not to 'eval' codeblocks
-//```eval  //but not to 'eval' codeblocks
-test()
-```
-```output
-error ReferenceError: test is not defined
-```
+For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. Instead, the 'global' prefix needs to be used in the function def, as above.
 
 ---
 ### Using nodejs
@@ -485,19 +493,6 @@ plot "$charge" using 1:3 w lp title "charge"
 ```
 
 ---
-### Buddvs
-Using buddvs (a personal scripting language). Also works in *mpe*.
-
-```js:buddvs {cmd=buddvs}
-// ```js:buddvs {cmd=buddvs}  --the {..} is for mpe
-chdir=>>c:\Users\xxx\OneDrive\Documents\Notes
-a=61.5+random*10;
-a=>>64.33917299
-b=4;c=a+b
-'c: '+c=>>c: 68.33917299
-```
-
----
 ### Javascript using vm
 The `vm` and `eval` commands use vscode's built in capabilities. They are not available in *mpe*.
 
@@ -508,14 +503,14 @@ let a='hello variable world';
 alert(a) //nb. alert is not available in node
 a='goodbye'
 vscode.window.showInformationMessage(a) //not available in node
-eval('let a=3;2*a*Math.random()')=>> 1.2718966757113455
+eval('let a=3;2*a*Math.random()')=>> 5.363093779138538
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.558627474451321
-process.cwd() =>> c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>> hello 1.130435129908258
+process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye 0.37481206560391467
+goodbye 0.9108457907130014
 abcde
 ```
 
@@ -648,7 +643,7 @@ This one-liner can be used to install packages:
 In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover. 
 
 ```python {cmd matplotlib=true}
-// ```python {cmd matplotlib=true}`
+  # ```python {cmd matplotlib=true}`
 import numpy as np
 import matplotlib.pyplot as plt
 randnums= np.random.randint(1,101,500)
@@ -693,27 +688,30 @@ Julia also works in *mpe*
 ```julia {cmd}
  # ```julia {cmd}  # works in mpe`
 using LinearAlgebra, Statistics, Compat
-pwd()  # =>>c:\Users\xxx\OneDrive\Documents\Notes
+pwd()  # =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 a=rand(Float64,3);
-a         # =>>[0.008669275390885911, 0.6887025891465031, 0.0825857184524883]
+a         # =>>[0.02624459240064092, 0.9600388686896555, 0.021521940795977468]
 b=a;b[2]=42;        # nb. arrays are shallow copied
-a         # =>>[0.008669275390885911, 42.0, 0.0825857184524883]
-b         # =>>[0.008669275390885911, 42.0, 0.0825857184524883]
+a         # =>>[0.02624459240064092, 42.0, 0.021521940795977468]
+b         # =>>[0.02624459240064092, 42.0, 0.021521940795977468]
 println(string("a=",a))
 ```
 ```output
-a=[0.008669275390885911, 42.0, 0.0825857184524883]
+a=[0.02624459240064092, 42.0, 0.021521940795977468]
 ```
 
 ---
 ### Matlab
-And `matlab` can be used to run *matlab*, although it's a slow starter... The args list for `mpe` here is not right currently.
+And `matlab` can be used to run *matlab*, although it's a slow starter...
 
-```matlab {cmd args=["-sd", "$input_file", "-batch temp"]}
-% ```matlab {cmd args=["-sd", "$input_file"]}`
-pwd   =>>C:\Users\xxx\OneDrive\Documents\Notes
+```matlab 
+% ```matlab 
+pwd   =>>C:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec
 7*7-7 =>>42
-% Speedtest
+disp("matlab ok!")
+```
+```output
+ok
 ```
 
 ---
@@ -723,7 +721,7 @@ Gnuplot is a very useful stand-alone plotting facility. It is particularly usefu
 
 Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
 
-```output :gnuplot
+```gnuplot
 #inhere `#tag_speed`
 set logscale x
 plot "$speed" w lp title "speed"
@@ -796,27 +794,22 @@ function mob_arc(x, y, r) {
       c = mob_pt(x, y + r);
   return mob(a, b, c);
 }
-
 function cmul(w, z) {
   return [
     w[0] * z[0] - w[1] * z[1],
     w[0] * z[1] + w[1] * z[0]
   ];
 }
-
 function rotate(z, theta) {
   return cmul(z, [Math.cos(theta), Math.sin(theta)]);
 }
-
 function modulus(p) {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
-
 function crecip(z) {
   var d = z[0] * z[0] + z[1] * z[1];
   return [z[0] / d, -z[1] / d];
 }
-
 function spiral(r, st, delta, opts) {
   var rd = crecip(delta),
       md = modulus(delta),
@@ -837,23 +830,16 @@ function spiral(r, st, delta, opts) {
     colidx = (colidx + cols.length - 1) % cols.length;
   }
 }
-
 var p = 9, q = 36;
-//var root = doyle(p, q);
 root={a:[1.203073257697729,0.06467009356882296],
 b:[1.0292303580593238,0.19576340274878198],
 r:0.09666227205856094};
-//root.a=[Math.random()*0.25+1.1,Math.random()*0.1+0.01];
-//root.b=[1.0292303580593238,0.19576340274878198];
-//root.r=0.09666227205856094;
 var rep = 20000;
-
 function anim(t) {
   $.setTransform(1, 0, 0, 1, 0, 0);
   $.clearRect(0, 0, c.width, c.height);
   $.translate(Math.round(c.width / 2), Math.round(c.height / 2));
   $.scale(250, 250);
-
   var beg = rotate(root.a, Math.PI * 2 * t);
   for (var i = 0; i < q; i++) {
     spiral(root.r, beg, root.a, {
@@ -874,7 +860,6 @@ run();
 </script></body>
 </html>
 ```
-![[2021-09-12-23-09-14.png]]
 
 ```html --breathing galaxies
 <!-- ```html breathing galaxies` --> 
@@ -1126,13 +1111,12 @@ console.log(u)
 
 Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
 
-```js :node {cmd=node}
+```js {cmd=node}
 // ```js :node {cmd=node}`
-//to execute this, need the following 3 libraries in a subfolder called 'lib'
-let s=process.cwd().replace(/\\/,'/'); //current folder using / not \
-_=require(s+"/lib/lodash.js")
-math=require(s+"/lib/math.min.js")
-moment=require(s+"/lib/moment.min.js")
+
+//_=require("lodash")
+//math=require("mathjs")
+//moment=require("moment")
 
 function xrange(){
    let x1=_.range(0,6.1,6/19);
@@ -1171,26 +1155,26 @@ console.log('plot "$speed" w lp title "speed"')
 ```output :gnuplot noinline
 #tag_speed
 $speed << EOD
-1 0.40816326530612246
-2 2.3529411764705883
-4 4.2105263157894735
-9 8.571428571428571
-18 10.588235294117649
-38 29.23076923076923
-78 40
-162 40.50000000000001
-336 44.8
-695 44.83870967741935
-1438 44.246153846153845
-2976 46.86614173228347
-6158 51.74789915966387
-12743 53.767932489451475
-26367 42.87317073170732
-54556 39.39061371841156
-112884 42.35797373358349
-233572 40.69198606271777
-483293 39.99114604882085
-1000000 38.677238445175014
+1 0.29411764705882354
+2 0.7547169811320754
+4 1.5384615384615388
+9 2.7692307692307696
+18 4.864864864864865
+38 7.6767676767676765
+78 10.064516129032258
+162 11.571428571428573
+336 12.444444444444445
+695 13.238095238095237
+1438 13.192660550458719
+2976 13.43566591422122
+6158 14.091533180778033
+12743 13.911572052401747
+26367 6.033638443935927
+54556 9.803414195867024
+112884 9.66472602739726
+233572 11.242936221419978
+483293 12.291276703967446
+1000000 12.099213551119176
 EOD
 #tag_speed
 set logscale x
@@ -1205,7 +1189,7 @@ plot "$speed" w lp title "speed"
 ### One-liners examples
 NB. Note only *single* backticks for one-liners
 
-`notepad aa_test.md`       //exec notepad
+`notepad README.md`       //exec notepad
 `notepad %caa.html`      //exec notepad with file from current folder
 `notepad %f.py`     //exec notepad with temp file `temp.py`
 `notepad %f.out.txt`        //& with temp output file (temp.txt.out.txt)
@@ -1272,6 +1256,25 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 `mmc wmimgmt.msc`	WMI Management	Configure and Control the Windows Management Instrumentation Service.
 
 ---
+## inhere - including tagged sections
+
+The following line in a code block
+
+```
+#inhere `#tag_speed`
+```
+
+will include a group of lines surrounded with the #tag-speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
+
+1. Tags must either stand alone in a line, or ed the line (eg. tags can have comment markers in front of them)
+2. Within the `#inhere` line, the tag must be surrounded with backticks (*hover-exec* uses back-ticks to indicate potential hovers)
+3. To include lines from another file use the format (the file path can include `%c` current folder & `%p` temp files folder)
+
+```
+#inhere file_path `#tag`
+```
+
+---
 ## Configuration settings
 
 The startup commands for scripts included by default are as follows (nb. `%f` provides the appropriate temporary file path & name, and the notation `%f.py`, for example, indicates that the temporary file extension `.py` should be used - the default is `.txt` ):
@@ -1304,7 +1307,13 @@ The startup commands for scripts included by default are as follows (nb. `%f` pr
   "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
   "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension. Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier. For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe`. Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.
+
+Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier.
+
+Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+
+For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
 ```%f.bat
 @echo off
@@ -1326,8 +1335,12 @@ echo Congratulations! Your first batch file was executed successfully.
 Congratulations! Your first batch file was executed successfully.
 ```
 
+There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself and can be accessed in the *hover-exec* configuration.
 
-There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself. Check the  [READMORE](READMORE.md).
+As an example, the *swapper* for javascript (`vm`, `eval` & `node`) is `console.log('=>>'+($1))` which takes the line `($1)` and prints it starting with the string `=>>`.
+
+The *swapper* for *julia* is `println(string(\"=>>\",$1))`, where the double quotes required by *julia* have to be escaped `\"` because they are part of a *json* string 
+
 
 ---
 ### Using vm for configuration settings
@@ -1359,13 +1372,17 @@ The first line shows the python config. So the start command is `python %f.py`. 
 
 #### Add new script language
 
-If there is a need to add a new scripting language, say `newlang`, first write a fenced codeblock labelled newlang:
+If there is a need to add a new scripting language, say `newlang`, this can be done using the settings configuration for *hover-exec*, and following the obvious patterns.
+
+It can also be done using `vm` or `eval` since the *vscode* configuration settings can be accessed with the scripts.
+
+First write a fenced codeblock labelled newlang:
 
 ```newlang
 //a newlang comment line
 ```
 
-Then hover over the command line and click config. In this case, we get the following: 
+Then hover over the command line and click config. In this case, the following template is output: 
 
 ```js :vm noInline
 //this script can change, add or undefine a config setting
@@ -1377,13 +1394,15 @@ if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.newlang'))
 ```
 
-The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end if necessary. If backslashes are used in a path, they should be doubled (ie. escaped) `\\`. Similarly if `"` is used it should be entered as `\"`
+The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end as appropriate. If backslashes are used in a path, they should be escaped, ie. `\\`. Similarly if `"` is used it should be entered as `\"`
 
-Once the script has been set up, execute using the hover in the usual way, then delete the block. Check it as in the previous section or open *hover-exec* settings and view the JSON settings file. All settings can also be changed using that file.
+Once the script has been set up, execute using the hover in the usual way, then delete the block. Check it as in the previous section or open *hover-exec* settings and view the JSON settings file.
 
 ---
-#### Show other vscode config settings
-Other configuration settings can also be viewed
+#### Other vscode config settings
+
+Other *vscode* configuration settings can also be accessed:
+
 ```js :vm noinline
 // ```js :vm noinline  --eval is not available in mpe`
 let c=vscode.workspace.getConfiguration('');
@@ -1399,7 +1418,9 @@ editor font size= 12
 
 This is a beta version.
 
-Note that in all scripting languages included (except a 'home-grown' one *buddvs*, and to some extent *vm* and *eval*, which allow definition of *global* variables and functions), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
+Note that in all scripting languages included (except a 'home-grown' one *buddvs*, and to some extent *vm* and *eval*, which allow definition of *global* variables and functions), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution.
+
+This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.  To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) which allows utilising output or data elsewhere in the file or in other files.
 
 Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on a Ryzen laptop). However, other included scripts are generally fairly fast (see the demo gif above). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`.
 

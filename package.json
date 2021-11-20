@@ -59,6 +59,7 @@
 						"html": "\"%f.html\"",
 						"firefox": "firefox \"%f.html\"",
 						"chrome": "google-chrome-stable \"%f.html\"",
+            "safari": "open -a safari \"%f.html\"",
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",

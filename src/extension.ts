@@ -1,18 +1,16 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
-import internal = require("stream");
 import { performance } from 'perf_hooks'; 
 import _=require("lodash");
 import fs1=require('fs');
 import math=require("mathjs");
 import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
 import vm = require('vm');
-import { type } from "os";
 import util = require('util');
-import { utils } from "mocha";
 let codeBlock = ""; //code f or execution
 let startCode = 0; //start line of code
 let out: string = ""; //output from code execution
+let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
 let needSwap = false; //no swaps so leave code as is
 let windows = false; //os is windows
@@ -29,10 +27,13 @@ let currentFsPath = ""; //folder containing current edit file fsPath
 let executing = false; //code is executing
 let nexec = 0; //number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
+let repl=false; //use repl
 let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
+let ch1:cp.ChildProcess;
+let ch1started=false;
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
@@ -156,8 +157,8 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
-            "open: [ [*last script*] ](file://" +
-            tempPath + tempName + ") " + "[ [*last result* ] ](file://" + tempPath + tempName + ".out.txt)\n\n";
+            "open: [ [*last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
+            "[ [*last result* ] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
@@ -351,6 +352,7 @@ export function activate(context: vscode.ExtensionContext) {
     full = s; //save full command line minus comments & {..}
     if (/^\w/.test(s)) {
       cmda = s.replace(/^(\w*).*/, "$1");
+      repl=/^\w+\s?:\w*:/.test(s);
       if (/^\w+\s?:\w/.test(s)) {
         cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
                       //eg. for 'js:asdf' cmdId is 'asdf'
@@ -570,11 +572,23 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               clear();
               removeSelection();
             }
-            //console.log=write;
-            out=await execShell(cmd); //execute all other commands
-            if (cmdId === "buddvs") {   //local script tester
-              out = out.replace(/�/g, "î");
-            }
+            if(repl){
+              //alert(s.replace(/\n/g,'#'));
+              if(!ch1started){
+                execShell1('python',['-q','-i','-u']);
+                ch1started=true;
+              }
+              //await delay(1000);
+              out1='';
+              s=s.replace(/^(\S.*)$/mg,'\n$1')+'\n';
+              ch1.stdin?.write(s);
+              ch1.stdin?.write("print('>',end='')\n");
+              out=await output(1);
+            } else {
+              out=await execShell(cmd); //execute all other commands
+              if (cmdId === "buddvs") {   //local script tester
+                out = out.replace(/�/g, "î");
+            }}
           }
         } else {
           out = uri.toString(); //no ex, return uri
@@ -869,6 +883,39 @@ function deleteOutput(asText: boolean) {
   }
 }
 
+async function output(n:number){
+  let i=0;
+  while (i<n*10) {
+    i+=1;
+    await delay(100);
+    if(out1.endsWith('>')){
+      return out1.slice(0,out1.length-1);
+    }
+  };
+  return out1+' ..timeout';
+} 
+
+function execShell1(cmd: string,opt:string[]){
+    if(cmd==='close1'){
+      return out1;
+    }
+    out1='';
+    ch1=cp.spawn(cmd, opt);
+    if(ch1===null){return;}
+    ch1.stdout?.on('data', (data) => {
+      out1+=data;
+    });
+    ch1.stderr?.on('data', (data) => {
+      console.error(`stderr rm: ${data}`);
+    });
+    ch1.stdin?.on('data',(data)=>{
+      console.log(`stdin rm: ${data}`);
+    });
+    ch1.on('close', (code) => {
+      ch1started=false;//eg when ch1.kill()
+      console.log(`child process exit, code ${code}`);
+    });
+}
 async function execShell(cmd: string){
   //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {

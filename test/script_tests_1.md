@@ -18,7 +18,7 @@ The following tests will use an implementation of a simple 'benchmark' to demons
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js:node  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 const {performance}=require('perf_hooks'); //ignored by eval & vm
 let iter=1e8;
@@ -31,8 +31,8 @@ console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  0.51  sec
-speed  195.1  million iterations per sec
+total time  0.47  sec
+speed  212.6  million iterations per sec
 ```
 
 > Example output (vm, eval & node are fairly similar)
@@ -43,7 +43,7 @@ speed  195.1  million iterations per sec
 
 This will execute the same javascript code in the default browser:
 
-```html:chrome
+```html
 <script>
 function test(){
 let iter=1e8;
