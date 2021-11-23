@@ -81,8 +81,45 @@ let name='Fred'
 console.log('hello %s, how are you %s doing', name,3,', ok?')
 ```
 
-
 ---
+
+## Using the python repl
+// (internally need to add a line feed before the line unless indented, and at the end)
+
+```python::
+from time import time
+t=time()
+b=0
+for c in range(600):
+  for a in range(10000):
+    b+=1
+  b+=1
+time()-t=>>0.3949589729309082
+b=>>6000600
+```
+
+```python::
+from time import time
+b=>>6000600
+time()
+b # this now produces output because the repl is being used
+```
+```output
+1637406112.3515055
+6000600
+```
+
+
+
+```python
+from time import time
+b=0
+t=time()
+for a in range(6000000):b+=1
+time()-t=>>0.4539756774902344
+```
+
+
 
 ## speed of eval vs Function within javascript code
 

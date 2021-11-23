@@ -27,13 +27,14 @@ let currentFsPath = ""; //folder containing current edit file fsPath
 let executing = false; //code is executing
 let nexec = 0; //number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
-let repl=false; //use repl
 let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
 let ch1:cp.ChildProcess;
 let ch1started=false;
+let chRepl=[];
+let repl=false; //use repl
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
@@ -83,17 +84,17 @@ export function activate(context: vscode.ExtensionContext) {
         let quickmath = false; //current script is 'quickmath' (executed by hover)
         oneLiner = false; //one-liner
         quickmath=false;  //quick evaluate using mathjs, or a regex search
-        let inc=false;    //an 'inhere' (include) line
+        let includeHere=false;    //an 'inhere' (include) line
         setExecParams(context,doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) {
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath=/`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text);
-          inc=/#inhere.*#\w+/.test(line.text);
-          if (!oneLiner && !quickmath && !inc) {
+          includeHere=/#inhere.*#\w+/.test(line.text);
+          if (!oneLiner && !quickmath && !includeHere) {
               return null;
           } //ignore if not a code block, oneLiner or quickmath
         }
-        if(inc){
+        if(includeHere){
           return new vscode.Hover(new vscode.MarkdownString(
             "["+(await inHere(line.text)).replace(/\n/g,' ') +"](vscode://rmzetti.hover-exec?copyToClipboard)"
           ));
@@ -163,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
             cmdId + "[ [*config*] ](" + url + "_config) " + //add hover info
-            msgDel + msgOpen + "[" + cmdId + " " + comment + "](" + url + ")";
+            msgDel + msgOpen + "**[" + cmdId + " =>> " + comment + "](" + url + ")**";
           const contents = new vscode.MarkdownString("hover-exec:" + msg);
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //and return it
@@ -177,7 +178,7 @@ export function activate(context: vscode.ExtensionContext) {
           cmdId = "oneliner";
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
           const contents = new vscode.MarkdownString(
-            "*hover-exec:* " + comment + "\n\n[" + cmd + "](" + url + ")"
+            "*hover-exec:* " + comment + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
@@ -190,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
           let msg =
             "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
             tempPath + tempName + ")" + "[ [*last result* ] ](" + tempPath + tempName +
-            ".out.txt)\n\n" + "[" + pad(cmd + comment) + "](" + url + cmdId + ")";
+            ".out.txt)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + cmdId + ")**";
           const contents = new vscode.MarkdownString(
             "hover-exec:" + cmdId + msg
           );
@@ -518,8 +519,11 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     if (needSwap) {
       let re = new RegExp("(.+" + swap + ").*", "mg"); //regex finds previous results
       codeBlock = codeBlock.replace(re, "$1"); //remove them
-      re = new RegExp("[-#%/ ]*" + swap, "mg"); //find any comment chars directly preceding the swap
-      s = codeBlock.replace(re, swap); //remove them
+      s = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg,''); //remove commented lines with swap
+      //disable swap in fully commented lines by appending a space
+      codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg,'$1 ');
+      re = new RegExp("(--|#|%|\/\/)+\s*" + swap, "mg"); //find any comment chars directly preceding the swap
+      s = s.replace(re, swap); //remove them
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
       let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");
       let swapper = config.get("swappers." + cmdId) as string;
@@ -573,17 +577,24 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               removeSelection();
             }
             if(repl){
-              //alert(s.replace(/\n/g,'#'));
               if(!ch1started){
-                execShell1('python',['-q','-i','-u']);
+                if(cmdId.startsWith('python')){
+                  execRepl('python',['-q','-i','-u']);
+                } else if(cmdId.startsWith('lua')){
+                  execRepl('lua54',['-i']);
+                }
                 ch1started=true;
+                await delay(1000);
               }
-              //await delay(1000);
               out1='';
-              s=s.replace(/^(\S.*)$/mg,'\n$1')+'\n';
+              if(cmdId.startsWith('python')){
+                s+="print('^')\n";
+                s=s.replace(/^(\S.*)$/mg,'\n$1');
+              } else if(cmdId.startsWith('lua')){
+                s+="print('^')\n";
+              }
               ch1.stdin?.write(s);
-              ch1.stdin?.write("print('>',end='')\n");
-              out=await output(1);
+              out=await replOutput(10);
             } else {
               out=await execShell(cmd); //execute all other commands
               if (cmdId === "buddvs") {   //local script tester
@@ -651,7 +662,7 @@ async function inHere(s: string): Promise<string> {
     //`#inhere` (include h-e regex) is a file name with a regex appended
     //if there is no filename the current file is assumed
     //there must be a regex at the end (use /.*/ to include the whole file)
-    //simplified regex: . means any char inc linefeeds etc -> [\s\S]
+    //simplified regex: . means any char includeHere linefeeds etc -> [\s\S]
     //                  * is always non-greedy ->*?
     //                  if ( ) not present it is the whole expression
     //the format is: #inhere pathname`/regex/` (single backticks)
@@ -726,10 +737,10 @@ function paste(text: string) {
         for (let i1=0;i1<n;i1++){
           //while (re1.test(codeBlock)) {
           //while there is a swap string to replace
-          let i = text.indexOf("=>>") + 3; //check if there is a swappable line
-          if (i > 0) {
+          let i = text.indexOf("=>>"); //check if there is a swappable line
+          if (i >= 0) {
             //if so
-            let s = text.slice(i).replace(/\n[\s\S]*/, "");
+            let s = text.slice(i+3).replace(/\n[\s\S]*/, "");
             if (s === "") {
               s = ";";
             } //if the remainder is empty just provide ';'
@@ -883,19 +894,7 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-async function output(n:number){
-  let i=0;
-  while (i<n*10) {
-    i+=1;
-    await delay(100);
-    if(out1.endsWith('>')){
-      return out1.slice(0,out1.length-1);
-    }
-  };
-  return out1+' ..timeout';
-} 
-
-function execShell1(cmd: string,opt:string[]){
+function execRepl(cmd: string,opt:string[]){
     if(cmd==='close1'){
       return out1;
     }
@@ -903,7 +902,12 @@ function execShell1(cmd: string,opt:string[]){
     ch1=cp.spawn(cmd, opt);
     if(ch1===null){return;}
     ch1.stdout?.on('data', (data) => {
-      out1+=data;
+      // if((''+data).startsWith('>')){
+      //   data=(''+data).slice(1);
+      // }
+      let s=''+data;
+      console.log(`stdout rm: ${s}`);
+      out1+=s; //data;
     });
     ch1.stderr?.on('data', (data) => {
       console.error(`stderr rm: ${data}`);
@@ -913,9 +917,25 @@ function execShell1(cmd: string,opt:string[]){
     });
     ch1.on('close', (code) => {
       ch1started=false;//eg when ch1.kill()
-      console.log(`child process exit, code ${code}`);
+      console.log(`ch1 exit rm, code ${code}`);
     });
 }
+
+async function replOutput(n:number){
+  //wait for final repl output, max n sec
+  //final output signified with > as last char
+  let i=0;
+  while (i<n*10) {
+    i+=1;
+    await delay(100);
+    if(/\^\s*/.test(out1)){
+      out1=out1.replace(/^(>+ )+/mg,'');
+      return out1.slice(0,out1.indexOf('^'));
+    }
+  };
+  return out1+' ..timeout';
+} 
+
 async function execShell(cmd: string){
   //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {
