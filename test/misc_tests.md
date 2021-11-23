@@ -85,7 +85,6 @@ console.log('hello %s, how are you %s doing', name,3,', ok?')
 
 ## Using the python repl
 // (internally need to add a line feed before the line unless indented, and at the end)
-
 ```python::
 from time import time
 t=time()
@@ -94,8 +93,13 @@ for c in range(600):
   for a in range(10000):
     b+=1
   b+=1
-time()-t=>>0.3949589729309082
+time()-t
 b=>>6000600
+```
+```output
+Error: Command failed: python "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.py"
+/bin/sh: 1: python: not found
+,/bin/sh: 1: python: not found
 ```
 
 ```python::
@@ -105,20 +109,35 @@ time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1637406112.3515055
+1637660751.675125
 6000600
 ```
 
+`js:eval ch1.kill()`
 
 
-```python
-from time import time
-b=0
-t=time()
-for a in range(6000000):b+=1
-time()-t=>>0.4539756774902344
+## Lua repl
+
+```lua:lua54:
+m=1e8
+n=0.01
+tt = os.clock()
+tt=>>123.768
+for ii=1,m do
+  n=n*ii
+  n=n+1
+  n=n/ii
+end
+tt1=os.clock()-tt
+tt1=>>4.271
 ```
 
+```lua:lua54:
+os.clock()-tt
+```
+```output
+12.431
+```
 
 
 ## speed of eval vs Function within javascript code
