@@ -1,15 +1,21 @@
-# Typescript
-
-First install typescript and ts-node globally with
-npm i -g typescript ts-node
-Then set ts-node as the cmd in your code block:
-'''typescript {cmd="ts-node" output="text"}
-```js
-let this_works = true;
-    if (this_works) {
-        console.log('It works!');
-    }
-```
+- [Javascript tests](#javascript-tests)
+  - [array operations](#array-operations)
+  - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
+  - [using console.log](#using-consolelog)
+  - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
+  - [Javascript in the browser](#javascript-in-the-browser)
+  - [Plotting comparison](#plotting-comparison)
+    - [Some data for plots](#some-data-for-plots)
+  - [Using scripts via REPL](#using-scripts-via-repl)
+    - [Check active REPLs](#check-active-repls)
+    - [Using the python repl](#using-the-python-repl)
+    - [Lua repl](#lua-repl)
+    - [Node repl](#node-repl)
+    - [Julia repl](#julia-repl)
+    - [Scilab repl](#scilab-repl)
+    - [Octave repl](#octave-repl)
+    - [R (rterm) repl](#r-rterm-repl)
+- [Typescript](#typescript)
 
 
 # Javascript tests
@@ -23,7 +29,7 @@ For javascript in the browser see the last code block.
 
 ## array operations
 
-```js:node
+```js
 let a=[1,2,3,4,5,6,7,8];
 a.slice(2)=>>3,4,5,6,7,8
 a.slice(0,2)=>>1,2
@@ -45,8 +51,22 @@ a.pop(1)=>>7
 a=>>3,4,5,6
 a.unshift(12)=>>5
 a=>>12,3,4,5,6
-a.push(13)=>>6
-a=>>12,3,4,5,6,13
+a.push(['hello',true])=>>6
+a=>>12,3,4,5,6,hello,true
+a[5]=>>hello,true
+a.push(['goodbye',false])
+a=>>12,3,4,5,6,hello,true,goodbye,false
+i=a.findIndex((el) => el[0]==='goodbye')=>>6
+if(i===-1){i=a.length;} //because if index not found, i=-1, & splice(i,1) wrong
+a.splice(i,1)=>>goodbye,false
+a=>>12,3,4,5,6,hello,true
+a.indexOf(6)=>>4
+b=a.find((el) => el[0]==='hell')
+b=>>undefined
+console.log("hello ".repeat(3))
+```
+```output
+hello hello hello
 ```
 
 ## timing in javascript (not using moment.js)
@@ -82,63 +102,6 @@ console.log('hello %s, how are you %s doing', name,3,', ok?')
 ```
 
 ---
-
-## Using the python repl
-// (internally need to add a line feed before the line unless indented, and at the end)
-```python::
-from time import time
-t=time()
-b=0
-for c in range(600):
-  for a in range(10000):
-    b+=1
-  b+=1
-time()-t
-b=>>6000600
-```
-```output
-Error: Command failed: python "/home/rmzetti/.vscode-server/data/User/globalStorage/rmzetti.hover-exec/temp.py"
-/bin/sh: 1: python: not found
-,/bin/sh: 1: python: not found
-```
-
-```python::
-from time import time
-b=>>6000600
-time()
-b # this now produces output because the repl is being used
-```
-```output
-1637660751.675125
-6000600
-```
-
-`js:eval ch1.kill()`
-
-
-## Lua repl
-
-```lua:lua54:
-m=1e8
-n=0.01
-tt = os.clock()
-tt=>>123.768
-for ii=1,m do
-  n=n*ii
-  n=n+1
-  n=n/ii
-end
-tt1=os.clock()-tt
-tt1=>>4.271
-```
-
-```lua:lua54:
-os.clock()-tt
-```
-```output
-12.431
-```
-
 
 ## speed of eval vs Function within javascript code
 
@@ -418,4 +381,209 @@ plot "$javascript1" w lp title "javascript",\
 1e+06,  660.4684782172212,
 #go
 
+## Using scripts via REPL
+
+Each of the script REPL examples below shows a 'restart' script followed by a normal continuation which shows the script variables are still available.
+
+### Check active REPLs
+
+```js:eval //find active repl
+chRepl.length=>> 6
+let i=chRepl.findIndex((el)=>el[1]===repl)
+i=>> 5
+chRepl[i][0]=>> python
+```
+
+### Using the python repl
+`js:eval repl.kill()` //kills active repl (but use :restart)
+
+```python::restart
+from time import time
+t=time()
+b=0
+for c in range(600):
+  for a in range(10000):
+    b+=1
+  b+=1
+print(time()-t)
+b=>>6000600
+```
+```output
+0.394805908203125
+```
+
+```python::
+from time import time
+b=>>6000600
+time()
+b # this now produces output because the repl is being used
+```
+```output
+1637747538.1500988
+6000600
+```
+
+### Lua repl
+
+```lua:lua54:
+m=1e7
+n=0.01
+tt = os.clock()
+tt=>>1.003
+for ii=1,m do
+  n=n*ii
+  n=n+1
+  n=n/ii
+end
+tt1=os.clock()-tt
+tt1=>>0.418
+'ok'
+```
+```output
+ok
+```
+
+```lua:lua54:
+os.clock()-tt
+```
+
+### Node repl
+
+```js:node:restart
+let a=0,b=0,c=0,d=0,e=0;
+'ok'
+```
+
+```js:node:
+a+=1 =>>1
+b+=10 =>>10
+c+=100 =>>100
+```
+
+### Julia repl
+
+```julia::restart
+x=rand(Float64);_
+a=rand(Float64,3);print(string("a=",a,"\nx=",x))
+```
+
+```julia::
+a=a.+1;_ 
+x=x+1;_
+print(a,'\n',x)
+```
+```output
+[9.11174469128525, 9.504474944704, 9.05706503358001]
+9.441172925172872
+```
+
+### Scilab repl
+
+```js:scilab:restart
+tic();
+a=1.1;
+m=1000000; //1e6
+for x=1:1:m
+a=a*x;
+a=a+1.1;
+a=a/x;
+end
+t=toc();
+mprintf('Time: %.2f sec',t)
+```
+```output
+Time: 1.33 sec
+```
+
+```js:scilab:
+mprintf('a equals %.f',a)
+mprintf('t equals %.2f',t)
+a=a+1;_
+```
+```output
+a equals 31
+t equals 1.26
+```
+
+### Octave repl
+
+```python:octave:restart
+a=1.0;
+t=time;
+m=1000000; #1e6
+for i=1:m
+  a=a*i;
+  a=a+1.1;
+  a=a/i;
+endfor
+t=time-t;
+disp(strcat('time= ',num2str(t),' sec'))
+disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
+```
+```output
+time=1.6627 sec
+speed=0.60145 million iterations per sec
+```
+
+```python:octave:
+disp('I repeat...')
+disp(strcat('time= ',num2str(t),' sec'))
+disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
+```
+```output
+I repeat...
+time=1.6297 sec
+speed=0.61359 million iterations per sec
+```
+
+### R (rterm) repl
+
+```rterm::restart
+a=7*7-7
+a=>> 42
+noquote(paste('the meaning of life is',a))
+```
+```output
+the meaning of life is 42
+```
+```rterm::
+noquote(paste('.. that was',a))
+```
+```output
+.. that was 42
+```
+
+```rterm::restart #data for plots
+require(tcltk)
+x <- 1:10
+y1 <- x*x
+y2  <- 2*y1
+```
+
+```rterm:: #plotting the above data
+windows()
+# Stair steps plot
+plot(x, y1, type = "S")
+# Lines & points plot
+windows()
+plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
+lines(x, y2,pch=18,col="blue",type="b",lty=2)
+msgBox<-tkmessageBox(title="Plot",message="Close plots first!")
+```
+```output
+ ..timeout
+```
+
+# Typescript
+
+First install typescript and ts-node globally with
+npm i -g typescript ts-node
+Then set ts-node as the cmd in your code block:
+'''typescript {cmd="ts-node" output="text"}
+```js
+let this_works = true;
+    if (this_works) {
+        console.log('It works!');
+    }
+```
 

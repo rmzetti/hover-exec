@@ -31,10 +31,10 @@ let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
-let ch1:cp.ChildProcess;
-let ch1started=false;
-let chRepl=[];
-let repl=false; //use repl
+let repl:cp.ChildProcess;
+let chRepl:Array<[string,cp.ChildProcess]>=[];
+let useRepl=false; //use useRepl
+let restartRepl=false; //force restart repl
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
@@ -353,7 +353,10 @@ export function activate(context: vscode.ExtensionContext) {
     full = s; //save full command line minus comments & {..}
     if (/^\w/.test(s)) {
       cmda = s.replace(/^(\w*).*/, "$1");
-      repl=/^\w+\s?:\w*:/.test(s);
+      useRepl=/^\w+\s?:\w*:/.test(s);
+      if(useRepl){
+        restartRepl=/^\w+\s?:\w*:restart/.test(s);
+      }
       if (/^\w+\s?:\w/.test(s)) {
         cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
                       //eg. for 'js:asdf' cmdId is 'asdf'
@@ -576,15 +579,31 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               clear();
               removeSelection();
             }
-            if(repl){
-              if(!ch1started){
+            if(useRepl){
+              let chitem=chRepl.find((el) => el[0]===cmdId);
+              if(chitem===undefined || restartRepl){
+                if(chitem!==undefined){ //restart the repl
+                  chRepl.splice(chRepl.findIndex((el) => el[0]===cmdId),1);
+                }
                 if(cmdId.startsWith('python')){
                   execRepl('python',['-q','-i','-u']);
                 } else if(cmdId.startsWith('lua')){
                   execRepl('lua54',['-i']);
+                } else if(cmdId==='node'){
+                  execRepl('node',['-i']);
+                } else if(cmdId==='julia'){
+                  execRepl('julia',['-i-q']);
+                } else if(cmdId==='scilab'){
+                  execRepl('scilex',['-nb']);
+                } else if(cmdId==='octave'){
+                  execRepl('octave',['-q']);
+                } else if(cmdId==='rterm'){
+                  execRepl('rterm',['-q','--no-echo']);
                 }
-                ch1started=true;
+                chRepl.push([cmdId,repl]);
                 await delay(1000);
+              } else {
+                repl=chitem[1];
               }
               out1='';
               if(cmdId.startsWith('python')){
@@ -592,9 +611,22 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 s=s.replace(/^(\S.*)$/mg,'\n$1');
               } else if(cmdId.startsWith('lua')){
                 s+="print('^')\n";
+              } else if(cmdId==='node'){
+                s+="console.log('^')\n";
+              } else if(cmdId==='julia'){
+                s+="print('^')\n";
+              } else if(cmdId==='scilab'){
+                s+="mprintf('^')\n";
+              } else if(cmdId==='octave'){
+                s+="disp('^')\n";
+              } else if(cmdId==='rterm'){
+                s+="noquote('^')\n";
               }
-              ch1.stdin?.write(s);
+              repl.stdin?.write(s);
               out=await replOutput(10);
+              if(cmdId.startsWith('lua') || cmdId==='node'){
+                out=out.replace(/^(>+ )+/mg,'');
+              }
             } else {
               out=await execShell(cmd); //execute all other commands
               if (cmdId === "buddvs") {   //local script tester
@@ -608,6 +640,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         if (iexec === nexec) { //only output if this is the latest result
           writeFile(tempPath + tempName + ".out.txt", out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
+          if (cmdId==='rterm'){
+            out=out.replace(/^\[\d+\] /mg,'');
+          }
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
             paste(out);   //paste into editor
@@ -752,7 +787,10 @@ function paste(text: string) {
         }
       }
     }
-    text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove start blank line if any
+    if(useRepl && cmdId==='node'){ //remove node repl undefined
+      text = text.replace(/^undefined$/gm,"");
+    }
+    text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
     //if there is any output left, it will go into an ```output codeblock
@@ -899,25 +937,25 @@ function execRepl(cmd: string,opt:string[]){
       return out1;
     }
     out1='';
-    ch1=cp.spawn(cmd, opt);
-    if(ch1===null){return;}
-    ch1.stdout?.on('data', (data) => {
-      // if((''+data).startsWith('>')){
-      //   data=(''+data).slice(1);
-      // }
+//maybe use cross-spawn https://www.npmjs.com/package/cross-spawn
+//see https://stackoverflow.com/questions/37459717/error-spawn-enoent-on-windows/37487465
+    repl=cp.spawn(cmd, opt,{shell:true});
+    if(repl===null){return;}
+    repl.stdout?.on('data', (data) => {
       let s=''+data;
       console.log(`stdout rm: ${s}`);
       out1+=s; //data;
     });
-    ch1.stderr?.on('data', (data) => {
+    repl.stderr?.on('data', (data) => {
       console.error(`stderr rm: ${data}`);
     });
-    ch1.stdin?.on('data',(data)=>{
+    repl.stdin?.on('data',(data)=>{
       console.log(`stdin rm: ${data}`);
     });
-    ch1.on('close', (code) => {
-      ch1started=false;//eg when ch1.kill()
-      console.log(`ch1 exit rm, code ${code}`);
+    repl.on('close', (code) => {
+      //eg when repl.kill()
+      chRepl.splice(chRepl.findIndex((el) => el[1]===repl),1);
+      console.log(`repl exit rm, code ${code}`);
     });
 }
 
@@ -929,7 +967,6 @@ async function replOutput(n:number){
     i+=1;
     await delay(100);
     if(/\^\s*/.test(out1)){
-      out1=out1.replace(/^(>+ )+/mg,'');
       return out1.slice(0,out1.indexOf('^'));
     }
   };

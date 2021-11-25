@@ -704,15 +704,17 @@ a=[0.02624459240064092, 42.0, 0.021521940795977468]
 ### Matlab
 And `matlab` can be used to run *matlab*, although it's a slow starter...
 
-```matlab 
-% ```matlab 
-pwd   =>>C:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec
+```matlab   --the meaning of life is 7*7-7
+% ```matlab  --matlab is slow to start (this takes about 5s on Asus with Ryzen 7 4700U)
+x = 1:0.1:10;
+y = x.^2;
+plot(x,y)
+uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
+% more waiting after plot dismissed before the following answer appears
 7*7-7 =>>42
 disp("matlab ok!")
 ```
-```output
-ok
-```
+
 
 ---
 ### Gnuplot
@@ -1280,7 +1282,7 @@ will include a group of lines surrounded with the #tag-speed tag. To see what wi
 The startup commands for scripts included by default are as follows (nb. `%f` provides the appropriate temporary file path & name, and the notation `%f.py`, for example, indicates that the temporary file extension `.py` should be used - the default is `.txt` ):
 
   "octave":"octave \"%f.m\"",
-  "matlab":"matlab -sd %p.m -batch temp",
+  "matlab":"matlab -nodesktop -sd %p.m -batch temp",
   "matlab_comment":"if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
   "scilab":"scilex -quit -nb -f \"%f.sci\" ",
   "python":"python \"%f.py\"",
@@ -1422,7 +1424,7 @@ Note that in all scripting languages included (except a 'home-grown' one *buddvs
 
 This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.  To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) which allows utilising output or data elsewhere in the file or in other files.
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is nearly 10s on a Ryzen laptop). However, other included scripts are generally fairly fast (see the demo gif above). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`.
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). However, other included scripts are generally fairly fast (see the demo gif above). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`.
 
 ---
 ## Release Notes
