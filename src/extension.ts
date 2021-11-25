@@ -586,19 +586,19 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                   chRepl.splice(chRepl.findIndex((el) => el[0]===cmdId),1);
                 }
                 if(cmdId.startsWith('python')){
-                  execRepl('python',['-q','-i','-u']);
+                  execRepl(cmdId,['-q','-i','-u']);
                 } else if(cmdId.startsWith('lua')){
-                  execRepl('lua54',['-i']);
+                  execRepl(cmdId,['-i']);
                 } else if(cmdId==='node'){
-                  execRepl('node',['-i']);
+                  execRepl(cmdId,['-i']);
                 } else if(cmdId==='julia'){
-                  execRepl('julia',['-i-q']);
+                  execRepl(cmdId,['-i-q']);
                 } else if(cmdId==='scilab'){
                   execRepl('scilex',['-nb']);
                 } else if(cmdId==='octave'){
-                  execRepl('octave',['-q']);
+                  execRepl(cmdId,['-q']);
                 } else if(cmdId==='rterm'){
-                  execRepl('rterm',['-q','--no-echo']);
+                  execRepl(cmdId,['-q','--no-echo']);
                 }
                 chRepl.push([cmdId,repl]);
                 await delay(1000);
