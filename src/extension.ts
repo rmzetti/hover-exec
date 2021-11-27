@@ -470,6 +470,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       //cancel has been clicked, kill executing task
       executing = false;
       ch.kill();
+      repl.kill();
       return;
     }
     if (uri.query === "delete") {
@@ -605,26 +606,30 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               } else {
                 repl=chitem[1];
               }
-              out1='';
+              out1=''; //used by stdio for replOutput 
               if(cmdId.startsWith('python')){
-                s+="print('^')\n";
+                s+="print('\f')\n";
                 s=s.replace(/^(\S.*)$/mg,'\n$1');
               } else if(cmdId.startsWith('lua')){
-                s+="print('^')\n";
+                s="\n"+s+"print('\f')\n";
               } else if(cmdId==='node'){
-                s+="console.log('^')\n";
+                s+="console.log('\f')\n";
               } else if(cmdId==='julia'){
-                s+="print('^')\n";
+                s+="print('\f')\n";
               } else if(cmdId==='scilab'){
-                s+="mprintf('^')\n";
+                s+="mprintf('\f')\n";
               } else if(cmdId==='octave'){
-                s+="disp('^')\n";
+                s+="disp('\f')\n";
               } else if(cmdId==='rterm'){
-                s+="noquote('^')\n";
+                s+="cat('\f')\n";
               }
               repl.stdin?.write(s);
-              out=await replOutput(10);
-              if(cmdId.startsWith('lua') || cmdId==='node'){
+              out=await replOutput();
+              if(cmdId.startsWith('lua')){
+                out=out.replace(/^>.*?\n/mg,'');
+                out=out.replace(/^(>+ )+/mg,'');
+              } else if(cmdId==='node'){
+                out=out.replace(/^undefined$/gm,"");
                 out=out.replace(/^(>+ )+/mg,'');
               }
             } else {
@@ -787,9 +792,6 @@ function paste(text: string) {
         }
       }
     }
-    if(useRepl && cmdId==='node'){ //remove node repl undefined
-      text = text.replace(/^undefined$/gm,"");
-    }
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
@@ -933,44 +935,33 @@ function deleteOutput(asText: boolean) {
 }
 
 function execRepl(cmd: string,opt:string[]){
-    if(cmd==='close1'){
-      return out1;
-    }
-    out1='';
-//maybe use cross-spawn https://www.npmjs.com/package/cross-spawn
-//see https://stackoverflow.com/questions/37459717/error-spawn-enoent-on-windows/37487465
-    repl=cp.spawn(cmd, opt,{shell:true});
-    if(repl===null){return;}
-    repl.stdout?.on('data', (data) => {
-      let s=''+data;
-      console.log(`stdout rm: ${s}`);
-      out1+=s; //data;
-    });
-    repl.stderr?.on('data', (data) => {
-      console.error(`stderr rm: ${data}`);
-    });
-    repl.stdin?.on('data',(data)=>{
-      console.log(`stdin rm: ${data}`);
-    });
-    repl.on('close', (code) => {
-      //eg when repl.kill()
-      chRepl.splice(chRepl.findIndex((el) => el[1]===repl),1);
-      console.log(`repl exit rm, code ${code}`);
-    });
+  repl=cp.spawn(cmd, opt,{shell:true});
+  if(repl===null){return;}
+  repl.stdout?.on('data', (data) => {
+    let s=''+data;
+    console.log(`stdout rm: ${s}`);
+    out1+=s;
+    executing=executing && !s.includes('\f');
+  });
+  repl.stderr?.on('data', (data) => {
+    console.error(`stderr rm: ${data}`);
+  });
+  repl.stdin?.on('data',(data)=>{
+    console.log(`stdin rm: ${data}`);
+  });
+  repl.on('close', (code) => {
+    //eg when repl.kill()
+    executing=false;
+    chRepl.splice(chRepl.findIndex((el) => el[1]===repl),1);
+    console.log(`repl exit rm, code ${code}`);
+  });
 }
 
-async function replOutput(n:number){
-  //wait for final repl output, max n sec
-  //final output signified with > as last char
-  let i=0;
-  while (i<n*10) {
-    i+=1;
+async function replOutput(){
+  while (executing){
     await delay(100);
-    if(/\^\s*/.test(out1)){
-      return out1.slice(0,out1.indexOf('^'));
-    }
-  };
-  return out1+' ..timeout';
+  }
+  return out1.replace(/\f.*/,'');
 } 
 
 async function execShell(cmd: string){
