@@ -603,7 +603,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 } else if(cmdId==='rterm'){
                   execRepl(cmdId,['-q','--no-echo']);
                 } else if(cmdId==='r'){
-                  execRepl(cmdId,['-q']);//,'--no-echo']);
+                  execRepl(cmdId,[]);
                 }
                 chRepl.push([cmdId,repl]);
                 await delay(1000);

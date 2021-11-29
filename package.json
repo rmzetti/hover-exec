@@ -40,7 +40,7 @@
 						"matlab": "matlab -nodesktop -sd %p.m -batch temp",
 						"matlab_comment": "if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
 						"rterm": "rterm -q --no-echo -f \"%f.r\" ",
-						"r": "r -q -f \"%f.r\" ",
+						"r": "r \"%f.r\" ",
 						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
 						"scilabcli": "scilab-cli -quit -nb -f \"%f.sci\" ",
 						"python": "python \"%f.py\"",
