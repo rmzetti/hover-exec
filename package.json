@@ -42,7 +42,7 @@
 						"rterm": "rterm -q --no-echo -f \"%f.r\" ",
 						"r": "r -q -f \"%f.r\" ",
 						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
-						"scilab-cli": "scilan-cli -quit -nb -f \"%f.sci\" ",
+						"scilab-cli": "scilab-cli -quit -nb -f \"%f.sci\" ",
 						"python": "python \"%f.py\"",
 						"python3": "python3 \"%f.py\"",
 						"streamlit": "streamlit run \"%f.py\" ",
