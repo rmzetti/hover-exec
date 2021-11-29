@@ -596,8 +596,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                   execRepl(cmdId,['-i -q']);
                 } else if(cmdId==='scilab'){
                   execRepl('scilex',['-nb']);
-                } else if(cmdId==='scilab-cli'){
-                  execRepl('scilab-cli',['-nb']);
+                } else if(cmdId==='scilabcli'){
+                  execRepl('scilabcli',['-nb']);
                 } else if(cmdId==='octave'){
                   execRepl(cmdId,['-q']);
                 } else if(cmdId==='rterm'){
@@ -622,9 +622,13 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 s+="print('\f')\n";
               } else if(cmdId==='scilab'){
                 s+="mprintf('\f')\n";
+              } else if(cmdId==='scilabcli'){
+                s+="mprintf('\f')\n";
               } else if(cmdId==='octave'){
                 s+="disp('\f')\n";
               } else if(cmdId==='rterm'){
+                s+="cat('\f')\n";
+              } else if(cmdId==='r'){
                 s+="cat('\f')\n";
               }
               repl.stdin?.write(s);
