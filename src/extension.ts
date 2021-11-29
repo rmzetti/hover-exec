@@ -549,7 +549,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         let iexec = nexec; //& save exec number for this script
         out = ""; //reset output buffer
         prog.report({ message: "executing" }); //start execution indicator
-        s=hrefSrcRepl(s);
+        s=hrefSrcReplace(s);
         s=await inHere(s);        
         writeFile(tempPath + tempName, s); //saves code in temp file for execution
         process.chdir(currentFsPath);
@@ -593,13 +593,17 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 } else if(cmdId==='node'){
                   execRepl(cmdId,['-i']);
                 } else if(cmdId==='julia'){
-                  execRepl(cmdId,['-i-q']);
+                  execRepl(cmdId,['-i -q']);
                 } else if(cmdId==='scilab'){
                   execRepl('scilex',['-nb']);
+                } else if(cmdId==='scilab-cli'){
+                  execRepl('scilab-cli',['-nb']);
                 } else if(cmdId==='octave'){
                   execRepl(cmdId,['-q']);
                 } else if(cmdId==='rterm'){
                   execRepl(cmdId,['-q','--no-echo']);
+                } else if(cmdId==='r'){
+                  execRepl(cmdId,['-q']);//,'--no-echo']);
                 }
                 chRepl.push([cmdId,repl]);
                 await delay(1000);
@@ -611,7 +615,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 s+="print('\f')\n";
                 s=s.replace(/^(\S.*)$/mg,'\n$1');
               } else if(cmdId.startsWith('lua')){
-                s="\n"+s+"print('\f')\n";
+                s="\n"+s+"print(utf8.char(12))\n";
               } else if(cmdId==='node'){
                 s+="console.log('\f')\n";
               } else if(cmdId==='julia'){
@@ -645,7 +649,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         if (iexec === nexec) { //only output if this is the latest result
           writeFile(tempPath + tempName + ".out.txt", out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
-          if (cmdId==='rterm'){
+          if (cmdId==='rterm' || cmdId==='r'){
             out=out.replace(/^\[\d+\] /mg,'');
           }
           if (!noOutput) {
@@ -662,7 +666,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
   }
 })(); //end hUri=new class MyUriHandler
 
-function hrefSrcRepl(s:string) {
+function hrefSrcReplace(s:string) {
   s=s.replace(/(href\s*=\s*['"`]\s*)(https?:)/g,'$1:$2'); //avoid http in href
   s=s.replace(/(href\s*=\s*['"`]\s*)(\w)/g,'$1'+currentFsPath+'$2');//add path to direct href
   s=s.replace(/(href\s*=\s*['"`]\s*):(https?:)/g,'$1$2'); //replace http
@@ -939,7 +943,7 @@ function execRepl(cmd: string,opt:string[]){
   if(repl===null){return;}
   repl.stdout?.on('data', (data) => {
     let s=''+data;
-    console.log(`stdout rm: ${s}`);
+    console.log(`stdout rm: ${s}`,s.includes('\f'));
     out1+=s;
     executing=executing && !s.includes('\f');
   });
