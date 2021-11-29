@@ -597,7 +597,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 } else if(cmdId==='scilab'){
                   execRepl('scilex',['-nb']);
                 } else if(cmdId==='scilabcli'){
-                  execRepl('scilabcli',['-nb']);
+                  execRepl('scilab-cli',['-nb']);
                 } else if(cmdId==='octave'){
                   execRepl(cmdId,['-q']);
                 } else if(cmdId==='rterm'){
