@@ -47,6 +47,7 @@
 						"python3": "python3 \"%f.py\"",
 						"streamlit": "streamlit run \"%f.py\" ",
 						"julia": "julia \"%f.jl\"",
+            "juliamac":"/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
 						"gnuplot": "gnuplot -p -c \"%f.gp\"",
 						"pwsh": "pwsh -f \"%f.ps1\"",
 						"bash": "bash \"%f.sh\"",
@@ -74,10 +75,10 @@
 					"default": {
 						"octave": "disp(['=>>' $1])",
 						"matlab": "disp([\"=>>\"+($1)])",
-						"rterm": "print(noquote(paste('=>>',$1)))",
-            "r": "print(noquote(paste('=>>',$1)))",
-            "scilab": "mprintf('%s\\n','=>>'+$1)",
-						"scilabcli": "mprintf('%s\\n','=>>'+$1)",
+						"rterm": "cat('=>>',$1,'\\n')",
+            "r": "cat('=>>',$1,'\\n')",
+            "scilab": "mprintf('=>>'+string($1)+'\\n')",
+						"scilabcli": "mprintf('=>>'+string($1)+'\\n')",
 						"python": "print('=>>'+str($1))",
 						"python3": "print('=>>'+str($1))",
 						"julia": "println(string(\"=>>\",$1))",
@@ -94,6 +95,23 @@
 						"buddvs": "write('=>>'+$1);",
 						"pascal": "writeln('=>>',$1);"
 					}
+				},
+				"hover-exec.repls": {
+					"description": ["cmd",["opt"],"output ff",["re","in",".."],["re","out",".."]],
+          "default":{
+            "python": ["python",["-q","-i","-u"],"print('\\f')",["^(\\S.*)$","\n$1"],[]],
+            "python3": ["python3",["-q","-i","-u"],"print('\\f')",["^(\\S.*)$","\n$1"],[]],
+            "lua": ["lua",["-i"],"print(utf8.char(12))",[],["^>.*?\\n","","^(>+ )+",""]],
+            "lua54": ["lua54",["-i"],"print(utf8.char(12))",[],["^>.*?\\n","","^(>+ )+",""]],
+            "lua51": ["lua51",["-i"],"print(utf8.char(12))",[],["^>.*?\\n","","^(>+ )+",""]],
+            "node": ["node",["-i"],"console.log('\\f')",[],["undefined\\n","","^(>+ )+",""]],
+            "julia": ["julia",["-i -q"],"print('\\f')",[],[]],
+            "scilab": ["scilex",["-nb"],"mprintf(ascii(12))",[],[]],
+            "scilabcli": ["scilab-cli",["-nb"],"mprintf(ascii(12))",[],[]],
+            "octave": ["octave",["-q"],"disp(\"\\f\")",[],[]],
+            "rterm": ["rterm",["-q","--no-echo"],"cat('\\f')",[],[]],
+            "r": ["r",[],"cat('\\f')",[],[]]
+          }
 				},
 				"hover-exec.showOk": {
 					"description": "show message when script completed successfully",

@@ -257,6 +257,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
+      checkJsonVisible();
     })
   );
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));
@@ -445,7 +446,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function checkJsonVisible() {
-    //ensure script & swapper strings visible in settings.json
+    //ensure script, swapper and repls visible in settings.json
     let s = { undefined: undefined };
     let scripts = config.get("scripts");
     let merge = Object.assign({}, scripts, s);
@@ -453,6 +454,9 @@ export function activate(context: vscode.ExtensionContext) {
     scripts = config.get("swappers");
     merge = Object.assign({}, scripts, s);
     config.update("swappers", merge, 1);
+    scripts = config.get("repls");
+    merge = Object.assign({}, scripts, s);
+    config.update("repls", merge, 1);
   }
 
   checkJsonVisible();//ensures scripts & swappers available in settings.json
@@ -580,71 +584,45 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               clear();
               removeSelection();
             }
-            if(useRepl){
+            if(useRepl){//repl parameters from config
+              let rp = config.get("repls."+cmdId) as Array<string|Array<string>>; 
               let chitem=chRepl.find((el) => el[0]===cmdId);
               if(chitem===undefined || restartRepl){
                 if(chitem!==undefined){ //restart the repl
                   chRepl.splice(chRepl.findIndex((el) => el[0]===cmdId),1);
                 }
-                if(cmdId.startsWith('python')){
-                  execRepl(cmdId,['-q','-i','-u']);
-                } else if(cmdId.startsWith('lua')){
-                  execRepl(cmdId,['-i']);
-                } else if(cmdId==='node'){
-                  execRepl(cmdId,['-i']);
-                } else if(cmdId==='julia'){
-                  execRepl(cmdId,['-i -q']);
-                } else if(cmdId==='scilab'){
-                  execRepl('scilex',['-nb']);
-                } else if(cmdId==='scilabcli'){
-                  execRepl('scilab-cli',['-nb']);
-                } else if(cmdId==='octave'){
-                  execRepl(cmdId,['-q']);
-                } else if(cmdId==='rterm'){
-                  execRepl(cmdId,['-q','--no-echo']);
-                } else if(cmdId==='r'){
-                  execRepl(cmdId,[]);
-                }
+                execRepl(rp[0] as string,rp[1] as Array<string>);
                 chRepl.push([cmdId,repl]);
                 await delay(1000);
               } else {
                 repl=chitem[1];
               }
               out1=''; //used by stdio for replOutput 
-              if(cmdId.startsWith('python')){
-                s+="print('\f')\n";
-                s=s.replace(/^(\S.*)$/mg,'\n$1');
-              } else if(cmdId.startsWith('lua')){
-                s="\n"+s+"print(utf8.char(12))\n";
-              } else if(cmdId==='node'){
-                s+="console.log('\f')\n";
-              } else if(cmdId==='julia'){
-                s+="print('\f')\n";
-              } else if(cmdId==='scilab'){
-                s+="mprintf('\f')\n";
-              } else if(cmdId==='scilabcli'){
-                s+="mprintf('\f')\n";
-              } else if(cmdId==='octave'){
-                s+="disp('\f')\n";
-              } else if(cmdId==='rterm'){
-                s+="cat('\f')\n";
-              } else if(cmdId==='r'){
-                s+="cat('\f')\n";
+              s="\n"+s+"\n"+rp[2]+"\n"; //script to output formfeed to indicate completion
+              if(rp[3]!==[]){ //preprocessing eg. handle python indents
+                let i=0;
+                while(i<rp[3].length-1){
+                  let re=new RegExp(rp[3][i],"mg");
+                  s=s.replace(re,rp[3][i+1]);
+                  i+=2;
+                }
               }
               repl.stdin?.write(s);
               out=await replOutput();
-              if(cmdId.startsWith('lua')){
-                out=out.replace(/^>.*?\n/mg,'');
-                out=out.replace(/^(>+ )+/mg,'');
-              } else if(cmdId==='node'){
-                out=out.replace(/^undefined$/gm,"");
-                out=out.replace(/^(>+ )+/mg,'');
-              }
+              if(rp[4]!==""){ //postprocessing (eg. lua,node)
+                let i=0;
+                while(i<rp[4].length-1){
+                  let re=new RegExp(rp[4][i],"mg");
+                  out=out.replace(re,rp[4][i+1]);
+                  i+=2;
+                }
+              } 
             } else {
               out=await execShell(cmd); //execute all other commands
               if (cmdId === "buddvs") {   //local script tester
                 out = out.replace(/�/g, "î");
-            }}
+              }
+            }
           }
         } else {
           out = uri.toString(); //no ex, return uri
@@ -653,9 +631,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         if (iexec === nexec) { //only output if this is the latest result
           writeFile(tempPath + tempName + ".out.txt", out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
-          if (cmdId==='rterm' || cmdId==='r'){
-            out=out.replace(/^\[\d+\] /mg,'');
-          }
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
             paste(out);   //paste into editor

@@ -16,6 +16,7 @@
     - [Octave repl](#octave-repl)
     - [R (rterm) repl](#r-rterm-repl)
 - [Typescript](#typescript)
+- [Configuration](#configuration)
 
 
 # Javascript tests
@@ -381,6 +382,31 @@ plot "$javascript1" w lp title "javascript",\
 1e+06,  660.4684782172212,
 #go
 
+## Config
+
+
+```js:eval
+let settings='repls'
+console.log('```js:eval')
+console.log('let settings="'+settings+'";');
+let ks=Object.keys(config.get(settings))
+console.log('let s=`{\\');
+for (let k in ks){
+  if(k<ks.length-1){
+    console.log(JSON.stringify(ks[k])+' : '+JSON.stringify(config.get(settings+'.'+ks[k]))+',\\');
+  } else {
+    console.log(JSON.stringify(ks[k])+' : '+JSON.stringify(config.get(settings+'.'+ks[k]))+'}`;');
+  }
+}
+console.log(`s=s.replace(/"\\\\f"/g,'\\\\"\\\\f\\\\"').replace(/\\f/g,'\\\\f')`);
+console.log(`s=s.replace(/\\\\"/g,'\\\\\\\\"')`);
+console.log(`s=s.replace(/\\n/g,'\\\\n').replace(/\\\\S/g,'\\\\\\\\S');`);
+console.log(`s=s.replace(/\\"\\\\f\\"/g,'\\\\"\\\\f\\\\"').replace(/\\\\\\[1\\\\\\]"/g,'\\\\\\\\[1\\\\\\\\]"')`)
+//console.log("JSON.parse(s)");
+console.log("if(config.update(settings,JSON.parse(s),1)){write('ok!');}")
+```
+
+
 ## Using scripts via REPL
 
 Each of the script REPL examples below shows a 'restart' script followed by a normal continuation which shows the script variables are still available.
@@ -409,7 +435,7 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.394805908203125
+0.4039149284362793
 ```
 
 ```python::
@@ -419,7 +445,7 @@ time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1637747538.1500988
+1638593188.9719448
 6000600
 ```
 
@@ -429,18 +455,15 @@ b # this now produces output because the repl is being used
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>1.003
+tt=>>813.571
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.418
+tt1=>>0.32799999999997
 'ok'
-```
-```output
-ok
 ```
 
 ```lua:lua54:
@@ -455,9 +478,9 @@ let a=0,b=0,c=0,d=0,e=0;
 ```
 
 ```js:node:
-a+=1 =>>1
-b+=10 =>>10
-c+=100 =>>100
+a+=1 =>>2
+b+=10 =>>20
+c+=100 =>>200
 ```
 
 ### Julia repl
@@ -466,6 +489,10 @@ c+=100 =>>100
 x=rand(Float64);_
 a=rand(Float64,3);print(string("a=",a,"\nx=",x))
 ```
+```output
+a=[0.599910811914389, 0.7408777404691769, 0.3415388486046367]
+x=0.851527055737278
+```
 
 ```julia::
 a=a.+1;_ 
@@ -473,8 +500,8 @@ x=x+1;_
 print(a,'\n',x)
 ```
 ```output
-[9.11174469128525, 9.504474944704, 9.05706503358001]
-9.441172925172872
+[2.599910811914389, 2.740877740469177, 2.3415388486046367]
+2.851527055737278
 ```
 
 ### Scilab repl
@@ -492,7 +519,7 @@ t=toc();
 mprintf('Time: %.2f sec',t)
 ```
 ```output
-Time: 1.33 sec
+Time: 1.23 sec
 ```
 
 ```js:scilab:
@@ -501,8 +528,8 @@ mprintf('t equals %.2f',t)
 a=a+1;_
 ```
 ```output
-a equals 31
-t equals 1.26
+a equals 17
+t equals 1.23
 ```
 
 ### Octave repl
@@ -543,14 +570,8 @@ a=7*7-7
 a=>> 42
 noquote(paste('the meaning of life is',a))
 ```
-```output
-the meaning of life is 42
-```
 ```rterm::
 noquote(paste('.. that was',a))
-```
-```output
-.. that was 42
 ```
 
 ```rterm::restart #data for plots
@@ -587,3 +608,14 @@ let this_works = true;
     }
 ```
 
+# Configuration
+
+```js :vm noInline
+//this script can change, add or undefine a config setting
+let s={"python":"python \"%f.py\""};
+//s={"python":undefined}; //uncomment this to undefine python
+let scripts=config.get('scripts');
+let merge=Object.assign({},scripts,s);
+if(await config.update('scripts',merge,1)){}
+console.log('new config:',config.get('scripts.python'))
+```
