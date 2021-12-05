@@ -1,3 +1,4 @@
+
 - [Javascript tests](#javascript-tests)
   - [array operations](#array-operations)
   - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
@@ -6,6 +7,7 @@
   - [Javascript in the browser](#javascript-in-the-browser)
   - [Plotting comparison](#plotting-comparison)
     - [Some data for plots](#some-data-for-plots)
+  - [Config](#config)
   - [Using scripts via REPL](#using-scripts-via-repl)
     - [Check active REPLs](#check-active-repls)
     - [Using the python repl](#using-the-python-repl)
@@ -17,7 +19,6 @@
     - [R (rterm) repl](#r-rterm-repl)
 - [Typescript](#typescript)
 - [Configuration](#configuration)
-
 
 # Javascript tests
 
@@ -384,27 +385,18 @@ plot "$javascript1" w lp title "javascript",\
 
 ## Config
 
-
-```js:eval
-let settings='repls'
-console.log('```js:eval')
+```js:eval //view and alter hover-exec settings for
+let settings='repls'; // 'scripts', 'swappers', 'repls'
+let k=Object.keys(config.get(settings))
+let v=Object.values(config.get(settings))
+console.log('```js:eval //exec to incorporate any changes')
 console.log('let settings="'+settings+'";');
-let ks=Object.keys(config.get(settings))
-console.log('let s=`{\\');
-for (let k in ks){
-  if(k<ks.length-1){
-    console.log(JSON.stringify(ks[k])+' : '+JSON.stringify(config.get(settings+'.'+ks[k]))+',\\');
-  } else {
-    console.log(JSON.stringify(ks[k])+' : '+JSON.stringify(config.get(settings+'.'+ks[k]))+'}`;');
-  }
-}
-console.log(`s=s.replace(/"\\\\f"/g,'\\\\"\\\\f\\\\"').replace(/\\f/g,'\\\\f')`);
-console.log(`s=s.replace(/\\\\"/g,'\\\\\\\\"')`);
-console.log(`s=s.replace(/\\n/g,'\\\\n').replace(/\\\\S/g,'\\\\\\\\S');`);
-console.log(`s=s.replace(/\\"\\\\f\\"/g,'\\\\"\\\\f\\\\"').replace(/\\\\\\[1\\\\\\]"/g,'\\\\\\\\[1\\\\\\\\]"')`)
-//console.log("JSON.parse(s)");
-console.log("if(config.update(settings,JSON.parse(s),1)){write('ok!');}")
+console.log('let s={')
+for(let i in k){console.log(k[i]+':',v[i],',') }
+console.log('};')
+console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
 ```
+
 
 
 ## Using scripts via REPL
@@ -435,7 +427,7 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.4039149284362793
+0.38716864585876465
 ```
 
 ```python::
@@ -445,7 +437,7 @@ time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1638593188.9719448
+1638696387.64129
 6000600
 ```
 
@@ -455,14 +447,14 @@ b # this now produces output because the repl is being used
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>813.571
+tt=>>0.148
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.32799999999997
+tt1=>>0.344
 'ok'
 ```
 
@@ -490,8 +482,8 @@ x=rand(Float64);_
 a=rand(Float64,3);print(string("a=",a,"\nx=",x))
 ```
 ```output
-a=[0.599910811914389, 0.7408777404691769, 0.3415388486046367]
-x=0.851527055737278
+a=[0.32116290659737623, 0.09686812509281806, 0.2530318143506387]
+x=0.22750459765216036
 ```
 
 ```julia::
@@ -500,8 +492,8 @@ x=x+1;_
 print(a,'\n',x)
 ```
 ```output
-[2.599910811914389, 2.740877740469177, 2.3415388486046367]
-2.851527055737278
+[2.321162906597376, 2.096868125092818, 2.2530318143506385]
+2.2275045976521604
 ```
 
 ### Scilab repl
@@ -519,17 +511,17 @@ t=toc();
 mprintf('Time: %.2f sec',t)
 ```
 ```output
-Time: 1.23 sec
+Time: 1.32 sec
 ```
 
 ```js:scilab:
 mprintf('a equals %.f',a)
 mprintf('t equals %.2f',t)
-a=a+1;_
+a=a+1;
 ```
 ```output
-a equals 17
-t equals 1.23
+a equals 20
+t equals 1.32
 ```
 
 ### Octave repl
@@ -548,8 +540,8 @@ disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
 ```output
-time=1.6627 sec
-speed=0.60145 million iterations per sec
+time=1.6611 sec
+speed=0.60201 million iterations per sec
 ```
 
 ```python:octave:
@@ -559,8 +551,8 @@ disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
 ```output
 I repeat...
-time=1.6297 sec
-speed=0.61359 million iterations per sec
+time=1.6611 sec
+speed=0.60201 million iterations per sec
 ```
 
 ### R (rterm) repl
@@ -591,9 +583,9 @@ plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
 lines(x, y2,pch=18,col="blue",type="b",lty=2)
 msgBox<-tkmessageBox(title="Plot",message="Close plots first!")
 ```
-```output
- ..timeout
-```
+NB. Use this if the plots remain:
+`js:eval repl.kill()` //kills active repl
+
 
 # Typescript
 
