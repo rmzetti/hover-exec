@@ -1,4 +1,6 @@
+# Contents
 
+- [Contents](#contents)
 - [Javascript tests](#javascript-tests)
   - [array operations](#array-operations)
   - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
@@ -7,7 +9,6 @@
   - [Javascript in the browser](#javascript-in-the-browser)
   - [Plotting comparison](#plotting-comparison)
     - [Some data for plots](#some-data-for-plots)
-  - [Config](#config)
   - [Using scripts via REPL](#using-scripts-via-repl)
     - [Check active REPLs](#check-active-repls)
     - [Using the python repl](#using-the-python-repl)
@@ -19,6 +20,8 @@
     - [R (rterm) repl](#r-rterm-repl)
 - [Typescript](#typescript)
 - [Configuration](#configuration)
+  - [View and alter as a set ('scripts, 'swappers,'repls')](#view-and-alter-as-a-set-scripts-swappersrepls)
+  - [View and alter a specific setting](#view-and-alter-a-specific-setting)
 
 # Javascript tests
 
@@ -383,22 +386,6 @@ plot "$javascript1" w lp title "javascript",\
 1e+06,  660.4684782172212,
 #go
 
-## Config
-
-```js:eval //view and alter hover-exec settings for
-let settings='repls'; // 'scripts', 'swappers', 'repls'
-let k=Object.keys(config.get(settings))
-let v=Object.values(config.get(settings))
-console.log('```js:eval //exec to incorporate any changes')
-console.log('let settings="'+settings+'";');
-console.log('let s={')
-for(let i in k){console.log(k[i]+':',v[i],',') }
-console.log('};')
-console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
-```
-
-
-
 ## Using scripts via REPL
 
 Each of the script REPL examples below shows a 'restart' script followed by a normal continuation which shows the script variables are still available.
@@ -406,9 +393,9 @@ Each of the script REPL examples below shows a 'restart' script followed by a no
 ### Check active REPLs
 
 ```js:eval //find active repl
-chRepl.length=>> 6
+chRepl.length=>> 1
 let i=chRepl.findIndex((el)=>el[1]===repl)
-i=>> 5
+i=>> 0
 chRepl[i][0]=>> python
 ```
 
@@ -427,7 +414,7 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.38716864585876465
+0.40797948837280273
 ```
 
 ```python::
@@ -437,7 +424,7 @@ time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1638696387.64129
+1638745827.0116093
 6000600
 ```
 
@@ -447,14 +434,14 @@ b # this now produces output because the repl is being used
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>0.148
+tt=>>3.679
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.344
+tt1=>>0.327
 'ok'
 ```
 
@@ -482,18 +469,18 @@ x=rand(Float64);_
 a=rand(Float64,3);print(string("a=",a,"\nx=",x))
 ```
 ```output
-a=[0.32116290659737623, 0.09686812509281806, 0.2530318143506387]
-x=0.22750459765216036
+a=[0.575852186491711, 0.5073461447138108, 0.25276964679103653]
+x=0.6377234577023345
 ```
 
 ```julia::
-a=a.+1;_ 
+a=a.+1;_
 x=x+1;_
 print(a,'\n',x)
 ```
 ```output
-[2.321162906597376, 2.096868125092818, 2.2530318143506385]
-2.2275045976521604
+[3.575852186491711, 3.507346144713811, 3.2527696467910365]
+3.6377234577023345
 ```
 
 ### Scilab repl
@@ -511,7 +498,7 @@ t=toc();
 mprintf('Time: %.2f sec',t)
 ```
 ```output
-Time: 1.32 sec
+Time: 1.27 sec
 ```
 
 ```js:scilab:
@@ -520,8 +507,8 @@ mprintf('t equals %.2f',t)
 a=a+1;
 ```
 ```output
-a equals 20
-t equals 1.32
+a equals 18
+t equals 1.27
 ```
 
 ### Octave repl
@@ -539,20 +526,11 @@ t=time-t;
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
-```output
-time=1.6611 sec
-speed=0.60201 million iterations per sec
-```
 
 ```python:octave:
 disp('I repeat...')
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
-```
-```output
-I repeat...
-time=1.6611 sec
-speed=0.60201 million iterations per sec
 ```
 
 ### R (rterm) repl
@@ -590,23 +568,39 @@ NB. Use this if the plots remain:
 # Typescript
 
 First install typescript and ts-node globally with
-npm i -g typescript ts-node
-Then set ts-node as the cmd in your code block:
-'''typescript {cmd="ts-node" output="text"}
-```js
+  npm i -g typescript ts-node
+Then set ts-node as the cmd in your codeblock:
+```ts  //ts and typescript both defined as ts-node in scripts settings
 let this_works = true;
     if (this_works) {
-        console.log('It works!');
+        console.log('It works!')
     }
+```
+```output
+It works!
 ```
 
 # Configuration
 
-```js :vm noInline
-//this script can change, add or undefine a config setting
-let s={"python":"python \"%f.py\""};
-//s={"python":undefined}; //uncomment this to undefine python
-let scripts=config.get('scripts');
+## View and alter as a set ('scripts, 'swappers,'repls')
+
+```js noInline                //view and update settings for: 
+let settings='repls';  //'scripts', 'swappers', 'repls'
+config = vscode.workspace.getConfiguration("hover-exec");
+let k=config.get(settings)
+console.log('```js:eval //exec here to incorporate any changes')
+console.log('let settings="'+settings+'";');
+console.log('let s=',k)
+console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
+```
+
+## View and alter a specific setting
+```js noInline  //change, add or undefine (remove) a specific config setting
+let settings='scripts';  //'scripts', 'swappers', 'repls'
+config = vscode.workspace.getConfiguration("hover-exec");
+let k=config.get(settings)
+let s={"python":"python \"%f.py\""};  //make changes here, or
+//s={"python":undefined};                   //uncomment this to undefine
 let merge=Object.assign({},scripts,s);
 if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.python'))
