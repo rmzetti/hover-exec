@@ -109,8 +109,8 @@
             "scilab": ["scilex",["-nb"],"mprintf(ascii(12))",[],[]],
             "scilabcli": ["scilab-cli",["-nb"],"mprintf(ascii(12))",[],[]],
             "octave": ["octave",["-q"],"disp(\"\\f\")",[],[]],
-            "rterm": ["rterm",["-q","--no-echo"],"cat('\\f')",[],[]],
-            "r": ["r",[],"cat('\\f')",[],[]]
+            "rterm": ["rterm",["-q","--no-echo"],"cat('\\f')",[],["\\[\\d+\\]",""]],
+            "r": ["r",[],"cat('\\f')",[],["\\[\\d+\\]",""]]
           }
 				},
 				"hover-exec.showOk": {
