@@ -1,6 +1,6 @@
 # Hover exec
 
-This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and content, this one just goes into more detail.
+This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail.
 
 - [Hover exec](#hover-exec)
   - [Features](#features)
@@ -12,9 +12,11 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [Quick specification of `vm` context](#quick-specification-of-vm-context)
     - [using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
-    - [Scripts with built-in commands](#scripts-with-built-in-commands)
+  - [Other scripts](#other-scripts)
+    - [Script commands](#script-commands)
   - [Some examples](#some-examples)
     - [Lua](#lua)
+    - [Scripts without pre-defined configs](#scripts-without-pre-defined-configs)
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
     - [Javascript using vm](#javascript-using-vm)
@@ -43,6 +45,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [audio one-liners](#audio-one-liners)
     - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
   - [inhere - including tagged sections](#inhere---including-tagged-sections)
+    - [Using repl scripts](#using-repl-scripts)
   - [Configuration settings](#configuration-settings)
     - [Using vm for configuration settings](#using-vm-for-configuration-settings)
       - [Check settings](#check-settings)
@@ -75,21 +78,20 @@ Javascript code blocks can be executed using the `vm` module, or by using *vscod
 
 ### Examples using `vm` and `eval`
 
-```js      //click this line in the *hover* to execute the block
-//```js  //this comment is to show the command line in markdown previews`
-//        //the default for the `js` command is to execute using the `vm` module
-'test: '+Math.random() =>>test: 0.2549981720136758
-aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates a global
-//to use predefined variables a..z, don't use 'let'
+```js  //click this line in the *hover* to execute the block
+//js  //this comment is to show the command line in markdown previews
+//    //the default for the `js` command is to execute using the `vm` module
+'test: '+Math.random() =>>test: 0.37929936497568706
+aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates a global variable
 bb = function (animal){alert('he likes ' + animal);}
 ```
 
 ```js //execute the previous *vm* block first
-//```js //execute the previous *vm* block first
+//js //execute the previous *vm* block first
 bb('dogs');aa('pears'); //uses the globals defined in the previous code block
 ```
 
-Intermediate results can be viewed in line by appending `=>>` instead of using `console.log()` (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Note that *mpe* will not produce the results in-line.
+Intermediate results can be viewed in line by appending `=>>` instead of using `console.log()` (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Note, though,  that *mpe* will not produce the results in-line.
 
 Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
@@ -97,26 +99,26 @@ Other results are produced in an `output` block. Hovering over `output` provides
 A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`). See the next section for other available functions.
 
 ```js  //using vm various examples
-//```js //using vm, various examples`
+//js //using vm, various examples
 let abc="hello, world 3"
 let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>>0.12542115380232666
+eval('let a=3;2*a*Math.random()')=>>1.9624637768947943
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.720885574862449
+'hello '+(2-1+Math.random())=>>hello 1.313537366751757
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.24137261061263482
+goodbye world 0.0775511252109764
 hello, world 3
 ```
 
 ---
 ```js  //javascript regex tester using vm
-// ```js //javascript regex tester using vm`
+//js //javascript regex tester using vm
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
 
@@ -124,20 +126,32 @@ hello, world 3
 All the above codeblocks can be executed using `eval` instead of `vm`, eg.
 
 ```js :eval  //javascript regex tester using eval
-//```js :eval //javascript regex tester using eval`
+//js :eval //javascript regex tester using eval
 'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> bcde--fg
 ```
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
 
-In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :eval` sets the actual exec command to `eval`. 
+In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node` (reflected in the hover display). Note, for example, for this to work with *mpe*, the `{cmd=node}` *mpe* requirement must now go before `:node`, ie. use
+
+```js {cmd=node} :node
+//js {cmd=node} :node
+console.log('hello')
+```
+rather than
+```js:node {cmd=node}
+//js:node {cmd=node}
+console.log('hello')
+```
+(view the above in *mpe* to see the difference)
 
 Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
+
 
 ---
 ### available functions in `vm` and `eval`
 
-The following functions are included in `vmContext` by default (and are also available for `eval`):
+The following functions are included in `vmContext` by default (and are also available to `eval`):
 - abort(): abort current script
 - alert(string): provide an alert box (bottom right)
 - config: access to *hover-exec* configuration
@@ -193,12 +207,14 @@ _
 math
 moment
 __main
+aa
+bb
 ```
 
 With this context, for example, the following works in `vm`:
 
 ```js //can use lodash
-//```js //can use lodash
+//js //can use lodash
 _.range(0,5)=>>0,1,2,3,4
 ```
 
@@ -218,8 +234,8 @@ reduced context:
 
 Now lodash is not available to `vm` scripts:
 
-```js    //can't use lodash in reduced context
-//```js //can't use lodash in reduced context
+```js //can't use lodash in reduced context
+//js //can't use lodash in reduced context
 _.range(0,5)=>>
 ```
 ```output
@@ -234,9 +250,9 @@ vmContext=undefined
 
 Now `lodash`, part of the default `vmContext` works again
 
-```js    //can now use lodash (etc) again in vm
-//```js //can now use lodash (etc) again in vm
-_.range(0,5)=>> 0,1,2,3,4
+```js //can now use lodash (etc) again in vm
+//js //can now use lodash (etc) again in vm
+_.range(0,5)=>>0,1,2,3,4
 ```
 
 In this way, the context used for vm_scripts can be adjusted to be restricted or permissive as necessary.
@@ -248,16 +264,20 @@ By default the `js` command utilises a default context which is progressively ex
 Any `js/vm` codeblock can utilise the following options:
 
 ```js:vmdf     //set 'vmContext' to default
-//```js:vmdf  //set 'vmContext' to default
+//js:vmdf     //set 'vmContext' to default
 //On execution, the vmContext returns to its default
 ```
 
 and
 
 ```js:vmin     //set 'vmContext' to minimum
-//```js:vmin  //set 'vmContext' to minimum
-//This will set the vmContext to a minimum (basically
-//  just including 'write' which enables 'console.log' for output)
+//js:vmin    //set 'vmContext' to minimum
+//This will set the vmContext to a minimum (ie. just
+//including 'write' which enables 'console.log' for output)
+console.log('hello')
+```
+```output
+hello
 ```
 
 Apart from resetting `vmContext` at the start, these are normal `js` codeblocks.
@@ -269,10 +289,10 @@ Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `
 
 A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted (undefined) using, eg. `delete global.a;`
 
-'Naked' assignments (ie. no `let`or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'exec' codeblocks. 
+'Naked' assignments (ie. no `let`or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'eval' codeblocks. 
 
-```js :eval //use of lodash and mathjs 
-//```js :eval //use of lodash and mathjs 
+```js:eval //use of lodash and mathjs 
+//js:eval //use of lodash and mathjs 
 function xrange(){
    let x1=_.range(0,6.1,6/10);
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
@@ -290,29 +310,26 @@ console.log(xrange())
 ```
 
 ```js //global function definition
-//```js //global function definition
+//js //global function definition
 f=global.f=function(m){return 'the meaning of life is '+m;};
-f(44-2)=>> the meaning of life is 42
+f(44-2)=>>the meaning of life is 42
 ```
 
 ```js:eval //use of global from 'vm' in 'eval'
-//```js:eval //use of global from 'vm' in 'eval'
+//js:eval //use of global from 'vm' in 'eval'
 f(42)=>> the meaning of life is 42
-_.range(0,4)=>> 0,1,2,3
+_.range(0,4)=>> [ 0, 1, 2, 3 ]
 ```
 
-```js    //naked function definition (no 'let')
-//```js //naked function definition (no 'let')
+```js  //naked function definition (no 'let')
+//js //naked function definition (no 'let')
 test = function () {
   console.log('test works')
 }
 ```
 ```js    //function available to subsequent vm codeblocks
-//```js //function available to subsequent codeblocks
+//js //function available to subsequent codeblocks
 test()
-```
-```output
-test works
 ```
 
 For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. Instead, the 'global' prefix needs to be used in the function def, as above.
@@ -323,53 +340,54 @@ For `eval`, neither 'naked' nor 'var' function defs are available to subsequent 
 The js command by default executes a javascript code block in `nodejs` (assuming that is installed).
 
 ```js :node
-// ```js :node  //as before, this line shows the command in markdown previews`
+//js :node  //as before, this line shows the command in markdown previews
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
 ```output
   test using node:
-  0.5360235800978341
+  0.8539380404312473
   Note: hover-exec on ```output line`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
 
-Notes:
-- Including `{cmd=node}` in the command line to allow execution also in *markdown preview enhanced* (in-line output will not be available)
+Note:
+- to allow execution also in *markdown preview enhanced*, include `{cmd=node}` in the command line 
+-- eg. `js {command=node} :node`.
+- in-line output will not be available in *mpe*.
 
----
-Note that codeblocks with {cmd...}, as appropriate, can be executed in either *hover-exec* or *markdown preview enhanced* (if you're viewing this also in *mpe*, you can try it both ways)
-
-```js :node {cmd=node}
-//```js :node {cmd=node}`
+```js {cmd=node} :node
+//js {cmd=node} :node
 console.log(process.cwd())
 console.log('test using node: '+Math.random())
 let a=5;console.log(a+Math.random())
 ```
 ```output
-c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
-test using node: 0.47027243015214704
-5.679301773478228
+c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+test using node: 0.12443021356881268
+5.761054468373911
 ```
 
-```js :node {cmd=node}
-// ```js :node {cmd=node}`
-process.cwd()  =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
-'test: '+Math.random() =>>test: 0.9716829485200404
+```js {cmd=node} :node
+//js {cmd=node} :node
+process.cwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'test: '+Math.random() =>>test: 0.8151737631797151
 let a=5;
-a+Math.random() =>>5.907325870290402
+a+Math.random() =>>5.085366384159352
 ```
 
 ---
-### Scripts with built-in commands
+## Other scripts
 
-Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `READMORE` for the actual commands):
+### Script commands
 
-- javascript (via node)
-- eval (built in javascript, with vscode api available)
-- vm (built in vm javascript, with vscode api available)
-- html
+Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `READMORE` for the actual commands used):
+
+- js (or vm) --javascript, with vscode api included in context
+- eval --javascript via eval, with vscode api available
+- javascript (or node) --javascript using nodejs
+- html --html via the default browser
 - powershell
 - bash
 - zsh
@@ -386,30 +404,16 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 Notes:
 - The script language you wish to use (eg `julia`,`nodejs`) needs to have been installed
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation.. see [Changing script configuration](#changing-script-configuration)
-- Other script languages may be added - see [Adding another script](#adding-another-script).
+- Other script languages may be added - see [Adding another script](#adding-another-script)
+- Scripts may be used with adding a config script in settings - see [Scripts without pre-defined configs](###Scripts-without)
 
 ## Some examples
 In these examples, random numbers & time are used so updated output is easier to spot
 
 ### Lua
-```lua {cmd=lua54} --*say hello goodbye*
--- ```lua  {cmd=lua54} --*say hello goodbye*`
-print("hello & goodbye")
-math.randomseed(os.time())
---maybe hover-exec could execute commented lines with in-line
-"hello "..math.pi+math.random() =>>hello 3.4279444887858
-print('hello '..(44-2+math.random()))
-"goodbye"..math.pi+math.random() =>>goodbye3.3987259842488
-print("goodbye "..math.pi+math.random())
-```
-```output
-hello & goodbye
-hello 42.995219859293
-goodbye 3.4225625205094
-```
 
-```lua {cmd=lua54} --10 million random number calls
--- ```lua {cmd=lua54} --10 million random number calls`
+```lua:lua54 {cmd=lua54} --10 million random number calls
+--lua {cmd=lua54} --10 million random number calls
 local t = os.clock();
 local t1=0;
 local matrix=require "matrix"
@@ -421,19 +425,21 @@ print(t1)
 print(os.clock()-t)
 ```
 ```output
-5000118.1785821
-0.317
+4998400.6926814
+0.321
 ```
 
-The following example does not use any predefined configs,  just a command and %f to indicate the codeblock temp file is to be used. The default %f ext is `.txt`, but this can be changed by appending the desired ext as in this `lua51` example - many programs will need a specific ext to run.
+### Scripts without pre-defined configs
+
+The following example does not use any predefined configs, just an operating system command with %f standing for the temp file name. The default %f ext is `.txt`, but this can be changed by appending the desired ext as in this `lua51` example - most programs will need a specific ext to run. Note that the temp files are saved in the standard vscode temp files location. They can be opened in vscode by clicking on [last script] or [last result] in the hover display.
 
 ```lua51.exe %f.lua
---```lua51.exe %f.lua
-print("hello & goodbye")
+--lua51.exe %f.lua
 math.randomseed(os.time())
+print("os.time() is a poor seed for successive runs: "..math.random(100))
 ```
 ```output
-hello & goodbye
+os.time() is a poor seed for successive runs: 12
 ```
 
 ---
@@ -441,9 +447,9 @@ hello & goodbye
 Powershell can be used in *mpe*
 
 ```pwsh {cmd}
- # ```pwsh {cmd}`
-Get-Random -Min 0.0 -Max 1.0 =>>0.583402059778293
-"current dir: "+(pwd) =>>current dir: C:\Users\xxx\OneDrive\Documents\Notes
+ #pwsh {cmd}
+Get-Random -Min 0.0 -Max 1.0 =>>0.65950989614218
+"current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
@@ -451,7 +457,7 @@ Get-Random -Min 0.0 -Max 1.0 =>>0.583402059778293
 Also works in *mpe*
 
 ```gnuplot {cmd}
- # ```gnuplot {cmd}`
+ #gnuplot {cmd}
 $charge << EOD
 10-06-2021 2138 100
 15-06-2021 2247 79
@@ -497,20 +503,20 @@ plot "$charge" using 1:3 w lp title "charge"
 The `vm` and `eval` commands use vscode's built in capabilities. They are not available in *mpe*.
 
 ```js :vm //or just 'js'
-// ```js :vm  -- not available in mpe
+//js :vm //or just 'js'   -- not available in mpe
 let abc="abcde"
 let a='hello variable world';
 alert(a) //nb. alert is not available in node
 a='goodbye'
 vscode.window.showInformationMessage(a) //not available in node
-eval('let a=3;2*a*Math.random()')=>> 5.363093779138538
+eval('let a=3;2*a*Math.random()')=>> 2.8503609676847033
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.130435129908258
+'hello '+(2-1+Math.random())=>> hello 1.7056496931271734
 process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye 0.9108457907130014
+goodbye 0.39080829474892154
 abcde
 ```
 
@@ -519,22 +525,23 @@ abcde
 Run a server on localhost ([click here after running it](http://127.0.0.1:1337))
 Also works in *markdown preview enhanced*, (ie. *mpe*)
 
-```js :node {cmd=node}
-// ```js :node {cmd=node} -- works in mpe
+```js {cmd=node} :node
+//js :node {cmd=node} -- works in mpe
 var http = require('http');
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end('Hello World at last!\n');
 }).listen(1337, "127.0.0.1");
 ```
+Note. If there is an EACCESS error in windows, use 'net stop winnat' and then 'net start winnat' in an admin terminal.
 
-To kill the server use ` ```pwsh` (see the comments below), also in *mpe*
+To kill the server use `pwsh` (see the comments below), also in *mpe*
 
 ```pwsh {cmd}
- # ```pwsh {cmd} --works in mpe
+ # pwsh {cmd} --works in mpe
  # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
  # then enter pid in kill statement below and exec again
-kill 8588
+kill 16132
 netstat -ano | findstr :13
 ```
 
@@ -542,36 +549,33 @@ netstat -ano | findstr :13
 ### More vm, eval and node examples
 Various time and date functions using `vm`
 
-```js      //internal, time & date
-// ```js  //internal, time & date  - not in *mpe*
-(44-Math.random())=>> 43.70036379934795
-//show information message via vscode api, needs cmd eval, not js
+```js      //time & date using internal javascript via vm
+//js      //time & date using internal javascript via vm - not in *mpe*
+(44-Math.random())=>>43.495462431661004
+//show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>> 2021-10-09
-new Date().toLocaleDateString()=>> 09/10/2021
-new Date().toString()=>> Sat Oct 09 2021 21:23:25 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>> 09/10/2021, 21:23:25
-new Date().getTime()=>> 1633767805966
+new Date().toISOString().slice(0,10)=>>2021-12-10
+new Date().toLocaleDateString()=>>11/12/2021
+new Date().toString()=>>Sat Dec 11 2021 11:16:26 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>11/12/2021, 11:16:26 am
+new Date().getTime()=>>1639174586377
 ```
 
 ---
-Time and date using node ` ```js`
+Time and date using node
 
-```js :node
-new Date().getTime()=>>1633767809508
-```
-
-```js :node {cmd=node} //through nodejs
-//```js :node {cmd=node} //through nodejs
+```js {cmd=node} :node  //through nodejs
+//js {cmd=node} :node  //through nodejs
 a=44
 // in-line results are calculated but not output in mpe
-'answer='+(a-Math.random()) =>>answer=43.79585152762694
+'answer='+(a-Math.random()) =>>answer=43.212331259670826
+new Date().getTime()=>>1639174726862
 console.log(new Date().toISOString().slice(0, 10))
 console.log(new Date().toLocaleDateString())
 ```
 ```output
-2021-10-09
-09/10/2021
+2021-12-10
+11/12/2021
 ```
 
 ---
@@ -590,49 +594,50 @@ This is another test
 
 ---
 ### Octave
-Use ` ```octave` or ` ```python:octave` to run octave.
+Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced* 
 
-```python:octave {cmd="octave-cli"}
- # ```python:octave {cmd=octave} -- {cmd..} is for mpe}
- # ```python gets syntax highlighter
+```python {cmd="octave-cli"} :octave
+ # python:octave {cmd=octave} -- {cmd..} is for mpe
+ # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.4225
+num2str(7.1+rand(1))  =>>7.6431
 'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\xxx\OneDrive\Documents\Notes
+pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 disp('hello world in output section!')
 ```
 
 ---
 ### Scilab
-Use ` ```scilab` to run scilab, or ` ```js :scilab` for some quick and dirty syntax highlighting
+Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax highlighting
 
-```js :scilab
-// ```js:scilab {cmd=scilab}
-// need to use 'string()' for numeric output
-pwd()   =>>c:\Users\xxx\OneDrive\Documents\GitHub\hover-exec
+```js {cmd=scilab} :scilab
+//js {cmd=scilab} :scilab -- {cmd..} is for mpe
+//need to use 'string()' for numeric output
+mprintf('%s\n',pwd())
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.4944074, 0.8478804
+string(rand())+', '+string(rand())   =>>0.8537007, 0.6502421
 mprintf('%s',string(rand()))
 ```
 ```output
-0.468022
+c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+0.8716215
 ```
 
 ---
 ### Python
-Use ` ```python` to run python. ` ```python3` can be used if that is the python repl start command
+Use `python` to run python. `python3` can be used if that is the python repl start command
 
 ```python {cmd}
- # ```python {cmd}
+ #python {cmd}  # {cmd} is for markdown preview enhanced
 import os
 from random import random
  # the in-line results are effectively commented out for mpe
-os.getcwd() =>>c:\Users\xxx\OneDrive\Documents\Notes
-45-2+random() =>>43.64590817490019
+os.getcwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+45-2+random() =>>43.072709564590994
 print('hello world '+str(3*random()+1))
 ```
 ```output
-hello world 1.0873912369021377
+hello world 1.633804499436842
 ```
 
 ---
@@ -650,12 +655,12 @@ randnums= np.random.randint(1,101,500)
 plt.plot(randnums)
 plt.show()
 ```
-Image from running the above codeblock and pasting *Markdown kit*:
-           ![[2021-09-08-20-07-12.png]]
+Image from running the above codeblock and pasting via *Markdown kit*:
+  ![[media/READMORE_matplotlib example.png]]
 
 ---
-```python {cmd}
- # ```python {cmd} -- the {cmd} notation is for mpe```
+```python {cmd} # endless plot
+ # python {cmd} -- {cmd} is for mpe
 import pyformulas as pf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -676,28 +681,26 @@ while True:
     image = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
     image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     screen.update(image)
- # screen.close()
+ # cancel, then close plot
 ```
-![[2021-08-03-14-25-04.png]]
-![[2021-08-07-23-35-22.png]]
 
 ---
 ### Julia
 Julia also works in *mpe*
 
 ```julia {cmd}
- # ```julia {cmd}  # works in mpe`
+ # julia {cmd}  # works in mpe
 using LinearAlgebra, Statistics, Compat
 pwd()  # =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 a=rand(Float64,3);
-a         # =>>[0.02624459240064092, 0.9600388686896555, 0.021521940795977468]
+a         # =>>[0.30800697352407513, 0.14164449731032192, 0.9243624629393834]
 b=a;b[2]=42;        # nb. arrays are shallow copied
-a         # =>>[0.02624459240064092, 42.0, 0.021521940795977468]
-b         # =>>[0.02624459240064092, 42.0, 0.021521940795977468]
+a         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
+b         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
 println(string("a=",a))
 ```
 ```output
-a=[0.02624459240064092, 42.0, 0.021521940795977468]
+a=[0.30800697352407513, 42.0, 0.9243624629393834]
 ```
 
 ---
@@ -705,16 +708,15 @@ a=[0.02624459240064092, 42.0, 0.021521940795977468]
 And `matlab` can be used to run *matlab*, although it's a slow starter...
 
 ```matlab   --the meaning of life is 7*7-7
-% ```matlab  --matlab is slow to start (this takes about 5s on Asus with Ryzen 7 4700U)
+%matlab  --matlab is slow to start (takes about 5s on Asus with Ryzen 7 4700U)
 x = 1:0.1:10;
 y = x.^2;
 plot(x,y)
 uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
 % more waiting after plot dismissed before the following answer appears
-7*7-7 =>>42
+7*7-7 =>>
 disp("matlab ok!")
 ```
-
 
 ---
 ### Gnuplot
@@ -724,7 +726,7 @@ Gnuplot is a very useful stand-alone plotting facility. It is particularly usefu
 Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
 
 ```gnuplot
-#inhere `#tag_speed`
+#inhere `#tag_speed`  # hover to view the data
 set logscale x
 plot "$speed" w lp title "speed"
 ```
@@ -734,8 +736,8 @@ plot "$speed" w lp title "speed"
 In browser javascript can be used
 The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
 
-```html {cmd="C:/Program Files/Google/Chrome/Application/chrome.exe" stdin}
-<!-- ```html  --`*what am I going to do now* tunnel-->
+```html   <!--*what am I going to do now* tunnel-->
+<!-- html  --*what am I going to do now* tunnel-->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
 <canvas id="c"></canvas> 
@@ -975,22 +977,22 @@ pwd
 ---
 ### Random strings in javascript
 
-```js :node {cmd=node} //works in mpe
-// ```js :node {cmd=node} //works in mpe`
+```js {cmd=node} :node //works in mpe
+//js {cmd=node} :node //works in mpe
 //random string generation see https://gist.github.com/6174/6062387
 a=Math.random().toString(36).substring(2, 15)
-a =>>yelvv0rat5
+a =>>fkif1kwmwrt
 a=[...Array(60)].map(_=>(Math.random()*36|0).toString(36)).join``
-a =>>n38rvxi2oeynm4m9q9bqn42rmrsrvs4rkpyq869ilzpt1c2ncvocdo1g9pnh
+a =>>ilv45y6whytjxdrmfthyblwtsuzr3tcf81yntbr0o74toqfmn8g25sb0xxfn
 a=[...Array(30)].map(_=>((Math.random()*26+10)|0).toString(36)).join``
-a =>>xlqhgxarvwrxbghygaumqqopxyypik
+a =>>puapmaciadoztfppmttleubzkbityr
 console.log(a)
-Math.random(36).toString(36).substring(2,3) =>>b
+Math.random(36).toString(36).substring(2,3) =>>9
 ```
 
 ---
-```js :node {cmd=node} //string jumbler, works in mpe
-// ```js :node {cmd=node} //string jumbler, works in mpe`
+```js {cmd=node} :node //string jumbler, works in mpe
+//js {cmd=node} :node //string jumbler, works in mpe
 function swapStr(str,n){
     var arr = [...str];
     for (let k = 0; k<n; k++) {
@@ -1004,8 +1006,8 @@ console.log(swapStr('portsmouth',100))
 ```
 
 ---
-```js :node {cmd=node} //generate random string
-// ```js :node {cmd=node} //generate random string`
+```js {cmd=node} :node //generate random string
+//js {cmd=node} :node //generate random string
 function randch(n){
   return ''+Math.random().toString(36).substring(2,2+n)
 }
@@ -1016,8 +1018,8 @@ console.log(randch(36))
 ---
 ### Regular expression test and usage
 
-```js     //javascript regex tester using vm
-// ```js //javascript regex tester (use node for mpe)`
+```js //javascript regex tester using vm
+//js //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
 "xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js
 Math.random()*100   =>> 88.421425704524
@@ -1025,21 +1027,21 @@ Math.random()*100   =>> 88.421425704524
 
 ---
 
-```js :node {cmd=node} //javascript regex tester using node
-// ```js :node {cmd=node} //javascript regex tester`
+```js {cmd=node} :node //javascript regex tester using node
+//js {cmd=node} :node //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
-Math.random()*100   =>>36.993060297486615
+Math.random()*100   =>>33.01236229866507
 console.log(Math.random()*100) //this for *mpe*
 ```
 ```output
-9.777445434760335
+51.58886690089142
 ```
 
 ---
 another regex example
 
-```js :node {cmd=node}
-// ```js :node {cmd=node}`
+```js:node
+//js:node
 var myRe = new RegExp('d(b+)d', 'g');
 var myArray = myRe.exec('xxdbbbdwerwr');
 myArray =>>dbbbd,bbb
@@ -1052,39 +1054,25 @@ myRe.source =>>d(b+)d
 myRe.lastIndex =>>7
 console.log(myRe)
 ```
-```output
-/d(b+)d/g
-```
-
----
-and again ```js :node {cmd=node}`
-
-```js :node  {cmd=node} //find one+ chars followed by a space 
-// ```js :node  {cmd=node} //find one+ chars followed by a space`
-var re = /\w+\s/g;
-var str = 'fee fi fo fum';
-var myArray = str.match(re); 
-console.log(myArray)
-```
 
 ---
 ### Go
 Using go as a 'scripting language'
 
 ```go
-// ```go`
+//go
 package main
 import "fmt"
 func main() {
-    var a[5]int
+    var a[5] int
     fmt.Println("emp:", a)
     a[4] = 42
     fmt.Println("set:", a)
     fmt.Println("get:", a[4])
     fmt.Println("len:", len(a))
-    b := [5]int{1,2,3,4,5}
+    b := [5] int {1,2,3,4,5}
     fmt.Println("dcl:", b)
-    var twoD [2][3]int
+    var twoD [2] [3] int
     for i := 0; i < 2; i++ {
         for j := 0; j < 3; j++ {
             twoD[i][j] = i + j
@@ -1093,19 +1081,27 @@ func main() {
     fmt.Println("2d: ", twoD)
 }
 ```
+```output
+emp: [0 0 0 0 0]
+set: [0 0 0 0 42]
+get: 42
+len: 5
+dcl: [1 2 3 4 5]
+2d:  [[0 1 2] [1 2 3]]
+```
 
 ---
 ### Vitamin b12, dosage vs uptake
 
-```js    //using 'vm' for input
-//```js //using 'vm' for input
+```js   //using 'vm' for getting input (top of vscode screen)
+//js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=5.982053838484545
+' uptake='+u  =>> uptake=4.17910447761194
 console.log(u)
 ```
 ```output
-5.982053838484545
+4.17910447761194
 ```
 
 ---
@@ -1113,22 +1109,16 @@ console.log(u)
 
 Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
 
-```js {cmd=node}
-// ```js :node {cmd=node}`
-
-//_=require("lodash")
-//math=require("mathjs")
-//moment=require("moment")
-
+```js
+//js
 function xrange(){
    let x1=_.range(0,6.1,6/19);
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
 let x=xrange();
-let nruns=0,tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 let j=0,n=0,ii=0;
-tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+let tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 for (ii=0;ii<x.length;ii++) {
   n=x[ii];
   let rr=_.range(0,n),m=1,i=0,t1=0;
@@ -1157,26 +1147,26 @@ console.log('plot "$speed" w lp title "speed"')
 ```output :gnuplot noinline
 #tag_speed
 $speed << EOD
-1 0.29411764705882354
-2 0.7547169811320754
-4 1.5384615384615388
-9 2.7692307692307696
-18 4.864864864864865
-38 7.6767676767676765
-78 10.064516129032258
-162 11.571428571428573
-336 12.444444444444445
-695 13.238095238095237
-1438 13.192660550458719
-2976 13.43566591422122
-6158 14.091533180778033
-12743 13.911572052401747
-26367 6.033638443935927
-54556 9.803414195867024
-112884 9.66472602739726
-233572 11.242936221419978
-483293 12.291276703967446
-1000000 12.099213551119176
+1 0.2325581395348837
+2 0.625
+4 1.1940298507462686
+9 1.9148936170212765
+18 4.5
+38 8.085106382978722
+78 11.908396946564885
+162 14.727272727272728
+336 16.8
+695 17.160493827160494
+1438 17.11904761904762
+2976 19.45098039215686
+6158 21.683098591549296
+12743 22.39543057996485
+26367 18.56830985915493
+54556 15.99882697947214
+112884 17.88969889064976
+233572 16.46612618963694
+483293 19.409357429718874
+1000000 19.210450485063873
 EOD
 #tag_speed
 set logscale x
@@ -1189,19 +1179,17 @@ plot "$speed" w lp title "speed"
 *One-liners* starting and ending with single backticks will simply be executed on click, and usually do not produce output back into the editor. Pre-defined variables (`%c` current folder, `%e` current file pathname, `%f` temp file pathname, `%p` temp files path, `%n` temp file name) can be used in the line (and the default `.txt` extension can be changed by appending, for example, `.ext` to the variable). Notes/comments can be added after the closing quote:
 
 ### One-liners examples
-NB. Note only *single* backticks for one-liners
+NB. Note only *single* backticks for one-liners, but still must begin in col 1.
 
-`notepad README.md`       //exec notepad
-`notepad %caa.html`      //exec notepad with file from current folder
-`notepad %f.py`     //exec notepad with temp file `temp.py`
-`notepad %f.out.txt`        //& with temp output file (temp.txt.out.txt)
-`"C:/Program Files/Notepad++/notepad++" %e`  //exec notepad++ with %e editor file
-`explorer`                         //explore
 `explorer /select,"%f"`     //explore temp folder
+`notepad README.md`       //exec notepad
+`notepad %f.py`     //exec notepad with temp file `temp.py`
+`notepad %f.py.out.txt`        //& with temp output file (temp.txt.out.txt)
+`"C:/Program Files/Notepad++/notepad++" %f.py`  //exec notepad++
 
 ### Quickmath examples
 
-Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks (backticks are the norm for *hover-exec*), and there needs to be `=` before the last backtick (essentially to stop popups for other backtick quoted strings).
+Another useful *hover-exec* facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks (backticks are the norm for *hover-exec*), and there needs to be `=` before the last backtick (essentially to stop popups for other backtick quoted strings).
 
 A few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message,  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`.
 
@@ -1219,20 +1207,18 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 ---
 ### html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %c/aa.html` //chrome with html file - can use %c etc in one-liners
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners
 `html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <script>location.href="/%caa.html"</script>` //browser with html file - %c etc in one-liners only
-`html <h1 align='center' >Hello %c</h1><br><h1 align='center' >Hello /%c</h1>`    //default browser text
-`streamlit run heatmap_time_series.py`    //exec with spaces and filename
+`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
 `js console.log(7*7-7)`
-`vm progress(''+(7*7-7),4000)`  //quick calculator output via message
+`vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message
 
 ---
 ### audio one-liners
 
-`html <audio id="a2" controls autoplay src="%cassets/clear.mp3"/>`
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cassets/clear.mp3"`
-`pwsh start wmplayer  "%cassets/clear.mp3"`
+`html <h2>French nuclear test<br>Recorded in New Zealand 1998</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
+`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"`
+`pwsh start wmplayer "%cmedia/fnt2b.mp3"`
 
 ---
 ### One-liners for microsoft management console mmc
@@ -1268,73 +1254,130 @@ The following line in a code block
 
 will include a group of lines surrounded with the #tag-speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
 
-1. Tags must either stand alone in a line, or ed the line (eg. tags can have comment markers in front of them)
+1. Tags must either stand alone in a line, or end the line (eg. tags can have comment markers in front of them)
 2. Within the `#inhere` line, the tag must be surrounded with backticks (*hover-exec* uses back-ticks to indicate potential hovers)
-3. To include lines from another file use the format (the file path can include `%c` current folder & `%p` temp files folder)
+3. To include lines from another file use the format
+   #inhere file_path/name `#tag`
+   (the file path can include `%c` current folder, or `%p` temp files folder):
 
+```gnuplot
+$speed <<EOD
+#inhere %ctest/misc_tests.md `#p1` // hover to view the data
+EOD
+set logscale x
+plot "$speed" w lp title "speed"
 ```
-#inhere file_path `#tag`
+
+---
+### Using repl scripts
+
+Scripts can also be run using the REPL version of the scripting engine. The following REPLs are included in the default configuration:
+
+`js console.log(Object.keys(config.get('repls')).sort())`
+```output
+[
+  'julia',  'lua',
+  'lua51',  'lua54',
+  'node',   'octave',
+  'python', 'python3',
+  'r',      'rterm',
+  'scilab', 'scilabcli'
+]
 ```
+
+The indication to *hover-exec* that the REPL should be used is to append a second colon. In other words, the command line looks like `id:command:`  Optionally, after the second colon, `restart` can be appended to indicate that the REPL should be restarted.
+
+```python::restart  # restart resets the python REPL
+from time import time
+t=time()
+b=0
+for c in range(600):
+  for a in range(10000):
+    b+=1
+  b+=1
+print(time()-t)
+b=>>6000600
+```
+```output
+0.40154051780700684
+```
+
+```python::  # this will continue from the last with variable and functions intact
+from time import time
+b=b+1
+b=>>6000605
+"time from the restart",time()-t
+b # this now produces output because the repl is being used
+```
+```output
+('time from the restart', 117.18829941749573)
+6000605
+```
+
+Note that the REPLs often don't need 'print' or its equivalent.
+
+See [misc_tests](test/misc_tests.md) for test code for all included REPLs.
 
 ---
 ## Configuration settings
 
 The startup commands for scripts included by default are as follows (nb. `%f` provides the appropriate temporary file path & name, and the notation `%f.py`, for example, indicates that the temporary file extension `.py` should be used - the default is `.txt` ):
 
-  "octave":"octave \"%f.m\"",
-  "matlab":"matlab -nodesktop -sd %p.m -batch temp",
-  "matlab_comment":"if %p.m needs to be \"%p.m\" then add /, ie. \"%p.m/\" ",
-  "scilab":"scilex -quit -nb -f \"%f.sci\" ",
-  "python":"python \"%f.py\"",
-  "python3":"python3 \"%f.py\"",
-  "streamlit":"streamlit run \"%f.py\" ",
-  "julia":"julia \"%f.jl\"",
-  "gnuplot":"gnuplot -p -c \"%f.gp\"",
-  "pwsh":"pwsh -f \"%f.ps1\"",
-  "bash":"bash \"%f.sh\"",
-  "zsh":"zsh -f \"%f.sh\"",
-  "lua54":"lua54 \"%f.lua\"",
-  "lua53":"lua53 \"%f.lua\"",
-  "lua":"lua54 \"%f.lua\"",
-  "js":"vm",
-  "vm":"vm",
-  "eval":"eval",
-  "node":"node \"%f.js\"",
-  "javascript":"node \"%f.js\"",
-  "html":"\"%f.html\"",
-  "firefox":"firefox \"%f.html\"",
-  "chrome":"google-chrome-stable \"%f.html\"",
-  "test":"test -c \"%f.tst\"",
-  "go":"go run \"%f.go\"",
-  "pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
-  "buddvs":"buddvs \"%f.txt\" " // *buddvs* is a local scripting language
+```js
+sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
+console.log(sort(config.get('scripts')));
+```
+```output
+{
+  bash: 'bash "%f.sh"',
+  buddvs: 'buddvs "%f.txt" ',
+  chrome: 'google-chrome-stable "%f.html"',
+  eval: 'eval',
+  firefox: 'firefox "%f.html"',
+  gnuplot: 'gnuplot -p -c "%f.gp"',
+  go: 'go run "%f.go"',
+  html: '"%f.html"',
+  javascript: 'node "%f.js"',
+  js: 'vm',
+  julia: 'julia "%f.jl"',
+  juliamac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
+  lua: 'lua "%f.lua"',
+  lua51: 'lua51 "%f.lua"',
+  lua54: 'lua54 "%f.lua"',
+  matlab: 'matlab -nodesktop -sd %p.m -batch temp',
+  matlab_comment: 'if %p.m needs to be "%p.m" then add /, ie. "%p.m/" ',
+  node: 'node "%f.js"',
+  octave: 'octave "%f.m"',
+  pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
+  pwsh: 'pwsh -f "%f.ps1"',
+  python: 'python "%f.py"',
+  python3: 'python3 "%f.py"',
+  r: 'r "%f.r" ',
+  rterm: 'rterm -q --no-echo -f "%f.r" ',
+  safari: 'open -a safari "%f.html"',
+  scilab: 'scilex -quit -nb -f "%f.sci" ',
+  scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
+  streamlit: 'streamlit run "%f.py" ',
+  test: 'test -c "%f.tst"',
+  ts: 'ts-node "%f.ts" ',
+  typescript: 'ts-node "%f.ts" ',
+  vm: 'vm',
+  zsh: 'zsh -f "%f.sh"'
+}
+```
 
 Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.
 
-Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they simply make code block setup slightly easier.
+Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler.
 
 Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
 
 For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
-```%f.bat
+```%f.bat //demo cmd execution (windows) without script setup
 @echo off
 dir *.json
-echo Congratulations! Your first batch file was executed successfully.
-```
-```output
- Volume in drive C is OS
- Volume Serial Number is B054-2449
-
- Directory of c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-
-26/07/2021  09:08 pm               485 .eslintrc.json
-02/11/2021  12:27 pm           116,622 package-lock.json
-07/11/2021  09:15 am             4,518 package.json
-09/10/2021  06:00 pm               619 tsconfig.json
-               4 File(s)        122,244 bytes
-               0 Dir(s)  252,360,884,224 bytes free
-Congratulations! Your first batch file was executed successfully.
+echo Congratulations! Your batch file was executed successfully.
 ```
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself and can be accessed in the *hover-exec* configuration.
@@ -1357,18 +1400,6 @@ For a given codeblock, in the hover message for the command line there is a `con
  # this is python 'code' example for config check
  # the following codeblock is produced by clicking *config* in the python hover
 ```
-```js :vm noInline
-//this script can change, add or undefine a config setting
-let s={"python":"python \"%f.py\""};
-//s={"python":undefined}; //uncomment this to undefine python
-let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s);
-if(await config.update('scripts',merge,1)){}
-console.log('new config:',config.get('scripts.python'))
-```
-```output
-new config: python "%f.py"
-```
 
 The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
 
@@ -1378,17 +1409,18 @@ If there is a need to add a new scripting language, say `newlang`, this can be d
 
 It can also be done using `vm` or `eval` since the *vscode* configuration settings can be accessed with the scripts.
 
-First write a fenced codeblock labelled newlang:
+First write a fenced codeblock labelled newlang with the appropriate command - if this is done correctly the code block should execute in the new script
 
-```newlang
-//a newlang comment line
+```newlang %f.nu
+-- a newlang comment line
+print(3-2)
 ```
 
-Then hover over the command line and click config. In this case, the following template is output: 
+Second, hover over the new id and click '[config]' in the hover message, this will produce:
 
 ```js :vm noInline
 //this script can change, add or undefine a config setting
-let s={"newlang":"put_start_command_here %f.txt"};
+let s={"newlang":"newlang %f.nu"}; //{"id":"start command"}
 //s={"newlang":undefined}; //uncomment this to undefine newlang
 let scripts=config.get('scripts');
 let merge=Object.assign({},scripts,s);
@@ -1396,7 +1428,7 @@ if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.newlang'))
 ```
 
-The first line provides the `newlang` setting command. Replace `put_start_command_here` with the `newlang` start command, and change the `txt` extension at the end as appropriate. If backslashes are used in a path, they should be escaped, ie. `\\`. Similarly if `"` is used it should be entered as `\"`
+The first line provides the new setting command which can be changed here if necessary. Make sure the the extension after %f is appropriate. If backslashes are used in a path, they should be escaped, ie. `\\`. Similarly if `"` is used it should be entered as `\"`
 
 Once the script has been set up, execute using the hover in the usual way, then delete the block. Check it as in the previous section or open *hover-exec* settings and view the JSON settings file.
 
@@ -1406,7 +1438,7 @@ Once the script has been set up, execute using the hover in the usual way, then 
 Other *vscode* configuration settings can also be accessed:
 
 ```js :vm noinline
-// ```js :vm noinline  --eval is not available in mpe`
+//js :vm noinline  --eval is not available in mpe
 let c=vscode.workspace.getConfiguration('');
 console.log("editor font size= "+c.get("editor.fontSize"))
 //c.update("editor.fontSize",12,1) //to change it
@@ -1420,11 +1452,14 @@ editor font size= 12
 
 This is a beta version.
 
-Note that in all scripting languages included (except a 'home-grown' one *buddvs*, and to some extent *vm* and *eval*, which allow definition of *global* variables and functions), the script starts from scratch when the code block is executed, the same as if the command file were executed from scratch from the command prompt. In other words, assigned variables do not carry over into the next script execution.
+Note that in all scripting languages included, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages. To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see [inhere](#inhere---including-tagged-sections).
 
-This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.  To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) which allows utilising output or data elsewhere in the file or in other files.
+However scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions. 
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). However, other included scripts are generally fairly fast (see the demo gif above). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`.
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.
+
+The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
+
 
 ---
 ## Release Notes

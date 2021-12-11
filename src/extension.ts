@@ -154,6 +154,7 @@ export function activate(context: vscode.ExtensionContext) {
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
+        //alert(line.text+','+script);
         if (script) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
@@ -184,7 +185,6 @@ export function activate(context: vscode.ExtensionContext) {
           return new vscode.Hover(contents); //return link string
         } else {
           //create and return hover message & urls for non-built-in commands
-          //cmdId='other';
           cmd = replaceStrVars(full); //replace %f etc in full string
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?"; //create hover message
@@ -244,7 +244,6 @@ export function activate(context: vscode.ExtensionContext) {
           url = "vscode://rmzetti.hover-exec?oneLiner";
         } else {
           //other commands
-          //cmdId='other';
           line = doc.lineAt(cursLine); //get line where command was executed
           cmd = replaceStrVars(full);
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
@@ -257,7 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
-      checkJsonVisible();
+      //checkJsonVisible();
     })
   );
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));
@@ -319,12 +318,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   function parseLine(s: string) {
     function posComment(s: string) {
-      //find start of comment in command line
-      let ipos = s.indexOf("<!--"); //using these comment indicators
-      if (ipos <= 0) {
+      //find start of comment in command line <!--,//,# only
+      let ipos = s.indexOf("<!--"); // find <!--
+      if (ipos <= 0) { // find // but exclude ://
         ipos = s.replace("://", "xxx").indexOf("//");
       }
-      if (ipos <= 0) {
+      if (ipos <= 0) { // find #
         ipos = s.indexOf("#");
       }
       return ipos;
@@ -446,7 +445,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function checkJsonVisible() {
-    //ensure script, swapper and repls visible in settings.json
+    // ensure script, swapper and repls visible in settings.json
     let s = { undefined: undefined };
     let scripts = config.get("scripts");
     let merge = Object.assign({}, scripts, s);
@@ -506,12 +505,12 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       if (config.get("scripts." + s1)) {
         s2 = JSON.stringify(config.get("scripts." + s1)); //stringify for output
       } else {
-        s2 = '"put_start_command_here %f.txt"';
+        s2 = '"'+full+'"';
       }
       out =
         "```js :vm noInline\n" + //output :eval is an exec script which will:
         "//this script can change, add or undefine a config setting\n" + 
-        'let s={"' + s1 + '":' + s2 + "};\n" + //1. show current config, or an example
+        'let s={"' + s1 + '":' + s2 + "}; //{\"id\":\"start command\"}\n" + //1. show current config, or an example
         '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
         "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
         "let merge=Object.assign({},scripts,s);\n" + //3. update settings for current script
@@ -530,8 +529,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       s = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg,''); //remove commented lines with swap
       //disable swap in fully commented lines by appending a space
       codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg,'$1 ');
-      re = new RegExp("(--|#|%|\/\/)+\s*" + swap, "mg"); //find any comment chars directly preceding the swap
-      s = s.replace(re, swap); //remove them
+      re = new RegExp("(--|#|%|\/\/)\\s*" + swap+'$', "mg"); //find any comment chars directly preceding a swap
+      s = s.replace(re, swap); //remove them -- note \\s required in re, not just \s
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
       let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");
       let swapper = config.get("swappers." + cmdId) as string;
@@ -555,7 +554,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         prog.report({ message: "executing" }); //start execution indicator
         s=hrefSrcReplace(s);
         s=await inHere(s);        
-        writeFile(tempPath + tempName, s); //saves code in temp file for execution
+        if(s!==''){writeFile(tempPath + tempName, s);} //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
           if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
@@ -663,10 +662,9 @@ function replaceStrVars(s: string) {
   if(cmdId==='eval' || cmdId==='js' || cmdId==='vm'){tempName='temp.js';}
   //replace %f etc with the appropriate string
   //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
-  if (/%[fp]\.\w/.test(s)) {
-    //this allows %f.ext notation to replace ext in %f etc
+  if (/%[fpx]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %p and %x
     tempName= "temp." + s.replace(/.*?%[fp]\.(\w*).*/, "$1"); // \W? before last .
-    s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
+    s= s.replace(/(%[fpx])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
     .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
@@ -677,7 +675,8 @@ function replaceStrVars(s: string) {
     .replace(/%p/g, tempFsPath) //%p temp folder path
     .replace(/%c/g, currentFsPath) //%c current file path
     .replace(/%e/g, currentFsFile) //%e current file path/name
-    .replace(/%n/g, tempName); //%n temp file name only
+    .replace(/%n/g, tempName) //%n temp file name only
+    .replace(/%x/g,'') //%x just used to define ext, so remove
   return s;
 }
 

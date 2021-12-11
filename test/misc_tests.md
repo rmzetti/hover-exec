@@ -526,11 +526,20 @@ t=time-t;
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
+```output
+time=1.6456 sec
+speed=0.60769 million iterations per sec
+```
 
 ```python:octave:
 disp('I repeat...')
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
+```
+```output
+I repeat...
+time=1.6456 sec
+speed=0.60769 million iterations per sec
 ```
 
 ### R (rterm) repl
@@ -538,10 +547,16 @@ disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```rterm::restart
 a=7*7-7
 a=>> 42
-noquote(paste('the meaning of life is',a))
+print(noquote(paste('the meaning of life is',a)))
+```
+```output
+  the meaning of life is 42
 ```
 ```rterm::
-noquote(paste('.. that was',a))
+print(noquote(paste('.. that was',a)))
+```
+```output
+ .. that was 42
 ```
 
 ```rterm::restart #data for plots
