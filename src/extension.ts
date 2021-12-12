@@ -190,7 +190,8 @@ export function activate(context: vscode.ExtensionContext) {
           let url = "vscode://rmzetti.hover-exec?"; //create hover message
           let msg =
             "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
-            tempPath + tempName + ")" + "[ [*last result* ] ](" + tempPath + tempName +
+            vscode.Uri.file(tempPath+tempName) + ")" + "[ [*last result* ] ](" + 
+            vscode.Uri.file(tempPath+tempName) +
             ".out.txt)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + cmdId + ")**";
           const contents = new vscode.MarkdownString(
             "hover-exec:" + cmdId + msg

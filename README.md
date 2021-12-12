@@ -269,7 +269,7 @@ b=[0.5706092967976824, 42.0, 0.9767619809957298]
 ### powershell
 
 ```pwsh {cmd}
-  #  ```pwsh {cmd} // random number, show current directory.
+  #  pwsh {cmd} // random number, show current directory.
 Get-Random -Min 0.0 -Max 1.0 # =>>0.373919549572244
 pwd
 ```
@@ -284,8 +284,8 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 
 Gnuplot is a very useful stand-alone plotting facility. When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
-```gnuplot {cmd} # as above {cmd} allows execution in *markdown preview enhanced*
-  # ```gnuplot {cmd} as above {cmd} allows execution in *markdown preview enhanced*
+```gnuplot {cmd} # {cmd} allows execution in *markdown preview enhanced*
+ #gnuplot {cmd} # {cmd} allows execution in *markdown preview enhanced*
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42

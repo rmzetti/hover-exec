@@ -431,15 +431,29 @@ print(os.clock()-t)
 
 ### Scripts without pre-defined configs
 
+A range of operating system commands can be executed in one-liners try the following (execute from the line with `alt+/`, & remove the result immediately with just a down arrow then `alt+/` again):
+
+`help`
+`dir` //show hover-exec folder contents
+`dir %c` //show current folder contents
+`dir %p` //show temp folder contents
+`findstr /?` //show findstr help
+
 The following example does not use any predefined configs, just an operating system command with %f standing for the temp file name. The default %f ext is `.txt`, but this can be changed by appending the desired ext as in this `lua51` example - most programs will need a specific ext to run. Note that the temp files are saved in the standard vscode temp files location. They can be opened in vscode by clicking on [last script] or [last result] in the hover display.
 
-```lua51.exe %f.lua
---lua51.exe %f.lua
+```echo 'hello' && lua51.exe %f.lua %random% && echo 'goodbye'
+--echo 'hello' && lua51.exe %f.lua && echo 'goodbye'
+--try successive runs to compare 'random' seeds
+math.randomseed(arg[1]*1000)
+print("cmd.exe's random as seed: "..math.random(100))
 math.randomseed(os.time())
-print("os.time() is a poor seed for successive runs: "..math.random(100))
+print("os.time() as seed: "..math.random(100))
 ```
 ```output
-os.time() is a poor seed for successive runs: 12
+'hello' 
+cmd.exe's random as seed: 19
+os.time() as seed: 54
+'goodbye'
 ```
 
 ---
@@ -448,7 +462,7 @@ Powershell can be used in *mpe*
 
 ```pwsh {cmd}
  #pwsh {cmd}
-Get-Random -Min 0.0 -Max 1.0 =>>0.65950989614218
+Get-Random -Min 0.0 -Max 1.0 =>>0.145960853968729
 "current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
