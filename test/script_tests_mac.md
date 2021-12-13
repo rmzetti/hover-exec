@@ -1,7 +1,5 @@
 ## Hover-exec script tests 1
 
-The following tests will use an implementation of a simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file Don't panic *python* users, it's a very simple benchmark - very similar to that from [javascript is fast](https://jyelewis.com/blog/2021-09-28-javascript-is-fast/) , adjusted to avoid potential floating point overflow.
-
 - [Hover-exec script tests 1](#hover-exec-script-tests-1)
   - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
   - [Javascript in the browser](#javascript-in-the-browser)
@@ -13,12 +11,13 @@ The following tests will use an implementation of a simple 'benchmark' to demons
   - [Test using scilab](#test-using-scilab)
   - [Julia test](#julia-test)
 
+The following tests will use an implementation of a simple 'benchmark' to demonstrate the use of a variety of script languages within a single markdown file Don't panic *python* users, it's a very simple benchmark - very similar to that from [javascript is fast](https://jyelewis.com/blog/2021-09-28-javascript-is-fast/) , adjusted to avoid potential floating point overflow.
 
 ### Javascript tests: 'vm', 'eval' and 'node'
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
-```js  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
+```js:node  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 const {performance}=require('perf_hooks'); //ignored by eval & vm
 let iter=1e8;
@@ -31,8 +30,8 @@ console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  0.47  sec
-speed  212.6  million iterations per sec
+total time  0.54  sec
+speed  184.1  million iterations per sec
 ```
 
 > Example output (vm, eval & node are fairly similar)
@@ -99,15 +98,15 @@ func main() {
 }
 ```
 ```output
-total time 0.251 sec
-speed  3983.7 million iterations per sec
+total time 0.316 sec
+speed  3168.4 million iterations per sec
 ```
 
 > Example output
 > total time 0.24 sec
 > speed  4170 million iterations per sec
 
-ie. about 20 times faster than javascript.
+ie. about 20 times faster than javascript, 500 times faster than python
 
 ### Test using 'python'
 
@@ -127,8 +126,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.86  sec
-speed  5.3692  million iterations per sec
+total time  1.21  sec
+speed  8.2337  million iterations per sec
 ```
 
 > Example output
@@ -141,8 +140,7 @@ ie. for this test javascript is about 30x faster than python
 
 Lua must be installed, and the config startup script should match the installation. If `lua54` is installed, the config start command should use `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the the first bit of the id `js:lua` is used to provide some simple-minded syntax highlighting (via the `js` highlighter) - the hover message makes it clear that `lua` is the actual command.
 
-```js:lua54  //10 million random number calls
--- ```lua {cmd=lua53} //10 million random number calls`
+```js:lua //10 million random number calls
 local m=1e8;  -- note: fewer iterations than for js or go
 local n=0.01;
 local tt = os.clock();
@@ -156,8 +154,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.12	 sec
-speed 	88.73	 million iterations per sec
+total time 	1.65	 sec
+speed 	60.53	 million iterations per sec
 ```
 
 > Example output:
@@ -215,8 +213,8 @@ disp(strcat('time= ',num2str(time-t),' sec'))
 disp(strcat('speed= ',num2str(m/(time-t)/1e6),' million iterations per sec'))
 ```
 ```output
-time=1.7142 sec
-speed=0.5582 million iterations per sec
+time=2.4384 sec
+speed=0.4085 million iterations per sec
 ```
 
 > Example output:
@@ -227,7 +225,7 @@ That's one tenth of python's speed.
 
 ### Test using scilab
 
-```js:scilab
+```js:scilabcli
 tic();
 a=1.1;
 m=1000000; //1e6
@@ -241,8 +239,8 @@ mprintf('Time: %.2f sec\n',t)
 mprintf('Speed: %.2f  million iterations per sec\n',m/t/1e6)
 ```
 ```output
-Time: 1.18 sec
-Speed: 0.85  million iterations per sec
+Time: 0.52 sec
+Speed: 1.92  million iterations per sec
 ```
 
 > Example output:
@@ -268,8 +266,8 @@ println("time= ",round(t,digits=2)," sec")
 println("speed= ",round(m/t/1e6,digits=3)," million iterations per sec")
 ```
 ```output
-time= 1.77 sec
-speed= 5.64 million iterations per sec
+time= 1.56 sec
+speed= 6.41 million iterations per sec
 ```
 
 >Example output:
