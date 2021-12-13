@@ -775,6 +775,7 @@ function paste(text: string) {
         }
       }
     }
+    text = text.replace(/.[\b]/g,''); //remove any character followed by a backspace
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
