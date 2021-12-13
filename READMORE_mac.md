@@ -17,33 +17,30 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
   - [Some examples](#some-examples)
     - [Lua](#lua)
     - [Scripts without pre-defined configs](#scripts-without-pre-defined-configs)
-    - [Powershell](#powershell)
+    - [Bash or zsh](#bash-or-zsh)
     - [Gnuplot](#gnuplot)
     - [Javascript using vm](#javascript-using-vm)
     - [Javascript using node](#javascript-using-node)
     - [More vm, eval and node examples](#more-vm-eval-and-node-examples)
   - [More examples](#more-examples)
-    - [Running other programs](#running-other-programs)
     - [Octave](#octave)
     - [Scilab](#scilab)
     - [Python](#python)
     - [Julia](#julia)
-    - [Matlab](#matlab)
     - [Gnuplot](#gnuplot-1)
     - [Html and in-browser javascript](#html-and-in-browser-javascript)
-    - [Powershell](#powershell-1)
     - [Random strings in javascript](#random-strings-in-javascript)
     - [Regular expression test and usage](#regular-expression-test-and-usage)
     - [Go](#go)
     - [Vitamin b12, dosage vs uptake](#vitamin-b12-dosage-vs-uptake)
     - [Chaining execution codeblocks](#chaining-execution-codeblocks)
+  - [Running other programs](#running-other-programs)
   - [One-liners](#one-liners)
     - [One-liners examples](#one-liners-examples)
     - [Quickmath examples](#quickmath-examples)
-    - [Windows - control panel](#windows---control-panel)
+    - [Mac system information](#mac-system-information)
     - [html & javascript](#html--javascript)
     - [audio one-liners](#audio-one-liners)
-    - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
   - [inhere - including tagged sections](#inhere---including-tagged-sections)
     - [Using repl scripts](#using-repl-scripts)
   - [Configuration settings](#configuration-settings)
@@ -418,13 +415,42 @@ goodbye
 ```
 
 ---
-### Powershell
-Powershell can be used in *mpe*
+### Bash or zsh
 
-```pwsh {cmd}
- #pwsh {cmd}
-Get-Random -Min 0.0 -Max 1.0 =>>0.65950989614218
-"current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+Use `zsh` to run zsh
+
+---
+```zsh {cmd}
+ # zsh {cmd} //{..} is just for mpe
+pwd
+```
+
+```bash {cmd}
+ # bash {cmd}
+pwd
+ls -l
+```
+```output
+/Users/kellycogan/Documents/GitHub/hover-exec
+total 35480
+-rw-r--r--    1 kellycogan  staff      230 Nov 14 16:12 CHANGELOG.md
+-rw-r--r--    1 kellycogan  staff  8460911 Nov 14 16:12 Hover-exec.gif
+-rw-r--r--    1 kellycogan  staff   218201 Nov 14 16:12 LICENSE.md
+-rw-r--r--@   1 kellycogan  staff    19845 Dec 12 22:12 README.md
+-rw-r--r--@   1 kellycogan  staff    20093 Dec 12 17:52 README_mac.md
+-rw-r--r--    1 kellycogan  staff    52624 Dec 13 13:19 READMORE.md
+-rw-r--r--    1 kellycogan  staff    51620 Dec 13 15:30 READMORE_mac.md
+drwxr-xr-x    4 kellycogan  staff      128 Dec 13 13:19 dist
+-rw-r--r--    1 kellycogan  staff  9192831 Dec 13 13:19 hover-exec-0.6.5.vsix
+drwxr-xr-x    5 kellycogan  staff      160 Dec 12 22:12 media
+drwxr-xr-x  280 kellycogan  staff     8960 Nov 15 17:00 node_modules
+drwxr-xr-x    4 kellycogan  staff      128 Nov 14 16:12 out
+-rw-r--r--    1 kellycogan  staff   116622 Nov 20 15:42 package-lock.json
+-rw-r--r--@   1 kellycogan  staff     5894 Dec 11 20:35 package.json
+drwxr-xr-x    3 kellycogan  staff       96 Dec 13 13:19 src
+drwxr-xr-x    8 kellycogan  staff      256 Dec 12 22:07 test
+-rw-r--r--    1 kellycogan  staff      619 Nov 14 16:12 tsconfig.json
+-rw-r--r--    1 kellycogan  staff     1398 Nov 14 16:12 webpack.config.js
 ```
 
 ---
@@ -484,11 +510,15 @@ let a='hello variable world';
 alert(a) //nb. alert is not available in node
 a='goodbye'
 vscode.window.showInformationMessage(a) //not available in node
-eval('let a=3;2*a*Math.random()')=>> 2.8503609676847033
+eval('let a=3;2*a*Math.random()')=>> 4.9817317002033175
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> hello 1.7056496931271734
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>> hello 1.7102252784164906
+process.cwd() =>> /Users/kellycogan/Documents/GitHub/hover-exec
 console.log(abc)
+```
+```output
+goodbye 0.07262104286720183
+abcde
 ```
 
 ---
@@ -508,12 +538,12 @@ Note. If there is an EACCESS error in windows, use 'net stop winnat' and then 'n
 
 To kill the server use `pwsh` (see the comments below), also in *mpe*
 
-```pwsh {cmd}
- # pwsh {cmd} --works in mpe
- # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337 on rhs)
+```zsh
+ # zsh server usually killed on 'cancel'
+ # to check, exec once & look for pid to kill (line TCP 127.0.0.1:1337)
  # then enter pid in kill statement below and exec again
-kill 16132
-netstat -ano | findstr :13
+kill 49845
+netstat -an
 ```
 
 ---
@@ -522,14 +552,14 @@ Various time and date functions using `vm`
 
 ```js      //time & date using internal javascript via vm
 //js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.495462431661004
+(44-Math.random())=>>43.47462974431822
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2021-12-10
-new Date().toLocaleDateString()=>>11/12/2021
-new Date().toString()=>>Sat Dec 11 2021 11:16:26 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>11/12/2021, 11:16:26 am
-new Date().getTime()=>>1639174586377
+new Date().toISOString().slice(0,10)=>>2021-12-13
+new Date().toLocaleDateString()=>>12/13/2021
+new Date().toString()=>>Mon Dec 13 2021 15:38:16 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>12/13/2021, 3:38:16 PM
+new Date().getTime()=>>1639363096764
 ```
 
 ---
@@ -539,168 +569,19 @@ Time and date using node
 //js {cmd=node} :node  //through nodejs
 a=44
 // in-line results are calculated but not output in mpe
-'answer='+(a-Math.random()) =>>answer=43.212331259670826
-new Date().getTime()=>>1639174726862
+// 'answer='+(a-Math.random()) =>> 
+new Date().getTime()=>>1639363113358
 console.log(new Date().toISOString().slice(0, 10))
 console.log(new Date().toLocaleDateString())
 ```
 ```output
-2021-12-10
-11/12/2021
+2021-12-13
+12/13/2021
 ```
 
 ---
 ## More examples
 
-### Running other programs
-Here are a couple of very simple examples for sending the contents of a codeblock to other applications. These examples do not use any predefined configs. The other apps here are not scripts and will **not** send changed text back to the codeblock - changed content will need to be saved in the file system in the normal way.
-
-```open -e "%f.txt"
-# this is a test
-print("hello")
-```
-```zsh
-man open
-```
-```output
-OPEN(1)                      General Commands Manual                     OPEN(1)
-
-NNAAMMEE
-     ooppeenn - open files and directories
-
-SSYYNNOOPPSSIISS
-     ooppeenn [--ee] [--tt] [--ff] [--FF] [--WW] [--RR] [--nn] [--gg] [--jj] [--hh] [--uu _U_R_L] [--ss _s_d_k]
-          [--bb _b_u_n_d_l_e___i_d_e_n_t_i_f_i_e_r] [--aa _a_p_p_l_i_c_a_t_i_o_n] [----eennvv _V_A_R] [----ssttddeerrrr _P_A_T_H]
-          [----ssttddiinn _P_A_T_H] [----ssttddoouutt _P_A_T_H] _f_i_l_e _._._. [----aarrggss _a_r_g_1 _._._.]
-
-DDEESSCCRRIIPPTTIIOONN
-     The ooppeenn command opens a file (or a directory or URL), just as if you had
-     double-clicked the file's icon. If no application name is specified, the
-     default application as determined via LaunchServices is used to open the
-     specified files.
-
-     If the file is in the form of a URL, the file will be opened as a URL.
-
-     You can specify one or more file names (or pathnames), which are
-     interpreted relative to the shell or Terminal window's current working
-     directory. For example, the following command would open all Word files in
-     the current working directory:
-
-     open *.doc
-
-     Opened applications inherit environment variables just as if you had
-     launched the application directly through its full path.  This behavior was
-     also present in Tiger.
-
-     The options are as follows:
-
-     --aa aapppplliiccaattiioonn
-         Specifies the application to use for opening the file
-
-     --bb bbuunnddllee__iiddeennttiiffiieerr
-         Specifies the bundle identifier for the application to use when opening
-         the file
-
-     --ee  Causes the file to be opened with /Applications/TextEdit
-
-     --tt  Causes the file to be opened with the default text editor, as
-         determined via LaunchServices
-
-     --ff  Reads input from standard input and opens the results in the default
-         text editor.  End input by sending EOF character (type Control-D).
-         Also useful for piping output to ooppeenn and having it open in the default
-         text editor.
-
-     --FF  Opens the application "fresh," that is, without restoring windows.
-         Saved persistent state is lost, except for Untitled documents.
-
-     --WW  Causes ooppeenn to wait until the applications it opens (or that were
-         already open) have exited.  Use with the --nn flag to allow ooppeenn to
-         function as an appropriate app for the $$EEDDIITTOORR environment variable.
-
-     --RR  Reveals the file(s) in the Finder instead of opening them.
-
-     --nn  Open a new instance of the application(s) even if one is already
-         running.
-
-     --gg  Do not bring the application to the foreground.
-
-     --jj  Launches the app hidden.
-
-     --hh  Searches header locations for a header whose name matches the given
-         string and then opens it.  Pass a full header name (such as NSView.h)
-         for increased performance.
-
-     --ss  For -h, partial or full SDK name to use; if supplied, only SDKs whose
-         names contain the argument value are searched. Otherwise the highest
-         versioned SDK in each platform is used.
-
-     --uu  Opens URL with whatever application claims the url scheme, even if URL
-         also matches a file path
-
-     ----aarrggss
-         All remaining arguments are passed to the opened application in the
-         argv parameter to main().  These arguments are not opened or
-         interpreted by the ooppeenn tool.
-
-     ----eennvv _V_A_R
-         Adds _V_A_R to the environment of the launched application.  _V_A_R should be
-         formatted NAME=VALUE or NAME.
-
-     ----ssttddiinn _P_A_T_H
-         Launches the application with stdin connected to _P_A_T_H.
-
-     ----ssttddoouutt _P_A_T_H
-         Launches the application with stdout connected to _P_A_T_H.
-
-     ----ssttddeerrrr _P_A_T_H
-         Launches the application with stderr connected to _P_A_T_H.
-
-EEXXAAMMPPLLEESS
-     "open '/Volumes/Macintosh HD/foo.txt'" opens the document in the default
-     application for its type (as determined by LaunchServices).
-
-     "open '/Volumes/Macintosh HD/Applications/'" opens that directory in the
-     Finder.
-
-     "open -a /Applications/TextEdit.app '/Volumes/Macintosh HD/foo.txt'" opens
-     the document in the application specified (in this case, TextEdit).
-
-     "open -b com.apple.TextEdit '/Volumes/Macintosh HD/foo.txt'" opens the
-     document in the application specified (in this case, TextEdit).
-
-     "open -e '/Volumes/Macintosh HD/foo.txt'" opens the document in TextEdit.
-
-     "ls | open -f" writes the output of the 'ls' command to a file in /tmp and
-     opens the file in the default text editor (as determined by
-     LaunchServices).
-
-     "open http://www.apple.com/" opens the URL in the default browser.
-
-     "open 'file://localhost/Volumes/Macintosh HD/foo.txt'" opens the document
-     in the default application for its type (as determined by LaunchServices).
-
-     "open 'file://localhost/Volumes/Macintosh HD/Applications/'" opens that
-     directory in the Finder.
-
-     "open -h NSView" lists headers whose names contain NSView and allows you to
-     choose which ones to open.
-
-     "open -h NSView.h" immediately opens NSView.h.
-
-     "open --env MallocStackLogging=YES -b com.apple.TextEdit" launches TextEdit
-     with the environment variable "MallocStackLogging" set to "YES"
-
-     "open -h NSView -s OSX10.12" lists headers whose names contain NSView in
-     the MacOSX 10.12 SDK and allows you to choose which ones to open.
-
-HHIISSTTOORRYY
-     First appeared in NextStep.
-
-macOS                            April 14, 2017                            macOS
-```
-
----
 ### Octave
 Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced* 
 
@@ -708,7 +589,7 @@ Use `octave` or `python:octave` to run octave. Using 'python' as the command id 
  # python:octave
  # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.1545
+num2str(7.1+rand(1))  =>>7.9624
 'hello world in-line'  =>>hello world in-line
 pwd()  =>>/Users/kellycogan/Documents/GitHub/hover-exec
 disp('hello world in output section!')
@@ -726,12 +607,12 @@ Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax high
 //need to use 'string()' for numeric output
 mprintf('%s\n',pwd())
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.0399621, 0.6443543
+string(rand())+', '+string(rand())   =>>0.1243828, 0.566921
 mprintf('%s',string(rand()))
 ```
 ```output
 /Users/kellycogan/Documents/GitHub/hover-exec
-0.4925988
+0.4238979
 ```
 
 ---
@@ -744,16 +625,13 @@ import os
 from random import random
  # the in-line results are effectively commented out for mpe
 os.getcwd() =>>/Users/kellycogan/Documents/GitHub/hover-exec
-45-2+random() =>>43.95229544221767
+45-2+random() =>>43.52567872735789
 print('hello world '+str(3*random()+1))
 ```
 ```output
-hello world 3.6480816639533895
+hello world 2.030820793452872
 ```
 
----
-This one-liner can be used to install packages:
-`pwsh python -m pip install pyformulas`
 
 ---
 In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover.
@@ -773,8 +651,8 @@ Image from running the above codeblock and pasting via *Markdown kit*:
 ---
 ```python {cmd} # endless plot
  # python {cmd} -- {cmd} is for mpe
-import pyformulas as pf
 import matplotlib.pyplot as plt
+import pyformulas as pf
 import numpy as np
 import time
 fig = plt.figure()
@@ -796,6 +674,7 @@ while True:
  # cancel, then close plot
 ```
 
+
 ---
 ### Julia
 Julia also works in *mpe*
@@ -803,31 +682,16 @@ Julia also works in *mpe*
 ```julia {cmd}
  # julia {cmd}  # works in mpe
 using LinearAlgebra, Statistics, Compat
-pwd()  # =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+pwd()  # =>>/Users/kellycogan/Documents/GitHub/hover-exec
 a=rand(Float64,3);
-a         # =>>[0.30800697352407513, 0.14164449731032192, 0.9243624629393834]
+a         # =>>[0.04107204683389565, 0.5769109470477194, 0.23529338206704709]
 b=a;b[2]=42;        # nb. arrays are shallow copied
-a         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
-b         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
+a         # =>>[0.04107204683389565, 42.0, 0.23529338206704709]
+b         # =>>[0.04107204683389565, 42.0, 0.23529338206704709]
 println(string("a=",a))
 ```
 ```output
-a=[0.30800697352407513, 42.0, 0.9243624629393834]
-```
-
----
-### Matlab
-And `matlab` can be used to run *matlab*, although it's a slow starter...
-
-```matlab   --the meaning of life is 7*7-7
-%matlab  --matlab is slow to start (takes about 5s on Asus with Ryzen 7 4700U)
-x = 1:0.1:10;
-y = x.^2;
-plot(x,y)
-uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
-% more waiting after plot dismissed before the following answer appears
-7*7-7 =>>
-disp("matlab ok!")
+a=[0.04107204683389565, 42.0, 0.23529338206704709]
 ```
 
 ---
@@ -837,7 +701,7 @@ Gnuplot is a very useful stand-alone plotting facility. It is particularly usefu
 
 Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
 
-```gnuplot
+```gnuplot #after exec plot may be hidden - use cmd+tab
 #inhere `#tag_speed`  # hover to view the data
 set logscale x
 plot "$speed" w lp title "speed"
@@ -846,9 +710,9 @@ plot "$speed" w lp title "speed"
 ---
 ### Html and in-browser javascript
 In browser javascript can be used
-The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
+The following three examples are from the [js1k demos](https://js1k.com/).
 
-```html   <!--*what am I going to do now* tunnel-->
+```open "%f.html"   <!--*what am I going to do now* tunnel-->
 <!-- html  --*what am I going to do now* tunnel-->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -864,7 +728,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 </script></body>
 ```
 
-```html --psychedelic
+```open "%f.html" //psychedelic
 <!-- ```html  -- `psychedelic -->
 <html>
 <head> </head>
@@ -977,7 +841,7 @@ run();
 </html>
 ```
 
-```html --breathing galaxies
+```open "%f.html" //breathing galaxies
 <!-- ```html breathing galaxies` --> 
 <html> 
 <head> 
@@ -1077,16 +941,6 @@ body { margin: 0; overflow: hidden; }
 ```
 
 ---
-### Powershell
-
-Use `pwsh` to run powershell, or `pwsh {cmd}` to also use in *mpe*
-
-```pwsh {cmd}
- # ```pwsh {cmd}`
-pwd
-```
-
----
 ### Random strings in javascript
 
 ```js {cmd=node} :node //works in mpe
@@ -1123,7 +977,7 @@ console.log(swapStr('portsmouth',100))
 function randch(n){
   return ''+Math.random().toString(36).substring(2,2+n)
 }
-randch(36) =>>daevdymyo6p
+randch(36) =>>fvg68qg9ifi
 console.log(randch(36))
 ```
 
@@ -1133,8 +987,8 @@ console.log(randch(36))
 ```js //javascript regex tester using vm
 //js //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
-"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js
-Math.random()*100   =>> 88.421425704524
+"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>>js
+Math.random()*100   =>>99.00164520102285
 ```
 
 ---
@@ -1142,11 +996,11 @@ Math.random()*100   =>> 88.421425704524
 ```js {cmd=node} :node //javascript regex tester using node
 //js {cmd=node} :node //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
-Math.random()*100   =>>33.01236229866507
+Math.random()*100   =>>49.43697507541165
 console.log(Math.random()*100) //this for *mpe*
 ```
 ```output
-51.58886690089142
+63.21400421173333
 ```
 
 ---
@@ -1170,6 +1024,7 @@ console.log(myRe)
 ---
 ### Go
 Using go as a 'scripting language'
+If just installed before running this test, restart vscode first 
 
 ```go
 //go
@@ -1209,11 +1064,11 @@ dcl: [1 2 3 4 5]
 //js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=4.17910447761194
-console.log(u)
+' uptake='+u  =>> uptake=23.98560863481911
+console.log('for dosage',d,'ug, uptake=',u,'ug')
 ```
 ```output
-4.17910447761194
+for dosage 2500 ug, uptake= 23.98560863481911 ug
 ```
 
 ---
@@ -1222,7 +1077,7 @@ console.log(u)
 Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
 
 ```js
-//js
+// js
 function xrange(){
    let x1=_.range(0,6.1,6/19);
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
@@ -1259,30 +1114,43 @@ console.log('plot "$speed" w lp title "speed"')
 ```output :gnuplot noinline
 #tag_speed
 $speed << EOD
-1 0.2325581395348837
-2 0.625
-4 1.1940298507462686
-9 1.9148936170212765
-18 4.5
-38 8.085106382978722
-78 11.908396946564885
-162 14.727272727272728
-336 16.8
-695 17.160493827160494
-1438 17.11904761904762
-2976 19.45098039215686
-6158 21.683098591549296
-12743 22.39543057996485
-26367 18.56830985915493
-54556 15.99882697947214
-112884 17.88969889064976
-233572 16.46612618963694
-483293 19.409357429718874
-1000000 19.210450485063873
+1 0.3225806451612903
+2 1.3793103448275863
+4 2.857142857142857
+9 5.625
+18 10.285714285714286
+38 15.833333333333334
+78 21.36986301369863
+162 23.142857142857146
+336 28.000000000000004
+695 28.958333333333332
+1438 30.27368421052631
+2976 30.83937823834197
+6158 32.07291666666667
+12743 32.017587939698494
+26367 31.767469879518075
+54556 30.1414364640884
+112884 30.38600269179004
+233572 26.068303571428576
+483293 29.361664641555283
+1000000 30.344409042633895
 EOD
 #tag_speed
 set logscale x
 plot "$speed" w lp title "speed"
+```
+
+---
+## Running other programs
+Here are a couple of very simple examples for sending the contents of a codeblock to other applications. These examples do not use any predefined configs. The apps here are not scripting engines and will **not** send changed text back to the codeblock - changed content will need to be saved in the file system in the normal way.
+
+```open -e "%f.txt"
+# this is a test
+This will now open in TextEdit
+```
+```open -a safari "%f.html"
+<h1>This is a test</h1>
+<a href='https://whatamigoingtodonow.net'>Test link</a>
 ```
 
 ---
@@ -1293,11 +1161,14 @@ plot "$speed" w lp title "speed"
 ### One-liners examples
 NB. Note only *single* backticks for one-liners, but still must begin in col 1.
 
-`explorer /select,"%f"`     //explore temp folder
-`notepad README.md`       //exec notepad
-`notepad %f.py`     //exec notepad with temp file `temp.py`
-`notepad %f.py.out.txt`        //& with temp output file (temp.txt.out.txt)
-`"C:/Program Files/Notepad++/notepad++" %f.py`  //exec notepad++
+`open -a calculator` //open a calculator
+`man open` //manual entry for open
+`open '/Applications'`
+`open ~`            //open home
+`open '%p'`         //open temp folder in finder
+`open -e README.md` //in texteditor
+`open -e '%f.py'`   //exec texteditor with temp file `temp.py`
+`open -e '%f.py.out.txt'`  //& with temp output file (temp.txt.out.txt)
 
 ### Quickmath examples
 
@@ -1308,73 +1179,52 @@ A few more *quickmath* expressions: `254cm in inches=` will show 100inches in th
 More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
 
 ---
-### Windows - control panel
-`control /name Microsoft.DevicesAndPrinters`
-`control mouse`
-`control /name Microsoft.ProgramsAndFeatures`
-`pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
-`devmgmt.msc`               //devices
-`mmc diskmgmt.msc`     //disk management
+### Mac system information
+show hardware information
+`system_profiler SPHardwareDataType`
+
+show firewall information
+`system_profiler SPFirewallDataType`
+
+show all possible profiler datatypes:
+`system_profiler -listDataTypes`
 
 ---
 ### html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners
-`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
+`open -a safari %cHover-exec.gif` //chrome with media or html file - can use %c etc in one-liners
+`open 'https://whatamigoingtodonow.net/'` //browser with url
+`safari <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
 `js console.log(7*7-7)`
 `vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message
 
 ---
 ### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1998</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"`
-`pwsh start wmplayer "%cmedia/fnt2b.mp3"`
+`safari <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
+`open -a 'Quicktime Player' "%cmedia/fnt2b.mp3"`
+`afplay "%cmedia/fnt2b.mp3"`
 
----
-### One-liners for microsoft management console mmc
-`mmc azman.msc`	Authorization Manager	Manage Authorization Stores
-`mmc certlm.msc`	Certificates Local Computer	Loads the list of certificates of the local computer.
-`mmc certmgr.msc`	Certificates	Loads the list of certificates of the user
-`mmc comexp.msc`	Component Services	Loads Component Services, Event Viewer, and Services.
-`mmc compmgmt.msc`	Computer Management	Includes System Tools (Task Scheduler, Event Viewer, Shared Folders, Local Users and Groups, Performance and Device Manager), Storage (Disk Management), and Services and Applications (Services and WMI Control)
-`mmc devmgmt.msc`	Device Manager	Opens the Device Manager to manage hardware and devices.
-`mmc diskmgmt.msc`	Disk Management	Opens Disk Management to administrate connected storage devices.
-`mmc eventvwr.msc`	Event Viewer	Opens the Event Viewer which displays operating system, software, and hardware events.
-`mmc fsmgmt.msc`	Shared Folders	Loads the list of shared folders, sessions, and open files
-`mmc gpedit.msc`	Group Policy Editor	Loads the Group Policy Editor to manage system policies
-`mmc lusrmgr.msc`	Local Users and Groups	Interface to manage local users and user groups.
-`mmc perfmon.msc`	Performance Monitor	Loads the Windows Performance Monitor
-`mmc printmanagement.msc`	Print Management	Manage printers.
-`mmc rsop.msc`	Resultant Set of Policies	List policies, full results only available through command line tool gpresult
-`mmc secpol.msc`	Local Security Policy	- account policies, public key policies, or advanced audit policy configuration
-`mmc services.msc`	Services Manager	Loads the list of installed services to manage them.
-`mmc taskschd.msc`	Task Scheduler	Loads the Task Scheduler to manage tasks
-`mmc tpm.msc`	Trusted Platform Module Management	Manage the TPM on the local device.
-`mmc wf.msc`	Windows Firewall	Starts Windows Firewall with Advanced Security.
-`mmc wmimgmt.msc`	WMI Management	Configure and Control the Windows Management Instrumentation Service.
 
 ---
 ## inhere - including tagged sections
 
 The following line in a code block
-
 ```
 #inhere `#tag_speed`
 ```
-
 will include a group of lines surrounded with the #tag-speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
-
 1. Tags must either stand alone in a line, or end the line (eg. tags can have comment markers in front of them)
 2. Within the `#inhere` line, the tag must be surrounded with backticks (*hover-exec* uses back-ticks to indicate potential hovers)
 3. To include lines from another file use the format
    #inhere file_path/name `#tag`
    (the file path can include `%c` current folder, or `%p` temp files folder):
 
-```'gnuplot -p -c "%f.gp"'
+Example of #inhere use
+(on execution, plot may be behind editor, use cmd+tab):
+```gnuplot
 $speed <<EOD
-#inhere %ctest/misc_tests.md `#p1` // hover to view the data
+#inhere %ctest/misc_tests.md `#p1`
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
@@ -1411,19 +1261,19 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.40154051780700684
+0.3452761173248291
 ```
 
 ```python::  # this will continue from the last with variable and functions intact
 from time import time
 b=b+1
-b=>>6000605
+b=>>6000603
 "time from the restart",time()-t
 b # this now produces output because the repl is being used
 ```
 ```output
-('time from the restart', 117.18829941749573)
-6000605
+('time from the restart', 12.551424980163574)
+6000603
 ```
 
 Note that the REPLs often don't need 'print' or its equivalent.
@@ -1451,15 +1301,15 @@ console.log(sort(config.get('scripts')));
   html: '"%f.html"',
   javascript: 'node "%f.js"',
   js: 'vm',
-  julia: 'julia "%f.jl"',
+  julia: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   juliamac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   lua: 'lua "%f.lua"',
   lua51: 'lua51 "%f.lua"',
   lua54: 'lua54 "%f.lua"',
-  matlab: 'matlab -nodesktop -sd %p.m -batch temp',
+  matlab: 'matlab -sd %p.m -batch temp',
   matlab_comment: 'if %p.m needs to be "%p.m" then add /, ie. "%p.m/" ',
   node: 'node "%f.js"',
-  octave: 'octave "%f.m"',
+  octave: '/Applications/Octave-6.2.0.app/Contents/Resources/usr/bin/octave-octave-app@6.0.90 --no-gui "%f.m"',
   pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
   pwsh: 'pwsh -f "%f.ps1"',
   python: 'python "%f.py"',
@@ -1468,11 +1318,9 @@ console.log(sort(config.get('scripts')));
   rterm: 'rterm -q --no-echo -f "%f.r" ',
   safari: 'open -a safari "%f.html"',
   scilab: 'scilex -quit -nb -f "%f.sci" ',
-  scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
+  scilabcli: '/Applications/scilab-6.1.1.app/Contents/bin/scilab-cli -quit -nb -f "%f.sci" ',
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
-  ts: 'ts-node "%f.ts" ',
-  typescript: 'ts-node "%f.ts" ',
   vm: 'vm',
   zsh: 'zsh -f "%f.sh"'
 }
@@ -1482,15 +1330,22 @@ Any of these can be changed to suit the system in use using vscode `settings` un
 
 Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler.
 
-Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work with a code block as a *hover-exec* command  (use "quotes" if there are spaces in the file path).
 
-For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
-
-```%f.bat //demo cmd execution (windows) without script setup
-@echo off
-dir *.json
-echo Congratulations! Your batch file was executed successfully.
+```echo 'hello' && lua "%f.lua" && echo 'goodbye'
+-- echo 'echo' && lua "%f.lua"
+print("no seed: "..math.random(100))
+math.randomseed(os.time())
+print("os.time() as seed: "..math.random(100))
 ```
+
+```open -a safari "%f.html"
+<h1>This is a test</h1>
+<a href='https://whatamigoingtodonow.net'>Test link</a>
+```
+
+`man open` //manual entry for 'open' command
+
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the codeblock itself and can be accessed in the *hover-exec* configuration.
 
@@ -1512,6 +1367,15 @@ For a given codeblock, in the hover message for the command line there is a `con
  # this is python 'code' example for config check
  # the following codeblock is produced by clicking *config* in the python hover
 ```
+```js :vm noInline
+//this script can change, add or undefine a config setting
+let s={"python":"python \"%f.py\""}; //{"id":"start command"}
+//s={"python":undefined}; //uncomment this to undefine python
+let scripts=config.get('scripts');
+let merge=Object.assign({},scripts,s);
+if(await config.update('scripts',merge,1)){}
+console.log('new config:',config.get('scripts.python'))
+```
 
 The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
 
@@ -1523,8 +1387,8 @@ It can also be done using `vm` or `eval` since the *vscode* configuration settin
 
 First write a fenced codeblock labelled newlang with the appropriate command - if this is done correctly the code block should execute in the new script
 
-```newlang %f.nu
--- a newlang comment line
+```newlang '%f.nu'
+-- a newlang comment line, click [config] in hover
 print(3-2)
 ```
 
@@ -1555,9 +1419,6 @@ let c=vscode.workspace.getConfiguration('');
 console.log("editor font size= "+c.get("editor.fontSize"))
 //c.update("editor.fontSize",12,1) //to change it
 ```
-```output
-editor font size= 12
-```
 
 ---
 ## Known Issues
@@ -1567,10 +1428,6 @@ This is a beta version.
 Note that in all scripting languages included, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages. To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see [inhere](#inhere---including-tagged-sections).
 
 However scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions. 
-
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.
-
-The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
 
 ---
