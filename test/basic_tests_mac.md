@@ -1,5 +1,12 @@
 ## Hover-exec basic tests
 
+- [Hover-exec basic tests](#hover-exec-basic-tests)
+  - [Hover](#hover)
+  - [Exec](#exec)
+  - [Other information from the hover](#other-information-from-the-hover)
+  - [Execution via the keyboard, and in-line output](#execution-via-the-keyboard-and-in-line-output)
+  - [Final comments](#final-comments)
+
 The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
 
 ### Hover
@@ -31,12 +38,12 @@ Hover over [`last script`] to show the `path/name` of the code to be executed. C
 console.log('    > hello world '+(3+Math.random()))
 ```
 ```output
-    > hello ... 3.4412757907251947
+    > hello world 3.2450492361600736
 ```
 
 The file accessed via `last result` in the hover message will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
 
-> ***hello world***
+    > hello world 1.234...
 
 Also, a brief note (see later) that `hover-exec` *quickmath* is enabled - just type a math expression inside single backticks and end with `=`, eg. `7*7-7=`. Hovering over the expression will show the answer (using *mathjs evaluate*). Clicking the answer will copy it to the clipboard.
 
@@ -102,9 +109,15 @@ The second is that output can be positioned in-line (within the code block) if t
 let a='the meaning of life';
 console.log('Normally output is shown in an output block');
 console.log('which is positioned after the script.');
-a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.78284961854512
-console.log('For successive results it can be useful to display results');
+a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.33447106738043
+console.log('It can also be useful to display results');
 console.log('next to the calculation which produced them');
+```
+```output
+Normally output is shown in an output block
+which is positioned after the script.
+It can also be useful to display results
+next to the calculation which produced them
 ```
 
 Inline results are produced by using `=>>` at the end of a script line (as above). Note that in-line results do not need `console.log`, this is provided by the config section called `swappers`, which in effect 'swap' the output from the `output` block to the appropriate line in the original script.
@@ -119,10 +132,10 @@ for (let i=0;i<5;i++){
 'but this ends up in the wrong place'=>>i=1, i**2=1
 ```
 ```output
->>i=2, i**2=4
->>i=3, i**2=9
->>i=4, i**2=16
->>but this ends up in the wrong place
+=>>i=2, i**2=4
+=>>i=3, i**2=9
+=>>i=4, i**2=16
+=>>but this ends up in the wrong place
 ```
 
 Note that only the first result of the loop execution will made available in-line, the rest are left in the `output` block. If there are further in-line results requested, they will not appear in the right place. So: `do not request in-line results for statements in a loop!`

@@ -1,4 +1,6 @@
+# Misc tests
 
+- [Misc tests](#misc-tests)
 - [Javascript tests](#javascript-tests)
   - [array operations](#array-operations)
   - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
@@ -6,7 +8,7 @@
   - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
   - [Javascript in the browser](#javascript-in-the-browser)
   - [Plotting comparison](#plotting-comparison)
-    - [Some data for plots](#some-data-for-plots)
+    - [Data for the plots (tagged #p1, #j1, #go)](#data-for-the-plots-tagged-p1-j1-go)
   - [Using scripts via REPL](#using-scripts-via-repl)
     - [Check active REPLs](#check-active-repls)
     - [Using the python repl](#using-the-python-repl)
@@ -17,7 +19,6 @@
     - [Octave repl](#octave-repl)
     - [R (rterm) repl](#r-rterm-repl)
 - [Typescript](#typescript)
-- [Configuration](#configuration)
 
 # Javascript tests
 
@@ -66,9 +67,8 @@ b=a.find((el) => el[0]==='hell')
 b=>>undefined
 console.log("hello ".repeat(3))
 ```
-```output
+sample output:
 hello hello hello
-```
 
 ## timing in javascript (not using moment.js)
 
@@ -81,12 +81,17 @@ console.time('console timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>1564.4390000011772
+performance.now()-p=>>352.1787499934435
 console.timeEnd('console timer')
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
 console.log('abc',Date.now(),'def')
 ```
+sample output:
+console timer: 352.565ms
+[ '0.8274583877764645', '0.38997267766979515' ]
+hello  353
+abc 1639382858216 def
 
 ## using console.log
 
@@ -95,6 +100,8 @@ let name='Fred'
 'hello '+name+', how are you '+3+' doing, ok?'=>>hello Fred, how are you 3 doing, ok?
 console.log('hello %s, how are you %s doing', name,3,', ok?')
 ```
+sample output:
+hello Fred, how are you 3 doing , ok?
 
 ---
 
@@ -111,12 +118,12 @@ for (let i = 0; i < 1e6; i++) { //speed test loop
 console.log('check, result=',result)
 console.log(Date.now() - p,'msec');
 ```
-```output
+sample output:
 check, result= 42
 140 msec
-```
 
-Note:
+
+Note alternatives:
 - 1e6 `js:node`: using Function, 644msec, using eval, 180msec
 - 1e6 `js:eval`:   using Function, 550msec, using eval, 158msec
 - 1e6 `js` (vm):  using Function, 840msec, using eval, 370msec
@@ -128,7 +135,7 @@ Note:
 ## Javascript in the browser
 On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and, if needed, check the *hover-exec* configuration for `firefox` (or `chrome`)
 
-```safari
+```safari //sample results in browser
 <script>
 function test(){
   let t='\n Live:';
@@ -215,6 +222,8 @@ window.setTimeout(function() {test();},150);
 
 ## Plotting comparison
 
+The data is provided for each using *hover-exec's* `inhere` function
+
 https://github.com/observablehq/plot 
 
 ```safari  //chartjs
@@ -261,7 +270,6 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 <a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
 ```
 
-
 ```safari //google charts
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -287,9 +295,8 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 </script>
 ```
 
-
 ```gnuplot
- # if vscode full screen, swipe to see plot
+ # swipe or cmd+tab to see plot
  # first \n needed to distinguish from previous go1 in script etc 
 $go1 <<EOD
  #inhere  `#go`
@@ -307,7 +314,7 @@ plot "$javascript1" w lp title "javascript",\
 ```
 
 
-### Some data for plots
+### Data for the plots (tagged #p1, #j1, #go)
 
 #p1
 1,  2.8481913984619769E+002,
@@ -406,22 +413,23 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.3399989604949951
+0.33414387702941895
 ```
 
 ```python::
 from time import time
 b=b+1
-b=>>6000605
+b=>>6000602
 time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1639217027.226295
-6000605
+1639383522.9311628
+6000602
 ```
 
 ### Lua repl
+not working for macos yet
 
 ```lua::restart
 m=1e7
@@ -450,12 +458,13 @@ let a=0,b=0,c=0,d=0,e=0;
 ```
 
 ```js:node:
-a+=1 =>>2
-b+=10 =>>20
-c+=100 =>>200
+a+=1 =>>5
+b+=10 =>>50
+c+=100 =>>500
 ```
 
 ### Julia repl
+not working for macos yet
 
 ```julia::restart
 x=rand(Float64);
@@ -470,6 +479,7 @@ print(a,'\n',x)
 ```
 
 ### Scilab repl
+not working for macos yet
 
 ```js:scilabcli:restart
 tic();
@@ -491,6 +501,7 @@ a=a+1;
 ```
 
 ### Octave repl
+not working for macos yet
 
 ```python:octave:restart
 a=1.0;
@@ -505,10 +516,6 @@ t=time-t;
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
-```output
-time=1.6611 sec
-speed=0.60201 million iterations per sec
-```
 
 ```python:octave:
 disp('I repeat...')
@@ -522,6 +529,7 @@ speed=0.60201 million iterations per sec
 ```
 
 ### R (rterm) repl
+not working for macos yet
 
 ```rterm::restart
 a=7*7-7
@@ -566,14 +574,3 @@ let this_works = true;
     }
 ```
 
-# Configuration
-
-```js :vm noInline
-//this script can change, add or undefine a config setting
-let s={"python":"python \"%f.py\""};
-//s={"python":undefined}; //uncomment this to undefine python
-let scripts=config.get('scripts');
-let merge=Object.assign({},scripts,s);
-if(await config.update('scripts',merge,1)){}
-console.log('new config:',config.get('scripts.python'))
-```
