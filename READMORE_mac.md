@@ -6,7 +6,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
   - [Javascript scripts](#javascript-scripts)
-    - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
+    - [Examples using vm and eval](#examples-using-vm-and-eval)
     - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [The `vm` context](#the-vm-context)
     - [Quick specification of `vm` context](#quick-specification-of-vm-context)
@@ -76,7 +76,7 @@ Hovering over code block start or end lines, starting with ` ``` `,  or lines wh
 
 Javascript code blocks can be executed using the `vm` module, or by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
 
-### Examples using `vm` and `eval`
+### Examples using vm and eval
 
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
@@ -262,7 +262,7 @@ Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `
 
 A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted (undefined) using, eg. `delete global.a;`
 
-'Naked' assignments (ie. no `let`or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'eval' codeblocks. 
+'Naked' assignments (ie. no `let` or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'eval' codeblocks. 
 
 ```js:eval //use of lodash and mathjs 
 //js:eval //use of lodash and mathjs 
@@ -413,7 +413,7 @@ print("os.time() as seed: "..math.random(100))
 ```output
 hello
 no seed: 85
-os.time() as seed: 94
+os.time() as seed: 17
 goodbye
 ```
 
@@ -490,10 +490,6 @@ console.log(a,Math.random())
 process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
-```output
-goodbye 0.39080829474892154
-abcde
-```
 
 ---
 ### Javascript using node
@@ -559,43 +555,183 @@ console.log(new Date().toLocaleDateString())
 ### Running other programs
 Here are a couple of very simple examples for sending the contents of a codeblock to other applications. These examples do not use any predefined configs. The other apps here are not scripts and will **not** send changed text back to the codeblock - changed content will need to be saved in the file system in the normal way.
 
-```notepad %f
-This is a test
+```open -e "%f.txt"
+# this is a test
+print("hello")
 ```
+```zsh
+man open
+```
+```output
+OPEN(1)                      General Commands Manual                     OPEN(1)
 
-```"c:\program files\notepad++\notepad++" %f
-This is another test
+NNAAMMEE
+     ooppeenn - open files and directories
+
+SSYYNNOOPPSSIISS
+     ooppeenn [--ee] [--tt] [--ff] [--FF] [--WW] [--RR] [--nn] [--gg] [--jj] [--hh] [--uu _U_R_L] [--ss _s_d_k]
+          [--bb _b_u_n_d_l_e___i_d_e_n_t_i_f_i_e_r] [--aa _a_p_p_l_i_c_a_t_i_o_n] [----eennvv _V_A_R] [----ssttddeerrrr _P_A_T_H]
+          [----ssttddiinn _P_A_T_H] [----ssttddoouutt _P_A_T_H] _f_i_l_e _._._. [----aarrggss _a_r_g_1 _._._.]
+
+DDEESSCCRRIIPPTTIIOONN
+     The ooppeenn command opens a file (or a directory or URL), just as if you had
+     double-clicked the file's icon. If no application name is specified, the
+     default application as determined via LaunchServices is used to open the
+     specified files.
+
+     If the file is in the form of a URL, the file will be opened as a URL.
+
+     You can specify one or more file names (or pathnames), which are
+     interpreted relative to the shell or Terminal window's current working
+     directory. For example, the following command would open all Word files in
+     the current working directory:
+
+     open *.doc
+
+     Opened applications inherit environment variables just as if you had
+     launched the application directly through its full path.  This behavior was
+     also present in Tiger.
+
+     The options are as follows:
+
+     --aa aapppplliiccaattiioonn
+         Specifies the application to use for opening the file
+
+     --bb bbuunnddllee__iiddeennttiiffiieerr
+         Specifies the bundle identifier for the application to use when opening
+         the file
+
+     --ee  Causes the file to be opened with /Applications/TextEdit
+
+     --tt  Causes the file to be opened with the default text editor, as
+         determined via LaunchServices
+
+     --ff  Reads input from standard input and opens the results in the default
+         text editor.  End input by sending EOF character (type Control-D).
+         Also useful for piping output to ooppeenn and having it open in the default
+         text editor.
+
+     --FF  Opens the application "fresh," that is, without restoring windows.
+         Saved persistent state is lost, except for Untitled documents.
+
+     --WW  Causes ooppeenn to wait until the applications it opens (or that were
+         already open) have exited.  Use with the --nn flag to allow ooppeenn to
+         function as an appropriate app for the $$EEDDIITTOORR environment variable.
+
+     --RR  Reveals the file(s) in the Finder instead of opening them.
+
+     --nn  Open a new instance of the application(s) even if one is already
+         running.
+
+     --gg  Do not bring the application to the foreground.
+
+     --jj  Launches the app hidden.
+
+     --hh  Searches header locations for a header whose name matches the given
+         string and then opens it.  Pass a full header name (such as NSView.h)
+         for increased performance.
+
+     --ss  For -h, partial or full SDK name to use; if supplied, only SDKs whose
+         names contain the argument value are searched. Otherwise the highest
+         versioned SDK in each platform is used.
+
+     --uu  Opens URL with whatever application claims the url scheme, even if URL
+         also matches a file path
+
+     ----aarrggss
+         All remaining arguments are passed to the opened application in the
+         argv parameter to main().  These arguments are not opened or
+         interpreted by the ooppeenn tool.
+
+     ----eennvv _V_A_R
+         Adds _V_A_R to the environment of the launched application.  _V_A_R should be
+         formatted NAME=VALUE or NAME.
+
+     ----ssttddiinn _P_A_T_H
+         Launches the application with stdin connected to _P_A_T_H.
+
+     ----ssttddoouutt _P_A_T_H
+         Launches the application with stdout connected to _P_A_T_H.
+
+     ----ssttddeerrrr _P_A_T_H
+         Launches the application with stderr connected to _P_A_T_H.
+
+EEXXAAMMPPLLEESS
+     "open '/Volumes/Macintosh HD/foo.txt'" opens the document in the default
+     application for its type (as determined by LaunchServices).
+
+     "open '/Volumes/Macintosh HD/Applications/'" opens that directory in the
+     Finder.
+
+     "open -a /Applications/TextEdit.app '/Volumes/Macintosh HD/foo.txt'" opens
+     the document in the application specified (in this case, TextEdit).
+
+     "open -b com.apple.TextEdit '/Volumes/Macintosh HD/foo.txt'" opens the
+     document in the application specified (in this case, TextEdit).
+
+     "open -e '/Volumes/Macintosh HD/foo.txt'" opens the document in TextEdit.
+
+     "ls | open -f" writes the output of the 'ls' command to a file in /tmp and
+     opens the file in the default text editor (as determined by
+     LaunchServices).
+
+     "open http://www.apple.com/" opens the URL in the default browser.
+
+     "open 'file://localhost/Volumes/Macintosh HD/foo.txt'" opens the document
+     in the default application for its type (as determined by LaunchServices).
+
+     "open 'file://localhost/Volumes/Macintosh HD/Applications/'" opens that
+     directory in the Finder.
+
+     "open -h NSView" lists headers whose names contain NSView and allows you to
+     choose which ones to open.
+
+     "open -h NSView.h" immediately opens NSView.h.
+
+     "open --env MallocStackLogging=YES -b com.apple.TextEdit" launches TextEdit
+     with the environment variable "MallocStackLogging" set to "YES"
+
+     "open -h NSView -s OSX10.12" lists headers whose names contain NSView in
+     the MacOSX 10.12 SDK and allows you to choose which ones to open.
+
+HHIISSTTOORRYY
+     First appeared in NextStep.
+
+macOS                            April 14, 2017                            macOS
 ```
 
 ---
 ### Octave
 Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced* 
 
-```python {cmd="octave-cli"} :octave
- # python:octave {cmd=octave} -- {cmd..} is for mpe
+```python:octave
+ # python:octave
  # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.6431
+num2str(7.1+rand(1))  =>>7.1545
 'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+pwd()  =>>/Users/kellycogan/Documents/GitHub/hover-exec
 disp('hello world in output section!')
+```
+```output
+hello world in output section!
 ```
 
 ---
 ### Scilab
 Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax highlighting
 
-```js {cmd=scilab} :scilab
+```js {cmd=scilab} :scilabcli
 //js {cmd=scilab} :scilab -- {cmd..} is for mpe
 //need to use 'string()' for numeric output
 mprintf('%s\n',pwd())
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.8537007, 0.6502421
+string(rand())+', '+string(rand())   =>>0.0399621, 0.6443543
 mprintf('%s',string(rand()))
 ```
 ```output
-c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-0.8716215
+/Users/kellycogan/Documents/GitHub/hover-exec
+0.4925988
 ```
 
 ---
@@ -607,12 +743,12 @@ Use `python` to run python. `python3` can be used if that is the python repl sta
 import os
 from random import random
  # the in-line results are effectively commented out for mpe
-os.getcwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-45-2+random() =>>43.072709564590994
+os.getcwd() =>>/Users/kellycogan/Documents/GitHub/hover-exec
+45-2+random() =>>43.95229544221767
 print('hello world '+str(3*random()+1))
 ```
 ```output
-hello world 1.633804499436842
+hello world 3.6480816639533895
 ```
 
 ---
@@ -620,18 +756,19 @@ This one-liner can be used to install packages:
 `pwsh python -m pip install pyformulas`
 
 ---
-In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover. 
+In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover.
 
 ```python {cmd matplotlib=true}
-  # ```python {cmd matplotlib=true}`
+  #python {cmd matplotlib=true}
 import numpy as np
 import matplotlib.pyplot as plt
 randnums= np.random.randint(1,101,500)
 plt.plot(randnums)
 plt.show()
 ```
+
 Image from running the above codeblock and pasting via *Markdown kit*:
-  ![[media/READMORE_matplotlib example.png]]
+![[media/READMORE_matplotlib example.png]]
 
 ---
 ```python {cmd} # endless plot
