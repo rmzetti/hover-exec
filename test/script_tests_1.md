@@ -31,8 +31,8 @@ console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  0.47  sec
-speed  212.6  million iterations per sec
+total time  0.46  sec
+speed  216  million iterations per sec
 ```
 
 > Example output (vm, eval & node are fairly similar)
@@ -128,8 +128,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.86  sec
-speed  5.3692  million iterations per sec
+total time  1.65  sec
+speed  6.0436  million iterations per sec
 ```
 
 > Example output

@@ -1230,7 +1230,7 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 ---
 ### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1998</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
+`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
 `"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"`
 `pwsh start wmplayer "%cmedia/fnt2b.mp3"`
 
