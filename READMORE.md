@@ -662,7 +662,7 @@ This one-liner can be used to install packages:
 In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover. 
 
 ```python {cmd matplotlib=true}
-  # ```python {cmd matplotlib=true}`
+  #python {cmd matplotlib=true}`
 import numpy as np
 import matplotlib.pyplot as plt
 randnums= np.random.randint(1,101,500)
