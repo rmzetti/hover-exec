@@ -1,4 +1,4 @@
-# Hover-exec README
+# Hover-exec
 
 This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
 
@@ -9,9 +9,9 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
     - [Available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [Using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
+    - [Using nodejs](#using-nodejs)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
-    - [nodejs](#nodejs)
     - [lua](#lua)
     - [python](#python)
     - [scilab](#scilab)
@@ -36,7 +36,7 @@ Hover script exec in action:
 
 ---
 ## Basic hover-exec 
-Hovering over lines starting with ` ``` `  (or lines which start with a single backtick and include an end backtick) will trigger a hover message with an *exec* command as the bottom line, as in the *gif* above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over code block start or end lines, starting with ` ``` `,  or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command as the bottom line, as in the *gif* above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Opt+/` (`Alt+/` for Windows), with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
 ## Javascript scripts
@@ -49,10 +49,11 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.8847274507170322
+'test: '+Math.random() =>>
 ```
 ```output
-Notice the in-line random number result
+Notice the in-line random number result 
+>>test: 0.02346504823769968
 ```
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
@@ -68,15 +69,19 @@ alert(a) //not available in nodejs scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>5.8633991435714
-eval('let b=3; 2*b*Math.random()')=>>5.388723128683446
+2*b*Math.random() =>>
+eval('let b=3; 2*b*Math.random()')=>>
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.3619674786980203
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>>
+process.cwd() =>>
 console.log(abc)
 ```
 ```output
-goodbye world 0.9408919732641838
+>>2.327217638709246
+>>1.5698012030441193
+goodbye world 0.6778166946977797
+>>hello 1.0159710549811867
+>>/home/rm/Documents/hover-exec
 hello, world 3
 ```
 
@@ -144,7 +149,7 @@ function xrange(){
 }
 xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec
+cd =>>/Users/kellycogan/Documents/GitHub/hover-exec
 ```
 
 ```js //declare a global function for eval
@@ -204,10 +209,11 @@ Notes:
 ---
 ### lua
 
-```lua {} :lua54  -- say hello & goodbye
+```lua {cmd}   -- say hello & goodbye
 --lua {} :lua54 --  {} allows syntax highlighting in *mpe*
-'hello ' .. 44-2+math.random() =>>hello 42.127539264055
-"& goodbye " .. math.pi+math.random() =>>& goodbye 4.1130417689995
+math.randomseed(os.time())
+'hello ' .. 44-2+math.random() =>>hello 42.465951944236
+"& goodbye " .. math.pi+math.random() =>>& goodbye 3.3524943149001
 print("lua ok") -- this outputs in the output code block below
 ```
 ```output
@@ -217,15 +223,12 @@ lua ok
 ---
 ### python
 
-```python {cmd} # {cmd} allows execution also in *markdown preview enhanced*}
+```python3 {cmd} # {cmd} allows execution also in *markdown preview enhanced*}
   # ```python {cmd} 
 from random import random
-45-2+random()     #  =>>43.87834393508055
+45-2+random()     #  =>>43.079133749415476
 'hello, world 3!'     #  =>>hello, world 3!
 print('python ok')
-```
-```output
-python ok
 ```
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spavce after) so that *markdown previw enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
@@ -233,21 +236,44 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ---
 ### scilab
 
-```js {cmd=scilab} :scilab 
+```ls
+```
+```output
+CHANGELOG.md
+Hover-exec.gif
+LICENSE.md
+README_mac.md
+READMORE_mac.md
+dist
+hover-exec-0.6.5.vsix
+media
+node_modules
+out
+package-lock.json
+package.json
+src
+test
+tsconfig.json
+webpack.config.js
+```
+
+
+```js {cmd=scilab} :scilabcli 
 //js :scilab //using js :scilab instead of just scilab provides quick & dirty syntax highlight
 //js {cmd=scilab} :scilab  will also allow execution in markdown preview enhanced
 // scilab needs to use 'string()' for numeric output
-pwd()   =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+pwd()   =>>/Users/kellycogan/Documents/GitHub/hover-exec
 rand("seed",getdate('s')); //set new random sequence
-'def '+string(rand())+' abc '+string(rand())   =>>def 0.2199065 abc 0.6909226
+'def '+string(rand())+' abc '+string(rand())   =>>def 0.6324375 abc 0.2750154
 mprintf('%s',string(rand()))
 // nb. need to use 'string' for numeric output in scilab
 disp('scilab random: '+string(rand()))
 ```
 ```output
-0.8393786
-  "scilab random: 0.9326498"
+0.174449
+  "scilab random: 0.4786315"
 ```
+
 
 ---
 ### julia
@@ -256,27 +282,24 @@ disp('scilab random: '+string(rand()))
   # julia {cmd} //also works in *mpe*
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.5706092967976824, 0.7727620582843899, 0.9767619809957298]
+a   # =>>[0.3047207125886271, 0.12128037451614126, 0.2475335991714045]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.5706092967976824, 42.0, 0.9767619809957298]
-b=[0.5706092967976824, 42.0, 0.9767619809957298]
+a=[0.3047207125886271, 42.0, 0.2475335991714045]
+b=[0.3047207125886271, 42.0, 0.2475335991714045]
 ```
 
 ---
 ### powershell
 
-```pwsh {cmd}
-  #  pwsh {cmd} // random number, show current directory.
-Get-Random -Min 0.0 -Max 1.0 # =>>0.373919549572244
+```zsh {cmd}
+  #zsh {cmd} // random number, show current directory.
 pwd
 ```
 ```output
-Path
-----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+/Users/kellycogan/Documents/GitHub/hover-exec
 ```
 
 ---
@@ -285,7 +308,8 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 Gnuplot is a very useful stand-alone plotting facility. When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
 ```gnuplot {cmd} # {cmd} allows execution in *markdown preview enhanced*
- #gnuplot {cmd} # {cmd} allows execution in *markdown preview enhanced*
+  #gnuplot {cmd} # {cmd} allows execution in *markdown preview enhanced*
+  #on a mac with vscode full screen view the plot with a sideways swipe
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -313,7 +337,7 @@ plot "$charge" using 1:3 w lp title "charge"
 ---
 ### Html
 
-```html //all required html is in the codeblock below
+```safari //all required html is in the codeblock below
 <!-- html //tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -339,31 +363,36 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ---
 ### One-liner and quickmath examples:
 
-exec notepad with file in current folder:
-`notepad %cREADME.md`
+show current directory list
+`ls "%c"`
 
-exec notepad with temp file (%f):
-`notepad %f`
+show temp directory list
+`ls "%p"`
 
-exec notepad++:
-`"C:/Program Files/Notepad++/notepad++" %cREADME.md`
+exec textedit with file in current folder:
+`open -a textedit %cREADME_mac.md`
 
-explore 'This pc':
-`explorer ,`
+exec textedit with temp file (%f):
+`open -a textedit "%f"`
+
+open home in finder:
+`open -a finder ~`
 
 explore folder:
-`explorer /select, %cREADME.md`>
+`open -a finder %c`
 
-show devices:
-`devmgmt.msc`
+show profiler datatypes:
+`system_profiler -listDataTypes`
 
-open default browser with href, or showing html text (note that html is a built in script command, see previous section)
+show hardware information
+`system_profiler SPHardwareDataType`
 
-`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
+open safari with href, or showing html text (note that html is a built in script command, see previous section)
+`safari <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
 
-`html <h1>Hello world!</h1>`
+`safari <h1>Hello world 3!</h1>`
 
-And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` . NB. Copy to clipboard with a click.
+And finally, a few more *quickmath* expressions (copy to clipboard with a click): `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=`.
 
 ---
 ## Configuration settings
@@ -386,12 +415,12 @@ console.log(sort(config.get('scripts')));
   html: '"%f.html"',
   javascript: 'node "%f.js"',
   js: 'vm',
-  julia: 'julia "%f.jl"',
+  julia: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   juliamac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   lua: 'lua "%f.lua"',
   lua51: 'lua51 "%f.lua"',
   lua54: 'lua54 "%f.lua"',
-  matlab: 'matlab -nodesktop -sd %p.m -batch temp',
+  matlab: 'matlab -sd %p.m -batch temp',
   matlab_comment: 'if %p.m needs to be "%p.m" then add /, ie. "%p.m/" ',
   node: 'node "%f.js"',
   octave: 'octave "%f.m"',
@@ -406,8 +435,6 @@ console.log(sort(config.get('scripts')));
   scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
-  ts: 'ts-node "%f.ts" ',
-  typescript: 'ts-node "%f.ts" ',
   vm: 'vm',
   zsh: 'zsh -f "%f.sh"'
 }
@@ -421,10 +448,10 @@ Basically if the command works in the terminal (using the full file name of cour
 
 For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
-```%f.bat //demo cmd execution (windows) without script setup
-@echo off
-dir *.json
-echo Congratulations! Your first batch file was executed successfully.
+```open -a textedit "%f.txt"
+This text can be viewed in the text editor
+and saved as required -
+changes will not be reflected into this code block.
 ```
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md).
@@ -448,11 +475,4 @@ The startup times for other included scripts are generally fairly minimal (see t
 Initial beta release was 0.6.1
 Published using: vsce package/publish
 
-```matlab
-a=3;
-disp(3-32)
-```
-```output
-   -29
-```
 

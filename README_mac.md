@@ -16,7 +16,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [python](#python)
     - [scilab](#scilab)
     - [julia](#julia)
-    - [powershell](#powershell)
+    - [zsh](#zsh)
     - [gnuplot](#gnuplot)
     - [Html](#html)
   - [One-liners and quickmath](#one-liners-and-quickmath)
@@ -284,7 +284,7 @@ b=[0.3047207125886271, 42.0, 0.2475335991714045]
 ```
 
 ---
-### powershell
+### zsh
 
 ```zsh {cmd}
   #zsh {cmd} // random number, show current directory.
@@ -438,7 +438,7 @@ Also note that there is no actual requirement to include a script startup comman
 
 Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
 
-For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
+For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe`.
 
 ```open -a textedit "%f.txt"
 This text can be viewed in the text editor
