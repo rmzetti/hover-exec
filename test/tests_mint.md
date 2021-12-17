@@ -50,7 +50,6 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Scilab](#scilab-1)
     - [Python](#python-1)
     - [Julia](#julia-1)
-    - [Matlab](#matlab)
     - [Gnuplot](#gnuplot-2)
     - [Html and in-browser javascript](#html-and-in-browser-javascript)
     - [Powershell](#powershell)
@@ -62,10 +61,8 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
   - [One-liners](#one-liners)
     - [One-liners examples](#one-liners-examples)
     - [Quickmath examples](#quickmath-examples)
-    - [Windows - control panel](#windows---control-panel)
     - [html & javascript](#html--javascript)
     - [audio one-liners](#audio-one-liners)
-    - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
   - [inhere - including tagged sections](#inhere---including-tagged-sections)
     - [Using repl scripts](#using-repl-scripts)
   - [Configuration settings](#configuration-settings-1)
@@ -252,7 +249,7 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ```
 ```output
   test using node:
-  0.7648579278444851
+  0.31089041492025626
   Note: hover-exec on ```output line`, or alt+/ (opt+/) with
   the cursor in the output block will delete the output block
 ```
@@ -296,7 +293,7 @@ Notes:
 print("lua ok") -- this outputs in the output code block below
 ```
 ```output
-lua ok
+lua1 ok
 ```
 
 ---
@@ -305,7 +302,7 @@ lua ok
 ```python3 {cmd} # {cmd} allows execution also in *markdown preview enhanced*}
   # python3 {cmd} 
 from random import random
-45-2+random()     #  =>>43.989096759444834
+45-3+random()     #  =>>42.42075139087035
 'hello, world 3!'     #  =>>hello, world 3!
 print('python ok')
 ```
@@ -324,14 +321,14 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 // scilab needs to use 'string()' for numeric output
 pwd()   =>>/home/rm/Documents/hover-exec
 rand("seed",getdate('s')); //set new random sequence
-'def '+string(rand())+' abc '+string(rand())   =>>def 0.1238682 abc 0.6036862
+'def '+string(rand())+' abc '+string(rand())   =>>def 0.2176655 abc 0.989616
 mprintf('%s',string(rand()))
 // nb. need to use 'string' for numeric output in scilab
 disp('scilab random: '+string(rand()))
 ```
 ```output
-0.134621
-  "scilab random: 0.1671286"
+0.4903821
+  "scilab random: 0.2121767"
 ```
 
 ---
@@ -341,19 +338,19 @@ disp('scilab random: '+string(rand()))
   # julia {cmd} //also works in *mpe*
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.004429193098619555, 0.9205798159225005, 0.2464804340162241]
+a   # =>>[0.8918446930555866, 0.9814459485730513, 0.3234681109822046]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.004429193098619555, 42.0, 0.2464804340162241]
-b=[0.004429193098619555, 42.0, 0.2464804340162241]
+a=[0.8918446930555866, 42.0, 0.3234681109822046]
+b=[0.8918446930555866, 42.0, 0.3234681109822046]
 ```
 
 ---
 ### shell
 
-```zsh {cmd}
+```bash {cmd}
   #  zsh {cmd} // show current directory.
 echo 'hello'
 pwd
@@ -400,6 +397,7 @@ qt5ct: using qt5ct plugin
 ```firefox //all required html is in the codeblock below
 <!-- html //tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
+<title>tunnel</title>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
 <canvas id="c"></canvas> 
 <script> 
@@ -438,7 +436,7 @@ explore folder and select file:
 show storage devices:
 `gnome-disks`
 
-open firefox with href, or showing html text
+exec firefox with href, or showing html text
 `firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
 `firefox <h1>Hello world!</h1>`
 
@@ -514,7 +512,7 @@ Javascript code blocks can be executed using the `vm` module, or by using *vscod
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
-'test: '+Math.random() =>>test: 0.984792038900915
+'test: '+Math.random() =>>test: 0.3614734966867881
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates a global variable
 bb = function (animal){alert('he likes ' + animal);}
 ```
@@ -839,8 +837,8 @@ print(t1)
 print(os.clock()-t)
 ```
 ```output
-5001495.114189
-0.388712
+4999970.5299922
+0.398799
 ```
 
 ### Scripts without pre-defined configs
@@ -867,7 +865,7 @@ print "Hello, ${name} ... you will soon be a Perl addict!";
 ```
 ```output
 hello
-57802
+47756
 Hello, me ... you will soon be a Perl addict!
 ```
 
@@ -982,14 +980,14 @@ Various time and date functions using `vm`
 
 ```js      //time & date using internal javascript via vm
 //js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.495462431661004
+(44-Math.random())=>>43.153181479383214
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2021-12-10
-new Date().toLocaleDateString()=>>11/12/2021
-new Date().toString()=>>Sat Dec 11 2021 11:16:26 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>11/12/2021, 11:16:26 am
-new Date().getTime()=>>1639174586377
+new Date().toISOString().slice(0,10)=>>2021-12-16
+new Date().toLocaleDateString()=>>16/12/2021
+new Date().toString()=>>Thu Dec 16 2021 19:12:08 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>16/12/2021, 7:12:08 pm
+new Date().getTime()=>>1639635128128
 ```
 
 ---
@@ -1015,12 +1013,8 @@ console.log(new Date().toLocaleDateString())
 ### Running other programs
 Here are a couple of very simple examples for sending the contents of a codeblock to other applications. These examples do not use any predefined configs. The other apps here are not scripts and will **not** send changed text back to the codeblock - changed content will need to be saved in the file system in the normal way.
 
-```notepad %f
+```xed "%f"
 This is a test
-```
-
-```"c:\program files\notepad++\notepad++" %f
-This is another test
 ```
 
 ---
@@ -1041,17 +1035,17 @@ disp('hello world in output section!')
 ### Scilab
 Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax highlighting
 
-```js {cmd=scilab} :scilab
+```js {cmd=scilab} :scilabcli
 //js {cmd=scilab} :scilab -- {cmd..} is for mpe
 //need to use 'string()' for numeric output
 mprintf('%s\n',pwd())
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.8537007, 0.6502421
+string(rand())+', '+string(rand())   =>>0.9685034, 0.7220744
 mprintf('%s',string(rand()))
 ```
 ```output
-c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-0.8716215
+/home/rm/Documents/hover-exec
+0.7798814
 ```
 
 ---
@@ -1073,13 +1067,21 @@ hello world 1.633804499436842
 
 ---
 This one-liner can be used to install packages:
-`pwsh python -m pip install pyformulas`
+`pip install pyformulas`
+Issues? Some help from [here](https://stackoverflow.com/questions/44538746): 
+0. sudo apt-get install python3-pip (or python-pip)
+1. sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+2. sudo apt-get install ffmpeg libav-tools 
+3. sudo apt-get install python-pyaudio
+4. pip install pyaudio
+5. pip install pyformulas
+(What worked for me was 0, followed by 1,4 & 5)
 
 ---
 In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover. 
 
-```python {cmd matplotlib=true}
-  #python {cmd matplotlib=true}`
+```python3 {cmd matplotlib=true}
+  #python3 {cmd matplotlib=true}
 import numpy as np
 import matplotlib.pyplot as plt
 randnums= np.random.randint(1,101,500)
@@ -1087,11 +1089,11 @@ plt.plot(randnums)
 plt.show()
 ```
 Image from running the above codeblock and pasting via *Markdown kit*:
-  ![[media/READMORE_matplotlib example.png]]
+  ![[READMORE_matplotlib example.png]]
 
 ---
-```python {cmd} # endless plot
- # python {cmd} -- {cmd} is for mpe
+```python3 {cmd} # endless plot
+ # python3 {cmd} -- {cmd} is for mpe
 import pyformulas as pf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -1112,8 +1114,10 @@ while True:
     image = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
     image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     screen.update(image)
- # cancel, then close plot
+ # cancel execution, then close plot
 ```
+
+`gnome-system-monitor` //to cancel python3 if plot continues...
 
 ---
 ### Julia
@@ -1135,21 +1139,6 @@ a=[0.30800697352407513, 42.0, 0.9243624629393834]
 ```
 
 ---
-### Matlab
-And `matlab` can be used to run *matlab*, although it's a slow starter...
-
-```matlab   --the meaning of life is 7*7-7
-%matlab  --matlab is slow to start (takes about 5s on Asus with Ryzen 7 4700U)
-x = 1:0.1:10;
-y = x.^2;
-plot(x,y)
-uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
-% more waiting after plot dismissed before the following answer appears
-7*7-7 =>>
-disp("matlab ok!")
-```
-
----
 ### Gnuplot
 
 Gnuplot is a very useful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted.
@@ -1167,7 +1156,7 @@ plot "$speed" w lp title "speed"
 In browser javascript can be used
 The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
 
-```html   <!--*what am I going to do now* tunnel-->
+```firefox   <!--*what am I going to do now* tunnel-->
 <!-- html  --*what am I going to do now* tunnel-->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -1183,7 +1172,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 </script></body>
 ```
 
-```html --psychedelic
+```firefox --psychedelic
 <!-- ```html  -- `psychedelic -->
 <html>
 <head> </head>
@@ -1296,7 +1285,7 @@ run();
 </html>
 ```
 
-```html --breathing galaxies
+```firefox --breathing galaxies
 <!-- ```html breathing galaxies` --> 
 <html> 
 <head> 
@@ -1398,11 +1387,16 @@ body { margin: 0; overflow: hidden; }
 ---
 ### Powershell
 
-Use `pwsh` to run powershell, or `pwsh {cmd}` to also use in *mpe*
+Use `pwsh` to run powershell, or `pwsh {cmd}` to also use in *mpe*, and linux/mac if loaded
 
 ```pwsh {cmd}
  # ```pwsh {cmd}`
 pwd
+```
+```output
+Path
+----
+/home/rm/Documents/hover-exec
 ```
 
 ---
@@ -1434,6 +1428,9 @@ function swapStr(str,n){
     return arr.join('');
 }
 console.log(swapStr('portsmouth',100))
+```
+```output
+ousprtomth
 ```
 
 ---
@@ -1528,11 +1525,11 @@ dcl: [1 2 3 4 5]
 //js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=4.17910447761194
+' uptake='+u  =>> uptake=9.043850267379678
 console.log(u)
 ```
 ```output
-4.17910447761194
+9.043850267379678
 ```
 
 ---
@@ -1578,30 +1575,33 @@ console.log('plot "$speed" w lp title "speed"')
 ```output :gnuplot noinline
 #tag_speed
 $speed << EOD
-1 0.2325581395348837
-2 0.625
-4 1.1940298507462686
-9 1.9148936170212765
-18 4.5
-38 8.085106382978722
-78 11.908396946564885
-162 14.727272727272728
-336 16.8
-695 17.160493827160494
-1438 17.11904761904762
-2976 19.45098039215686
-6158 21.683098591549296
-12743 22.39543057996485
-26367 18.56830985915493
-54556 15.99882697947214
-112884 17.88969889064976
-233572 16.46612618963694
-483293 19.409357429718874
-1000000 19.210450485063873
+1 0.2777777777777778
+2 0.888888888888889
+4 1.702127659574468
+9 3.214285714285714
+18 6.101694915254238
+38 9.87012987012987
+78 14.054054054054053
+162 16.2
+336 19.764705882352942
+695 20.441176470588236
+1438 20.397163120567374
+2976 21.25714285714286
+6158 22.639705882352946
+12743 22.084922010398614
+26367 19.316483516483515
+54556 19.589228007181326
+112884 14.334476190476188
+233572 17.594877589453862
+483293 18.956383604628357
+1000000 19.4344572927801
 EOD
 #tag_speed
 set logscale x
 plot "$speed" w lp title "speed"
+```
+```output
+qt5ct: using qt5ct plugin
 ```
 
 ---
@@ -1612,67 +1612,44 @@ plot "$speed" w lp title "speed"
 ### One-liners examples
 NB. Note only *single* backticks for one-liners, but still must begin in col 1.
 
-`explorer /select,"%f"`     //explore temp folder
-`notepad README.md`       //exec notepad
-`notepad %f.py`     //exec notepad with temp file `temp.py`
-`notepad %f.py.out.txt`        //& with temp output file (temp.txt.out.txt)
-`"C:/Program Files/Notepad++/notepad++" %f.py`  //exec notepad++
+exec editor with file in current folder:
+`xed '%cREADME.md'`
+exec editor with temp file (%f):
+`xed '%f'`
+file management
+`nemo`
+explore folder and select file:
+`nemo '%cREADME.md'`>
+show storage devices:
+`gnome-disks`
+open firefox with href, or showing html text
+`firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
+`firefox <h1>Hello world!</h1>`
 
 ### Quickmath examples
 
 Another useful *hover-exec* facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks (backticks are the norm for *hover-exec*), and there needs to be `=` before the last backtick (essentially to stop popups for other backtick quoted strings).
 
-A few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message,  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`.
+A few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message,  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
 
+NB. Copy to clipboard with a click.
 More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
-
----
-### Windows - control panel
-`control /name Microsoft.DevicesAndPrinters`
-`control mouse`
-`control /name Microsoft.ProgramsAndFeatures`
-`pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
-`devmgmt.msc`               //devices
-`mmc diskmgmt.msc`     //disk management
 
 ---
 ### html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners
-`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
+`firefox <body style="background-color:#1d1d1d"><img src="%cHover-exec.gif"/>` //can use %c etc in one-liners
+`firefox <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
+`firefox <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
 `js console.log(7*7-7)`
 `vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message
 
 ---
 ### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"`
-`pwsh start wmplayer "%cmedia/fnt2b.mp3"`
-
----
-### One-liners for microsoft management console mmc
-`mmc azman.msc`	Authorization Manager	Manage Authorization Stores
-`mmc certlm.msc`	Certificates Local Computer	Loads the list of certificates of the local computer.
-`mmc certmgr.msc`	Certificates	Loads the list of certificates of the user
-`mmc comexp.msc`	Component Services	Loads Component Services, Event Viewer, and Services.
-`mmc compmgmt.msc`	Computer Management	Includes System Tools (Task Scheduler, Event Viewer, Shared Folders, Local Users and Groups, Performance and Device Manager), Storage (Disk Management), and Services and Applications (Services and WMI Control)
-`mmc devmgmt.msc`	Device Manager	Opens the Device Manager to manage hardware and devices.
-`mmc diskmgmt.msc`	Disk Management	Opens Disk Management to administrate connected storage devices.
-`mmc eventvwr.msc`	Event Viewer	Opens the Event Viewer which displays operating system, software, and hardware events.
-`mmc fsmgmt.msc`	Shared Folders	Loads the list of shared folders, sessions, and open files
-`mmc gpedit.msc`	Group Policy Editor	Loads the Group Policy Editor to manage system policies
-`mmc lusrmgr.msc`	Local Users and Groups	Interface to manage local users and user groups.
-`mmc perfmon.msc`	Performance Monitor	Loads the Windows Performance Monitor
-`mmc printmanagement.msc`	Print Management	Manage printers.
-`mmc rsop.msc`	Resultant Set of Policies	List policies, full results only available through command line tool gpresult
-`mmc secpol.msc`	Local Security Policy	- account policies, public key policies, or advanced audit policy configuration
-`mmc services.msc`	Services Manager	Loads the list of installed services to manage them.
-`mmc taskschd.msc`	Task Scheduler	Loads the Task Scheduler to manage tasks
-`mmc tpm.msc`	Trusted Platform Module Management	Manage the TPM on the local device.
-`mmc wf.msc`	Windows Firewall	Starts Windows Firewall with Advanced Security.
-`mmc wmimgmt.msc`	WMI Management	Configure and Control the Windows Management Instrumentation Service.
+`firefox <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` //mint ok
+`mpv "%cmedia/fnt2b.mp3" ` //mint ok but rather no output
+`zsh "%cmedia/fnt2b.mp3" > /dev/null ` //mint ok, but needs two hits and fails missing .zsh, or .sh 
 
 ---
 ## inhere - including tagged sections
@@ -1698,6 +1675,9 @@ EOD
 set logscale x
 plot "$speed" w lp title "speed"
 ```
+```output
+qt5ct: using qt5ct plugin
+```
 
 ---
 ### Using repl scripts
@@ -1707,18 +1687,18 @@ Scripts can also be run using the REPL version of the scripting engine. The foll
 `js console.log(Object.keys(config.get('repls')).sort())`
 ```output
 [
-  'julia',  'lua',
-  'lua51',  'lua54',
-  'node',   'octave',
-  'python', 'python3',
-  'r',      'rterm',
-  'scilab', 'scilabcli'
+  'julia',     'lua',
+  'lua54',     'node',
+  'octave',    'python',
+  'python3',   'r',
+  'rterm',     'scilab',
+  'scilabcli'
 ]
 ```
 
 The indication to *hover-exec* that the REPL should be used is to append a second colon. In other words, the command line looks like `id:command:`  Optionally, after the second colon, `restart` can be appended to indicate that the REPL should be restarted.
 
-```python::restart  # restart resets the python REPL
+```python3::restart  # restart resets the python REPL
 from time import time
 t=time()
 b=0
@@ -1729,20 +1709,13 @@ for c in range(600):
 print(time()-t)
 b=>>6000600
 ```
-```output
-0.40154051780700684
-```
 
-```python::  # this will continue from the last with variable and functions intact
+```python3::  # this will continue from the last with variable and functions intact
 from time import time
 b=b+1
-b=>>6000605
+b=>>6000603
 "time from the restart",time()-t
 b # this now produces output because the repl is being used
-```
-```output
-('time from the restart', 117.18829941749573)
-6000605
 ```
 
 Note that the REPLs often don't need 'print' or its equivalent.
@@ -1773,10 +1746,8 @@ console.log(sort(config.get('scripts')));
   julia: 'julia "%f.jl"',
   juliamac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   lua: 'lua "%f.lua"',
-  lua51: 'lua51 "%f.lua"',
   lua54: 'lua54 "%f.lua"',
-  matlab: 'matlab -nodesktop -sd %p.m -batch temp',
-  matlab_comment: 'if %p.m needs to be "%p.m" then add /, ie. "%p.m/" ',
+  matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
   node: 'node "%f.js"',
   octave: 'octave "%f.m"',
   pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
@@ -1790,10 +1761,8 @@ console.log(sort(config.get('scripts')));
   scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
-  ts: 'ts-node "%f.ts" ',
-  typescript: 'ts-node "%f.ts" ',
   vm: 'vm',
-  zsh: 'zsh -f "%f.sh"'
+  zsh: 'zsh -f "%f.zsh"'
 }
 ```
 
@@ -1887,11 +1856,6 @@ Note that in all scripting languages included, except *js:vm* and *js:eval* whic
 
 However scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions. 
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.
-
-The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
-
-
 ---
 ## Release Notes
 
@@ -1916,9 +1880,6 @@ The message shows `hover-exec` followed by the code block id (`js`). The bottom 
 alert('hello world')
 console.log('goodbye world')
 ```
-```output
-goodbye world
-```
 
 ### Exec
 When the bottom line of the hover message is clicked the script will execute, and, in accordance with the script,  an 'alert' box will appear (bottom right of the vscode window) with `(i) hello world` in it.
@@ -1930,9 +1891,6 @@ Hover over [`last script`] to show the `path/name` of the code to be executed. C
 ```js //when executed 'hello world' will be visible in a following code block titled 'output'.
 // The 'random' function call is included so changes to the output are noticeable
 console.log('    > hello world '+(3+Math.random()))
-```
-```output
-    > hello world 3.2450492361600736
 ```
 
 The file accessed via `last result` in the hover message will also show 'hello world'. Hovering  over the first or last line of the output block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text:
@@ -1969,11 +1927,11 @@ The `[ref]` option will provide some further information on possible shortcuts t
  - The default ext is specified by appending .ext, eg. %f.py
  - In windows, if needed, /%f etc produces /c:/linux/web/style/path/
 Currently:
-% f = c:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\temp.txt
-% p = c:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\
-% c = c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec\
-% e = c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec\test\basic_tests.md
-% n = temp.txt
+% f = /home/rm/.config/Code/User/globalStorage/rmzetti.hover-exec/temp.js
+% p = /home/rm/.config/Code/User/globalStorage/rmzetti.hover-exec/
+% c = /home/rm/Documents/hover-exec/
+% e = /home/rm/Documents/hover-exec/test/tests_mint.md
+% n = temp.js
 ```
 
 And finally the `[config]` option will show the configuration entry for the command:
@@ -2003,15 +1961,9 @@ The second is that output can be positioned in-line (within the code block) if t
 let a='the meaning of life';
 console.log('Normally output is shown in an output block');
 console.log('which is positioned after the script.');
-a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.33447106738043
+a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.9900028834206
 console.log('It can also be useful to display results');
 console.log('next to the calculation which produced them');
-```
-```output
-Normally output is shown in an output block
-which is positioned after the script.
-It can also be useful to display results
-next to the calculation which produced them
 ```
 
 Inline results are produced by using `=>>` at the end of a script line (as above). Note that in-line results do not need `console.log`, this is provided by the config section called `swappers`, which in effect 'swap' the output from the `output` block to the appropriate line in the original script.
