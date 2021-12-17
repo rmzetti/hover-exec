@@ -1,6 +1,6 @@
-## Hover-exec script tests 1
+## Hover-exec script tests
 
-- [Hover-exec script tests 1](#hover-exec-script-tests-1)
+- [Hover-exec script tests](#hover-exec-script-tests)
   - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
   - [Javascript in the browser](#javascript-in-the-browser)
   - [Test using 'go' as a scripting language](#test-using-go-as-a-scripting-language)
