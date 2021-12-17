@@ -1642,7 +1642,7 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 `firefox <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
 `firefox <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
 `js console.log(7*7-7)`
-`vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message
+`vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message..
 
 ---
 ### audio one-liners
