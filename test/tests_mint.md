@@ -1387,16 +1387,11 @@ body { margin: 0; overflow: hidden; }
 ---
 ### Powershell
 
-Use `pwsh` to run powershell, or `pwsh {cmd}` to also use in *mpe*, and linux/mac if loaded
+Use `pwsh` to run powershell, or `pwsh {cmd}` to also use in *mpe*, and linux/mac if  powershell is available.
 
 ```pwsh {cmd}
  # ```pwsh {cmd}`
 pwd
-```
-```output
-Path
-----
-/home/rm/Documents/hover-exec
 ```
 
 ---
@@ -1612,6 +1607,7 @@ qt5ct: using qt5ct plugin
 ### One-liners examples
 NB. Note only *single* backticks for one-liners, but still must begin in col 1.
 
+*Mint:*
 exec editor with file in current folder:
 `xed '%cREADME.md'`
 exec editor with temp file (%f):
@@ -1626,6 +1622,12 @@ open firefox with href, or showing html text
 `firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
 `firefox <h1>Hello world!</h1>`
 
+*WSL:*
+`"/mnt/c/Program Files/Notepad++/Notepad++.exe" "%cREADME.md"`
+`/mnt/c/Users/ralph/AppData/Local/Microsoft/WindowsApps/notepad.exe "%cREADME.md"`
+`chrome <h1>Hello world!</h1>`
+
+
 ### Quickmath examples
 
 Another useful *hover-exec* facility is *quickmath*. A math expression of the form `5-sqrt(2)=` anywhere will be evaluated on hover and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks (backticks are the norm for *hover-exec*), and there needs to be `=` before the last backtick (essentially to stop popups for other backtick quoted strings).
@@ -1633,10 +1635,11 @@ Another useful *hover-exec* facility is *quickmath*. A math expression of the fo
 A few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message,  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
 
 NB. Copy to clipboard with a click.
+
 More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
 
 ---
-### html & javascript
+### html & javascript one-liners
 
 `firefox <body style="background-color:#1d1d1d"><img src="%cHover-exec.gif"/>` //can use %c etc in one-liners
 `firefox <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
@@ -1648,8 +1651,11 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 ### audio one-liners
 
 `firefox <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` //mint ok
-`mpv "%cmedia/fnt2b.mp3" ` //mint ok but rather no output
-`zsh "%cmedia/fnt2b.mp3" > /dev/null ` //mint ok, but needs two hits and fails missing .zsh, or .sh 
+`chrome <audio id="a2" controls autoplay=true src="media/fnt2b.mp3"/>`
+`mpv "%cmedia/fnt2b.mp3" ` //*mint* ok but not *wsl*
+`zsh "%cmedia/fnt2b.mp3" ` //*mint* ok, but needs two hits, *wsl* fails
+`"/mnt/c/Program Files (x86)/Windows Media Player/wmplayer.exe" "%cmedia/fnt2b.mp3"`
+`bash mpv "%cmedia/fnt2b.mp3" `
 
 ---
 ## inhere - including tagged sections
@@ -1674,9 +1680,6 @@ $speed <<EOD
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
-```
-```output
-qt5ct: using qt5ct plugin
 ```
 
 ---
@@ -1713,7 +1716,7 @@ b=>>6000600
 ```python3::  # this will continue from the last with variable and functions intact
 from time import time
 b=b+1
-b=>>6000603
+b=>>6000601
 "time from the restart",time()-t
 b # this now produces output because the repl is being used
 ```
@@ -1762,7 +1765,7 @@ console.log(sort(config.get('scripts')));
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
   vm: 'vm',
-  zsh: 'zsh -f "%f.zsh"'
+  zsh: 'zsh -f "%f.sh"'
 }
 ```
 
@@ -1865,7 +1868,7 @@ Published using: vsce package/publish
 
 # Hover-exec basic tests
 
-The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
+The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec. For each test, what should happen or be seen is commented. The two remaining main sections after this are 'Misc tests' which covers other scripting languages and REPLs, and 'Script tests' which includes some benchmark style tests.
 
 ### Hover
 Opening a markdown file (eg. this one) in the vscode editor will activate the `hover-exec` extension. To check, after opening the editor, hover over the start line `js ...` or end line of the code block. The following hover message will appear:
@@ -2057,7 +2060,7 @@ console.time('console timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>352.1787499934435
+performance.now()-p=>>524.8087039999664
 console.timeEnd('console timer')
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
@@ -2111,7 +2114,7 @@ Note alternatives:
 ### Javascript in the browser
 On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and, if needed, check the *hover-exec* configuration for `firefox` (or `chrome`)
 
-```safari //sample results in browser
+```firefox //sample results in browser
 <script>
 function test(){
   let t='\n Live:';
@@ -2194,15 +2197,15 @@ r1=document.getElementById("r2");
 window.setTimeout(function() {test();},150);
 </script>
 ```
+Sample output is included in the displayed html.
 
 
 ### Plotting comparison
 
-The data is provided for each using *hover-exec's* `inhere` function
+The data is provided for each using *hover-exec's* `inhere` function (hover over '#inhere' to see the data)
 
-https://github.com/observablehq/plot 
 
-```safari  //chartjs
+```firefox  //chartjs
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 <script>
@@ -2225,7 +2228,7 @@ new Chart("myChart", {
 </script>
 ```
 
-```safari //plotly
+```firefox //plotly
  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
  <!-- Plots go in blank <div> elements. You can size them in the plot layout,  or size the div-->
 <div id="plot" style="width:70%;height:400px"></div>
@@ -2246,7 +2249,7 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 <a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
 ```
 
-```safari //google charts
+```firefox //google charts
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
@@ -2377,7 +2380,7 @@ chRepl[i][0]=>> python
 #### Using the python repl
 `js:eval repl.kill()` //kills active repl (but use :restart)
 
-```python::restart
+```python3::restart
 from time import time
 t=time()
 b=0
@@ -2389,20 +2392,22 @@ print(time()-t)
 b=>>6000600
 ```
 ```output
-0.33414387702941895
+0.33997249603271484
 ```
 
-```python::
+```python3::
 from time import time
 b=b+1
-b=>>6000602
+b=>>6000603
 time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1639383522.9311628
-6000602
+1639777512.3097332
+6000603
 ```
+
+There must be two colons after 'python3' to ensure REPL mode is used. Appending restart, restarts the REPL. Without the extra colon in the above codeblock, or executing without previously executing the 'restart' codeblock, the exec will fail because 'tt' will be undefined 
 
 #### Lua repl
 not working for macos yet
@@ -2411,20 +2416,22 @@ not working for macos yet
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>
+tt=>>0.0019
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>
+tt1=>>0.584259
 print('ok')
 ```
 
-```lua
+```lua:: --must have two ':'  for REPL mode
 print(os.clock()-tt)
 ```
+
+NB. See comments for the python example above.
 
 #### Node repl
 
@@ -2434,13 +2441,13 @@ let a=0,b=0,c=0,d=0,e=0;
 ```
 
 ```js:node:
-a+=1 =>>5
-b+=10 =>>50
-c+=100 =>>500
+a+=1 =>>3
+b+=10 =>>30
+c+=100 =>>300
 ```
+NB. See comments for the python example above.
 
 #### Julia repl
-not working for macos yet
 
 ```julia::restart
 x=rand(Float64);
@@ -2453,9 +2460,9 @@ a=a.+1;_
 x=x+1;_
 print(a,'\n',x)
 ```
+NB. See comments for the python example above.
 
 #### Scilab repl
-not working for macos yet
 
 ```js:scilabcli:restart
 tic();
@@ -2475,9 +2482,9 @@ mprintf('a equals %.f',a)
 mprintf('t equals %.2f',t)
 a=a+1;
 ```
+NB. See comments for the python example above.
 
 #### Octave repl
-not working for macos yet
 
 ```python:octave:restart
 a=1.0;
@@ -2492,43 +2499,41 @@ t=time-t;
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
+```output
+time=1.9276 sec
+speed=0.51879 million iterations per sec
+```
 
 ```python:octave:
 disp('I repeat...')
 disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
-```output
-I repeat...
-time=1.6611 sec
-speed=0.60201 million iterations per sec
-```
 
 #### R (rterm) repl
-not working for macos yet
 
-```rterm::restart
+```r::restart
 a=7*7-7
-a=>> 42
-noquote(paste('the meaning of life is',a))
+a=>> 42 
+print(noquote(paste('the meaning of life is',a)))
 ```
-```rterm::
-noquote(paste('.. that was',a))
+```r::
+print(noquote(paste('.. that was',a)))
 ```
 
-```rterm::restart #data for plots
+```r::restart #data for plots
 require(tcltk)
 x <- 1:10
 y1 <- x*x
 y2  <- 2*y1
 ```
 
-```rterm:: #plotting the above data
-windows()
+```r:: #plotting the above data
+# windows()
 # Stair steps plot
 plot(x, y1, type = "S")
 # Lines & points plot
-windows()
+# windows()
 plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
 lines(x, y2,pch=18,col="blue",type="b",lty=2)
 msgBox<-tkmessageBox(title="Plot",message="Close plots first!")
