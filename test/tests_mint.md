@@ -2521,27 +2521,6 @@ print(noquote(paste('the meaning of life is',a)))
 print(noquote(paste('.. that was',a)))
 ```
 
-```r::restart #data for plots
-require(tcltk)
-x <- 1:10
-y1 <- x*x
-y2  <- 2*y1
-```
-
-```r:: #plotting the above data
-# windows()
-# Stair steps plot
-plot(x, y1, type = "S")
-# Lines & points plot
-# windows()
-plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
-lines(x, y2,pch=18,col="blue",type="b",lty=2)
-msgBox<-tkmessageBox(title="Plot",message="Close plots first!")
-```
-NB. Use this if the plots remain:
-`js:eval repl.kill()` //kills active repl
-
-
 ## Typescript
 
 First install typescript and ts-node globally with
@@ -2575,10 +2554,6 @@ let tot=(t2-t1)/1000;
 console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
-```output
-total time  0.54  sec
-speed  184.1  million iterations per sec
-```
 
 > Example output (vm, eval & node are fairly similar)
 > total time  0.47  sec
@@ -2588,7 +2563,7 @@ speed  184.1  million iterations per sec
 
 This will execute the same javascript code in the default browser:
 
-```safari
+```firefox
 <script>
 function test(){
 let iter=1e8;
@@ -2643,10 +2618,6 @@ func main() {
     fmt.Printf("speed  %.5v million iterations per sec\n",float64(iter)/t/1e6)
 }
 ```
-```output
-total time 0.316 sec
-speed  3168.4 million iterations per sec
-```
 
 > Example output
 > total time 0.24 sec
@@ -2658,7 +2629,7 @@ ie. about 20 times faster than javascript, 500 times faster than python
 
 Again, the appropriate `python` needs to be executed when the `python` command is executed in a terminal. For this run, 'python 3.8.7` was used. Note that fewer iterations have been used because it takes rather longer.
 
-```python //speed test
+```python3 //speed test
 from time import time
 m=1e7  # note: fewer iterations than for js or go
 n=0.01
@@ -2670,10 +2641,6 @@ for ii in range(1,round(m+1)):
 tt1=time()-tt
 print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
-```
-```output
-total time  1.21  sec
-speed  8.2337  million iterations per sec
 ```
 
 > Example output
@@ -2700,8 +2667,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.65	 sec
-speed 	60.53	 million iterations per sec
+total time 	2.37	 sec
+speed 	42.01	 million iterations per sec
 ```
 
 > Example output:
@@ -2713,6 +2680,7 @@ So about 15x faster than python on this benchmark, and about half the speed of j
 ### Pascal test
 
 ```js:pascal
+//not checked for linux/wsl
 program Hello;
   uses Math,SysUtils,DateUtils;
   var i,m:int64;
@@ -2732,10 +2700,6 @@ begin //30
   writeln('time= ',t1:6:2,' sec');
   writeln('speed= ',m/t1/1e6:6:2,' million iterations per sec')
 end.
-```
-```output
-time=   1.06 sec
-speed=  94.61 million iterations per sec
 ```
 
 > Example output:
@@ -2759,8 +2723,8 @@ disp(strcat('time= ',num2str(time-t),' sec'))
 disp(strcat('speed= ',num2str(m/(time-t)/1e6),' million iterations per sec'))
 ```
 ```output
-time=2.4384 sec
-speed=0.4085 million iterations per sec
+time=2.1015 sec
+speed=0.47148 million iterations per sec
 ```
 
 > Example output:
