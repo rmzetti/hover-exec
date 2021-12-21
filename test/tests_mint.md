@@ -1789,6 +1789,92 @@ As an example, the *swapper* for javascript (`vm`, `eval` & `node`) is `console.
 
 The *swapper* for *julia* is `println(string(\"=>>\",$1))`, where the double quotes required by *julia* have to be escaped `\"` because they are part of a *json* string 
 
+```js
+sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
+console.log(sort(config.get('swappers')));
+```
+```output
+{
+  buddvs: "write('=>>'+$1);",
+  eval: "console.log('=>>',($1))",
+  go: "'=>>'+($1)",
+  js: "console.log('=>>'+($1))",
+  julia: 'println(string("=>>",$1))',
+  lua: "print('=>>'..($1))",
+  lua54: "print('=>>'..($1))",
+  matlab: 'disp(["=>>"+($1)])',
+  node: "console.log('=>>'+($1))",
+  octave: "disp(['=>>' $1])",
+  pascal: "writeln('=>>',$1);",
+  pwsh: "'=>>'+($1)",
+  python: "print('=>>'+str($1))",
+  python3: "print('=>>'+str($1))",
+  r: "cat('=>>',$1,'\\n')",
+  rterm: "cat('=>>',$1,'\\n')",
+  scilab: "mprintf('=>>'+string($1)+'\\n')",
+  scilabcli: "mprintf('=>>'+string($1)+'\\n')",
+  vm: "console.log('=>>',($1))",
+  zsh: "'=>>'+($1)"
+}
+```
+
+And the configuration for REPLs
+```js
+sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
+console.log(sort(config.get('repls')));
+```
+```output
+{
+  julia: [ 'julia', [ '-i -q' ], "print('\\f')", [], [] ],
+  lua: [
+    'lua',
+    [ '-i' ],
+    'print(utf8.char(12))',
+    [],
+    [ '^>.*?\\n', '', '^(>+ )+', '' ]
+  ],
+  lua54: [
+    'lua54',
+    [ '-i' ],
+    'print(utf8.char(12))',
+    [],
+    [ '^>.*?\\n', '', '^(>+ )+', '' ]
+  ],
+  node: [
+    'node',
+    [ '-i' ],
+    "console.log('\\f')",
+    [],
+    [ 'undefined\\n', '', '^(>+ )+', '' ]
+  ],
+  octave: [ 'octave', [ '-q' ], 'disp("\\f")', [], [] ],
+  python: [
+    'python',
+    [ '-q', '-i', '-u' ],
+    "print('\\f')",
+    [ '^(\\S.*)$', '\n$1' ],
+    []
+  ],
+  python3: [
+    'python3',
+    [ '-q', '-i', '-u' ],
+    "print('\\f')",
+    [ '^(\\S.*)$', '\n$1' ],
+    []
+  ],
+  r: [ 'r', [], "cat('\\f')", [], [ '\\[\\d+\\]', '' ] ],
+  rterm: [
+    'rterm',
+    [ '-q', '--no-echo' ],
+    "cat('\\f')",
+    [],
+    [ '\\[\\d+\\]', '' ]
+  ],
+  scilab: [ 'scilex', [ '-nb' ], 'mprintf(ascii(12))', [], [] ],
+  scilabcli: [ 'scilab-cli', [ '-nb' ], 'mprintf(ascii(12))', [], [] ]
+}
+```
+
 
 ---
 ### Using vm for configuration settings
