@@ -932,8 +932,14 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-function execRepl(cmd: string,opt:string[]){
-  repl=cp.spawn(cmd, opt,{shell:true});
+function execRepl(cmd: string,args:string[]){
+  let opt={};
+  if(process.platform==='darwin'||process.platform==='linux') {
+    opt={shell:'/bin/bash'};
+  } else {
+    opt={shell:true};
+  }
+  repl=cp.spawn(cmd, args, opt);
   if(repl===null){return;}
   repl.stdout?.on('data', (data) => {
     let s=''+data;
