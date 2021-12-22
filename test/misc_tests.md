@@ -1,13 +1,13 @@
 # Contents
 
 - [Contents](#contents)
-  - [Javascript tests](#javascript-tests)
-    - [array operations](#array-operations)
-    - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
-    - [using console.log](#using-consolelog)
-    - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
+- [Javascript tests](#javascript-tests)
+  - [array operations](#array-operations)
+  - [timing in javascript (not using moment.js)](#timing-in-javascript-not-using-momentjs)
+  - [using console.log](#using-consolelog)
+  - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
   - [Javascript in the browser](#javascript-in-the-browser)
-    - [Plotting comparison](#plotting-comparison)
+  - [Plotting comparison](#plotting-comparison)
     - [Some data for plots](#some-data-for-plots)
   - [Using scripts via REPL](#using-scripts-via-repl)
     - [Check active REPLs](#check-active-repls)
@@ -18,21 +18,21 @@
     - [Scilab repl](#scilab-repl)
     - [Octave repl](#octave-repl)
     - [R (rterm) repl](#r-rterm-repl)
-  - [Typescript](#typescript)
-  - [Configuration](#configuration)
-    - [View and alter as a set ('scripts, 'swappers,'repls')](#view-and-alter-as-a-set-scripts-swappersrepls)
-    - [View and alter a specific setting](#view-and-alter-a-specific-setting)
+- [Typescript](#typescript)
+- [Configuration](#configuration)
+  - [View and alter as a set ('scripts, 'swappers,'repls')](#view-and-alter-as-a-set-scripts-swappersrepls)
+  - [View and alter a specific setting](#view-and-alter-a-specific-setting)
 
-## Javascript tests
+# Javascript tests
 
 Commands:
 > `js` or `js:vm` to use `vm`
 > `js:node` to use node
 > `js:eval` to use `eval`.
 
-For javascript in the browser see the next section.
+For javascript in the browser see the last code block.
 
-### array operations
+## array operations
 
 ```js
 let a=[1,2,3,4,5,6,7,8];
@@ -74,7 +74,7 @@ console.log("hello ".repeat(3))
 hello hello hello
 ```
 
-### timing in javascript (not using moment.js)
+## timing in javascript (not using moment.js)
 
 ```js
 const {performance}=require('perf_hooks');
@@ -98,7 +98,7 @@ hello  1569
 abc 1637199109775 def
 ```
 
-### using console.log
+## using console.log
 
 ```js
 let name='Fred'
@@ -108,7 +108,7 @@ console.log('hello %s, how are you %s doing', name,3,', ok?')
 
 ---
 
-### speed of eval vs Function within javascript code
+## speed of eval vs Function within javascript code
 
 ```js:eval
 let expr = "7*7-7";
@@ -222,7 +222,7 @@ window.setTimeout(function() {test();},150);
 ```
 
 
-### Plotting comparison
+## Plotting comparison
 
 https://github.com/observablehq/plot 
 
@@ -580,7 +580,7 @@ NB. Use this if the plots remain:
 `js:eval repl.kill()` //kills active repl
 
 
-## Typescript
+# Typescript
 
 First install typescript and ts-node globally with
   npm i -g typescript ts-node
@@ -595,9 +595,9 @@ let this_works = true;
 It works!
 ```
 
-## Configuration
+# Configuration
 
-### View and alter as a set ('scripts, 'swappers,'repls')
+## View and alter as a set ('scripts, 'swappers,'repls')
 
 ```js noInline                //view and update settings for: 
 let settings='repls';  //'scripts', 'swappers', 'repls'
@@ -609,7 +609,7 @@ console.log('let s=',k)
 console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
 ```
 
-### View and alter a specific setting
+## View and alter a specific setting
 ```js noInline  //change, add or undefine (remove) a specific config setting
 let settings='scripts';  //'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");

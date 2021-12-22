@@ -1,12 +1,5 @@
 ## Hover-exec basic tests
 
-- [Hover-exec basic tests](#hover-exec-basic-tests)
-  - [Hover](#hover)
-  - [Exec](#exec)
-  - [Other information from the hover](#other-information-from-the-hover)
-  - [Execution via the keyboard, and in-line output](#execution-via-the-keyboard-and-in-line-output)
-  - [Final comments](#final-comments)
-
 The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
 
 ### Hover
