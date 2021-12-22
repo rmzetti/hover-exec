@@ -13,7 +13,7 @@ let out: string = ""; //output from code execution
 let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
 let needSwap = false; //no swaps so leave code as is
-let windows = false; //os is windows
+let windows = process.platform.startsWith("win"); //os is windows
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
 let tempName: string = ""; //file name of temp file for current script
@@ -256,6 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
+      alert('DID CHANGE');
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
       //checkJsonVisible();
     })
@@ -459,6 +460,19 @@ export function activate(context: vscode.ExtensionContext) {
     config.update("repls", merge, 1);
   }
 
+  function checkDefaults(){
+    let c=config.inspect("scripts");
+    if(c===undefined){return false;}
+    let s=c.defaultValue as Object;
+    let t=c.globalValue as Object;
+    for (let k in Object.keys(t)) {
+      let a=Object.values(s)[k];
+      let b=Object.values(t)[k];
+      if(a!==b){ return false;}
+    }
+    return true;
+  }
+  alert(''+checkDefaults());
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
@@ -918,8 +932,14 @@ function deleteOutput(asText: boolean) {
   }
 }
 
-function execRepl(cmd: string,opt:string[]){
-  repl=cp.spawn(cmd, opt,{shell:true});
+function execRepl(cmd: string,args:string[]){
+  let opt={};
+  if(process.platform==='darwin'||process.platform==='linux') {
+    opt={shell:'/bin/bash'};
+  } else {
+    opt={shell:true};
+  }
+  repl=cp.spawn(cmd, args, opt);
   if(repl===null){return;}
   repl.stdout?.on('data', (data) => {
     let s=''+data;
@@ -951,7 +971,11 @@ async function replOutput(){
 async function execShell(cmd: string){
   //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {
-    ch = cp.exec(cmd, (err1, out1, stderr1) => {
+    let opt={};
+    if(process.platform==='darwin'||process.platform==='linux') {
+      opt={shell:'/bin/bash'};
+    }
+    ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {
         needSwap=false; //turn off swaps for errors
         console.log(out1+err1+","+stderr1);   //see this in developer tools

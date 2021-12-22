@@ -16,11 +16,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [python](#python)
     - [scilab](#scilab)
     - [julia](#julia)
-<<<<<<< HEAD
-    - [shell](#shell)
-=======
     - [zsh](#zsh)
->>>>>>> 702ded08241ccdf4b3793c5fb27d70d6fa14b731
     - [gnuplot](#gnuplot)
     - [Html](#html)
   - [One-liners and quickmath](#one-liners-and-quickmath)
@@ -208,63 +204,12 @@ Notes:
 ```lua {cmd}   -- say hello & goodbye
 --lua {} :lua54 --  {} allows syntax highlighting in *mpe*
 math.randomseed(os.time())
-'hello ' .. 44-2+math.random() =>>hello 42.550102927722
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.9145515236356
+'hello ' .. 44-2+math.random() =>>hello 42.465951944236
+"& goodbye " .. math.pi+math.random() =>>& goodbye 3.3524943149001
 print("lua ok") -- this outputs in the output code block below
 ```
 ```output
 lua ok
-```
-
-`alias julia`
-```output
-Error: Command failed: alias julia
-/bin/sh: line 0: alias: julia: not found
-,/bin/sh: line 0: alias: julia: not found
-```
-
-`pwd;a=("1" "2" "3");echo ${a[2]};`
-`echo $0`
-```output
-/bin/sh
-```
-
-`a=(1,2,3);echo $a[1];`
-```output
-1,2,3[1]
-```
-```js
-console.log(process.platform)
-```
-```output
-darwin
-```
-```js:eval
-var os=require('os')
-console.log(os.type())
-```
-```output
-Darwin
-```
-
-`alias julia`
-```output
-Error: Command failed: alias julia
-/bin/sh: line 0: alias: julia: not found
-,/bin/sh: line 0: alias: julia: not found
-```
-
-
-
-
-
-```julia
-print(3-2);
-```
-```output
-Error: Command failed: julia "/Users/kellycogan/Library/Application Support/Code/User/globalStorage/rmzetti.hover-exec/temp.jl"
-/bin/sh: julia: command not found
-,/bin/sh: julia: command not found
 ```
 
 ---
@@ -329,34 +274,24 @@ disp('scilab random: '+string(rand()))
   # julia {cmd} //also works in *mpe*
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.1306228218211123, 0.480566650281645, 0.3153344360598056]
+a   # =>>[0.3047207125886271, 0.12128037451614126, 0.2475335991714045]
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.1306228218211123, 42.0, 0.3153344360598056]
-b=[0.1306228218211123, 42.0, 0.3153344360598056]
+a=[0.3047207125886271, 42.0, 0.2475335991714045]
+b=[0.3047207125886271, 42.0, 0.2475335991714045]
 ```
 
 ---
-<<<<<<< HEAD
-### shell
-=======
 ### zsh
->>>>>>> 702ded08241ccdf4b3793c5fb27d70d6fa14b731
 
 ```zsh {cmd}
   #zsh {cmd} // random number, show current directory.
-echo "hello"
 pwd
-ls -l
 ```
-
-```bash {cmd}
-  #bash {cmd} // random number, show current directory.
-echo "goodbye"
-pwd
-ls -l
+```output
+/Users/kellycogan/Documents/GitHub/hover-exec
 ```
 
 ---

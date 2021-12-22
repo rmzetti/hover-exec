@@ -16,7 +16,10 @@
 		"vscode": "^1.60.0"
 	},
 	"categories": [
-		"Other"
+		"Other","Programming Languages","Notebooks"
+	],
+	"keywords": [
+		"execute","run","code","codeblock","output"
 	],
 	"activationEvents": [
 		"onLanguage:markdown"
@@ -68,7 +71,12 @@
 						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 					}
 				},
-				"hover-exec.swappers": {
+				"hover-exec.z1": {
+          "description":"defaults for mac",
+          "octave":"octave mac",
+          "matlab":"matlab mac"
+        },
+        "hover-exec.swappers": {
 					"description": "NB. Edit or add swappers using code blocks (see README)",
 					"default": {
 						"octave": "disp(['=>>' $1])",
