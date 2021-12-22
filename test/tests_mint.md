@@ -1626,6 +1626,18 @@ open firefox with href, or showing html text
 `"/mnt/c/Program Files/Notepad++/Notepad++.exe" "%cREADME.md"`
 `/mnt/c/Users/ralph/AppData/Local/Microsoft/WindowsApps/notepad.exe "%cREADME.md"`
 `chrome <h1>Hello world!</h1>`
+`echo $0;pwd;cd ~;pwd;cat  .bash_aliases`
+```output
+/bin/bash
+/home/rmzetti/hover-exec
+/home/rmzetti
+alias ddd="ls -al"
+```
+`echo 'alias ddd="ls -al"' > output.txt`
+```output
+alias ddd="ls -al" output.txt
+```
+`cd ~;ls -al`
 
 
 ### Quickmath examples
