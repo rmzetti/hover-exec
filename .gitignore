@@ -28,4 +28,4 @@ node_modules/webpack/bin/webpack.js
 node_modules/webpack/node_modules/acorn/bin/acorn
 node_modules/webpack-cli/bin/cli.js
 node_modules/which/bin/node-which
-
+.DS_Store
