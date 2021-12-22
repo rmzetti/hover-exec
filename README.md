@@ -1,6 +1,6 @@
 # Hover-exec README
 
-This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
+This is the  README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
 
 - [Hover-exec](#hover-exec)
   - [Features](#features)
