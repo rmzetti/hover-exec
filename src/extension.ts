@@ -256,7 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
-      alert('DID CHANGE');
+      alert('config changed');
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
       //checkJsonVisible();
     })
@@ -472,7 +472,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     return true;
   }
-  alert(''+checkDefaults());
+  alert('scripts config defaults? '+checkDefaults());
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);

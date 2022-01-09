@@ -1,6 +1,6 @@
 # Hover-exec README
 
-This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
+This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md). Some of the examples here are Windows specific - for mac and linux/wsl see [README_mac](README_mac.md) or [README_wsl](README_wsl.md).
 
 - [Hover-exec](#hover-exec)
   - [Features](#features)
@@ -33,6 +33,7 @@ The *hover-exec* extension is activated when a markdown file is opened in the ed
 
 Hover script exec in action:
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
+  ![](Hover-exec.gif)
 
 ---
 ## Basic hover-exec 
@@ -49,7 +50,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.4006725962476545
+'test: '+Math.random() =>>test: 0.36573939503551367
 ```
 ```output
 Notice the in-line random number result
@@ -63,20 +64,19 @@ A couple more examples using `vm`, showing use of *vscode* api functions and som
 ```js  //using javascript vm various examples
 //js //using javascript vm, various examples
 let abc="hello, world 3"
-let a='hello variable world';
-alert(a) //not available in nodejs scripts
-a='goodbye world'
+alert(abc) //not available in nodejs scripts
+let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>5.8633991435714
-eval('let b=3; 2*b*Math.random()')=>>5.388723128683446
+2*b*Math.random() =>>3.8977679442468744
+eval('let b=3; 2*b*Math.random()')=>>1.2127535482472327
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.3619674786980203
+'hello '+(2-1+Math.random())=>>hello 1.5258921831663654
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.9408919732641838
+goodbye world 0.9176600571282423
 hello, world 3
 ```
 
@@ -313,7 +313,7 @@ plot "$charge" using 1:3 w lp title "charge"
 ---
 ### Html
 
-```html //all required html is in the codeblock below
+```html //all the html is in the codeblock below
 <!-- html //tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -363,7 +363,7 @@ open default browser with href, or showing html text (note that html is a built 
 
 `html <h1>Hello world!</h1>`
 
-And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` . NB. Copy to clipboard with a click.
+And finally, a few more *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` . NB. Copy to clipboard with a click.
 
 ---
 ## Configuration settings
@@ -417,7 +417,7 @@ Any of these can be changed to suit the system in use using vscode `settings` un
 
 Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler.
 
-Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (on Windows, use "double quotes" if there are spaces in the file path).
+Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (use "double quotes" if there are spaces in the file path).
 
 For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
@@ -434,11 +434,13 @@ There is also a set of strings called `swappers` which enable moving the output 
 
 This is a beta version.
 
-Note that in all scripting languages included, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages. To help with this there is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md).
+Note that in all the demos above, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-However scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions. 
+However scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
 
-Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.
+There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
+
+Matlab takes a substantial amount of time to run a codeblock (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
@@ -447,12 +449,3 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
-
-```matlab
-a=3;
-disp(3-32)
-```
-```output
-   -29
-```
-
