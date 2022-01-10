@@ -343,25 +343,25 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ### One-liner and quickmath examples:
 
 exec notepad with file in current folder:
-`open -a textedit %cREADME.md`  mac
-`notepad %cREADME.md`  windows
-`gedit %cREADME.md`  linux/wsl
-`xedit %cREADME.md`  linux/wsl
+`open -a textedit "%cREADME.md"`  mac
+`notepad "%cREADME.md"`  windows
+`gedit "%cREADME.md"`  linux/wsl
+`xedit "%cREADME.md"`  linux/wsl
 
 exec notepad with temp file (%f):
-`open -a textedit %f`  mac
-`notepad %f`  windows
-`gedit %f`  linux/wsl
+`open -a textedit "%f"`  mac
+`notepad "%f"`  windows
+`xedit "%f"`  linux/wsl
 
 open another instance of vscode:
 `code -n %f`
 
 explore files, view folders:
 `open -a finder ~`  mac 'home'
-`open -a finder %c`  mac to view current folder
+`open -a finder "%c"`  mac to view current folder
 `explorer ,`  windows view 'ThisPC'
-`explorer /select, %cREADME.md`  windows view current folder & select file
-`nemo %cREADME.md`  Linux mint view current folder & select file
+`explorer /select, "%cREADME.md"`  windows view current folder & select file
+`nemo "%cREADME.md"`  Linux mint view current folder & select file
 
 other examples:
 `devmgmt.msc` for windows show devices
@@ -385,7 +385,7 @@ The startup commands for scripts included are as follows
 nb. `%f` provides the appropriate temporary file path & name
       the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` :
 
-```js
+```js //show scripts config settings
 sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
@@ -465,7 +465,7 @@ Scripts can also be run using their REPL version, if this is available - eg. for
 
 There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
 
-Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a MATLAB based REPL working (unlike, for example, Octave, which is fairly strightforward.)
+Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 

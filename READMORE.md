@@ -4,11 +4,12 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
 
 - [Hover exec](#hover-exec)
   - [Features](#features)
+    - [Compatibility with Markdown Preview Enhanced (*mpe*)](#compatibility-with-markdown-preview-enhanced-mpe)
   - [Basic hover-exec](#basic-hover-exec)
   - [Javascript scripts](#javascript-scripts)
-    - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
-    - [available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
-    - [The `vm` context](#the-vm-context)
+    - [Examples using vm and eval](#examples-using-vm-and-eval)
+    - [available functions in vm and eval](#available-functions-in-vm-and-eval)
+    - [The vm context](#the-vm-context)
     - [Quick specification of `vm` context](#quick-specification-of-vm-context)
     - [using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
@@ -58,8 +59,6 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
 
 *Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration.  This is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
-There is also an intention to have a certain compatability with the excellent *markdown preview enhanced* extension. The idea would be to simply include *mpe* requirements in the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec@ (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
-
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
@@ -67,17 +66,21 @@ Hover script exec in action:
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
   ![](Hover-exec.gif)
 
+### Compatibility with Markdown Preview Enhanced (*mpe*)
+
+There is also an intention to maintain a certain compatability with the excellent *markdown preview enhanced* extension. The idea is to simply include *mpe* requirements in the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec@ (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
+
 ---
 ## Basic hover-exec 
 
-Hovering over lines starting with ` ``` ` (or lines which start with a single backtick and include an end backtck) will trigger a hover message with an *exec* command in the bottom line. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Hovering over the triple backtick at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
 ## Javascript scripts
 
 Javascript code blocks can be executed using the `vm` module, or by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
 
-### Examples using `vm` and `eval`
+### Examples using vm and eval
 
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
@@ -144,13 +147,13 @@ rather than
 //js:node {cmd=node}
 console.log('hello')
 ```
-(view the above in *mpe* to see the difference)
+(Both work in *hover-exec*, view the above in *mpe* to see the difference)
 
 Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
 
 ---
-### available functions in `vm` and `eval`
+### available functions in vm and eval
 
 The following functions are included in `vmContext` by default (and are also available to `eval`):
 - abort(): abort current script
@@ -176,7 +179,7 @@ The following functions are included in `vmContext` by default (and are also ava
 - _ : access to `lodash` objects
 
 ---
-### The `vm` context
+### The vm context
 The context for `vm` can be restricted, enlarged or set back to the default. The `vmContext` object can be directly specified by using `eval`. Examples:
 
 ```js:eval //show the current context for vm
@@ -208,8 +211,6 @@ _
 math
 moment
 __main
-aa
-bb
 ```
 
 With this context, for example, the following works in `vm`:
@@ -290,7 +291,7 @@ Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `
 
 A function or variable can be set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval` and is then available during the session in both. A global can be deleted (undefined) using, eg. `delete global.a;`
 
-'Naked' assignments (ie. no `let`or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'eval' codeblocks. 
+'Naked' assignments (ie. no `let` or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are also available to subsequent `js/vm` codeblocks, and they are also available to subsequently executed 'eval' codeblocks. 
 
 ```js:eval //use of lodash and mathjs 
 //js:eval //use of lodash and mathjs 
@@ -342,15 +343,15 @@ The js command by default executes a javascript code block in `nodejs` (assuming
 
 ```js :node
 //js :node  //as before, this line shows the command in markdown previews
-console.log('  test using node:\n  '+Math.random())
-console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
-    ' the cursor in the output block will delete the output block')
+console.log('test using node:\n'+Math.random())
+console.log('  NB: Clicking "delete output" in the "output" line hover message, or typing\n',
+    ' alt+/ or opt+/ with the cursor in the output block will delete the output block')
 ```
 ```output
-  test using node:
-  0.8539380404312473
-  Note: hover-exec on ```output line`, or alt+/ (opt+/) with
-  the cursor in the output block will delete the output block
+test using node:
+0.6440206510911775
+  NB: Clicking "delete output" in the "output" line hover message, or typing
+  alt+/ or opt+/ with the cursor in the output block will delete the output block
 ```
 
 Note:
@@ -414,7 +415,7 @@ In these examples, random numbers & time are used so updated output is easier to
 ### Lua
 
 ```lua:lua54 {cmd=lua54} --10 million random number calls
---lua {cmd=lua54} --10 million random number calls
+--lua {cmd=lua} -- alternative
 local t = os.clock();
 local t1=0;
 local matrix=require "matrix"
@@ -432,7 +433,8 @@ print(os.clock()-t)
 
 ### Scripts without pre-defined configs
 
-A range of operating system commands can be executed in one-liners try the following (execute from the line with `alt+/`, & remove the result immediately with just a down arrow then `alt+/` again):
+A range of operating system commands can be executed in one-liners try the following (execute from the line with `alt+/` or `opt+/`.
+The result can be immediately removed with just a down arrow then `alt+/` or `opt+/' ):
 
 `help`
 `dir` //show hover-exec folder contents
