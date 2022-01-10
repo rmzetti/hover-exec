@@ -61,7 +61,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
   - [One-liners](#one-liners)
     - [One-liners examples](#one-liners-examples)
     - [Quickmath examples](#quickmath-examples)
-    - [html & javascript](#html--javascript)
+    - [html & javascript one-liners](#html--javascript-one-liners)
     - [audio one-liners](#audio-one-liners)
   - [inhere - including tagged sections](#inhere---including-tagged-sections)
     - [Using repl scripts](#using-repl-scripts)
@@ -1607,6 +1607,13 @@ qt5ct: using qt5ct plugin
 ### One-liners examples
 NB. Note only *single* backticks for one-liners, but still must begin in col 1.
 
+`console.log(process.platform)`
+```output
+Error: Command failed: console.log(process.platform)
+/bin/sh: 1: Syntax error: word unexpected (expecting ")")
+,/bin/sh: 1: Syntax error: word unexpected (expecting ")")
+```
+
 *Mint:*
 exec editor with file in current folder:
 `xed '%cREADME.md'`
@@ -1621,22 +1628,15 @@ show storage devices:
 open firefox with href, or showing html text
 `firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`
 `firefox <h1>Hello world!</h1>`
+use bash direct
+`echo $0;pwd;ls -al test/*`
 
 *WSL:*
 `"/mnt/c/Program Files/Notepad++/Notepad++.exe" "%cREADME.md"`
 `/mnt/c/Users/ralph/AppData/Local/Microsoft/WindowsApps/notepad.exe "%cREADME.md"`
 `chrome <h1>Hello world!</h1>`
 `echo $0;pwd;cd ~;pwd;cat  .bash_aliases`
-```output
-/bin/bash
-/home/rmzetti/hover-exec
-/home/rmzetti
-alias ddd="ls -al"
-```
 `echo 'alias ddd="ls -al"' > output.txt`
-```output
-alias ddd="ls -al" output.txt
-```
 `cd ~;ls -al`
 
 
