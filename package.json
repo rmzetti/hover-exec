@@ -51,7 +51,7 @@
 						"julia": "julia \"%f.jl\"",
             "juliamac":"/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
 						"gnuplot": "gnuplot -p -c \"%f.gp\"",
-						"pwsh": "pwsh -f \"%f.ps1\"",
+						"pwsh": "pwsh -f \"%f.ps1\" ",
 						"bash": "bash \"%f.sh\"",
 						"zsh": "zsh -f \"%f.sh\"",
 						"lua54": "lua54 \"%f.lua\"",
@@ -71,11 +71,6 @@
 						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
 					}
 				},
-				"hover-exec.z1": {
-          "description":"defaults for mac",
-          "octave":"octave mac",
-          "matlab":"matlab mac"
-        },
         "hover-exec.swappers": {
 					"description": "NB. Edit or add swappers using code blocks (see README)",
 					"default": {
@@ -83,8 +78,8 @@
 						"matlab": "disp([\"=>>\"+($1)])",
 						"rterm": "cat('=>>',$1,'\\n')",
             "r": "cat('=>>',$1,'\\n')",
-            "scilab": "mprintf('=>>'+string($1)+'\\n')",
-						"scilabcli": "mprintf('=>>'+string($1)+'\\n')",
+            "scilab": "mprintf('=>>%s\\n',string($1))",
+						"scilabcli": "mprintf('=>>%s\\n',string($1))",
 						"python": "print('=>>'+str($1))",
 						"python3": "print('=>>'+str($1))",
 						"julia": "println(string(\"=>>\",$1))",

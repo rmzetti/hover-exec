@@ -624,6 +624,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               repl.stdin?.write(s);
               out=await replOutput();
               if(rp[4]!==""){ //postprocessing (eg. lua,node)
+                //rp[4] has one or more regexp
                 let i=0;
                 while(i<rp[4].length-1){
                   let re=new RegExp(rp[4][i],"mg");
