@@ -256,7 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
-      alert('DID CHANGE');
+      alert('config changed');
       config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
       //checkJsonVisible();
     })
@@ -461,18 +461,26 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function checkDefaults(){
+    //alert('1');
     let c=config.inspect("scripts");
+    //alert('2');
     if(c===undefined){return false;}
+    //alert('3');
     let s=c.defaultValue as Object;
+    //alert('4');
+    //alert('4 '+c.globalValue);
     let t=c.globalValue as Object;
+    //alert('5');
     for (let k in Object.keys(t)) {
+      //alert('key '+k);
       let a=Object.values(s)[k];
       let b=Object.values(t)[k];
       if(a!==b){ return false;}
     }
+    //alert('6');
     return true;
   }
-  alert(''+checkDefaults());
+  //alert('scripts config defaults? '+checkDefaults());
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
@@ -624,6 +632,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               repl.stdin?.write(s);
               out=await replOutput();
               if(rp[4]!==""){ //postprocessing (eg. lua,node)
+                //rp[4] has one or more regexp
                 let i=0;
                 while(i<rp[4].length-1){
                   let re=new RegExp(rp[4][i],"mg");
