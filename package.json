@@ -51,7 +51,7 @@
 						"julia": "julia \"%f.jl\"",
             "juliamac":"/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
 						"gnuplot": "gnuplot -p -c \"%f.gp\"",
-						"pwsh": "pwsh -f \"%f.ps1\" ",
+						"pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
 						"bash": "bash \"%f.sh\"",
 						"zsh": "zsh -f \"%f.sh\"",
 						"lua54": "lua54 \"%f.lua\"",

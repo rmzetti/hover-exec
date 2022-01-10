@@ -277,13 +277,8 @@ pwd
 ```pwsh
   # pwsh // random number, show current directory.
   # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>>0.592795786723865
+Get-Random -Min 0.0 -Max 1.0 # =>>0.230122082973887
 pwd
-```
-```output
-Path
-----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
@@ -351,6 +346,7 @@ exec notepad with file in current folder:
 `open -a textedit %cREADME.md`  mac
 `notepad %cREADME.md`  windows
 `gedit %cREADME.md`  linux/wsl
+`xedit %cREADME.md`  linux/wsl
 
 exec notepad with temp file (%f):
 `open -a textedit %f`  mac
@@ -365,6 +361,7 @@ explore files, view folders:
 `open -a finder %c`  mac to view current folder
 `explorer ,`  windows view 'ThisPC'
 `explorer /select, %cREADME.md`  windows view current folder & select file
+`nemo %cREADME.md`  Linux mint view current folder & select file
 
 other examples:
 `devmgmt.msc` for windows show devices
@@ -407,14 +404,12 @@ console.log(sort(config.get('scripts')));
   julia: 'julia "%f.jl"',
   juliamac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
   lua: 'lua "%f.lua"',
-  lua51: 'lua51 "%f.lua"',
   lua54: 'lua54 "%f.lua"',
-  matlab: 'matlab -nodesktop -sd %p.m -batch temp',
-  matlab_comment: 'if %p.m needs to be "%p.m" then add /, ie. "%p.m/" ',
+  matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
   node: 'node "%f.js"',
   octave: 'octave "%f.m"',
   pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
-  pwsh: 'pwsh -f "%f.ps1"',
+  pwsh: 'set "NO_COLOR=1" & pwsh -f "%f.ps1" ',
   python: 'python "%f.py"',
   python3: 'python3 "%f.py"',
   r: 'r "%f.r" ',
@@ -424,8 +419,6 @@ console.log(sort(config.get('scripts')));
   scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
-  ts: 'ts-node "%f.ts" ',
-  typescript: 'ts-node "%f.ts" ',
   vm: 'vm',
   zsh: 'zsh -f "%f.sh"'
 }
@@ -449,10 +442,15 @@ On macos
 ```open -a textedit "%f.txt"
 This text can be viewed in the text editor
 and saved as required -
-changes will not be reflected into this code block.
+changes will not be reflected back into this code block.
 ```
 
-
+On linux/wsl
+```xedit %f.txt
+This text can be viewed in the text editor
+and saved as required -
+changes will not be reflected back into this code block.
+```
 
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md) and files in [test](test) for more info and examples.
 
