@@ -461,18 +461,26 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function checkDefaults(){
+    //alert('1');
     let c=config.inspect("scripts");
+    //alert('2');
     if(c===undefined){return false;}
+    //alert('3');
     let s=c.defaultValue as Object;
+    //alert('4');
+    //alert('4 '+c.globalValue);
     let t=c.globalValue as Object;
+    //alert('5');
     for (let k in Object.keys(t)) {
+      //alert('key '+k);
       let a=Object.values(s)[k];
       let b=Object.values(t)[k];
       if(a!==b){ return false;}
     }
+    //alert('6');
     return true;
   }
-  alert('scripts config defaults? '+checkDefaults());
+  //alert('scripts config defaults? '+checkDefaults());
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
