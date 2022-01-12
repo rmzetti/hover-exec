@@ -1,50 +1,56 @@
 # Hover-exec README
 
-This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md). Some of the examples here are Windows specific - for mac and linux/wsl see [README_mac](README_mac.md) or [README_wsl](README_wsl.md).
+This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
 
-- [Hover-exec](#hover-exec)
+## Contents
+- [Hover-exec README](#hover-exec-readme)
+  - [Contents](#contents)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
   - [Javascript scripts](#javascript-scripts)
-    - [Examples using `vm` and `eval`](#examples-using-vm-and-eval)
+    - [Examples using vm and eval](#examples-using-vm-and-eval)
     - [Available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [Using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
+    - [Using nodejs](#using-nodejs)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
-    - [nodejs](#nodejs)
-    - [lua](#lua)
-    - [python](#python)
-    - [scilab](#scilab)
-    - [julia](#julia)
-    - [powershell](#powershell)
-    - [gnuplot](#gnuplot)
+    - [Lua](#lua)
+    - [Python](#python)
+    - [Scilab](#scilab)
+    - [Julia](#julia)
+    - [Bash & zsh](#bash--zsh)
+    - [Powershell](#powershell)
+    - [Gnuplot](#gnuplot)
     - [Html](#html)
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner and quickmath examples:](#one-liner-and-quickmath-examples)
   - [Configuration settings](#configuration-settings)
-  - [Known Issues](#known-issues)
+  - [Notes and Known Issues](#notes-and-known-issues)
   - [Release Notes](#release-notes)
 
+---
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. This is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
+*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
+
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
   ![](Hover-exec.gif)
 
 ---
 ## Basic hover-exec 
-Hovering over lines starting with ` ``` `  (or lines which start with a single backtick and include an end backtick) will trigger a hover message with an *exec* command as the bottom line, as in the *gif* above. Hovering over ` ``` ` at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+
+Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Hovering over the triple backtick at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
 
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default (command blocks with id `js` ) is to use the `vm` module, `hover-exec` provides, by default, a reasonably substantial `vm context`.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
 
-### Examples using `vm` and `eval`
+### Examples using vm and eval
 
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
@@ -59,7 +65,7 @@ Notice the in-line random number result
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
-A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`)
+A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`).
 
 ```js  //using javascript vm various examples
 //js //using javascript vm, various examples
@@ -104,12 +110,13 @@ Note that `vm` and `eval` both allow the internal *vscode* API to be used. Insta
 ### Available functions in `vm` and `eval`
 
 The following functions are included in `vmContext` by default (and are also available to `eval`):
+
 - abort(): abort current script
 - alert(string): provide an alert box (bottom right)
 - config: access to *hover-exec* configuration
 - delay(usec): delay for specified number of usec
 - execShell(string): exec shell command
-- global: define and access global functions and variables (persistent over separate script execs)
+- global: define and access global functions and variables (globals persist over separate script execs)
 - globalThis: as for global
 - input(string): wait for input (box at top of screen)
 - process: access to process module, eg. `process.cwd()` 
@@ -145,6 +152,7 @@ function xrange(){
 xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
 cd =>>c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec
+console.log(xrange())
 ```
 
 ```js //declare a global function for eval
@@ -177,12 +185,12 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual commands):
+Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual command lines used):
 
-- vm (vm script, with vscode api included in context)
-- eval (built-in javascript, with vscode api available)
-- javascript (via node)
-- html
+- js (or vm) --javascript, with vscode api included in context
+- eval --javascript via eval, with vscode api available
+- javascript (or node) --javascript using nodejs
+- html --html via the default browser
 - powershell
 - bash
 - zsh
@@ -197,12 +205,12 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 - pascal
 
 Notes:
-- The script language (eg `julia`, `nodejs` ..) needs to have been installed
+- The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
 - Other script languages may be added. And as an alternative to the standard *vscode* method for changing extension settings, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
 
 ---
-### lua
+### Lua
 
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
@@ -216,7 +224,7 @@ lua ok
 ```
 
 ---
-### python
+### Python
 
 ```python
  #python :python3 # adding ':python3' would use 'python3' as start command
@@ -232,7 +240,7 @@ python ok
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
 
 ---
-### scilab
+### Scilab
 
 ```js :scilab 
 //js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
@@ -248,7 +256,7 @@ test 0.9880022 c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
-### julia
+### Julia
 
 ```julia
   #julia
@@ -264,7 +272,7 @@ b=[0.11769825733706418, 42.0, 0.27895554485022145]
 ```
 
 ---
-### zsh
+### Bash & zsh
 
 ```zsh // show current directory
  #zsh // show current directory
@@ -272,7 +280,7 @@ pwd
 ```  
 
 ---
-### powershell
+### Powershell
 
 ```pwsh
   # pwsh // random number, show current directory.
@@ -282,7 +290,7 @@ pwd
 ```
 
 ---
-### gnuplot
+### Gnuplot
 
 Gnuplot is a very useful stand-alone plotting facility.
 When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).

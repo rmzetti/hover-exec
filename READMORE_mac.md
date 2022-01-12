@@ -470,28 +470,6 @@ pwd
 pwd
 ls -l
 ```
-```output
-/Users/kellycogan/Documents/GitHub/hover-exec
-total 35480
--rw-r--r--    1 kellycogan  staff      230 Nov 14 16:12 CHANGELOG.md
--rw-r--r--    1 kellycogan  staff  8460911 Nov 14 16:12 Hover-exec.gif
--rw-r--r--    1 kellycogan  staff   218201 Nov 14 16:12 LICENSE.md
--rw-r--r--@   1 kellycogan  staff    19845 Dec 12 22:12 README.md
--rw-r--r--@   1 kellycogan  staff    20093 Dec 12 17:52 README_mac.md
--rw-r--r--    1 kellycogan  staff    52624 Dec 13 13:19 READMORE.md
--rw-r--r--    1 kellycogan  staff    51620 Dec 13 15:30 READMORE_mac.md
-drwxr-xr-x    4 kellycogan  staff      128 Dec 13 13:19 dist
--rw-r--r--    1 kellycogan  staff  9192831 Dec 13 13:19 hover-exec-0.6.5.vsix
-drwxr-xr-x    5 kellycogan  staff      160 Dec 12 22:12 media
-drwxr-xr-x  280 kellycogan  staff     8960 Nov 15 17:00 node_modules
-drwxr-xr-x    4 kellycogan  staff      128 Nov 14 16:12 out
--rw-r--r--    1 kellycogan  staff   116622 Nov 20 15:42 package-lock.json
--rw-r--r--@   1 kellycogan  staff     5894 Dec 11 20:35 package.json
-drwxr-xr-x    3 kellycogan  staff       96 Dec 13 13:19 src
-drwxr-xr-x    8 kellycogan  staff      256 Dec 12 22:07 test
--rw-r--r--    1 kellycogan  staff      619 Nov 14 16:12 tsconfig.json
--rw-r--r--    1 kellycogan  staff     1398 Nov 14 16:12 webpack.config.js
-```
 
 ---
 ### Gnuplot
