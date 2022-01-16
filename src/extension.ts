@@ -70,6 +70,10 @@ export function activate(context: vscode.ExtensionContext) {
         pos: vscode.Position,
         token: vscode.CancellationToken
       ): Promise<vscode.Hover | null> {
+        // if (!vscode.workspace.workspaceFolders) {
+        //   alert('hover-exec: open workspace!');
+        //   return null;
+        // }
         if (executing) {
           //if already executing code block, show cancel option
           status('executing...');
@@ -86,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
         quickmath=false;  //quick evaluate using mathjs, or a regex search
         let includeHere=false;    //an 'inhere' (include) line
         setExecParams(context,doc); //reset basic exec parameters
-        if (!line.text.startsWith("```")) {
+        if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath=/`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text);
           includeHere=/#inhere.*#\w+/.test(line.text);
@@ -94,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
               return null;
           } //ignore if not a code block, oneLiner or quickmath
         }
-        if(includeHere){
+        if(includeHere){ //show tagged content
           return new vscode.Hover(new vscode.MarkdownString(
             "["+(await inHere(line.text)).replace(/\n/g,' ') +"](vscode://rmzetti.hover-exec?copyToClipboard)"
           ));
@@ -205,6 +209,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
       //process exec command (default shortcut Alt+/ ) -- find start of block and execute
+      // if (!vscode.workspace.workspaceFolders) {
+      //   alert('hover-exec: open workspace!');
+      //   return;
+      // }
       status(''); //clear status message
       let editor = vscode.window.activeTextEditor;
       if (editor) {
@@ -273,13 +281,18 @@ export function activate(context: vscode.ExtensionContext) {
     if (vscode.workspace.workspaceFolders) {
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-      if (windows) {
-        currentFsPath += "\\";
-      } else {
-        currentFsPath += "/";
-      }
     } else {
-      alert("workspace undefined");
+      currentPath = currentFile.slice(0,currentFile.lastIndexOf('/'));
+      if(windows){
+        currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'));
+      } else {
+        currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('/'));
+      }
+    }
+    if (windows) {
+      currentFsPath += "\\";
+    } else {
+      currentFsPath += "/";
     }
     vscode.workspace.fs.createDirectory(context.globalStorageUri); //create temp folder if necessary
     cmd = "";
@@ -461,23 +474,15 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function checkDefaults(){
-    //alert('1');
     let c=config.inspect("scripts");
-    //alert('2');
     if(c===undefined){return false;}
-    //alert('3');
     let s=c.defaultValue as Object;
-    //alert('4');
-    //alert('4 '+c.globalValue);
     let t=c.globalValue as Object;
-    //alert('5');
     for (let k in Object.keys(t)) {
-      //alert('key '+k);
       let a=Object.values(s)[k];
       let b=Object.values(t)[k];
       if(a!==b){ return false;}
     }
-    //alert('6');
     return true;
   }
   //alert('scripts config defaults? '+checkDefaults());
@@ -576,7 +581,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         out = ""; //reset output buffer
         prog.report({ message: "executing" }); //start execution indicator
         s=hrefSrcReplace(s);
-        s=await inHere(s);        
+        s=await inHere(s); //replace #inhere       
         if(s!==''){writeFile(tempPath + tempName, s);} //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
@@ -705,42 +710,23 @@ function replaceStrVars(s: string) {
 }
 
 async function inHere(s: string): Promise<string> {
-    //`#inhere` (include h-e regex) is a file name with a regex appended
-    //if there is no filename the current file is assumed
-    //there must be a regex at the end (use /.*/ to include the whole file)
-    //simplified regex: . means any char includeHere linefeeds etc -> [\s\S]
-    //                  * is always non-greedy ->*?
-    //                  if ( ) not present it is the whole expression
-    //the format is: #inhere pathname`/regex/` (single backticks)
-    //and %e etc can be used as (part of) the pathname
-    //the whole '#inhere' line after the `#` will be replaced by the result
+  //#inhere path/name `#tag`
+  //        %e etc can be used in the path/name
+  //'#inhere' from `#` will be replaced by the result
   if(vscode.window.activeTextEditor){ 
     let n=(s.match(/#inhere /g) || []).length;
     if(n===0){return s;}
-    let re1=new RegExp("^([\\s\\S]*?)#inhere(.*?)\\s[`/]+([\\s\\S]*?)[`/]+([\\s\\S]*)$",'m');
-    for (let i=0;i<n;i++){ //paste any `#inhere` sections
+    let re1=new RegExp("^([\\s\\S]*?)#inhere(.*?)\\s`(#\\w+)`([\\s\\S]*)$",'m');
+    for (let i=0;i<n;i++){
       let f=s.replace(re1,'$2').trim(); //file name or ''
       if (f==='') {f=vscode.window.activeTextEditor.document.getText();}
-      else { f=fs1.readFileSync(replaceStrVars(f),'utf8');
-            //f=await readFile(replaceStrVars(f));
-      }
-      let s1=s.replace(re1,'$3');
-      let tag=s1.replace(/.*?(#\w+).*/,'$1');
-      let re2=new RegExp("");
-      if (tag!==''){//(tag===s1){
-        re2=new RegExp(tag,"g"); //to remove tags after
-        s1=s1.replace(/(#\w+)/,'$1$.*$1$'); //allow just a simple tag
-      } else {
-        tag='';
-      }
-      s1=s1.replace(/\./g,'[\\s\\S]');   //make . mean all chars
-      s1=s1.replace(/[*]([^?])/g,'*?$1');//make * not greedy
-      let re = new RegExp('[\\s\\S]*?('+s1+')[\\s\\S]*',"m");
-      s1=f.replace(re,'$1');
-      s1=await inHere(s1);//recursive
-      s = s.replace(re1,'$1\n'+s1+'$4');
-      if(tag!==''){s=s.replace(re2,'');}
-  }};
+      else { f=fs1.readFileSync(replaceStrVars(f),'utf8');}
+      let tag=s.replace(re1,'$3');      //tag is #tag was s1
+      let re = new RegExp('[\\s\\S]*?'+tag+'($[\\s\\S]*?)'+tag+'[\\s\\S]*',"m");
+      let s1=f.replace(re,'$1').trim(); //s1 is now string to copy to inhere
+      s = s.replace(re1,'$1'+s1+'$4');
+    }
+  };
   return s;
 }
 

@@ -77,7 +77,7 @@ Hover script exec in action:
 
 ### Compatibility with Markdown Preview Enhanced (*mpe*)
 
-There is also an intention to maintain a certain compatability with the excellent *markdown preview enhanced* extension. The idea is to simply include *mpe* requirements in the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec@ (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
+There is also an intention to maintain a certain compatability with the excellent *markdown preview enhanced* extension. The idea is to support the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec* (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
 
 ---
 ## Basic hover-exec 
@@ -96,7 +96,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.4861567849343953
+'test: '+Math.random() =>>test: 0.9604762965572495
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
 ```
@@ -123,14 +123,14 @@ let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>>1.9624637768947943
+eval('let a=3;2*a*Math.random()')=>>3.03462333266289
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.313537366751757
+'hello '+(2-1+Math.random())=>>hello 1.7334312405183094
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.0775511252109764
+goodbye world 0.06753950091948857
 hello, world 3
 ```
 
@@ -168,7 +168,7 @@ console.log('hello')
 Note that `vm` and `eval` allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
 ---
-### available functions in vm and eval
+### Functions available in vm and eval
 
 The following functions are included in `vmContext` by default (and are also available to `eval`):
 
@@ -227,6 +227,8 @@ _
 math
 moment
 __main
+aa
+bb
 ```
 
 With this context, for example, the following works in `vm`:
@@ -254,10 +256,7 @@ Now lodash is not available to `vm` scripts:
 
 ```js //can't use lodash in reduced context
 //js //can't use lodash in reduced context
-_.range(0,5)=>>
-```
-```output
-error ReferenceError: _ is not defined
+console.log(_.range(0,5))
 ```
 
 To get the default back, set `vmContext` to `undefined`:
@@ -380,9 +379,9 @@ test using node: 0.061870762003424895
 ```js {cmd=node} :node
 //js {cmd=node} :node
 process.cwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-'test: '+Math.random() =>>test: 0.8151737631797151
+'test: '+Math.random() =>>test: 0.9757668605192464
 let a=5;
-a+Math.random() =>>5.085366384159352
+a+Math.random() =>>5.393505303729933
 ```
 
 ---
@@ -402,7 +401,7 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 - python
 - julia
 - octave
-- scilab
+- scilab/scilabcli
 - gnuplot
 - matlab
 - lua
@@ -431,9 +430,11 @@ print(t1)
 print(os.clock()-t)
 ```
 ```output
-4998400.6926814
-0.321
+4999856.6063078
+0.447
 ```
+
+---
 ### Octave
 Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced* 
 
@@ -441,7 +442,7 @@ Use `octave` or `python:octave` to run octave. Using 'python' as the command id 
  # python:octave {cmd=octave} -- {cmd..} is for mpe
  # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.6431
+num2str(7.1+rand(1))  =>>7.4887
 'hello world in-line'  =>>hello world in-line
 pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 disp('hello world in output section!')
@@ -451,17 +452,13 @@ disp('hello world in output section!')
 ### Scilab
 Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax highlighting
 
-```js {cmd=scilab} :scilab
+```js {cmd=scilab} :scilab  //for macos use 'scilabcli' (no dash, see config)
 //js {cmd=scilab} :scilab -- {cmd..} is for mpe
 //need to use 'string()' for numeric output
 mprintf('%s\n',pwd())
 rand("seed",getdate('s')); //set new random sequence
-string(rand())+', '+string(rand())   =>>0.8537007, 0.6502421
+string(rand())+', '+string(rand())   =>>0.4039561, 0.7682755
 mprintf('%s',string(rand()))
-```
-```output
-c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-0.8716215
 ```
 
 ---
@@ -474,11 +471,8 @@ import os
 from random import random
  # the in-line results are effectively commented out for mpe
 os.getcwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-45-2+random() =>>43.072709564590994
+45-2+random() =>>43.585254107063164
 print('hello world '+str(3*random()+1))
-```
-```output
-hello world 1.633804499436842
 ```
 
 ---
@@ -489,15 +483,15 @@ This one-liner can be used to install packages:
 In the following example, `{matplotlib=true}` will plot graphs inline in *markdown preview enhanced*. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension) If you also use *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover. 
 
 ```python {cmd matplotlib=true}
-  #python {cmd matplotlib=true}`
+  #python {cmd matplotlib=true}
 import numpy as np
 import matplotlib.pyplot as plt
 randnums= np.random.randint(1,101,500)
 plt.plot(randnums)
 plt.show()
 ```
-Image from running the above codeblock and pasting via *Markdown kit*:
-  ![[media/READMORE_matplotlib example.png]]
+Image from running the above codeblock and pasting via *Markdown kit* or *Markdown memo*:
+  ![[READMORE_matplotlib example.png]]
 
 ---
 ```python {cmd} # endless plot
@@ -507,6 +501,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 fig = plt.figure()
+fig.suptitle('To close, first click cancel in hover message, then close plot', fontsize=14)
 canvas = np.zeros((480,640))
 screen = pf.screen(canvas, 'Sinusoid')
 start = time.time()
@@ -534,14 +529,11 @@ Julia also works in *mpe*
 using LinearAlgebra, Statistics, Compat
 pwd()  # =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 a=rand(Float64,3);
-a         # =>>[0.30800697352407513, 0.14164449731032192, 0.9243624629393834]
+a         # =>>[0.8196932575678177, 0.7535603007997054, 0.22130882779150296]
 b=a;b[2]=42;        # nb. arrays are shallow copied
-a         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
-b         # =>>[0.30800697352407513, 42.0, 0.9243624629393834]
+a         # =>>[0.8196932575678177, 42.0, 0.22130882779150296]
+b         # =>>[0.8196932575678177, 42.0, 0.22130882779150296]
 println(string("a=",a))
-```
-```output
-a=[0.30800697352407513, 42.0, 0.9243624629393834]
 ```
 
 ---
@@ -555,25 +547,19 @@ y = x.^2;
 plot(x,y)
 uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
 % more waiting after plot dismissed before the following answer appears
-7*7-7 =>>
+7*7-7 =>>42
 disp("matlab ok!")
 ```
 
 ---
 ### Gnuplot
-Gnuplot is a very useful stand-alone plotting facility. It is particularly useful for *hover-exec* because all the scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted.
+Gnuplot is a very useful stand-alone plotting facility. It is particularly useful for *hover-exec* because scripting languages can output gnuplot commands along with data in the output block and it can be immediatedly plotted.
 
 Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
 
-```gnuplot
-#inhere `#tag_speed`  # hover over #tag to view the data
-set logscale x
-plot "$speed" w lp title "speed"
-```
-
----
 ```gnuplot {cmd} //also works in *mpe*
  #gnuplot {cmd} //also works in *mpe*
+ #tag_charge
 $charge << EOD
 10-06-2021 2138 100
 15-06-2021 2247 79
@@ -611,7 +597,18 @@ set xdata time;
 set timefmt "%d-%m-%Y %H%M"
 set format x "%d"
 set mouse mouseformat 3
+  #tag_charge
 plot "$charge" using 1:3 w lp title "charge"
+```
+
+---
+```gnuplot //repeat the plot above using #inhere
+#inhere `#tag_charge`  # hover over line to view what is included
+plot "$charge" using 1:3 w lp title "repeat charge"
+```
+
+```js
+process.platform=>>win32
 ```
 
 ---
@@ -619,6 +616,7 @@ plot "$charge" using 1:3 w lp title "charge"
 In browser javascript can be used
 The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
 
+[win] html [mac] open "%f.html" [wsl] chrome [linux] firefox
 ```html   <!--*what am I going to do now* tunnel-->
 <!-- html  --*what am I going to do now* tunnel-->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
@@ -906,14 +904,6 @@ func main() {
     fmt.Println("2d: ", twoD)
 }
 ```
-```output
-emp: [0 0 0 0 0]
-set: [0 0 0 0 42]
-get: 42
-len: 5
-dcl: [1 2 3 4 5]
-2d:  [[0 1 2] [1 2 3]]
-```
 
 ---
 ### Scripts without pre-defined config
@@ -935,12 +925,6 @@ math.randomseed(arg[1]*1000)
 print("cmd.exe's random as seed: "..math.random(100))
 math.randomseed(os.time())
 print("os.time() as seed: "..math.random(100))
-```
-```output
-'hello' 
-cmd.exe's random as seed: 79
-os.time() as seed: 12
-'goodbye'
 ```
 
 ---
@@ -981,19 +965,17 @@ for c in range(600):
 print(time()-t)
 b=>>6000600
 ```
-```output
-0.40797948837280273
-```
 
 ```python::
 from time import time
-b=>>6000600
+b=>>6000604
+b=b+1
 time()
 b # this now produces output because the repl is being used
 ```
 ```output
-1638745827.0116093
-6000600
+1642136950.4097993
+6000605
 ```
 
 ---
@@ -1003,14 +985,14 @@ b # this now produces output because the repl is being used
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>3.679
+tt=>>0.435
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.327
+tt1=>>0.411
 'ok'
 ```
 
@@ -1039,19 +1021,11 @@ c+=100 =>>200
 x=rand(Float64);_
 a=rand(Float64,3);print(string("a=",a,"\nx=",x))
 ```
-```output
-a=[0.575852186491711, 0.5073461447138108, 0.25276964679103653]
-x=0.6377234577023345
-```
 
 ```julia::
 a=a.+1;_
 x=x+1;_
 print(a,'\n',x)
-```
-```output
-[3.575852186491711, 3.507346144713811, 3.2527696467910365]
-3.6377234577023345
 ```
 
 ---
@@ -1120,17 +1094,11 @@ speed=0.60769 million iterations per sec
 
 ```rterm::restart
 a=7*7-7
-a=>> 42
+a=>> 42 
 print(noquote(paste('the meaning of life is',a)))
-```
-```output
-  the meaning of life is 42
 ```
 ```rterm::
 print(noquote(paste('.. that was',a)))
-```
-```output
- .. that was 42
 ```
 
 ```rterm::restart #data for plots
@@ -1187,14 +1155,14 @@ console.log(abc)
 Various time and date functions using `vm`
 ```js      //time & date using internal javascript via vm
 //js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.495462431661004
+(44-Math.random())=>>43.39419356972824
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2021-12-10
-new Date().toLocaleDateString()=>>11/12/2021
-new Date().toString()=>>Sat Dec 11 2021 11:16:26 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>11/12/2021, 11:16:26 am
-new Date().getTime()=>>1639174586377
+new Date().toISOString().slice(0,10)=>>2022-01-14
+new Date().toLocaleDateString()=>>14/01/2022
+new Date().toString()=>>Fri Jan 14 2022 16:57:26 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>14/01/2022, 4:57:26 pm
+new Date().getTime()=>>1642132646308
 ```
 
 ---
@@ -1289,13 +1257,16 @@ console.log(randch(36))
 ```js //javascript regex tester using vm
 //js //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
-"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> js
-Math.random()*100   =>> 88.421425704524
+"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>>js
+Math.random()*100   =>>35.903442020008434
 ```
 
 ---
 
 ```js {cmd=node} :node //javascript regex tester using node
+```output
+error SyntaxError: missing ) after argument list
+```
 //js {cmd=node} :node //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
 Math.random()*100   =>>33.01236229866507
@@ -1330,11 +1301,78 @@ console.log(myRe)
 //js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=4.17910447761194
+' uptake='+u  =>> uptake=8.233532934131738
 console.log(u)
 ```
-```output
-4.17910447761194
+
+---
+---
+### Chaining execution codeblocks
+
+Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
+
+```js //this may take 10-20s to executer 
+// js
+function xrange(){
+   let x1=_.range(0,6.1,6/19);
+   let x=math.round(math.exp(math.multiply(x1,math.log(10))));
+   return x
+}
+let x=xrange();
+let j=0,n=0,ii=0;
+let tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+for (ii=0;ii<x.length;ii++) {
+  n=x[ii];
+  let rr=_.range(0,n),m=1,i=0,t1=0;
+  for (i=0;i<rr.length;i++) {rr[i]=math.random()};
+  let rr1=rr,rr2=rr;
+  if (n<100){m=10000} else if (n<5000){m=1000}
+    else if (n<20000){m=500} else {m=100};
+  m=m;t1=moment.now();
+  for (i=0;i<m;i++){
+    rr=math.add(math.dotMultiply(rr1,rr2),rr1);
+  }
+  t1=(moment.now()-t1)/n/m/1000;//msec->sec
+  tim[j++]=2/t1/1e6;
+}
+console.log('```output :gnuplot noinline')
+console.log('#tag_speed') //id tag for other scripts to use the data
+console.log('$speed << EOD')
+for (ii=0;ii<x.length;ii++) {
+console.log(x[ii],tim[ii])
+}
+console.log('EOD')
+console.log('#tag_speed') //same id tag at end of data
+console.log('set logscale x')
+console.log('plot "$speed" w lp title "speed"')
+```
+```output :gnuplot noinline
+#tag_speed
+$speed << EOD
+1 0.27027027027027023
+2 0.7692307692307694
+4 1.4545454545454546
+9 2.8125
+18 5.142857142857143
+38 9.047619047619047
+78 13.684210526315791
+162 16.2
+336 21.000000000000004
+695 22.419354838709676
+1438 23.966666666666665
+2976 25.435897435897434
+6158 27.247787610619476
+12743 28.44419642857143
+26367 24.413888888888888
+54556 19.802540834845736
+112884 21.48125594671741
+233572 19.40772746157042
+483293 21.686919452546555
+1000000 20.565552699228792
+EOD
+#tag_speed
+set logscale x
+plot "$speed" w lp title "speed"
 ```
 
 ---
@@ -1415,14 +1453,20 @@ More information can be fount at [*mathjs 'math.evaluate'*](https://mathjs.org/d
 ## Including tagged sections using #inhere
 
 The following line in a code block
+  #inhere `#tag_speed` // hover to view the data
 
-```test
-#inhere `#tag_speed`
+```js
+/* #inhere %ctest/misc_tests.md `#p1` // hover to view the data
+*/
+console.log('ok')
+```
+```output
+ok
 ```
 
-will include a group of lines surrounded with the #tag-speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
+will include a group of lines surrounded with the #tag_speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
 
-1. Tags must either stand alone in a line, or end the line (eg. tags can have comment markers in front of them)
+1. Tags must either stand alone in a line, or end the line (ie. tags can have comment markers in front of them)
 2. Within the `#inhere` line, the tag must be quoted with backticks as above (*hover-exec* uses back-ticks to indicate potential hovers)
 3. To include lines in another file use the format
    #inhere file_path/name `#tag`
@@ -1435,56 +1479,6 @@ EOD
 set logscale x
 plot "$speed" w lp title "speed"
 ```
-
----
-### Using repl scripts
-
-Scripts can also be run using the REPL version of the scripting engine. The following REPLs are included in the default configuration:
-
-`js console.log(Object.keys(config.get('repls')).sort())`
-```output
-[
-  'julia',  'lua',
-  'lua51',  'lua54',
-  'node',   'octave',
-  'python', 'python3',
-  'r',      'rterm',
-  'scilab', 'scilabcli'
-]
-```
-
-The indication to *hover-exec* that the REPL should be used is to append a second colon. In other words, the command line looks like `id:command:`  Optionally, after the second colon, `restart` can be appended to indicate that the REPL should be restarted.
-
-```python::restart  # restart resets the python REPL
-from time import time
-t=time()
-b=0
-for c in range(600):
-  for a in range(10000):
-    b+=1
-  b+=1
-print(time()-t)
-b=>>6000600
-```
-```output
-0.40154051780700684
-```
-
-```python::  # this will continue from the last with variable and functions intact
-from time import time
-b=b+1
-b=>>6000605
-"time from the restart",time()-t
-b # this now produces output because the repl is being used
-```
-```output
-('time from the restart', 117.18829941749573)
-6000605
-```
-
-Note that the REPLs often don't need 'print' or its equivalent.
-
-See [misc_tests](test/misc_tests.md) for test code for all included REPLs.
 
 ---
 ## Configuration settings
@@ -1567,6 +1561,15 @@ For a given codeblock, in the hover message for the command line there is a `con
 ```python
  # this is python 'code' example for config check
  # the following codeblock is produced by clicking *config* in the python hover
+```
+```js :vm noInline
+//this script can change, add or undefine a config setting
+let s={"python":"python \"%f.py\""}; //{"id":"start command"}
+//s={"python":undefined}; //uncomment this to undefine python
+let scripts=config.get('scripts');
+let merge=Object.assign({},scripts,s);
+if(await config.update('scripts',merge,1)){}
+console.log('new config:',config.get('scripts.python'))
 ```
 
 The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).

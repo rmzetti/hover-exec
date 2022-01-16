@@ -56,7 +56,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.36573939503551367
+'test: '+Math.random() =>>test: 0.5401468256447179
 ```
 ```output
 Notice the in-line random number result
