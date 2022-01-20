@@ -499,7 +499,7 @@ export function activate(context: vscode.ExtensionContext) {
     let scripts= config.get('scripts') as object;
     let k=Object.keys(scripts).sort();
     for (let a in k) {
-      let s=config.get('scripts.'+k[a]+'_mac');
+      let s=config.get('scripts.'+k[a]+'_'+os);
       if(s!==undefined){
         scripts=config.get('scripts') as object;
         let s2='"'+k[a]+'"';

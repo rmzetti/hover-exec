@@ -68,8 +68,12 @@
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
-					}
+						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" ",
+					  "html_mac": "open \"%f.html\"",
+            "html_win": "\"%f.html\"",
+            "html_lnx": "firefox \"%f.html\"",
+            "html_wsl": "chrome \"%f.html\""
+          }
 				},
         "hover-exec.swappers": {
 					"description": "NB. Edit or add swappers using code blocks (see README)",
