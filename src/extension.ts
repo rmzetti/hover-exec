@@ -41,7 +41,7 @@ let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
 const log=console.log;
-const vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
+let vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
   execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
 const refStr =
@@ -60,6 +60,14 @@ const msgOut =
   "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
   "[delete output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //cmd line parse result
+let os='win';
+if (!windows){
+    if (process.platform==='darwin') {os='mac';}
+    else {
+      os='lnx';
+      if(process.env.VSCODE_WSL_EXT_LOCATION!==undefined){os='wsl';}
+    }
+}
 
 export function activate(context: vscode.ExtensionContext) {
   vscode.languages.registerHoverProvider(
@@ -264,9 +272,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
-      alert('config changed');
-      config = vscode.workspace.getConfiguration("hover-exec"); //update config if changed
-      //checkJsonVisible();
+      checkConfig();
+      alert('config changed, vmContext updated');
     })
   );
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));
@@ -485,12 +492,40 @@ export function activate(context: vscode.ExtensionContext) {
     }
     return true;
   }
+
+  function checkOS() {
+    config = vscode.workspace.getConfiguration("hover-exec");
+    //let c=config.inspect('scripts');
+    let scripts= config.get('scripts') as object;
+    let k=Object.keys(scripts).sort();
+    for (let a in k) {
+      let s=config.get('scripts.'+k[a]+'_mac');
+      if(s!==undefined){
+        scripts=config.get('scripts') as object;
+        let s2='"'+k[a]+'"';
+        let s3='"'+(s as string).replace(/"/g,'\\"')+'"';
+        let s1=JSON.parse('{'+s2+':'+s3+'}');
+        let merge=Object.assign({},scripts,s1);
+        config.update('scripts',merge,1);
+        alert(s2+'::'+s3);
+      }
+    }      
+  }
+
+  function checkConfig(){
+    config = vscode.workspace.getConfiguration("hover-exec");
+    vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
+     execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+    vmContext={...vmDefault};
+    checkJsonVisible();
+  }
   //alert('scripts config defaults? '+checkDefaults());
+  checkOS();
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   performance.now();
-  status('v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
+  status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
 } //end function activate
 
 const hUri = new (class MyUriHandler implements vscode.UriHandler {
