@@ -661,8 +661,6 @@ process.platform=>>win32
 In browser javascript can be used
 The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
 
-[win] html [mac] open "%f.html" [wsl] chrome [linux] firefox
-
 ```html
 <!-- html  --*what am I going to do now* tunnel-->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>

@@ -520,7 +520,7 @@ export function activate(context: vscode.ExtensionContext) {
     checkJsonVisible();
   }
   //alert('scripts config defaults? '+checkDefaults());
-  checkOS();
+  //checkOS();
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
