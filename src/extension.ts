@@ -272,7 +272,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
-      checkConfig();
+      //checkConfig();
       alert('config changed, vmContext updated');
     })
   );
