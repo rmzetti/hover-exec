@@ -507,7 +507,7 @@ export function activate(context: vscode.ExtensionContext) {
     let k=Object.keys(scripts as object).sort();
     for (let a in k) {
       let s=config.get('scripts.'+k[a]+'_'+os);
-      if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]!==
+      if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]===
                           Object.values(c.globalValue as Object)[a]){
         scripts=config.get('scripts');
         let merge=Object.assign({},scripts,{[k[a]]:s});
