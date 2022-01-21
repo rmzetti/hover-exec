@@ -272,7 +272,13 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration((e) => {
-      //checkConfig();
+      function checkConfig(){
+        config = vscode.workspace.getConfiguration("hover-exec");
+        vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
+         execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+        vmContext={...vmDefault};
+      }
+      checkConfig();
       alert('config changed, vmContext updated');
     })
   );
@@ -469,14 +475,14 @@ export function activate(context: vscode.ExtensionContext) {
   function checkJsonVisible() {
     // ensure script, swapper and repls visible in settings.json
     let s = { undefined: undefined };
-    let scripts = config.get("scripts");
-    let merge = Object.assign({}, scripts, s);
+    let temp = config.get("scripts");
+    let merge = Object.assign({}, temp, s);
     config.update("scripts", merge, 1);
-    scripts = config.get("swappers");
-    merge = Object.assign({}, scripts, s);
+    temp = config.get("swappers");
+    merge = Object.assign({}, temp, s);
     config.update("swappers", merge, 1);
-    scripts = config.get("repls");
-    merge = Object.assign({}, scripts, s);
+    temp = config.get("repls");
+    merge = Object.assign({}, temp, s);
     config.update("repls", merge, 1);
   }
 
@@ -512,19 +518,11 @@ export function activate(context: vscode.ExtensionContext) {
     }      
   }
 
-  function checkConfig(){
-    config = vscode.workspace.getConfiguration("hover-exec");
-    vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
-     execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
-    vmContext={...vmDefault};
-    checkJsonVisible();
-  }
   //alert('scripts config defaults? '+checkDefaults());
-  //checkOS();
+  checkOS(); //changes default configs to match os
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
-  performance.now();
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
 } //end function activate
 

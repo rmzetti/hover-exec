@@ -650,9 +650,7 @@ plot "$charge" using 1:3 w lp title "charge"
 plot "$charge" using 1:3 w lp title "repeat charge"
 ```
 
-```js
-process.platform=>>win32
-```
+
 
 ---
 
