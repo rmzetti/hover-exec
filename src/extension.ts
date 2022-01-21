@@ -504,7 +504,7 @@ export function activate(context: vscode.ExtensionContext) {
     config = vscode.workspace.getConfiguration("hover-exec");
     let c=config.inspect('scripts');
     let scripts=config.get('scripts');
-    let k=Object.keys(scripts as object).sort();
+    let k=Object.keys(scripts as object);
     for (let a in k) {
       let s=config.get('scripts.'+k[a]+'_'+os);
       if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]===
