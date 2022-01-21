@@ -492,35 +492,32 @@ export function activate(context: vscode.ExtensionContext) {
     let s=c.defaultValue as Object;
     let t=c.globalValue as Object;
     for (let k in Object.keys(t)) {
-      let a=Object.values(s)[k];
+      let a=Object.values(c.defaultValue as Object)[k];
       let b=Object.values(t)[k];
       if(a!==b){ return false;}
     }
     return true;
   }
 
-  function checkOS() {
+  async function checkOS() {
     config = vscode.workspace.getConfiguration("hover-exec");
-    //let c=config.inspect('scripts');
-    let scripts= config.get('scripts') as object;
-    let k=Object.keys(scripts).sort();
+    let c=config.inspect('scripts');
+    let scripts=config.get('scripts');
+    let k=Object.keys(scripts as object).sort();
     for (let a in k) {
       let s=config.get('scripts.'+k[a]+'_'+os);
-      if(s!==undefined){
-        scripts=config.get('scripts') as object;
-        let s2='"'+k[a]+'"';
-        let s3='"'+(s as string).replace(/"/g,'\\"')+'"';
-        let s1=JSON.parse('{'+s2+':'+s3+'}');
-        let merge=Object.assign({},scripts,s1);
+      if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]!==
+                          Object.values(c.globalValue as Object)[a]){
+        scripts=config.get('scripts');
+        let merge=Object.assign({},scripts,{[k[a]]:s});
         config.update('scripts',merge,1);
-        alert(s2+'::'+s3);
       }
     }      
   }
 
   //alert('scripts config defaults? '+checkDefaults());
-  checkOS(); //changes default configs to match os
   checkJsonVisible();//ensures scripts & swappers available in settings.json
+  checkOS(); //changes default configs to match os
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
