@@ -70,7 +70,7 @@
 						"buddvs": "buddvs \"%f.txt\" ",
 						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" ",
 					  "html_mac": "open \"%f.html\"",
-            "html_win": "\"%f.html\"",
+            "html_win": "\"%f.htmlwin\"",
             "html_lnx": "firefox \"%f.html\"",
             "html_wsl": "chrome \"%f.html\""
           }

@@ -511,14 +511,16 @@ export function activate(context: vscode.ExtensionContext) {
                           Object.values(c.globalValue as Object)[a]){
         scripts=config.get('scripts');
         let merge=Object.assign({},scripts,{[k[a]]:s});
-        config.update('scripts',merge,1);
+        await config.update('scripts',merge,1);
+        alert('>> '+config.get('scripts.html'));
       }
+      config = vscode.workspace.getConfiguration("hover-exec");
     }      
   }
 
   //alert('scripts config defaults? '+checkDefaults());
-  checkOS(); //changes default configs to match os
   checkJsonVisible();//ensures scripts & swappers available in settings.json
+  checkOS(); //changes default configs to match os
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
