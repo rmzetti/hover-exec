@@ -474,6 +474,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   function checkJsonVisible() {
     // ensure script, swapper and repls visible in settings.json
+    config = vscode.workspace.getConfiguration("hover-exec");
     let s = { undefined: undefined };
     let temp = config.get("scripts");
     let merge = Object.assign({}, temp, s);
@@ -516,8 +517,8 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   //alert('scripts config defaults? '+checkDefaults());
-  checkJsonVisible();//ensures scripts & swappers available in settings.json
   checkOS(); //changes default configs to match os
+  checkJsonVisible();//ensures scripts & swappers available in settings.json
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
