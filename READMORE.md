@@ -1,68 +1,68 @@
-# Hover exec
+Hover exec
 
 This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail.
 
 ## Contents
 
-- [Hover exec](#hover-exec)
-  - [Contents](#contents)
-  - [Features](#features)
-    - [Compatibility with Markdown Preview Enhanced (*mpe*)](#compatibility-with-markdown-preview-enhanced-mpe)
-  - [Basic hover-exec](#basic-hover-exec)
-  - [Javascript scripts](#javascript-scripts)
-    - [Examples using vm and eval](#examples-using-vm-and-eval)
-    - [available functions in vm and eval](#available-functions-in-vm-and-eval)
-    - [Using a custom vm context](#using-a-custom-vm-context)
-    - [Quick specification of vm context](#quick-specification-of-vm-context)
-    - [using require &amp; globals with vm and eval](#using-require--globals-with-vm-and-eval)
-    - [Using nodejs](#using-nodejs)
-  - [Other scripts](#other-scripts)
-    - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
-    - [Lua](#lua)
-    - [Octave](#octave)
-    - [Scilab](#scilab)
-    - [Python](#python)
-    - [Julia](#julia)
-    - [Matlab](#matlab)
-    - [Gnuplot](#gnuplot)
-    - [Html and in-browser javascript](#html-and-in-browser-javascript)
-    - [Bash &amp; zsh](#bash--zsh)
-    - [Powershell](#powershell)
-    - [Go](#go)
-    - [Scripts without pre-defined config](#scripts-without-pre-defined-config)
-  - [Using scripts via REPL](#using-scripts-via-repl)
-    - [Using the python repl](#using-the-python-repl)
-    - [Lua repl](#lua-repl)
-    - [Node repl](#node-repl)
-    - [Julia repl](#julia-repl)
-    - [Scilab repl](#scilab-repl)
-    - [Octave repl](#octave-repl)
-    - [R (rterm) repl](#r-rterm-repl)
-    - [Check active REPLs](#check-active-repls)
-  - [More javascript using vm, eval &amp; node](#more-javascript-using-vm-eval--node)
-    - [Using vscode functions](#using-vscode-functions)
-    - [Time and date](#time-and-date)
-    - [Localhost server](#localhost-server)
-    - [Random strings](#random-strings)
-    - [Regular expression testing](#regular-expression-testing)
-    - [Javascript input box (Vitamin b12, dosage vs uptake)](#javascript-input-box-vitamin-b12-dosage-vs-uptake)
-  - [One-liners](#one-liners)
-    - [One-liner examples](#one-liner-examples)
-  - [Quickmath](#quickmath)
-    - [Quickmath examples](#quickmath-examples)
-    - [Windows - control panel](#windows---control-panel)
-    - [html &amp; javascript](#html--javascript)
-    - [audio one-liners](#audio-one-liners)
-    - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
-  - [Including tagged sections using #inhere](#including-tagged-sections-using-inhere)
-    - [Using repl scripts](#using-repl-scripts)
-  - [Configuration settings](#configuration-settings)
-    - [Using vm for configuration settings](#using-vm-for-configuration-settings)
-      - [Check settings](#check-settings)
-      - [Add new script language](#add-new-script-language)
-      - [Other vscode config settings](#other-vscode-config-settings)
-  - [Notes and Known Issues](#notes-and-known-issues)
-  - [Release Notes](#release-notes)
+- [Contents](#contents)
+- [Features](#features)
+  - [Compatibility with Markdown Preview Enhanced (*mpe*)](#compatibility-with-markdown-preview-enhanced-mpe)
+- [Basic hover-exec](#basic-hover-exec)
+- [Javascript scripts](#javascript-scripts)
+  - [Examples using vm and eval](#examples-using-vm-and-eval)
+  - [Functions available in vm and eval](#functions-available-in-vm-and-eval)
+  - [Using a custom vm context](#using-a-custom-vm-context)
+  - [Quick specification of vm context](#quick-specification-of-vm-context)
+  - [using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
+  - [Using nodejs](#using-nodejs)
+  - [Html and in-browser javascript](#html-and-in-browser-javascript)
+- [Other scripts](#other-scripts)
+  - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
+  - [Lua](#lua)
+  - [Octave](#octave)
+  - [Scilab](#scilab)
+  - [Python](#python)
+  - [Julia](#julia)
+  - [Matlab](#matlab)
+  - [Gnuplot](#gnuplot)
+  - [Bash & zsh](#bash--zsh)
+  - [Powershell](#powershell)
+  - [Go](#go)
+  - [Scripts without pre-defined config](#scripts-without-pre-defined-config)
+- [Using scripts via REPL](#using-scripts-via-repl)
+  - [Using the python repl](#using-the-python-repl)
+  - [Lua repl](#lua-repl)
+  - [Node repl](#node-repl)
+  - [Julia repl](#julia-repl)
+  - [Scilab repl](#scilab-repl)
+  - [Octave repl](#octave-repl)
+  - [R (rterm) repl](#r-rterm-repl)
+  - [Check active REPLs](#check-active-repls)
+- [More javascript using vm, eval & node](#more-javascript-using-vm-eval--node)
+  - [Using vscode functions](#using-vscode-functions)
+  - [Time and date](#time-and-date)
+  - [Localhost server](#localhost-server)
+  - [Random strings](#random-strings)
+  - [Regular expression testing](#regular-expression-testing)
+  - [Javascript input box (Vitamin b12, dosage vs uptake)](#javascript-input-box-vitamin-b12-dosage-vs-uptake)
+  - [Chaining execution codeblocks](#chaining-execution-codeblocks)
+- [One-liners](#one-liners)
+  - [One-liner examples](#one-liner-examples)
+- [Quickmath](#quickmath)
+  - [Quickmath examples](#quickmath-examples)
+  - [Windows - control panel](#windows---control-panel)
+  - [html & javascript](#html--javascript)
+  - [audio one-liners](#audio-one-liners)
+  - [One-liners for microsoft management console mmc](#one-liners-for-microsoft-management-console-mmc)
+- [Including tagged sections using #inhere](#including-tagged-sections-using-inhere)
+- [Configuration settings](#configuration-settings)
+  - [Using vm for configuration settings](#using-vm-for-configuration-settings)
+    - [Check settings](#check-settings)
+    - [Add new script language](#add-new-script-language)
+    - [Other vscode config settings](#other-vscode-config-settings)
+- [temp](#temp)
+- [Notes and Known Issues](#notes-and-known-issues)
+- [Release Notes](#release-notes)
 
 ---
 
@@ -407,7 +407,240 @@ a+Math.random() =>>5.393505303729933
 ```
 
 ---
+### Html and in-browser javascript
 
+In browser javascript can be used
+The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
+
+```html
+<!-- html  --*what am I going to do now* tunnel-->
+<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
+<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
+<canvas id="c"></canvas> 
+<script> 
+lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
+o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
+r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
+v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
+w=-20,x=2*b.PI/30,y=.1875;
+function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
+setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
+</script></body>
+```
+
+```html
+<!-- ```html  -- `psychedelic -->
+<html>
+<head> </head>
+<body> 
+<canvas id='canv' display='block'></canvas> 
+<script> 
+var c = document.getElementById('canv'), fst,
+    $ = c.getContext('2d');
+c.width = window.innerWidth;
+c.height = window.innerHeight;
+window.addEventListener('resize',function(){
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+},false);
+function mob(a, b, c) {
+  var pa = a[0] * a[0] + a[1] * a[1],
+      pb = b[0] * b[0] + b[1] * b[1],
+      pc = c[0] * c[0] + c[1] * c[1];
+  var y = (
+    (a[0] - b[0]) * (pb - pc) - (b[0] - c[0]) * (pa - pb)
+  ) / (
+    2 * (b[1] - a[1]) * (b[0] - c[0]) - 2 * (a[0] - b[0]) * (c[1] - b[1])
+  ),
+      x = (pa - pb + 2 * (b[1] - a[1]) * y) / (2 * (a[0] - b[0])),
+      r = Math.sqrt((x - a[0]) * (x - a[0]) + (y - a[1]) * (y - a[1]));
+  return [x, y, r];
+}
+function arcs(x, y, r) {
+  var c = mob_arc(x, y, r);
+  if (c[2] > 10) return;
+  $.beginPath();
+  $.arc(c[0], c[1], c[2]/1.65, 0, Math.PI*2, false);
+  $.fill();
+  $.closePath();
+}
+function mob_pt(x, y) {
+  var denom = (x + 1) * (x + 1) + y * y;
+  return [(x * x - 1 + y * y) / denom, 2 * y / denom];
+}
+function mob_arc(x, y, r) {
+  var a = mob_pt(x - r, y),
+      b = mob_pt(x + r, y),
+      c = mob_pt(x, y + r);
+  return mob(a, b, c);
+}
+function cmul(w, z) {
+  return [
+    w[0] * z[0] - w[1] * z[1],
+    w[0] * z[1] + w[1] * z[0]
+  ];
+}
+function rotate(z, theta) {
+  return cmul(z, [Math.cos(theta), Math.sin(theta)]);
+}
+function modulus(p) {
+  return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
+}
+function crecip(z) {
+  var d = z[0] * z[0] + z[1] * z[1];
+  return [z[0] / d, -z[1] / d];
+}
+function spiral(r, st, delta, opts) {
+  var rd = crecip(delta),
+      md = modulus(delta),
+      mrd = 1 / md,
+      colidx = opts.i,
+      cols = opts.fill,
+      min_d = opts.min_d,
+      max_d = opts.max_d;
+  for (var q = st, mod_q = modulus(q); mod_q < max_d; q = cmul(q, delta), mod_q *= md) {
+    $.fillStyle = cols[colidx];
+    arcs(q[0], q[1], mod_q * r);
+    colidx = (colidx + 1) % cols.length;
+  }
+  colidx = ((opts ? opts.i : 0) + cols.length - 1) % cols.length;
+  for (var q = cmul(st, rd), mod_q = modulus(q); mod_q > min_d; q = cmul(q, rd), mod_q *= mrd) {
+    $.fillStyle = cols[colidx];
+    arcs(q[0], q[1], mod_q * r);
+    colidx = (colidx + cols.length - 1) % cols.length;
+  }
+}
+var p = 9, q = 36;
+root={a:[1.203073257697729,0.06467009356882296],
+b:[1.0292303580593238,0.19576340274878198],
+r:0.09666227205856094};
+var rep = 20000;
+function anim(t) {
+  $.setTransform(1, 0, 0, 1, 0, 0);
+  $.clearRect(0, 0, c.width, c.height);
+  $.translate(Math.round(c.width / 2), Math.round(c.height / 2));
+  $.scale(250, 250);
+  var beg = rotate(root.a, Math.PI * 2 * t);
+  for (var i = 0; i < q; i++) {
+    spiral(root.r, beg, root.a, {
+      fill: ['#EB1E23', '#D9DFD1', '#008F86'],
+      i: (i) % 3.5,
+      min_d: 1e-3,
+      max_d: 1e3
+    });
+    beg = cmul(beg, root.b);
+  }
+}
+function run(ts) {
+  if (!fst) fst = ts;
+  anim(((ts - fst) % rep) / rep);
+  window.requestAnimationFrame(run);
+}
+run();
+</script></body>
+</html>
+```
+
+```html
+<!-- ```html breathing galaxies` --> 
+<html> 
+<head> 
+<title>JS1k: Breathing Galaxies (1020 bytes)</title> 
+<script type="text/javascript"> 
+window.onload = function () {
+	C = Math.cos; // cache Math objects
+	S = Math.sin;
+	PP=Math.PI;
+	SW=screen.availWidth*1.1;
+	SH=screen.availHeight;
+	U = 0;
+	w = window;
+	j = document;
+	d = j.getElementById("c");
+	c = d.getContext("2d");
+	W = d.width = SW;
+	H = d.height = SH;
+	c.fillRect(0, 0, W, H); // resize <canvas> and draw black rect (default)
+	c.globalCompositeOperation = "lighter"; // switch to additive color application
+	c.lineWidth = 0.2;
+	c.lineCap = "round";
+	var bool = 0, 
+		t = 0; // theta
+	d.onmousemove = function (e) {
+		if(window.T) {
+			if(D==9) { D=Math.random()*15; f(1); }
+			clearTimeout(T);
+		}
+		X = e.pageX; // grab mouse pixel coords
+		Y = e.pageY;
+		a=0; // previous coord.x
+		b=0; // previous coord.y 
+		A = X, // original coord.x
+		B = Y; // original coord.y
+		R=(e.pageX/W * 999>>0)/999;
+		r=(e.pageY/H * 999>>0)/999;
+		U=e.pageX/H * 360 >>0;
+		D=9;
+		g = 360 * PP / 180;
+		T = setInterval(f = function (e) { // start looping spectrum
+			c.save();
+			c.globalCompositeOperation = "source-over"; // switch to additive color application
+			if(e!=1) {
+				c.fillStyle = "rgba(0,0,0,0.02)";
+				c.fillRect(0, 0, W, H); // resize <canvas> and draw black rect (default)
+			}
+			c.restore();
+			i = 255; while(i --) { //25
+				c.beginPath();
+				if(D > 450 || bool) { // decrease diameter
+					if(!bool) { // has hit maximum
+						bool = 1;
+					}
+					if(D < 0.1) { // has hit minimum
+						bool = 0;
+					}
+					t -= g; // decrease theta
+					D -= 0.1; // decrease size
+				}
+				if(!bool) {
+					t += g; // increase theta
+					D += 0.1; // increase size
+				}
+				q = (R / r - 1) * t; 
+// create hypotrochoid from current mouse position, and setup variables (see: http://en.wikipedia.org/wiki/Hypotrochoid)
+				x = (R - r) * C(t) + D * C(q) + (A + (X - A) * (i /25)) + (r - R); // center on xy coords
+				y = (R - r) * S(t) - D * S(q) + (B + (Y - B) * (i /25));
+				if (a) { // draw once two points are set
+					c.moveTo(a, b);
+					c.lineTo(x,y)
+				}
+				c.strokeStyle = "hsla(" + (U % 360) + ",100%,50%,0.75)"; // draw rainbow hypotrochoid
+				c.stroke();
+				a = x; // set previous coord.x
+				b = y; // set previous coord.y
+			}
+			U -= 0.5; // increment hue
+			A = X; // set original coord.x
+			B = Y; // set original coord.y
+		}, 16);
+	}
+	j.onkeydown = function(e) { a=b=0; R += 0.05 }
+	//d.onmousemove({pageX:300, pageY:290})
+            setInterval ( "d.onmousemove({pageX:Math.random()*SW, pageY:Math.random()*SH})",
+                Math.random()*1000 )
+}
+</script> 
+<style> 
+body { margin: 0; overflow: hidden; }
+</style> 
+</head> 
+<body> 
+<canvas id="c"></canvas> 
+</body> 
+</html>
+```
+
+---
 ## Other scripts
 
 ### Scripts with command execution strings included
@@ -648,243 +881,6 @@ plot "$charge" using 1:3 w lp title "charge"
 ```gnuplot
 #inhere `#tag_charge`  # hover over line to view what is included
 plot "$charge" using 1:3 w lp title "repeat charge"
-```
-
-
-
----
-
-### Html and in-browser javascript
-
-In browser javascript can be used
-The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
-
-```html
-<!-- html  --*what am I going to do now* tunnel-->
-<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
-<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
-<canvas id="c"></canvas> 
-<script> 
-lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
-o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
-r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
-v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
-w=-20,x=2*b.PI/30,y=.1875;
-function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
-setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
-</script></body>
-```
-
-```html
-<!-- ```html  -- `psychedelic -->
-<html>
-<head> </head>
-<body> 
-<canvas id='canv' display='block'></canvas> 
-<script> 
-var c = document.getElementById('canv'), fst,
-    $ = c.getContext('2d');
-c.width = window.innerWidth;
-c.height = window.innerHeight;
-window.addEventListener('resize',function(){
-  c.width = window.innerWidth;
-  c.height = window.innerHeight;
-},false);
-function mob(a, b, c) {
-  var pa = a[0] * a[0] + a[1] * a[1],
-      pb = b[0] * b[0] + b[1] * b[1],
-      pc = c[0] * c[0] + c[1] * c[1];
-  var y = (
-    (a[0] - b[0]) * (pb - pc) - (b[0] - c[0]) * (pa - pb)
-  ) / (
-    2 * (b[1] - a[1]) * (b[0] - c[0]) - 2 * (a[0] - b[0]) * (c[1] - b[1])
-  ),
-      x = (pa - pb + 2 * (b[1] - a[1]) * y) / (2 * (a[0] - b[0])),
-      r = Math.sqrt((x - a[0]) * (x - a[0]) + (y - a[1]) * (y - a[1]));
-  return [x, y, r];
-}
-function arcs(x, y, r) {
-  var c = mob_arc(x, y, r);
-  if (c[2] > 10) return;
-  $.beginPath();
-  $.arc(c[0], c[1], c[2]/1.65, 0, Math.PI*2, false);
-  $.fill();
-  $.closePath();
-}
-function mob_pt(x, y) {
-  var denom = (x + 1) * (x + 1) + y * y;
-  return [(x * x - 1 + y * y) / denom, 2 * y / denom];
-}
-function mob_arc(x, y, r) {
-  var a = mob_pt(x - r, y),
-      b = mob_pt(x + r, y),
-      c = mob_pt(x, y + r);
-  return mob(a, b, c);
-}
-function cmul(w, z) {
-  return [
-    w[0] * z[0] - w[1] * z[1],
-    w[0] * z[1] + w[1] * z[0]
-  ];
-}
-function rotate(z, theta) {
-  return cmul(z, [Math.cos(theta), Math.sin(theta)]);
-}
-function modulus(p) {
-  return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
-}
-function crecip(z) {
-  var d = z[0] * z[0] + z[1] * z[1];
-  return [z[0] / d, -z[1] / d];
-}
-function spiral(r, st, delta, opts) {
-  var rd = crecip(delta),
-      md = modulus(delta),
-      mrd = 1 / md,
-      colidx = opts.i,
-      cols = opts.fill,
-      min_d = opts.min_d,
-      max_d = opts.max_d;
-  for (var q = st, mod_q = modulus(q); mod_q < max_d; q = cmul(q, delta), mod_q *= md) {
-    $.fillStyle = cols[colidx];
-    arcs(q[0], q[1], mod_q * r);
-    colidx = (colidx + 1) % cols.length;
-  }
-  colidx = ((opts ? opts.i : 0) + cols.length - 1) % cols.length;
-  for (var q = cmul(st, rd), mod_q = modulus(q); mod_q > min_d; q = cmul(q, rd), mod_q *= mrd) {
-    $.fillStyle = cols[colidx];
-    arcs(q[0], q[1], mod_q * r);
-    colidx = (colidx + cols.length - 1) % cols.length;
-  }
-}
-var p = 9, q = 36;
-root={a:[1.203073257697729,0.06467009356882296],
-b:[1.0292303580593238,0.19576340274878198],
-r:0.09666227205856094};
-var rep = 20000;
-function anim(t) {
-  $.setTransform(1, 0, 0, 1, 0, 0);
-  $.clearRect(0, 0, c.width, c.height);
-  $.translate(Math.round(c.width / 2), Math.round(c.height / 2));
-  $.scale(250, 250);
-  var beg = rotate(root.a, Math.PI * 2 * t);
-  for (var i = 0; i < q; i++) {
-    spiral(root.r, beg, root.a, {
-      fill: ['#EB1E23', '#D9DFD1', '#008F86'],
-      i: (i) % 3.5,
-      min_d: 1e-3,
-      max_d: 1e3
-    });
-    beg = cmul(beg, root.b);
-  }
-}
-function run(ts) {
-  if (!fst) fst = ts;
-  anim(((ts - fst) % rep) / rep);
-  window.requestAnimationFrame(run);
-}
-run();
-</script></body>
-</html>
-```
-
-```html
-<!-- ```html breathing galaxies` --> 
-<html> 
-<head> 
-<title>JS1k: Breathing Galaxies (1020 bytes)</title> 
-<script type="text/javascript"> 
-window.onload = function () {
-	C = Math.cos; // cache Math objects
-	S = Math.sin;
-	PP=Math.PI;
-	SW=screen.availWidth*1.1;
-	SH=screen.availHeight;
-	U = 0;
-	w = window;
-	j = document;
-	d = j.getElementById("c");
-	c = d.getContext("2d");
-	W = d.width = SW;
-	H = d.height = SH;
-	c.fillRect(0, 0, W, H); // resize <canvas> and draw black rect (default)
-	c.globalCompositeOperation = "lighter"; // switch to additive color application
-	c.lineWidth = 0.2;
-	c.lineCap = "round";
-	var bool = 0, 
-		t = 0; // theta
-	d.onmousemove = function (e) {
-		if(window.T) {
-			if(D==9) { D=Math.random()*15; f(1); }
-			clearTimeout(T);
-		}
-		X = e.pageX; // grab mouse pixel coords
-		Y = e.pageY;
-		a=0; // previous coord.x
-		b=0; // previous coord.y 
-		A = X, // original coord.x
-		B = Y; // original coord.y
-		R=(e.pageX/W * 999>>0)/999;
-		r=(e.pageY/H * 999>>0)/999;
-		U=e.pageX/H * 360 >>0;
-		D=9;
-		g = 360 * PP / 180;
-		T = setInterval(f = function (e) { // start looping spectrum
-			c.save();
-			c.globalCompositeOperation = "source-over"; // switch to additive color application
-			if(e!=1) {
-				c.fillStyle = "rgba(0,0,0,0.02)";
-				c.fillRect(0, 0, W, H); // resize <canvas> and draw black rect (default)
-			}
-			c.restore();
-			i = 255; while(i --) { //25
-				c.beginPath();
-				if(D > 450 || bool) { // decrease diameter
-					if(!bool) { // has hit maximum
-						bool = 1;
-					}
-					if(D < 0.1) { // has hit minimum
-						bool = 0;
-					}
-					t -= g; // decrease theta
-					D -= 0.1; // decrease size
-				}
-				if(!bool) {
-					t += g; // increase theta
-					D += 0.1; // increase size
-				}
-				q = (R / r - 1) * t; 
-// create hypotrochoid from current mouse position, and setup variables (see: http://en.wikipedia.org/wiki/Hypotrochoid)
-				x = (R - r) * C(t) + D * C(q) + (A + (X - A) * (i /25)) + (r - R); // center on xy coords
-				y = (R - r) * S(t) - D * S(q) + (B + (Y - B) * (i /25));
-				if (a) { // draw once two points are set
-					c.moveTo(a, b);
-					c.lineTo(x,y)
-				}
-				c.strokeStyle = "hsla(" + (U % 360) + ",100%,50%,0.75)"; // draw rainbow hypotrochoid
-				c.stroke();
-				a = x; // set previous coord.x
-				b = y; // set previous coord.y
-			}
-			U -= 0.5; // increment hue
-			A = X; // set original coord.x
-			B = Y; // set original coord.y
-		}, 16);
-	}
-	j.onkeydown = function(e) { a=b=0; R += 0.05 }
-	//d.onmousemove({pageX:300, pageY:290})
-            setInterval ( "d.onmousemove({pageX:Math.random()*SW, pageY:Math.random()*SH})",
-                Math.random()*1000 )
-}
-</script> 
-<style> 
-body { margin: 0; overflow: hidden; }
-</style> 
-</head> 
-<body> 
-<canvas id="c"></canvas> 
-</body> 
-</html>
 ```
 
 ---
