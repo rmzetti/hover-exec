@@ -181,6 +181,29 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ```
 
 ---
+### Javascript in the browser, & html
+
+```html //Hello world
+<h2>Hello world</h2>
+```
+
+```html // all the html is in the codeblock below
+<!-- tunnel *what am I going to do now*  -->
+<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
+<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
+<canvas id="c"></canvas> 
+<script> 
+lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
+o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
+r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
+v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
+w=-20,x=2*b.PI/30,y=.1875;
+function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
+setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
+</script></body>
+```
+
+---
 ## Other scripts
 
 ### Scripts with command execution strings included
@@ -321,26 +344,6 @@ plot "$charge" using 1:3 w lp title "charge"
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
 ---
-### Html
-
-```html // all the html is in the codeblock below
-<!-- for mac use html :safari - for wsl use html :chrome - for linux use html :firefox -->
-<!-- tunnel *what am I going to do now*  -->
-<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
-<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
-<canvas id="c"></canvas> 
-<script> 
-lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
-o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
-r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
-v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
-w=-20,x=2*b.PI/30,y=.1875;
-function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
-setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
-</script></body>
-```
-
----
 ## One-liners and quickmath
 
 *One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed on hover-click. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
@@ -406,7 +409,11 @@ console.log(sort(config.get('scripts')));
   firefox: 'firefox "%f.html"',
   gnuplot: 'gnuplot -p -c "%f.gp"',
   go: 'go run "%f.go"',
-  html: '"%f.html"',
+  html: '"%f.htmlwin"',
+  html_lnx: 'firefox "%f.html"',
+  html_mac: 'open "%f.html"',
+  html_win: '"%f.htmlwin"',
+  html_wsl: 'chrome "%f.html"',
   javascript: 'node "%f.js"',
   js: 'vm',
   julia: 'julia "%f.jl"',
@@ -432,7 +439,7 @@ console.log(sort(config.get('scripts')));
 }
 ```
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension.
+Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension, or selecting *config* from the hover message.
 
 Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler.
 

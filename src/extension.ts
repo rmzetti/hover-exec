@@ -176,6 +176,7 @@ export function activate(context: vscode.ExtensionContext) {
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
+            //cmdId + "[ [*config*] ]("+vscode.Uri.file("C:\\Users\\ralph\\AppData\\Roaming\\Code\\User\\settings.json")+" ) " +
             cmdId + "[ [*config*] ](" + url + "_config) " + //add hover info
             msgDel + msgOpen + "**[" + cmdId + " =>> " + comment + "](" + url + ")**";
           const contents = new vscode.MarkdownString("hover-exec:" + msg);
@@ -509,15 +510,13 @@ export function activate(context: vscode.ExtensionContext) {
       let s=config.get('scripts.'+k[a]+'_'+os);
       if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]===
                           Object.values(c.globalValue as Object)[a]){
-        scripts=config.get('scripts');
         let merge=Object.assign({},scripts,{[k[a]]:s});
         await config.update('scripts',merge,1);
       }
-      config = vscode.workspace.getConfiguration("hover-exec");
     }      
+    config = vscode.workspace.getConfiguration("hover-exec");
   }
 
-  //alert('scripts config defaults? '+checkDefaults());
   checkJsonVisible();//ensures scripts & swappers available in settings.json
   checkOS(); //changes default configs to match os
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
@@ -560,26 +559,46 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     }
     if (uri.query.endsWith("_config")) {
       //show current script config in a script that can update it if required
-      let s1 = cmdId;
-      let s2 = "";
-      if (config.get("scripts." + s1)) {
-        s2 = JSON.stringify(config.get("scripts." + s1)); //stringify for output
-      } else {
-        s2 = '"'+full+'"';
+      if(useRepl){
+        vscode.commands.executeCommand('workbench.action.openSettingsJson');
+        return;
       }
-      out =
-        "```js :vm noInline\n" + //output :eval is an exec script which will:
-        "//this script can change, add or undefine a config setting\n" + 
-        'let s={"' + s1 + '":' + s2 + "}; //{\"id\":\"start command\"}\n" + //1. show current config, or an example
-        '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
-        "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
-        "let merge=Object.assign({},scripts,s);\n" + //3. update settings for current script
-        "if(await config.update('scripts',merge,1)){}\n"+ //4. finally update hover-exec config
-        "console.log('new config:',config.get('scripts."+s1+"'))";
-      needSwap = false; //ignore anything that looks like it is a swap
-      paste(out); //paste into editor as 'output :exec' script
-      removeSelection();
+      const d = await vscode.window.showInputBox({
+        placeHolder: "config",
+        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'=> settings.json if unchanged',
+        value: config.get('scripts.'+cmdId)
+      });
+      if (d!==undefined){
+        let scripts=config.get('scripts');
+        if(d===config.get('scripts.'+cmdId)){
+          vscode.commands.executeCommand('workbench.action.openSettingsJson');
+        } else {
+          let merge=Object.assign({},scripts,{[cmdId]:d});
+          await config.update('scripts',merge,1);
+        }
+      }
       return;
+      
+      // let s1=cmdId;
+      // let s2 = "";
+      // if (config.get("scripts." + s1)) {
+      //   s2 = JSON.stringify(config.get("scripts." + s1)); //stringify for output
+      // } else {
+      //   s2 = '"'+full+'"';
+      // }
+      // out =
+      //   "```js :vm noInline\n" + //output :eval is an exec script which will:
+      //   "//this script can change, add or undefine a config setting\n" + 
+      //   'let s={"' + s1 + '":' + s2 + "}; //{\"id\":\"start command\"}\n" + //1. show current config, or an example
+      //   '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
+      //   "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
+      //   "let merge=Object.assign({},scripts,s);\n" + //3. update settings for current script
+      //   "if(await config.update('scripts',merge,1)){}\n"+ //4. finally update hover-exec config
+      //   "console.log('new config:',config.get('scripts."+s1+"'))";
+      // needSwap = false; //ignore anything that looks like it is a swap
+      // paste(out); //paste into editor as 'output :exec' script
+      // removeSelection();
+      // return;
     }
     let s = codeBlock;
     needSwap = inline && codeBlock.includes(swap);
