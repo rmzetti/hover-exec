@@ -12,6 +12,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
     - [Using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
+    - [Html and javascript](#html-and-javascript)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
     - [Lua](#lua)
@@ -21,7 +22,6 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Bash & zsh](#bash--zsh)
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
-    - [Html](#html)
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner and quickmath examples:](#one-liner-and-quickmath-examples)
   - [Configuration settings](#configuration-settings)
@@ -181,13 +181,13 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ```
 
 ---
-### Javascript in the browser, & html
+### Html and javascript
 
-```html //Hello world
-<h2>Hello world</h2>
+```html <!--Hello world-->
+<h1 align='center'>Hello world</h1>
 ```
 
-```html // all the html is in the codeblock below
+```html
 <!-- tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 

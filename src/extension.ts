@@ -280,7 +280,7 @@ export function activate(context: vscode.ExtensionContext) {
         vmContext={...vmDefault};
       }
       checkConfig();
-      alert('config changed, vmContext updated');
+      progress('config changed, vmContext updated',20);
     })
   );
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));

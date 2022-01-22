@@ -15,7 +15,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
   - [Quick specification of vm context](#quick-specification-of-vm-context)
   - [using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
   - [Using nodejs](#using-nodejs)
-  - [Html and in-browser javascript](#html-and-in-browser-javascript)
+  - [Html and javascript](#html-and-javascript)
 - [Other scripts](#other-scripts)
   - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
   - [Lua](#lua)
@@ -407,7 +407,7 @@ a+Math.random() =>>5.393505303729933
 ```
 
 ---
-### Html and in-browser javascript
+### Html and javascript
 
 In browser javascript can be used
 The following three examples are from the [js1k demos](https://js1k.com/). Can probably get this to work in *mpe*...
