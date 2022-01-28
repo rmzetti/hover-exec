@@ -8,7 +8,7 @@ import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
 import vm = require('vm');
 import util = require('util');
 let codeBlock = ""; //code f or execution
-let startCode = 0; //start line of code
+let startCode = -1; //start line of code
 let out: string = ""; //output from code execution
 let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
@@ -54,12 +54,12 @@ const refStr =
   " - The default ext is specified by appending .ext, eg. %f.py\n" +
   " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
 const msgDel =
-  "[ [*ref*] ](vscode://rmzetti.hover-exec?ref) " +
+  "[ [*%ref*] ](vscode://rmzetti.hover-exec?ref) " +
   "[[*delete block*]](vscode://rmzetti.hover-exec?delete)\n\n";
 const msgOut =
   "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
   "[delete output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
-let msg = "",cmda = "",mpe = "",comment = "",full = "";  //cmd line parse result
+let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win';
 if (!windows){
     if (process.platform==='darwin') {os='mac';}
@@ -78,10 +78,6 @@ export function activate(context: vscode.ExtensionContext) {
         pos: vscode.Position,
         token: vscode.CancellationToken
       ): Promise<vscode.Hover | null> {
-        // if (!vscode.workspace.workspaceFolders) {
-        //   alert('hover-exec: open workspace!');
-        //   return null;
-        // }
         if (executing) {
           //if already executing code block, show cancel option
           status('executing...');
@@ -166,7 +162,6 @@ export function activate(context: vscode.ExtensionContext) {
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
-        //alert(line.text+','+script);
         if (script) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
@@ -218,10 +213,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
       //process exec command (default shortcut Alt+/ ) -- find start of block and execute
-      // if (!vscode.workspace.workspaceFolders) {
-      //   alert('hover-exec: open workspace!');
-      //   return;
-      // }
       status(''); //clear status message
       let editor = vscode.window.activeTextEditor;
       if (editor) {
@@ -405,8 +396,6 @@ export function activate(context: vscode.ExtensionContext) {
       getSpecialPath(full.replace(/(\s>.*?)[\s,;].*/, "$1")); //if special path included, use it
       full = full.replace(/>.*?[\s,;]+/, "").trim(); //& remove from full
     }
-    //alert(''+full.indexOf('<')+','+full.indexOf('>'));
-    //alert(''+cmdId+'; '+cmd+';['+full+']; '+tempPath+'+'+tempName);
   }
 
   function pad(s: string) {
@@ -544,12 +533,16 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       return;
     }
     if (uri.query === "ref") {
-      needSwap = false;
-      let s = replaceStrVars(
-        "\nCurrently:\n% f = %f\n% p = %p\n% c = %c\n% e = %e\n% n = %n"
-      );
-      paste(refStr + s); //paste into editor
-      removeSelection();
+      const value = await vscode.window.showQuickPick(
+        ["%f.ext temp file 'path/name.ext': "+replaceStrVars('%f.ext'), 
+         "%p     temp folder 'path/': "+replaceStrVars('%p'), 
+         "%c     this folder 'path/': "+replaceStrVars('%c'), 
+         "%e     this file 'path/': "+replaceStrVars('%e'), 
+         "%n.ext temp file 'name.ext': "+replaceStrVars('%n.ext')], 
+         {placeHolder: "use appropriate .ext, eg. for python use %f.py"});
+      if(value){
+         await vscode.env.clipboard.writeText(value.slice(0,2));
+      }
       return;
     }
     if (uri.query === "copyToClipboard") {
@@ -577,48 +570,31 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           await config.update('scripts',merge,1);
         }
       }
-      return;
-      
-      // let s1=cmdId;
-      // let s2 = "";
-      // if (config.get("scripts." + s1)) {
-      //   s2 = JSON.stringify(config.get("scripts." + s1)); //stringify for output
-      // } else {
-      //   s2 = '"'+full+'"';
-      // }
-      // out =
-      //   "```js :vm noInline\n" + //output :eval is an exec script which will:
-      //   "//this script can change, add or undefine a config setting\n" + 
-      //   'let s={"' + s1 + '":' + s2 + "}; //{\"id\":\"start command\"}\n" + //1. show current config, or an example
-      //   '//s={"' + s1 + '":undefined}; //uncomment this to undefine ' + s1 + "\n" +
-      //   "let scripts=config.get('scripts');\n" + //2. get current settings for all scripts
-      //   "let merge=Object.assign({},scripts,s);\n" + //3. update settings for current script
-      //   "if(await config.update('scripts',merge,1)){}\n"+ //4. finally update hover-exec config
-      //   "console.log('new config:',config.get('scripts."+s1+"'))";
-      // needSwap = false; //ignore anything that looks like it is a swap
-      // paste(out); //paste into editor as 'output :exec' script
-      // removeSelection();
-      // return;
+      return;      
     }
-    let s = codeBlock;
+
     needSwap = inline && codeBlock.includes(swap);
+    //if (config.clearPrevious){
+      //clear();//removeSelection();
+    //}
+    let code = codeBlock; //code will contain the code for execution
     if (needSwap) {
-      let re = new RegExp("(.+" + swap + ").*", "mg"); //regex finds previous results
-      codeBlock = codeBlock.replace(re, "$1"); //remove them
-      s = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg,''); //remove commented lines with swap
+      let re = new RegExp("(.+" + swap + ").*", "mg"); //regex to find previous results
+      codeBlock = codeBlock.replace(re, "$1");         //& remove from codeBlock
+      code = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg,''); //remove commented lines with swap
       //disable swap in fully commented lines by appending a space
       codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg,'$1 ');
       re = new RegExp("(--|#|%|\/\/)\\s*" + swap+'$', "mg"); //find any comment chars directly preceding a swap
-      s = s.replace(re, swap); //remove them -- note \\s required in re, not just \s
+      code = code.replace(re, swap); //remove them -- note \\s required in re, not just \s
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
       let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");
       let swapper = config.get("swappers." + cmdId) as string;
-      if (swapper && !re1.test(s)) {
+      if (swapper && !re1.test(code)) {
         //replace all with swapper (uses $1)
-        s = s.replace(re, swapper);
+        code = code.replace(re, swapper);
       } else {
         //if no swapper defined replace all with $1
-        s = s.replace(re, "$1");
+        code = code.replace(re, "$1");
       }
     }
     vscode.window.withProgress({
@@ -629,28 +605,31 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       async (prog) => {
         executing = true; //set 'executing' flag
         let iexec = nexec; //& save exec number for this script
-        out = ""; //reset output buffer
+        out=""; //reset output buffer
+        if (config.clearPrevious){
+          paste(out);removeSelection();
+        }
         prog.report({ message: "executing" }); //start execution indicator
-        s=hrefSrcReplace(s);
-        s=await inHere(s); //replace #inhere       
-        if(s!==''){writeFile(tempPath + tempName, s);} //saves code in temp file for execution
+        code=hrefSrcReplace(code);
+        code=await inHere(code); //replace #inhere       
+        if(code!==''){writeFile(tempPath + tempName, code);} //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
           if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
             //reassign console.log to write to view logs in output
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
-            s=`async function __main(){console.log=write;`+s+`};__main();`;
+            code=`async function __main(){console.log=write;`+code+`};__main();`;
             try {
               if(cmd === 'eval'){
                 status('using eval');
-                await eval(s);
+                await eval(code);//execute, out produced by 'console.log'
               } else {
                 status('using vm');
                 if(vmContext===undefined){
                   vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
                 }
                 let vcContext=vm.createContext(vmContext);//prepare context 
-                let script=new vm.Script(s);//syntax check
+                let script=new vm.Script(code);//syntax check
                 await script.runInContext(vcContext);//execute, out produced by 'console.log'
               }
             } catch (e) {      //if syntax error
@@ -658,10 +637,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
               out='error '+e;  //report error in output block
             }
           } else {
-            if (config.clearPrevious){
-              clear();
-              removeSelection();
-            }
             if(useRepl){//repl parameters from config
               let rp = config.get("repls."+cmdId) as Array<string|Array<string>>; 
               let chitem=chRepl.find((el) => el[0]===cmdId);
@@ -676,16 +651,16 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 repl=chitem[1];
               }
               out1=''; //used by stdio for replOutput 
-              s="\n"+s+"\n"+rp[2]+"\n"; //script to output formfeed to indicate completion
+              code="\n"+code+"\n"+rp[2]+"\n"; //script to output formfeed to indicate completion
               if(rp[3]!==[]){ //preprocessing eg. handle python indents
                 let i=0;
                 while(i<rp[3].length-1){
                   let re=new RegExp(rp[3][i],"mg");
-                  s=s.replace(re,rp[3][i+1]);
+                  code=code.replace(re,rp[3][i+1]);
                   i+=2;
                 }
               }
-              repl.stdin?.write(s);
+              repl.stdin?.write(code);
               out=await replOutput();
               if(rp[4]!==""){ //postprocessing (eg. lua,node)
                 //rp[4] has one or more regexp
@@ -699,19 +674,21 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
             } else {
               out=await execShell(cmd); //execute all other commands
               if (cmdId === "buddvs") {   //local script tester
-                out = out.replace(/�/g, "î");
+                out=out.replace(/�/g, "î");
               }
             }
           }
         } else {
-          out = uri.toString(); //no ex, return uri
+          out=uri.toString(); //no ex, return uri
         }
         executing = false;     //execution finished
         if (iexec === nexec) { //only output if this is the latest result
           writeFile(tempPath + tempName + ".out.txt", out);//write to output file
-          out = out.replace(/\[object Promise\]\n*/g, ""); //remove in editor output
+          out=out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
+            selectCodeblock(false,false);
+            //alert(''+startCode+','+replaceSel.start.line+','+replaceSel.end.line);
             paste(out);   //paste into editor
             removeSelection(); //deselect
           }
@@ -784,13 +761,13 @@ async function inHere(s: string): Promise<string> {
 function clear(){
   //paste into editor
   const { activeTextEditor } = vscode.window;
-  if (activeTextEditor && startCode > 0) {
+  if (activeTextEditor && startCode >= 0) {
     let temp='';
     if (needSwap) {
       temp = codeBlock.replace(/=>>.*?(\r?\n)/mg,'=>> $1');
     }
     activeTextEditor.edit((selText) => {
-      selectCodeblock(false); //select codeblock to replace
+      selectCodeblock(false,false); //select codeblock to replace
       if (needSwap) {
         selText.replace(replaceSel, temp + "```\n");
       } else {
@@ -806,9 +783,10 @@ function clear(){
 function paste(text: string) {
   //paste into editor
   const { activeTextEditor } = vscode.window;
-  if (activeTextEditor && startCode > 0) {
+  if (activeTextEditor && startCode >= 0) {
     //remove 'object promise' messages in editor
     //if(cmdId==='eval'){text=text.replace(/\[object Promise\]/g,'');}
+    //alert('here:'+text+';');
     if (needSwap) {
       //if doing in-line output
       let re1 = new RegExp(swap + "\r?\n", "g"); //allows checking for swaps
@@ -840,8 +818,10 @@ function paste(text: string) {
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
     //if there is any output left, it will go into an ```output codeblock
+    selectCodeblock(false,true);
+    //alert('text'+text+';'+replaceSel.start.line+','+replaceSel.end.line);
     activeTextEditor.edit((selText) => {
-      selectCodeblock(false); //select codeblock to replace
+      //selectCodeblock(false); //select codeblock to replace
       let lbl = "```output\n"; //can start output with ``` to replace ```output
       if (text.startsWith(" ```")) {
         text = text.slice(1);
@@ -881,10 +861,10 @@ function removeSelection() {
   }
 }
 
-function selectCodeblock(force: boolean) {
+function selectCodeblock(force: boolean,temp:boolean) {
   //select codeblock appropriately depending on type
   const { activeTextEditor } = vscode.window;
-  if (activeTextEditor && startCode > 0) {
+  if (activeTextEditor && startCode >= 0) {
     const doc = activeTextEditor.document;
     let m = startCode; //selection will be from lines m to n
     if (oneLiner) {
@@ -909,6 +889,7 @@ function selectCodeblock(force: boolean) {
       }
       activeTextEditor.selection = replaceSel;
     } else {
+      let t1='';
       //not a one-liner
       let output = doc
         .lineAt(new vscode.Position(m, 0))
@@ -923,6 +904,7 @@ function selectCodeblock(force: boolean) {
       }
       while (n < doc.lineCount) {
         //work through the block and look for end
+        t1=t1+n+':'+doc.lineAt(new vscode.Position(n, 0)).text+';';
         if (doc.lineAt(new vscode.Position(n, 0)).text.startsWith("```")) {
           if (
             n+1 < doc.lineCount &&
@@ -946,6 +928,7 @@ function selectCodeblock(force: boolean) {
         }
         n++;
       }
+      //if(temp){alert('selected: '+m+','+n+'; '+t1);}
       replaceSel = new vscode.Selection(m, 0, n, 0);
       activeTextEditor.selection = replaceSel;
     }
@@ -957,7 +940,7 @@ function deleteOutput(asText: boolean) {
   //delete output code block, or leave as text
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor) {
-    selectCodeblock(true);
+    selectCodeblock(true,false);
     if (asText) {
       //remove start and end lines, ie. the lines with backticks
       let pos1 = activeTextEditor.selection.start.line + 1;
@@ -1043,7 +1026,7 @@ async function writeFile(path: string, text: string) {
 function utf8ArrayToStr(array:Uint8Array) {
   var out, i, len, c;
   var char2, char3;
-  out = "";
+  out="";
   len = array.length;
   i = 0;
   while(i < len) {
@@ -1082,7 +1065,6 @@ async function readFile1(path:string){
 }
 
 async function readFile(path: string) {
-  //alert(path);
   return  fs1.readFileSync(path,'utf8');
   // path=path.replace(/^['"]|['"]$/g,'');
   // try {

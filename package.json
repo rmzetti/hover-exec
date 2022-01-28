@@ -64,17 +64,17 @@
 						"node": "node \"%f.js\"",
 						"javascript": "node \"%f.js\"",
 						"html": "\"%f.html\"",
+					  "html_mac": "open \"%f.html\"",
+            "html_win": "\"%f.html\"",
+            "html_lnx": "firefox \"%f.html\"",
+            "html_wsl": "firefox \"%f.html\"",
 						"firefox": "firefox \"%f.html\"",
 						"chrome": "google-chrome-stable \"%f.html\"",
             "safari": "open -a safari \"%f.html\"",
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" ",
-					  "html_mac": "open \"%f.html\"",
-            "html_win": "\"%f.html\"",
-            "html_lnx": "firefox \"%f.html\"",
-            "html_wsl": "chrome \"%f.html\""
+						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
           }
 				},
         "hover-exec.swappers": {
