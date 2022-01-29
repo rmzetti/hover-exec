@@ -22,7 +22,7 @@ The following code block can be executed with the code block identifier set to `
 //timing and speed results for the three alternatives should be similar
 const {performance}=require('perf_hooks'); //ignored by eval & vm
 let iter=1e8;
-let n=0;
+let n=0.01;
 let t1=performance.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
 let t2=performance.now();
@@ -31,8 +31,8 @@ console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
 ```output
-total time  0.46  sec
-speed  216  million iterations per sec
+total time  0.47  sec
+speed  214.2  million iterations per sec
 ```
 
 > Example output (vm, eval & node are fairly similar)
@@ -47,7 +47,7 @@ This will execute the same javascript code in the default browser:
 <script>
 function test(){
 let iter=1e8;
-let n=0;
+let n=0.01;
 let t1=performance.now();
 for (let i=1;i<=iter;i++){ n*=i;n++;n=n/i; }
 let t2=performance.now();
@@ -86,7 +86,7 @@ func main() {
     var iter int=1e9
     var t1,t2 int64
     var n,t float64
-    n=0
+    n=0.01
     t1=time.Now().UnixNano()
     for i:=1;i<=iter;i++ {
       n*=float64(i);
@@ -101,7 +101,7 @@ func main() {
 ```
 ```output
 total time 0.251 sec
-speed  3983.7 million iterations per sec
+speed  3977.2 million iterations per sec
 ```
 
 > Example output
@@ -128,8 +128,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.65  sec
-speed  6.0436  million iterations per sec
+total time  1.9  sec
+speed  5.2622  million iterations per sec
 ```
 
 > Example output
@@ -157,8 +157,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.12	 sec
-speed 	88.73	 million iterations per sec
+total time 	1.1	 sec
+speed 	90.66	 million iterations per sec
 ```
 
 > Example output:
@@ -177,7 +177,7 @@ program Hello;
 begin //30
   m:=100000000; //fewer iterations (1e8)
   t1:=now;
-  a:=1;
+  a:=0.01;
   for i:=1 to m do
   begin
       a:=a*i;
@@ -191,8 +191,8 @@ begin //30
 end.
 ```
 ```output
-time=   1.06 sec
-speed=  94.61 million iterations per sec
+time=   1.09 sec
+speed=  91.74 million iterations per sec
 ```
 
 > Example output:

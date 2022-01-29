@@ -74,15 +74,15 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>3.8977679442468744
-eval('let b=3; 2*b*Math.random()')=>>1.2127535482472327
+2*b*Math.random() =>>3.5395493378905662
+eval('let b=3; 2*b*Math.random()')=>>3.5645173815006905
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.5258921831663654
+'hello '+(2-1+Math.random())=>>hello 1.3618302500517694
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.9176600571282423
+goodbye world 0.8979548117840905
 hello, world 3
 ```
 
@@ -252,7 +252,7 @@ lua ok
 ```python
  #python :python3 # adding ':python3' would use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.270598821975966
+45-2+random()       #  =>>43.8389732/10769346
 'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```
@@ -355,6 +355,13 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 
 exec notepad with file in current folder:
 `open -a textedit "%cREADME.md"`  mac
+```output
+Error: Command failed: open -a textedit "c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec\README.md"
+'-a' not found
+'textedit' not found
+,'-a' not found
+'textedit' not found
+```
 `notepad "%cREADME.md"`  windows
 `gedit "%cREADME.md"`  linux/wsl
 `xedit "%cREADME.md"`  linux/wsl

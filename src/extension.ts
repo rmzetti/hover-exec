@@ -525,11 +525,11 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       return;
     }
     if (uri.query === "delete") {
-      deleteOutput(false); //delete output codeblock
+      await deleteOutput(false); //delete output codeblock
       return;
     }
     if (uri.query === "remove") {
-      deleteOutput(true); //change output codeblock to text
+      await deleteOutput(true); //change output codeblock to text
       return;
     }
     if (uri.query === "ref") {
@@ -574,9 +574,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     }
 
     needSwap = inline && codeBlock.includes(swap);
-    //if (config.clearPrevious){
-      //clear();//removeSelection();
-    //}
     let code = codeBlock; //code will contain the code for execution
     if (needSwap) {
       let re = new RegExp("(.+" + swap + ").*", "mg"); //regex to find previous results
@@ -607,7 +604,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         let iexec = nexec; //& save exec number for this script
         out=""; //reset output buffer
         if (config.clearPrevious){
-          paste(out);removeSelection();
+          await clear();removeSelection();
         }
         prog.report({ message: "executing" }); //start execution indicator
         code=hrefSrcReplace(code);
@@ -687,9 +684,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           out=out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
-            selectCodeblock(false,false);
-            //alert(''+startCode+','+replaceSel.start.line+','+replaceSel.end.line);
-            paste(out);   //paste into editor
+            await selectCodeblock(false,false);
+            await paste(out);   //paste into editor
             removeSelection(); //deselect
           }
           if (config.showOk) { //report successful completion
@@ -758,15 +754,16 @@ async function inHere(s: string): Promise<string> {
   return s;
 }
 
-function clear(){
+async function clear(){
   //paste into editor
+  //needs to be async otherwise vm/eval don't work (get ahead of editor)
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
     let temp='';
     if (needSwap) {
       temp = codeBlock.replace(/=>>.*?(\r?\n)/mg,'=>> $1');
     }
-    activeTextEditor.edit((selText) => {
+    await activeTextEditor.edit((selText) => {
       selectCodeblock(false,false); //select codeblock to replace
       if (needSwap) {
         selText.replace(replaceSel, temp + "```\n");
@@ -775,18 +772,14 @@ function clear(){
       }
     });
   }  
-  //not able to use clear() when using js:vm or js:eval
-  //the final paste seems to do all the right things,
-  //and the output is in the file, but doesn't appear in the editor
 } //end function clear
 
-function paste(text: string) {
+async function paste(text: string) {
   //paste into editor
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
     //remove 'object promise' messages in editor
     //if(cmdId==='eval'){text=text.replace(/\[object Promise\]/g,'');}
-    //alert('here:'+text+';');
     if (needSwap) {
       //if doing in-line output
       let re1 = new RegExp(swap + "\r?\n", "g"); //allows checking for swaps
@@ -818,8 +811,7 @@ function paste(text: string) {
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
     //if there is any output left, it will go into an ```output codeblock
-    selectCodeblock(false,true);
-    //alert('text'+text+';'+replaceSel.start.line+','+replaceSel.end.line);
+    await selectCodeblock(false,true);
     activeTextEditor.edit((selText) => {
       //selectCodeblock(false); //select codeblock to replace
       let lbl = "```output\n"; //can start output with ``` to replace ```output
@@ -861,7 +853,7 @@ function removeSelection() {
   }
 }
 
-function selectCodeblock(force: boolean,temp:boolean) {
+async function selectCodeblock(force: boolean,temp:boolean) {
   //select codeblock appropriately depending on type
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
@@ -928,7 +920,6 @@ function selectCodeblock(force: boolean,temp:boolean) {
         }
         n++;
       }
-      //if(temp){alert('selected: '+m+','+n+'; '+t1);}
       replaceSel = new vscode.Selection(m, 0, n, 0);
       activeTextEditor.selection = replaceSel;
     }
@@ -936,11 +927,11 @@ function selectCodeblock(force: boolean,temp:boolean) {
   return;
 } //end function selectCodeblock
 
-function deleteOutput(asText: boolean) {
+async function deleteOutput(asText: boolean) {
   //delete output code block, or leave as text
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor) {
-    selectCodeblock(true,false);
+    await selectCodeblock(true,false);
     if (asText) {
       //remove start and end lines, ie. the lines with backticks
       let pos1 = activeTextEditor.selection.start.line + 1;

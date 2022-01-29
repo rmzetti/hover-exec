@@ -1226,14 +1226,14 @@ Various time and date functions using `vm`
 
 ```js
 //js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.39419356972824
+(44-Math.random())=>>43.425368790964484
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2022-01-14
-new Date().toLocaleDateString()=>>14/01/2022
-new Date().toString()=>>Fri Jan 14 2022 16:57:26 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>14/01/2022, 4:57:26 pm
-new Date().getTime()=>>1642132646308
+new Date().toISOString().slice(0,10)=>>2022-01-28
+new Date().toLocaleDateString()=>>28/01/2022
+new Date().toString()=>>Fri Jan 28 2022 22:13:54 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>28/01/2022, 10:13:54 pm
+new Date().getTime()=>>1643361234943
 ```
 
 ---
@@ -1294,13 +1294,16 @@ netstat -an
 //js {cmd=node} :node //works in mpe
 //random string generation see https://gist.github.com/6174/6062387
 a=Math.random().toString(36).substring(2, 15)
-a =>>fkif1kwmwrt
+a =>>cw6zdk9nxhj
 a=[...Array(60)].map(_=>(Math.random()*36|0).toString(36)).join``
-a =>>ilv45y6whytjxdrmfthyblwtsuzr3tcf81yntbr0o74toqfmn8g25sb0xxfn
+a =>>t64ddmf5dg1j19gwny8vvl3jf0ltaqx26ju8i9fbmrunw6dwexaikbq4oprr
 a=[...Array(30)].map(_=>((Math.random()*26+10)|0).toString(36)).join``
-a =>>puapmaciadoztfppmttleubzkbityr
+a =>>xxfvaexpixyzlgwnxmfjxcxhsiglrf
 console.log(a)
-Math.random(36).toString(36).substring(2,3) =>>9
+Math.random(36).toString(36).substring(2,3) =>>0
+```
+```output
+xxfvaexpixyzlgwnxmfjxcxhsiglrf
 ```
 
 ---
@@ -1317,6 +1320,9 @@ function swapStr(str,n){
     return arr.join('');
 }
 console.log(swapStr('portsmouth',100))
+```
+```output
+umtthposro
 ```
 
 ---
@@ -1385,8 +1391,11 @@ console.log(myRe)
 //js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=8.233532934131738
-console.log(u)
+' uptake='+u  =>> uptake=4.476834080717488
+console.log('for',d,'ug uptake is',u,'ug')
+```
+```output
+for 333 ug uptake is 4.476834080717488 ug
 ```
 
 ---

@@ -85,17 +85,17 @@ console.time('console timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>1564.4390000011772
+performance.now()-p=>>527.4681000038981
 console.timeEnd('console timer')
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
 console.log('abc',Date.now(),'def')
 ```
 ```output
-console timer: 1.566s
-[ '0.42284083411200335', '0.0791851273341857' ]
-hello  1569
-abc 1637199109775 def
+console timer: 527.65ms
+[ '0.4654111388054962', '0.11294209623815132' ]
+hello  529
+abc 1643361330201 def
 ```
 
 ### using console.log
