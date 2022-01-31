@@ -31,7 +31,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
 ---
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it simply offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
+*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
@@ -43,7 +43,9 @@ Hover script exec in action:
 ---
 ## Basic hover-exec 
 
-Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the code block) will execute the code in the code block, and produce output.
+Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
+
+If the cursor is inside a code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
 ---
 ## Javascript scripts
@@ -56,7 +58,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.053802107189301784
+'test: '+Math.random() =>> 
 ```
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
@@ -71,16 +73,12 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>3.4855381810698756
-eval('let b=3; 2*b*Math.random()')=>>3.2683469910895293
+2*b*Math.random() =>> 
+eval('let b=3; 2*b*Math.random()')=>> 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.6793043132537262
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>> 
+process.cwd() =>> 
 console.log(abc)
-```
-```output
-goodbye world 0.7429127255086827
-hello, world 3
 ```
 
 ---
@@ -115,7 +113,7 @@ The following functions are included in `vmContext` by default (and are also ava
 - execShell(string): exec shell command
 - global: define and access global functions and variables (globals persist over separate script execs)
 - globalThis: as for global
-- input(string): wait for input (box at top of screen)
+- input(string): provide an input box (top of screen)
 - process: access to process module, eg. `process.cwd()` 
 - progress(string,usec): show a progress bar (bottom right) for specified usec
 - readFile(path): read local file
@@ -146,9 +144,9 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
+xrange()=>> 
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec
+cd =>> 
 console.log(xrange())
 ```
 
@@ -168,7 +166,7 @@ See [READMORE](READMORE.md) for more information and examples.
 ---
 ### Using nodejs
 
-The `js:node` command executes a javascript code block in `nodejs` (assuming that is installed). 
+The `js:node` command executes a javascript code block in `nodejs` (assuming it has been installed). 
 
 ```js :node
 //js :node
@@ -180,8 +178,14 @@ console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
 ---
 ### Html and javascript
 
-```html <!--Hello world-->
+```html
+<!--Hello world-->
 <h1 align='center'>Hello world</h1>
+<p>Html will be displayed in the browser
+<p id='test'>Text here</p>
+<script>
+document.getElementById("test").innerHTML="<em>Text via javascript</em>"
+</script>
 ```
 
 ```html
@@ -227,7 +231,7 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
-- Other script languages may be added. And as an alternative to the standard *vscode* method for changing extension settings, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
+- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
 
 ---
 ### Lua
@@ -235,26 +239,20 @@ Notes:
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                    adding ':lua54' would mean use 'lua54' as start command
-'hello ' .. 44-2+math.random() =>>hello 42.241483537274
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.3889110656656
+'hello ' .. 44-2+math.random() =>> 
+"& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
-```
-```output
-lua ok
 ```
 
 ---
 ### Python
 
 ```python
- #python :python3 # adding ':python3' would use 'python3' as start command
+ #python :python3 # nb. adding ':python3' would use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.96186261124127
-'hello, world 3!'       #  =>>hello, world 3!
+45-2+random()       #  =>> 
+'hello, world 3!'       #  =>> 
 print('python ok')
-```
-```output
-python ok
 ```
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
@@ -267,12 +265,9 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
                 //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
 rand("seed",getdate('s')); //set new random sequence
 mprintf('%s\n','test '+string(rand())+' '+pwd());
-string(rand())+' '+pwd() =>>0.1805917 c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-string(rand()) =>>0.0540289
+string(rand())+' '+pwd() =>> 
+string(rand()) =>> 
 //disp('disp puts quotes around strings',rand())
-```
-```output
-test 0.9880022 c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---
@@ -282,30 +277,31 @@ test 0.9880022 c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.11769825733706418, 0.7403917922998082, 0.27895554485022145]
+a   # =>> 
 b=a;b[2]=42;                                   # arrays are shallow copied
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
-```
-```output
-a=[0.11769825733706418, 42.0, 0.27895554485022145]
-b=[0.11769825733706418, 42.0, 0.27895554485022145]
 ```
 
 ---
 ### Bash & zsh
 
-```zsh // show current directory
- #zsh // show current directory
+```zsh # (macos) show current directory
+ #zsh # (macos) show current directory
 pwd
 ```  
+
+```bash # (macos, linux, wsl) show current directory
+ #bash # (macos, linux) show current directory
+pwd
+```
 
 ---
 ### Powershell
 
-```pwsh
-  # pwsh // random number, show current directory.
+```pwsh # (windows) random number, show current directory
+  # pwsh # (windows) random number, show current directory
   # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>>0.230122082973887
+Get-Random -Min 0.0 -Max 1.0 # =>> 
 pwd
 ```
 
@@ -313,6 +309,7 @@ pwd
 ### Gnuplot
 
 Gnuplot is a very useful stand-alone plotting facility.
+
 When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
 ```gnuplot
@@ -351,17 +348,10 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ### One-liner and quickmath examples:
 
 exec notepad with file in current folder:
-`open -a textedit "%cREADME.md"`  mac
-```output
-Error: Command failed: open -a textedit "c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec\README.md"
-'-a' not found
-'textedit' not found
-,'-a' not found
-'textedit' not found
-```
-`notepad "%cREADME.md"`  windows
-`gedit "%cREADME.md"`  linux/wsl
-`xedit "%cREADME.md"`  linux/wsl
+`notepad "%cREADME.md"`  --windows
+`open -a textedit "%cREADME.md"`  --mac
+`gedit "%cREADME.md"`  --linux/wsl
+`xedit "%cREADME.md"`  --linux/wsl
 
 exec notepad with temp file (%f):
 `open -a textedit "%f"`  mac
