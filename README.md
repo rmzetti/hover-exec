@@ -31,7 +31,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
 ---
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
+*Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
@@ -43,14 +43,16 @@ Hover script exec in action:
 ---
 ## Basic hover-exec 
 
-Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
+Hovering over fenced code block start or end lines which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
 
-If the cursor is inside a code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
+If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
+
+Code blocks which are indented (ie. unfenced) or fenced with '~' will not result in a hover message and cannot be executed.
 
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs) or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs), or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
 
 ### Examples using vm and eval
 
@@ -66,7 +68,7 @@ Intermediate results can be viewed in line, as above, by appending `=>>` instead
 ---
 A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`).
 
-```js  //using javascript vm various examples
+```js
 //js //using javascript vm, various examples
 let abc="hello, world 3"
 alert(abc) //not available in nodejs scripts
@@ -82,7 +84,7 @@ console.log(abc)
 ```
 
 ---
-```js  //javascript regex tester
+```js
 //js  //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
@@ -90,7 +92,7 @@ console.log(abc)
 ---
 All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
-```js :eval // javascript regex tester using eval
+```js :eval
 //js :eval // javascript regex tester using eval
 'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> bcde--fg
 ```
@@ -137,7 +139,7 @@ Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `
 
 When using `vm`, function and variable definitions persist across `vm` scripts during the session. A function or variable can be also set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval`, and is then available during the session in both. A global can be removed using, eg. `delete global.a;`
 
-```js //using lodash, mathjs and process in vm
+```js
 //js //using lodash, mathjs and process in vm
 function xrange(){
    let x1=_.range(0,6.1,6/10);
@@ -150,13 +152,13 @@ cd =>>
 console.log(xrange())
 ```
 
-```js //declare a global function for eval
+```js
 //js //declare a global function (not needed if just using vm scripts)
 f=global.f=function(m){return 'the meaning of life is '+m;};
 f(44-2)=>>the meaning of life is 42
 ```
 
-```js:eval //use the global function (can be used in both *eval* & *vm*)
+```js:eval
 //js:eval //use the global function (can be used in both *eval* & *vm*)
 f(42)=>> the meaning of life is 42
 ```
@@ -169,7 +171,7 @@ See [READMORE](READMORE.md) for more information and examples.
 The `js:node` command executes a javascript code block in `nodejs` (assuming it has been installed). 
 
 ```js :node
-//js :node
+//js :node //blanks allowed before the : but not after
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')

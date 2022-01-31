@@ -161,6 +161,7 @@ export function activate(context: vscode.ExtensionContext) {
         startCode = pos.line; //save start of code line number
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
+        if (comment===''){ comment=' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;' }
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
         if (script) {
           //if predefined script engine

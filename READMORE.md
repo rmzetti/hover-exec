@@ -85,13 +85,17 @@ There is also an intention to maintain a certain compatability with the excellen
 
 ## Basic hover-exec
 
-Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Hovering over the triple backtick at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over fenced code block start or end lines which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
+
+If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
+
+Code blocks which are indented (ie. unfenced) or fenced with '~' will not result in a hover message and cannot be executed.
 
 ---
 
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs), or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
 
 ### Examples using vm and eval
 
@@ -99,18 +103,17 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number results ")
-'test: '+Math.random() =>>test: 0.45869749994949927
+'test: '+Math.random() =>> 
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
-```
-```output
-Notice the in-line random number results
 ```
 
 
 ```js
 //js //execute the previous *vm* block first
-bb('dogs');aa('pears'); //uses the globals defined in the previous code block
+      //uses the globals defined in the previous code block
+bb('dogs'); // alert messages appear bottom right
+aa('pears'); 
 ```
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` (see the `swapper` configurations). If it is wished to be strictly correct, and/or compatible with the *markdown preview enhanced* extension (*mpe*), put a comment marker before the `=>>`, eg. for javascript use `// =>>`, for python `# =>>`.  Note, though,  that *mpe* will not produce the results in-line.
@@ -128,17 +131,15 @@ let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>>3.03462333266289
+eval('let a=3;2*a*Math.random()')=>> 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.7334312405183094
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>> 
+process.cwd() =>> 
 console.log(abc)
 ```
 
-```output
-goodbye world 0.06753950091948857
-hello, world 3
-```
+
+Note that *[clear output]* in the hover can be used to clear the previous output before execution. There is also a *hover-exec* extension setting to make *clear output* the default, at the expense of a little jerkiness.
 
 ---
 
