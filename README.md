@@ -354,9 +354,9 @@ exec notepad with file in current folder:
 `xedit "%cREADME.md"`  --linux/wsl
 
 exec notepad with temp file (%f):
-`open -a textedit "%f"`  mac
-`notepad "%f"`  windows
-`xedit "%f"`  linux/wsl
+`open -a textedit "%f"` --mac
+`notepad "%f"`  --windows
+`xedit "%f"`  --linux/wsl
 
 open another instance of vscode:
 `code -n %f`
