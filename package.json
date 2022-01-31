@@ -124,7 +124,7 @@
 					"default": false
 				},
 				"hover-exec.clearPrevious": {
-					"description": "clear previous output just before execution (not for vm or eval)",
+					"description": "clear previous output before execution",
 					"type": "boolean",
 					"default": false
 				}

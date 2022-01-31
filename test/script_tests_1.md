@@ -100,8 +100,8 @@ func main() {
 }
 ```
 ```output
-total time 0.251 sec
-speed  3977.2 million iterations per sec
+total time 0.26 sec
+speed  3847.6 million iterations per sec
 ```
 
 > Example output

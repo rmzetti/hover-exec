@@ -43,12 +43,12 @@ Hover script exec in action:
 ---
 ## Basic hover-exec 
 
-Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Hovering over the triple backtick at the end of a block will trigger the message for the start of the block. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the block) will execute the code in the code block, and produce output.
+Hovering over code block start or end lines, which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message (or using the shortcut `Alt+/` or `Opt+/` with the cursor anywhere in the code block) will execute the code in the code block, and produce output.
 
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs). The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs) or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
 
 ### Examples using vm and eval
 
@@ -56,10 +56,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
 console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>>test: 0.5401468256447179
-```
-```output
-Notice the in-line random number result
+'test: '+Math.random() =>>test: 0.053802107189301784
 ```
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
@@ -74,15 +71,15 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>3.5395493378905662
-eval('let b=3; 2*b*Math.random()')=>>3.5645173815006905
+2*b*Math.random() =>>3.4855381810698756
+eval('let b=3; 2*b*Math.random()')=>>3.2683469910895293
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.3618302500517694
+'hello '+(2-1+Math.random())=>>hello 1.6793043132537262
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.8979548117840905
+goodbye world 0.7429127255086827
 hello, world 3
 ```
 
@@ -252,7 +249,7 @@ lua ok
 ```python
  #python :python3 # adding ':python3' would use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.8389732/10769346
+45-2+random()       #  =>>43.96186261124127
 'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```

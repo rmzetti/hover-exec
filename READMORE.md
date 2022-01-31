@@ -1016,19 +1016,18 @@ for c in range(600):
 print(time()-t)
 b=>>6000600
 ```
+```output
+0.42444634437561035
+```
 
 ```python::
 from time import time
-b=>>6000604
+b=>>6000605
 b=b+1
 time()
 b # this now produces output because the repl is being used
 ```
 
-```output
-1642136950.4097993
-6000605
-```
 
 ---
 
@@ -1226,14 +1225,14 @@ Various time and date functions using `vm`
 
 ```js
 //js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.425368790964484
+(44-Math.random())=>>43.00094653105661
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2022-01-28
-new Date().toLocaleDateString()=>>28/01/2022
-new Date().toString()=>>Fri Jan 28 2022 22:13:54 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>28/01/2022, 10:13:54 pm
-new Date().getTime()=>>1643361234943
+new Date().toISOString().slice(0,10)=>>2022-01-29
+new Date().toLocaleDateString()=>>30/01/2022
+new Date().toString()=>>Sun Jan 30 2022 10:29:40 GMT+1300 (New Zealand Daylight Time)
+new Date().toLocaleString()=>>30/01/2022, 10:29:40 am
+new Date().getTime()=>>1643491780855
 ```
 
 ---
@@ -1244,8 +1243,8 @@ Time and date using node
 //js {cmd=node} :node  //through nodejs
 a=44
 // in-line results are calculated but not output in mpe
-'answer='+(a-Math.random()) =>>answer=43.212331259670826
-new Date().getTime()=>>1639174726862
+'answer='+(a-Math.random()) =>>answer=43.568404765635506
+new Date().getTime()=>>1643491788317
 console.log(new Date().toISOString().slice(0, 10))
 console.log(new Date().toLocaleDateString())
 ```

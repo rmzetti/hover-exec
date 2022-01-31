@@ -78,24 +78,24 @@ hello hello hello
 
 ```js
 const {performance}=require('perf_hooks');
-//previous needed by node, ignored by eval & vm
+//previous line requireded by node, ignored by eval & vm
 let array1 = Array(1000000).fill(42);
 let p=performance.now();
 console.time('console timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>527.4681000038981
+performance.now()-p=>>530.6494999998249
 console.timeEnd('console timer')
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
 console.log('abc',Date.now(),'def')
 ```
 ```output
-console timer: 527.65ms
-[ '0.4654111388054962', '0.11294209623815132' ]
-hello  529
-abc 1643361330201 def
+console timer: 530.77ms
+[ '0.4499036226878319', '0.17397879643873693' ]
+hello  531
+abc 1643491862613 def
 ```
 
 ### using console.log
@@ -168,7 +168,7 @@ function test(){
   let array1 = Array(30000000).fill(42);
   array1=array1.map(String)
   t+='\n\n >> '+Math.round(performance.now()-p)+'ms';
-  t+=t1+array1.slice(0,5);
+  t+=t1+array1.slice(-5);
   let expr = "7*7-7";
   let result=0;
   p = performance.now();
@@ -207,7 +207,7 @@ function test(){
 <br> a = 12,2,3,4,5,6,13
 <br> 
 <br> time to fill 42 & map array[3e7] to String = 492ms
-<br> result.slice(0,5) = 42,42,42,42,42
+<br> result.slice(-5) = 42,42,42,42,42
 <br> 
 <br> eval or Function test, check result = 42
 <br> time = 193.5ms

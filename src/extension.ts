@@ -55,10 +55,10 @@ const refStr =
   " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
 const msgDel =
   "[ [*%ref*] ](vscode://rmzetti.hover-exec?ref) " +
-  "[[*delete block*]](vscode://rmzetti.hover-exec?delete)\n\n";
+  "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete)\n\n";
 const msgOut =
   "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
-  "[delete output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
+  "[clear output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win';
 if (!windows){
@@ -166,8 +166,9 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
+            "[ [*clear output*]; ](vscode://rmzetti.hover-exec?clear) " +
             "open: [ [*last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
-            "[ [*last result* ] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
+            "[ [*last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
@@ -543,6 +544,11 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       if(value){
          await vscode.env.clipboard.writeText(value.slice(0,2));
       }
+      return;
+    }
+    if (uri.query === "clear") {
+         needSwap=true;await clear();
+         removeSelection();
       return;
     }
     if (uri.query === "copyToClipboard") {
