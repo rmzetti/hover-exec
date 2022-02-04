@@ -138,7 +138,6 @@ process.cwd() =>>
 console.log(abc)
 ```
 
-
 Note that *[clear output]* in the hover can be used to clear the previous output before execution. There is also a *hover-exec* extension setting to make *clear output* the default, at the expense of a little jerkiness.
 
 ---
