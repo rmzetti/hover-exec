@@ -173,7 +173,6 @@ export function activate(context: vscode.ExtensionContext) {
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
-            //cmdId + "[ [*config*] ]("+vscode.Uri.file("C:\\Users\\ralph\\AppData\\Roaming\\Code\\User\\settings.json")+" ) " +
             cmdId + "[ [*config*] ](" + url + "_config) " + //add hover info
             msgDel + msgOpen + "**[" + cmdId + " =>> " + comment + "](" + url + ")**";
           const contents = new vscode.MarkdownString("hover-exec:" + msg);
@@ -558,21 +557,23 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       return;
     }
     if (uri.query.endsWith("_config")) {
-      //show current script config in a script that can update it if required
+      //show current script config
       if(useRepl){
         vscode.commands.executeCommand('workbench.action.openSettingsJson');
         return;
       }
-      const d = await vscode.window.showInputBox({
+      let d = await vscode.window.showInputBox({
         placeHolder: "config",
-        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'=> settings.json if unchanged',
+        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'(enter opens settings.json if unchanged)',
         value: config.get('scripts.'+cmdId)
       });
       if (d!==undefined){
         let scripts=config.get('scripts');
-        if(d===config.get('scripts.'+cmdId)){
+        let id=config.get('scripts.'+cmdId);
+        if(d===id || (d==='' && id===undefined)){
           vscode.commands.executeCommand('workbench.action.openSettingsJson');
         } else {
+          if(d==='undefine'||d==='undefined'||d===''){d=undefined;}
           let merge=Object.assign({},scripts,{[cmdId]:d});
           await config.update('scripts',merge,1);
         }
