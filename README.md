@@ -236,12 +236,55 @@ Notes:
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
 
 ---
+### javascript
+
+Javascript can be executed using the built in vm or eval, nodejs, or a browser.
+
+Example using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`).
+
+```js // using vscode built-in javascript virtual machine
+//using the built in vm
+let abc="hello, world 3"
+alert(abc) //not available in nodejs scripts
+let a='goodbye world'
+vscode.window.showInformationMessage(a) //not available in node scripts
+let b=3;
+2*b*Math.random() =>>2.213774523336376
+eval('let b=3; 2*b*Math.random()')=>>5.519384984706883
+console.log(a,Math.random())
+'hello '+(2-1+Math.random())=>>hello 1.3031071818357958
+process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+console.log(abc)
+```
+```output
+goodbye world 0.9470736121166186
+hello, world 3
+```
+
+---
+```html //html and javascript executed in the default browser
+<!-- tunnel *what am I going to do now*  -->
+<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
+<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
+<canvas id="c"></canvas> 
+<script> 
+lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
+o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
+r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
+v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
+w=-20,x=2*b.PI/30,y=.1875;
+function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
+setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
+</script></body>
+```
+
+---
 ### Lua
 
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                    adding ':lua54' would mean use 'lua54' as start command
-'hello ' .. 44-2+math.random() =>> 
+'hello ' .. 44-2+math.random() -- =>>  hover-exec can produce in-line results
 "& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
 ```
@@ -280,7 +323,7 @@ string(rand()) =>>
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
 a   # =>> 
-b=a;b[2]=42;                                   # arrays are shallow copied
+b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 
@@ -314,7 +357,8 @@ Gnuplot is a very useful stand-alone plotting facility.
 
 When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
-```gnuplot
+663
+6```gnuplot
  #gnuplot
 $charge << EOD
 2-07-2021 22:32 44
