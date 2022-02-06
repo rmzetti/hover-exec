@@ -146,21 +146,21 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>> 
+xrange()=>>
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>> 
+cd =>>
 console.log(xrange())
 ```
 
 ```js
 //js //declare a global function (not needed if just using vm scripts)
 f=global.f=function(m){return 'the meaning of life is '+m;};
-f(44-2)=>>the meaning of life is 42
+f(44-2)=>>
 ```
 
 ```js:eval
 //js:eval //use the global function (can be used in both *eval* & *vm*)
-f(42)=>> the meaning of life is 42
+f(42)=>>
 ```
 
 See [READMORE](READMORE.md) for more information and examples.

@@ -12,6 +12,7 @@ The following tests will use an implementation of a simple 'benchmark' to demons
   - [Octave test](#octave-test)
   - [Test using scilab](#test-using-scilab)
   - [Julia test](#julia-test)
+  - [Prime sieve](#prime-sieve)
 
 
 ### Javascript tests: 'vm', 'eval' and 'node'
@@ -268,10 +269,6 @@ t=time()-t;
 println("time= ",round(t,digits=2)," sec")
 println("speed= ",round(m/t/1e6,digits=3)," million iterations per sec")
 ```
-```output
-time= 1.77 sec
-speed= 5.64 million iterations per sec
-```
 
 >Example output:
 >time= 1.79 sec
@@ -279,5 +276,61 @@ speed= 5.64 million iterations per sec
 
 About the same speed as python.
 
+
+### Prime sieve
+
+```java
+public PrimeSieve(int n) {
+    this.n = n;
+    int half_n = (n + 1) >> 1;
+    this.sieve = new BitSet(half_n);
+    this.sieve.set(0, half_n);
+  }
+  public void run() {
+    int q = (int) Math.ceil(Math.sqrt(n));
+    for (int p = 3; p < q; p += 2) {
+      if (sieve.get(p >> 1)) {
+        for (int i = (p * p) >> 1; i < n >> 1; i += p) {
+          sieve.clear(i);
+        }
+      }
+    }
+  }
+```
+
+```js
+console.time('exec');
+var arr = fn(Math.pow(10, 5));
+function fn(n) {
+  var arr = Array.apply(null, {
+    length: n + 1
+  }).map(function(_, i) {
+    return i > 1;
+  });
+  var base = 2;
+  while (Math.pow(base, 2) < n) {
+    var counter = 2;
+    while (counter * base <= n) {
+      arr[counter * base] = false;
+      do {
+        counter++;
+      } while (!arr[base]);
+    }
+    do {
+      base++;
+    } while (!arr[base]);
+  }
+  return arr;
+}
+console.timeEnd('exec');
+console.log('array length: ' + arr.length);
+```
+
+
+```js
+//console.time('exec');
+//console.timeEnd('exec');
+console.log('array length: ' +2);
+```
 
 

@@ -623,11 +623,12 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           if (cmd === 'eval' || cmd === 'vm') { //use vscode internal js
             //reassign console.log to write to view logs in output
             //wrap with an async function to allow use of await (eg for input, delays,etc) 
-            code=`async function __main(){console.log=write;`+code+`};__main();`;
+            //code=`async function __main(){console.log=write;`+code+`};__main();`;
+            code=`async function __main(){`+code.replace(/console\.log/g,'write')+`};__main();`;
             try {
               if(cmd === 'eval'){
                 status('using eval');
-                await eval(code);//execute, out produced by 'console.log'
+                await eval(code);//execute, out produced by 'write'
               } else {
                 status('using vm');
                 if(vmContext===undefined){
@@ -635,7 +636,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
                 }
                 let vcContext=vm.createContext(vmContext);//prepare context 
                 let script=new vm.Script(code);//syntax check
-                await script.runInContext(vcContext);//execute, out produced by 'console.log'
+                await script.runInContext(vcContext);//execute, out produced by 'write'
               }
             } catch (e) {      //if syntax error
               needSwap=false;  //then don't do swap
