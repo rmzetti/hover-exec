@@ -300,6 +300,7 @@ public PrimeSieve(int n) {
 
 ```js
 console.time('exec');
+let t1=performance.now();
 var arr = fn(Math.pow(10, 5));
 function fn(n) {
   var arr = Array.apply(null, {
@@ -308,7 +309,7 @@ function fn(n) {
     return i > 1;
   });
   var base = 2;
-  while (Math.pow(base, 2) < n) {
+  while (Math.pow(base, 2) <= n) {
     var counter = 2;
     while (counter * base <= n) {
       arr[counter * base] = false;
@@ -322,15 +323,29 @@ function fn(n) {
   }
   return arr;
 }
+let t2=performance.now();
+let tot=(t2-t1)/1000;
 console.timeEnd('exec');
-console.log('array length: ' + arr.length);
+console.log('array length: ' + arr.length+', '+tot+' sec');
 ```
+```output
+array length: 100001, 0.0060223999992012976 sec
+```
+array length: 100001, 0.006022 sec `0.006022/0.00136=`   4.43
+array length: 10001, 0.00136 sec `0.00136/0.000185=`  7.35
+array length: 1001, 0.00018539999797940253 sec `0.000185/0.0000735=`  2.517
+array length: 101, 0.0000735 sec
+
+
 
 
 ```js
-//console.time('exec');
-//console.timeEnd('exec');
+console.time('exec');
+console.timeEnd('exec');
 console.log('array length: ' +2);
+```
+```output
+array length: 2
 ```
 
 

@@ -15,6 +15,7 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Html and javascript](#html-and-javascript)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
+    - [javascript](#javascript)
     - [Lua](#lua)
     - [Python](#python)
     - [Scilab](#scilab)
@@ -23,7 +24,8 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
   - [One-liners and quickmath](#one-liners-and-quickmath)
-    - [One-liner and quickmath examples:](#one-liner-and-quickmath-examples)
+    - [One-liner examples:](#one-liner-examples)
+    - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
   - [Notes and Known Issues](#notes-and-known-issues)
   - [Release Notes](#release-notes)
@@ -249,15 +251,15 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>2.213774523336376
-eval('let b=3; 2*b*Math.random()')=>>5.519384984706883
+2*b*Math.random() =>>0.10335449375907446
+eval('let b=3; 2*b*Math.random()')=>>3.638407325578492
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.3031071818357958
+'hello '+(2-1+Math.random())=>>hello 1.959136576267579
 process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
 ```output
-goodbye world 0.9470736121166186
+goodbye world 0.6838267074690498
 hello, world 3
 ```
 
@@ -283,8 +285,8 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
---                    adding ':lua54' would mean use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>>  hover-exec can produce in-line results
+--                     adding ':lua54' means use 'lua54' as start command
+'hello ' .. 44-2+math.random() -- =>> 
 "& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
 ```
@@ -322,7 +324,7 @@ string(rand()) =>>
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>> 
+a   # =>>[0.9914335060114368, 0.26559946016620595, 0.00751792184100486]
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
@@ -357,8 +359,7 @@ Gnuplot is a very useful stand-alone plotting facility.
 
 When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
 
-663
-6```gnuplot
+```gnuplot
  #gnuplot
 $charge << EOD
 2-07-2021 22:32 44
@@ -379,7 +380,7 @@ set format x "%d"
 set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
-![[2021-08-31-20-28-22.png]]  (this 'wiki' type link is enabled using *markdown memo*)
+![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled using *markdown memo*)
 
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
@@ -391,7 +392,7 @@ plot "$charge" using 1:3 w lp title "charge"
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
 
 ---
-### One-liner and quickmath examples:
+### One-liner examples:
 
 exec notepad with file in current folder:
 `notepad "%cREADME.md"`  --windows
@@ -425,7 +426,7 @@ other examples:
 `firefox <h1>Hello world!</h1>` linux firefox with some html
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href
 
-
+### Quickmath examples
 And finally, some *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
 NB. Copy answer to clipboard with a click.
 
