@@ -699,7 +699,7 @@ print(os.clock()-t)
 
 Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced*
 
-```python
+```python:octave
  # python:octave {cmd=octave} -- {cmd..} is for mpe
  # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
