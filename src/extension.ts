@@ -80,7 +80,6 @@ export function activate(context: vscode.ExtensionContext) {
       ): Promise<vscode.Hover | null> {
         if (executing) {
           //if already executing code block, show cancel option
-          status('executing...');
           return new vscode.Hover(
             new vscode.MarkdownString(
               "*hover-exec:* executing...\n\n[cancel execution](vscode://rmzetti.hover-exec?abort)"
@@ -580,7 +579,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       return;      
     }
-
     needSwap = inline && codeBlock.includes(swap);
     let code = codeBlock; //code will contain the code for execution
     if (needSwap) {
@@ -603,7 +601,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
     }
     vscode.window.withProgress({
-        //set up status bar exec indicator
+        //set up status bar progress indicator
         location: vscode.ProgressLocation.Window,
         title: "Hover-exec", //title for progress display
       },
@@ -611,10 +609,12 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         executing = true; //set 'executing' flag
         let iexec = nexec; //& save exec number for this script
         out=""; //reset output buffer
+        prog.report({ message: "executing "+cmdId }); //progress report; 
         if (config.clearPrevious){
           await clear();removeSelection();
+        } else {
+          await delay(10); //ensure progress report is visible
         }
-        prog.report({ message: "executing" }); //start execution indicator
         code=hrefSrcReplace(code);
         code=await inHere(code); //replace #inhere       
         if(code!==''){writeFile(tempPath + tempName, code);} //saves code in temp file for execution
@@ -627,10 +627,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
             code=`async function __main(){`+code.replace(/console\.log/g,'write')+`};__main();`;
             try {
               if(cmd === 'eval'){
-                await status('executing with eval...');
                 await eval(code);//execute, out produced by 'write'
               } else {
-                await status('executing with vm...');
                 if(vmContext===undefined){
                   vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
                 }
@@ -779,6 +777,7 @@ async function clear(){
       } else {
         selText.replace(replaceSel, '');  
       }
+      removeSelection(); //deselect
     });
   }  
 } //end function clear
