@@ -765,7 +765,7 @@ async function inHere(s: string): Promise<string> {
 
 async function clear(){
   //paste into editor
-  //needs to be async otherwise vm/eval don't work (get ahead of editor)
+  //needs to be async otherwise vm & eval don't work (get ahead of editor)
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
     let temp='';
@@ -819,6 +819,7 @@ async function paste(text: string) {
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
     text = text.replace(/^[\s\S]*?\n```output/,'```output');
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
+    text = text.replace(/^``/gm, " ```"); //allow `` to be used for ```
     //if there is any output left, it will go into an ```output codeblock
     await selectCodeblock(false,true);
     activeTextEditor.edit((selText) => {

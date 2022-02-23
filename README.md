@@ -530,3 +530,10 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+
+
+
+
+
+
+

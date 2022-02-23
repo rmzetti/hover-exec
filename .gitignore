@@ -31,3 +31,5 @@ node_modules/which/bin/node-which
 .DS_Store
 src/extension3.ts
 src/temp.md
+test/go.mod
+test/go.sum
