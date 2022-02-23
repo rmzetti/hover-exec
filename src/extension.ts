@@ -817,7 +817,8 @@ async function paste(text: string) {
     }
     text = text.replace(/.[\b]/g,''); //remove any character followed by a backspace
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
-    text = text.replace(/^[\s\S]*?\n```output/,'```output');
+    text = text.replace(/^[\s\S]*?\n```output/,'```output'); //an 'output' line will remove all preceding text from 
+    text = text.replace(/^[\s\S]*?\n``output/,'```output');  //the editor output (can be viewed in the output file)
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
     text = text.replace(/^``/gm, " ```"); //allow `` to be used for ```
     //if there is any output left, it will go into an ```output codeblock

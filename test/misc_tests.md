@@ -603,7 +603,7 @@ It works!
 let settings='repls';  //'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");
 let k=config.get(settings)
-console.log('```js:eval //exec here to incorporate any changes')
+console.log('``js:eval //exec here to incorporate any changes')
 console.log('let settings="'+settings+'";');
 console.log('let s=',k)
 console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")

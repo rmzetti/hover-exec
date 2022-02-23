@@ -1118,7 +1118,7 @@ for (ii=0;ii<x.length;ii++) {
   t1=(moment.now()-t1)/n/m/1000;//msec->sec
   tim[j++]=2/t1/1e6;
 }
-console.log('```output :gnuplot noinline')
+console.log('``output :gnuplot noinline')
 console.log('#tag_speed') //id tag for other scripts to use the data
 console.log('$speed << EOD')
 for (ii=0;ii<x.length;ii++) {

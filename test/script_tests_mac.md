@@ -182,14 +182,9 @@ begin //30
       a:=a/i;
   end;
   t1:=(now-t1)*3600*24;
-  writeln('```output');
   writeln('time= ',t1:6:2,' sec');
   writeln('speed= ',m/t1/1e6:6:2,' million iterations per sec')
 end.
-```
-```output
-time=   1.06 sec
-speed=  94.61 million iterations per sec
 ```
 
 > Example output:
