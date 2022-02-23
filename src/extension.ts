@@ -627,10 +627,10 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
             code=`async function __main(){`+code.replace(/console\.log/g,'write')+`};__main();`;
             try {
               if(cmd === 'eval'){
-                status('using eval');
+                await status('executing with eval...');
                 await eval(code);//execute, out produced by 'write'
               } else {
-                status('using vm');
+                await status('executing with vm...');
                 if(vmContext===undefined){
                   vmContext={...vmDefault}; //context undefined, use default (only shallow copy needed)
                 }
@@ -820,7 +820,7 @@ async function paste(text: string) {
     text = text.replace(/^[\s\S]*?\n```output/,'```output'); //an 'output' line will remove all preceding text from 
     text = text.replace(/^[\s\S]*?\n``output/,'```output');  //the editor output (can be viewed in the output file)
     text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
-    text = text.replace(/^``/gm, " ```"); //allow `` to be used for ```
+    text = text.replace(/^``/gm, " ```");  //allow `` to be used for ``` - allows ` to appear in even numbers
     //if there is any output left, it will go into an ```output codeblock
     await selectCodeblock(false,true);
     activeTextEditor.edit((selText) => {
@@ -1091,7 +1091,7 @@ function write(...args:any) {
   return false;
 }
 let statusBarItem: vscode.StatusBarItem;
-function status(s:string): void {
+async function status(s:string): Promise<void> {
   //put a string in the status bar for vm & eval
   if(s!==undefined && s!==''){
     statusBarItem.text = `=>>`+s;

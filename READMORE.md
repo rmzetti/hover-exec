@@ -131,12 +131,19 @@ let a='hello variable world';
 alert(a) //not available in node scripts
 a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
-eval('let a=3;2*a*Math.random()')=>> 
+eval('let a=3;2*a*Math.random()')=>>2.654439052591071
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> 
-process.cwd() =>> 
+'hello '+(2-1+Math.random())=>>hello 1.667119667249847
+process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
+```output
+goodbye world 0.7310192560793689
+hello, world 3
+```
+
+goodbye world 0.7280946459838489
+hello, world 3
 
 Note that *[clear output]* in the hover can be used to clear the previous output before execution. There is also a *hover-exec* extension setting to make *clear output* the default, at the expense of a little jerkiness.
 
@@ -172,6 +179,9 @@ rather than
 ```js:node
 //js:node {cmd=node}
 console.log('hello')
+```
+```output
+hello
 ```
 
 (Both work in *hover-exec*, view the above in *mpe* to see the difference)
@@ -832,7 +842,7 @@ Gnuplot is a very useful stand-alone plotting facility. It is particularly usefu
 
 Use `gnuplot` to run *gnuplot* - note that data bracketed by #tag_speed is used 'in here' (see later in this file, and the backtick quotes are required when the tag is referred to).
 
-```gnuplot
+```gnuplot {cmd}
  #gnuplot {cmd} //also works in *mpe*
  #tag_charge
 $charge << EOD

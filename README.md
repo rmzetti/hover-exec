@@ -286,9 +286,12 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                     adding ':lua54' means use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>> 
-"& goodbye " .. math.pi+math.random() =>> 
+'hello ' .. 44-2+math.random() -- =>>hello 42.057835623593
+"& goodbye " .. math.pi+math.random() =>>& goodbye 3.5594797195084
 print("lua ok") -- this outputs in the output code block below
+```
+```output
+lua ok
 ```
 
 ---
@@ -297,8 +300,8 @@ print("lua ok") -- this outputs in the output code block below
 ```python
  #python :python3 # nb. adding ':python3' would use 'python3' as start command
 from random import random
-45-2+random()       #  =>> 
-'hello, world 3!'       #  =>> 
+45-2+random()       #  =>>43.046070862300766
+'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```
 
@@ -324,9 +327,13 @@ string(rand()) =>>
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.9914335060114368, 0.26559946016620595, 0.00751792184100486]
+a   # =>>[0.6734943706577114, 0.7427929482986604, 0.9621620455660007]
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
+```
+```output
+a=[0.6734943706577114, 42.0, 0.9621620455660007]
+b=[0.6734943706577114, 42.0, 0.9621620455660007]
 ```
 
 ---
@@ -348,8 +355,13 @@ pwd
 ```pwsh # (windows) random number, show current directory
   # pwsh # (windows) random number, show current directory
   # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>> 
+Get-Random -Min 0.0 -Max 1.0 # =>>0.522081441489086
 pwd
+```
+```output
+Path
+----
+C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---

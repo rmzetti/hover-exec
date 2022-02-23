@@ -186,15 +186,14 @@ begin //30
       a:=a/i;
   end;
   t1:=(now-t1)*3600*24;
+  writeln('``output'); //removes compiler preface in result
   writeln('time= ',t1:6:2,' sec');
   writeln('speed= ',m/t1/1e6:6:2,' million iterations per sec')
 end.
 ```
 ```output
-Free Pascal Compiler version 3.2.0 [2021/02/21] for x86_64
-Copyright (c) 1993-2020 by Florian Klaempfl and others
-time=   1.05 sec
-speed=  94.97 million iterations per sec
+time=   1.06 sec
+speed=  94.61 million iterations per sec
 ```
 
 > Example output:
