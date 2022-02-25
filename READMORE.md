@@ -935,7 +935,8 @@ Get-Random -Min 0.0 -Max 1.0 =>>0.145960853968729
 
 ### Go
 
-Using go as a 'scripting language'
+Using go as a 'scripting language'.  Note that the go.mod and go.sum files provided in the 'test' directory need to be in 
+`eval console.log(tempFsPath)` //hover-exec to view the actual path for your system..
 
 ```go
 //go

@@ -54,7 +54,7 @@ const refStr =
   " - The default ext is specified by appending .ext, eg. %f.py\n" +
   " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
 const msgDel =
-  "[ [*%ref*] ](vscode://rmzetti.hover-exec?ref) " +
+  "[ [*show %f,%p,..*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete)\n\n";
 const msgOut =
   "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
@@ -166,9 +166,9 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
-            "[ [*clear output*]; ](vscode://rmzetti.hover-exec?clear) " +
-            "open: [ [*last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
-            "[ [*last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
+            "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear) " +
+            "[ [*open last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
+            "[ [*open last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           let msg =
@@ -539,9 +539,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
          "%c     this folder 'path/': "+replaceStrVars('%c'), 
          "%e     this file 'path/': "+replaceStrVars('%e'), 
          "%n.ext temp file 'name.ext': "+replaceStrVars('%n.ext')], 
-         {placeHolder: "use appropriate .ext, eg. for python use %f.py"});
+         {placeHolder: "Predefined paths reference (can add .ext, eg. python temp file is %f.py)"});
       if(value){
-         await vscode.env.clipboard.writeText(value.slice(0,2));
+         await vscode.env.clipboard.writeText(value);
       }
       return;
     }

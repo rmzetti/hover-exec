@@ -49,12 +49,12 @@ Hovering over fenced code block start or end lines which start with a triple bac
 
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
-Code blocks which are indented (ie. unfenced) or fenced with '~' will not result in a hover message and cannot be executed.
+Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and cannot be executed.
 
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs), or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs) or a browser. The default, for command blocks with id `js`, is to use the `vm` module. *hover-exec* provides, by default, a reasonably substantial `vm` context.
 
 ### Examples using vm and eval
 
@@ -68,7 +68,7 @@ console.log("Notice the in-line random number result ")
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
-A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`).
+A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
 ```js
 //js //using javascript vm, various examples
@@ -96,7 +96,7 @@ All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
 ```js :eval
 //js :eval // javascript regex tester using eval
-'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> bcde--fg
+'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> 
 ```
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
@@ -148,21 +148,21 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>>
+xrange()=>> 
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>
+cd =>> 
 console.log(xrange())
 ```
 
 ```js
 //js //declare a global function (not needed if just using vm scripts)
 f=global.f=function(m){return 'the meaning of life is '+m;};
-f(44-2)=>>
+f(44-2)=>> 
 ```
 
 ```js:eval
 //js:eval //use the global function (can be used in both *eval* & *vm*)
-f(42)=>>
+f(42)=>> 
 ```
 
 See [READMORE](READMORE.md) for more information and examples.
@@ -175,7 +175,7 @@ The `js:node` command executes a javascript code block in `nodejs` (assuming it 
 ```js :node
 //js :node //blanks allowed before the : but not after
 console.log('  test using node:\n  '+Math.random())
-console.log('  Note: hover-exec on ```output line`, or alt+/ (opt+/) with\n',
+console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
 
@@ -221,7 +221,7 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 - html --html via the default browser
 - powershell
 - bash
-- zsh
+- zsh --macOs
 - python
 - julia
 - octave
@@ -242,7 +242,7 @@ Notes:
 
 Javascript can be executed using the built in vm or eval, nodejs, or a browser.
 
-Example using `vm`, showing use of *vscode* api functions and some extra functions published by `hover-exec` (eg. `alert`).
+Example using `vm`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
 ```js // using vscode built-in javascript virtual machine
 //using the built in vm
@@ -251,16 +251,12 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>0.10335449375907446
-eval('let b=3; 2*b*Math.random()')=>>3.638407325578492
+2*b*Math.random() =>> 
+eval('let b=3; 2*b*Math.random()')=>> 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.959136576267579
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random())=>> 
+process.cwd() =>> 
 console.log(abc)
-```
-```output
-goodbye world 0.6838267074690498
-hello, world 3
 ```
 
 ---
@@ -445,7 +441,7 @@ NB. Copy answer to clipboard with a click.
 ---
 ## Configuration settings
 
-The startup commands for scripts included are as follows
+The startup commands included are as follows
 nb. `%f` provides the appropriate temporary file path & name
       the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` :
 
@@ -492,11 +488,9 @@ console.log(sort(config.get('scripts')));
 }
 ```
 
-Any of these can be changed to suit the system in use using vscode `settings` under the `hover-exec` extension, or selecting *config* from the hover message.
+Any of these can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
 
-Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler.
-
-Basically if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (use "double quotes" if there are spaces in the file path).
+Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler. Essentially, if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (use "double quotes" if there are spaces in the file path).
 
 For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
 
@@ -533,7 +527,7 @@ Scripts can also be run using their REPL version, if this is available - eg. for
 
 There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
 
-Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within `hover-exec`. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
+Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
@@ -542,6 +536,10 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+
+Vaughan8
+Momo.Sebelin2019
+
 
 
 
