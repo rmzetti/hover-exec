@@ -1,6 +1,6 @@
 # Hover-exec README
 
-This is the README for VS Code extension *hover-exec*. For more detail, [READMORE](READMORE.md).
+This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md).
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
@@ -15,7 +15,6 @@ This is the README for VS Code extension *hover-exec*. For more detail, [READMOR
     - [Html and javascript](#html-and-javascript)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
-    - [javascript](#javascript)
     - [Lua](#lua)
     - [Python](#python)
     - [Scilab](#scilab)
@@ -54,9 +53,11 @@ Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled,
 ---
 ## Javascript scripts
 
-Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs) or a browser. The default, for command blocks with id `js`, is to use the `vm` module. *hover-exec* provides, by default, a reasonably substantial `vm` context.
+Javascript code blocks can be executed using the `vm` module, also by using *vscode*'s built in `eval` - and also through [nodejs](#nodejs) or a *browser*.
 
 ### Examples using vm and eval
+
+The code block label `js`  by itself defaults to executing javascript via the `vm` module. Appending `:eval` will execute the code block using *eval*.
 
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
@@ -68,7 +69,7 @@ console.log("Notice the in-line random number result ")
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
-A couple more examples using `vm`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
+A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
 ```js
 //js //using javascript vm, various examples
@@ -170,7 +171,7 @@ See [READMORE](READMORE.md) for more information and examples.
 ---
 ### Using nodejs
 
-The `js:node` command executes a javascript code block in `nodejs` (assuming it has been installed). 
+The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed). 
 
 ```js :node
 //js :node //blanks allowed before the : but not after
@@ -215,10 +216,10 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual command lines used):
 
-- js (or vm) --javascript, with vscode api included in context
-- eval --javascript via eval, with vscode api available
-- javascript (or node) --javascript using nodejs
-- html --html via the default browser
+- js (or vm) --[javascript via vm, with vscode api included in context](#Examples-using-vm-and-eval)
+- eval --[javascript via eval, with vscode api available](#Examples-using-vm-and-eval)
+- javascript (or node) --[javascript using nodejs](#Using-nodejs)
+- html --[html via the default browser](#Html-and-javascript)
 - powershell
 - bash
 - zsh --macOs
@@ -236,45 +237,6 @@ Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
-
----
-### javascript
-
-Javascript can be executed using the built in vm or eval, nodejs, or a browser.
-
-Example using `vm`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
-
-```js // using vscode built-in javascript virtual machine
-//using the built in vm
-let abc="hello, world 3"
-alert(abc) //not available in nodejs scripts
-let a='goodbye world'
-vscode.window.showInformationMessage(a) //not available in node scripts
-let b=3;
-2*b*Math.random() =>> 
-eval('let b=3; 2*b*Math.random()')=>> 
-console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> 
-process.cwd() =>> 
-console.log(abc)
-```
-
----
-```html //html and javascript executed in the default browser
-<!-- tunnel *what am I going to do now*  -->
-<head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
-<body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
-<canvas id="c"></canvas> 
-<script> 
-lt='lineTo',b=Math,i=b.sin,j=b.cos,k=document,bs=k.body.style,n=k.getElementById('c');
-o=n.getContext('2d');p=n.width=innerWidth*1.2,q=n.height=innerHeight*1.2;
-r=-p/2,s=-q/2;o.translate(-r,-s);u=q/4;len=92;
-v=[' 1111','11','  1','11',' 1111','','11111','  1','11111','','11111',' 1  1','11111','','    1','11111','    1','','','11111',' 1  1','11111','','11111','   11','  1','   11','11111','','','11111','','',' 111','1   1','11  1','',' 111','1   1',' 111','','11111','','11111','   11','  11','11111','',' 111','1   1','11  1','','','    1','11111','    1','',' 111','1   1',' 111','','','11111','1   1',' 111','',' 111','1   1',' 111','','','11111','   11','  11','11111','',' 111','1   1',' 111','',' 1111','11','  1','11',' 1111','','','1 1 1','  1 1','   1'];
-w=-20,x=2*b.PI/30,y=.1875;
-function C(b,a,c){return'rgb('+~~b+','+~~a+','+~~c+')'}
-setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.1875;w++}for(d=0,h=31;h--;){l=h*.1875+y,z=200-200/(3+y)*l,m=z/2;o.strokeStyle=C(m,m,m);for(A=i(l+g/1700)*70,B=j(l+g/1100)*70,c=[],a=0;a<120;a+=4){t=a/4,f=t*x+b.PI+i(g/3700),e=u/l;c[a]=A+j(f)*e;c[a+1]=B+i(f)*e;c[a+2]=A+j(f+x)*e;c[a+3]=B+i(f+x)*e;f=(w+h)%len;e=z/4;o.fillStyle=C(+(v[f]?v[f][t-3]:0)?b.max(150+~~(105*i(g/100)),e):m/4,t%16==0&&(h+w)%12?255:e,e);if(d){o.beginPath();o.moveTo(c[a],c[a+1]);o[lt](c[a+2],c[a+3]);o[lt](d[a+2],d[a+3]);o[lt](d[a],d[a+1]);o.fill();o.stroke()}}d=c}',50);
-</script></body>
-```
 
 ---
 ### Lua
@@ -363,12 +325,10 @@ C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ---
 ### Gnuplot
 
-Gnuplot is a very useful stand-alone plotting facility.
-
-When using *hover-exec* all scripts can output gnuplot commands along with data in the output block and it can be immediatedly plotted (see the  [READMORE](READMORE.md)).
+*Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (see the  [READMORE](READMORE.md)).
 
 ```gnuplot
- #gnuplot
+ #gnuplot //here gnuplot is being used stand-alone
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -435,8 +395,9 @@ other examples:
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href
 
 ### Quickmath examples
-And finally, some *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message (using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html)),  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
-NB. Copy answer to clipboard with a click.
+And finally, some *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html). More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
+
+NB. Copy the answer in the hover to the clipboard with a click.
 
 ---
 ## Configuration settings
@@ -536,10 +497,6 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
-
-Vaughan8
-Momo.Sebelin2019
-
 
 
 
