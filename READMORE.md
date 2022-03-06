@@ -132,9 +132,9 @@ process.cwd() =>>
 console.log(abc)
 ```
 
-Previous output:
-goodbye world 0.7280946459838489
-hello, world 3
+>  Previous output:
+    goodbye world 0.7280946459838489
+    hello, world 3
 
 Note that *[clear output]* in the hover can be used to clear the previous output before execution. There is also a *hover-exec* extension setting to make *clear output* the default, at the expense of a little jerkiness.
 
@@ -197,33 +197,32 @@ for (let x in vmContext){
 }
 ```
 
-```output
-global
-globalThis
-config
-vscode
-console
-util
-process
-performance
-abort
-alert
-delay
-execShell
-input
-progress
-status
-readFile
-writeFile
-write
-require
-_
-math
-moment
-__main
-aa
-bb
-```
+> Previous output:
+    global
+    globalThis
+    config
+    vscode
+    console
+    util
+    process
+    performance
+    abort
+    alert
+    delay
+    execShell
+    input
+    progress
+    status
+    readFile
+    writeFile
+    write
+    require
+    _
+    math
+    moment
+    __main
+    aa
+    bb
 
 With this context, for example, the following works in `vm`:
 
@@ -242,10 +241,9 @@ for (let x in vmContext){
 }
 ```
 
-```output
-reduced context:
-  {write}
-```
+>  Previous output:
+    reduced context:
+      {write}
 
 In this reduced context, lodash is not available to `vm` scripts:
 
@@ -253,6 +251,9 @@ In this reduced context, lodash is not available to `vm` scripts:
 //js //can't use lodash in reduced context
 console.log(_.range(0,5))
 ```
+
+> Previous output:
+    error ReferenceError: _ is not defined
 
 To get the default back, set `vmContext` to `undefined`:
 
@@ -264,7 +265,7 @@ Now `lodash`, part of the default `vmContext`, works again
 
 ```js
 //js //can now use lodash (etc) again in vm
-_.range(0,5)=>>0,1,2,3,4
+_.range(0,5)=>> 
 ```
 
 In this way, the context used for vm_scripts can be customised to be restricted or permissive as necessary.
@@ -289,9 +290,8 @@ and
 console.log('hello')
 ```
 
-```output
-hello
-```
+> Previous output:
+    hello
 
 Apart from resetting `vmContext`, these are normal `js` codeblocks.
 
@@ -325,7 +325,7 @@ f(44-2)=>>
 
 ```js:eval
 //js:eval //use the global function (can be used in both *eval* & *vm*)
-f(42)=>> 
+f(42)=>> the meaning of life is 42
 ```
 
 ```js
@@ -341,6 +341,8 @@ There is no output, but the function `test` is now available to vm:
 //js //function available to subsequent codeblocks
 test()
 ```
+>  Previous output:
+    test works
 
 For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. Instead, the 'global' prefix needs to be used in the function def, as above.
 
