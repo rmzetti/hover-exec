@@ -35,7 +35,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [Bash & zsh](#bash--zsh)
     - [Powershell](#powershell)
     - [Gnuplot](#gnuplot)
-  - [Chaining execution codeblocks](#chaining-execution-codeblocks)
+  - [Chaining execution code blocks](#chaining-execution-code-blocks)
   - [Including tagged sections using #inhere](#including-tagged-sections-using-inhere)
   - [Using scripts via REPL](#using-scripts-via-repl)
     - [Using the python repl](#using-the-python-repl)
@@ -58,8 +58,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
       - [Add new script language](#add-new-script-language)
       - [Other vscode config settings](#other-vscode-config-settings)
     - [In-line output using *swappers*](#in-line-output-using-swappers)
-  - [Notes and Known Issues](#notes-and-known-issues)
-  - [Release Notes](#release-notes)
+  - [Release Notes and Known Issues](#release-notes-and-known-issues)
 
 ---
 ## Features
@@ -155,7 +154,7 @@ All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
 
-In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node`.
+In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node`.
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
@@ -274,7 +273,7 @@ In this way, the context used for vm_scripts can be customised to be restricted 
 
 By default the `js` command utilises a default context which is progressively expanded by 'naked' function declarations and variable assignments (eg. `a=43;` rather than `let a=43;` or `var a=43;`). So successive codeblocks can build on previously executed ones.
 
-Any `js/vm` codeblock can utilise the following options:
+Any `js:vm` code block can utilise the following options:
 
 ```js:vmdf
 //js:vmdf     //set 'vmContext' to default
@@ -835,7 +834,7 @@ for 333 ug uptake is 4.476834080717488 ug
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `READMORE` for the actual command lines used):
+Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) for the actual command lines used):
 
 - js (or vm) --[javascript via vm, with vscode api included in context](#Examples-using-vm-and-eval)
 - eval --[javascript via eval, with vscode api available](#Examples-using-vm-and-eval)
@@ -857,7 +856,7 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
-- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
+- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [Add new script language](#add-new-script-language) section for examples.
 
 ---
 ### Lua
@@ -906,7 +905,7 @@ plt.plot(randnums)
 plt.show()
 ```
 
-Image from running the above codeblock and pasting via *Markdown kit* or *Markdown memo*:
+Image from running the above code block and pasting via *Markdown kit* or *Markdown memo*:
 ![[READMORE_matplotlib example.png]]
 
 ---
@@ -1115,9 +1114,9 @@ plot "$charge" using 1:3 w lp title "charge"
 
  ---
 
-## Chaining execution codeblocks
+## Chaining execution code blocks
 
-Here a javascript codeblock produces output in the form of an `output:gnuplot` codeblock. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
+Here a javascript code block produces output in the form of an `output:gnuplot` code block. This block is labelled as an `output` and so will be replaced if the javascript is executed again. Because it is also labelled with `:gnuplot' it can be directly executed in the usual ways to produce the plot.
 
 ```js
 // js //example to show chaining output to gnuplot
@@ -1223,7 +1222,7 @@ plot "$speed" w lp title "speed"
 
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia. For REPLs, successive script execution will recognise previously defined variables and functions.
 
-To indicate the REPL is to be used, two colons must follow the codeblock id, which then has the form:
+To indicate the REPL is to be used, two colons must follow the code block id, which then has the form:
 
 -- '''id1 :id2 :restart   //comments
 
@@ -1606,11 +1605,11 @@ Note: changes will not be reflected back into this code block.
 
 #### Check settings
 
-For a given codeblock, in the hover message for the command line there is a `config` link, If this is clicked, a new (executable) codeblock will be produced. In that codeblock will be the current setting for the codeblock script. For `python`:
+For a given code block, in the hover message for the command line there is a `config` link, If this is clicked, a new (executable) code block will be produced. In that code block will be the current setting for the code block script. For `python`:
 
 ```python
  # this is python 'code' example for config check
- # the following codeblock is produced by clicking *config* in the python hover
+ # the following code block is produced by clicking *config* in the python hover
 ```
 
 ```js
@@ -1631,7 +1630,7 @@ If there is a need to add a new scripting language, say `newlang`, this can be d
 
 It can also be done using `vm` or `eval` since the *vscode* configuration settings can be accessed with the scripts.
 
-First write a fenced codeblock labelled newlang with the appropriate command - if this is done correctly the code block should execute in the new script
+First write a fenced code block labelled newlang with the appropriate command - if this is done correctly the code block should execute in the new script
 
 ```newlang
 -- a newlang comment line
@@ -1683,28 +1682,24 @@ The *swapper* for *julia* is `println(string(\"=>>\",$1))`, where the double quo
 
 Check files in [test](test) for more info and examples.
 
-## Notes and Known Issues
+## Release Notes and Known Issues
 
 This is a beta version.
 
 Note that in all the demos above, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the  [using scripts via REPL](#using-scripts-via-repl), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
+There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see [Including tagged sections using #inhere](#including-tagged-sections-using-inhere) for details and examples.
 
-Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
+Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
 ---
-## Release Notes
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
-
-
-
 
 
 

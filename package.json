@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute code blocks",
-	"version": "0.6.7",
+	"version": "0.6.8",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rmzetti/hover-exec"
@@ -63,6 +63,8 @@
 						"vm": "vm",
 						"node": "node \"%f.js\"",
 						"javascript": "node \"%f.js\"",
+            "ts": "ts-node \"%f.ts\"",
+						"typescript": "ts-node \"%f.ts\"",
 						"html": "\"%f.html\"",
 					  "html_mac": "open \"%f.html\"",
             "html_win": "\"%f.html\"",
@@ -94,6 +96,8 @@
 						"lua": "print('=>>'..($1))",
 						"lua54": "print('=>>'..($1))",
 						"js": "console.log('=>>'+($1))",
+						"ts": "console.log('=>>'+($1))",
+						"typescript": "console.log('=>>'+($1))",
 						"eval": "console.log('=>>',($1))",
 						"node": "console.log('=>>'+($1))",
 						"vm": "console.log('=>>',($1))",

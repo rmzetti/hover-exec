@@ -513,6 +513,7 @@ export function activate(context: vscode.ExtensionContext) {
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
 } //end function activate
 
+
 const hUri = new (class MyUriHandler implements vscode.UriHandler {
   //handle hover exec commands (command is in uri.query)
   async handleUri(uri: vscode.Uri): Promise<void | null | undefined> {

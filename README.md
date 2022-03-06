@@ -26,8 +26,7 @@ This is the README for the VSCode extension *hover-exec*. For more detail, [READ
     - [One-liner examples:](#one-liner-examples)
     - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
-  - [Notes and Known Issues](#notes-and-known-issues)
-  - [Release Notes](#release-notes)
+  - [Release Notes and Known Issues](#release-notes-and-known-issues)
 
 ---
 ## Features
@@ -93,7 +92,7 @@ console.log(abc)
 ```
 
 ---
-All the codeblocks above can be executed using `eval` instead of `vm`, eg.
+All the code blocks above can be executed using `eval` instead of `vm`, eg.
 
 ```js :eval
 //js :eval // javascript regex tester using eval
@@ -102,7 +101,7 @@ All the codeblocks above can be executed using `eval` instead of `vm`, eg.
 
 The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
 
-In the command line (eg. above), using `js` for the codeblock id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node`.
+In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node`.
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
@@ -478,7 +477,8 @@ changes will not be reflected back into this code block.
 There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md) and files in [test](test) for more info and examples.
 
 ---
-## Notes and Known Issues
+
+## Release Notes and Known Issues
 
 This is a beta version.
 
@@ -488,12 +488,11 @@ Scripts can also be run using their REPL version, if this is available - eg. for
 
 There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
 
-Matlab takes a substantial amount of time to run from codeblock exec (ie. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
+Matlab takes a substantial amount of time to run from a code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
 ---
-## Release Notes
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
