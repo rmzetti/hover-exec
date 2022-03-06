@@ -501,6 +501,7 @@ export function activate(context: vscode.ExtensionContext) {
                           Object.values(c.globalValue as Object)[a]){
         let merge=Object.assign({},scripts,{[k[a]]:s});
         await config.update('scripts',merge,1);
+        alert('here={'+k[a]+':'+s+'}');
       }
     }      
     config = vscode.workspace.getConfiguration("hover-exec");
