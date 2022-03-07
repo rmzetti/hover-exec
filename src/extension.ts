@@ -497,11 +497,11 @@ export function activate(context: vscode.ExtensionContext) {
     let k=Object.keys(scripts as object);
     for (let a in k) {
       let s=config.get('scripts.'+k[a]+'_'+os);
-      if(s!==undefined && c!==undefined && Object.values(c.defaultValue as Object)[a]===
-                          Object.values(c.globalValue as Object)[a]){
+      if(s!==undefined && c!==undefined && //and is original default value
+        Object.values(c.defaultValue as Object)[a]===Object.values(c.globalValue as Object)[a]){
         let merge=Object.assign({},scripts,{[k[a]]:s});
+        status('config change: {'+k[a]+':'+s+'}');
         await config.update('scripts',merge,1);
-        alert('here={'+k[a]+':'+s+'}');
       }
     }      
     config = vscode.workspace.getConfiguration("hover-exec");

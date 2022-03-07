@@ -50,7 +50,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
       - [One-liner examples:](#one-liner-examples)
       - [html & javascript](#html--javascript)
       - [audio one-liners](#audio-one-liners)
-      - [Windows one-liners: control panel and management console](#windows-one-liners-control-panel-and-management-console)
+      - [Windows one-liners: ms-settings, control panel and management console](#windows-one-liners-ms-settings-control-panel-and-management-console)
       - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
     - [Using vm for configuration settings](#using-vm-for-configuration-settings)
@@ -1487,7 +1487,15 @@ other examples:
 ---
 
 
-#### Windows one-liners: control panel and management console
+#### Windows one-liners: ms-settings, control panel and management console
+`start ms-settings:`
+`start ms-settings:windowsupdate`
+`start ms-settings:network`
+`start ms-settings:personalization-start`
+`start ms-settings:yourinfo`
+`start ms-settings:powersleep`
+`start ms-settings:privacy-activityhistory`
+    [more ms-settings commands](https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/history/?revision=1555539)
 `control /name Microsoft.DevicesAndPrinters`
 `control mouse`
 `control /name Microsoft.ProgramsAndFeatures`

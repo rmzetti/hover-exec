@@ -22,7 +22,8 @@
 		"execute","run","code","codeblock","output"
 	],
 	"activationEvents": [
-		"onLanguage:markdown"
+		"onLanguage:markdown",
+    "onView:sidebarMarkdownNotes.webview"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
