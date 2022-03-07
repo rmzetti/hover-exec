@@ -88,7 +88,7 @@ console.log(abc)
 ---
 ```js
 //js  //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>> 
 ```
 
 ---
@@ -148,9 +148,9 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>> 
+xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>> 
+cd =>>/home/rmzetti/hover-exec
 console.log(xrange())
 ```
 
@@ -243,12 +243,9 @@ Notes:
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                     adding ':lua54' means use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>>hello 42.057835623593
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.5594797195084
+'hello ' .. 44-2+math.random() -- =>> 
+"& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
-```
-```output
-lua ok
 ```
 
 ---
@@ -257,9 +254,12 @@ lua ok
 ```python
  #python :python3 # nb. adding ':python3' would use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.046070862300766
+45-2+random()       #  =>>43.16826858379202
 'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
+```
+```output
+python ok
 ```
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
@@ -284,13 +284,13 @@ string(rand()) =>>
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.6734943706577114, 0.7427929482986604, 0.9621620455660007]
+a   # =>>[0.6616239174411911, 0.6892674541223314, 0.8514705866606131]
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
 ```output
-a=[0.6734943706577114, 42.0, 0.9621620455660007]
-b=[0.6734943706577114, 42.0, 0.9621620455660007]
+a=[0.6616239174411911, 42.0, 0.8514705866606131]
+b=[0.6616239174411911, 42.0, 0.8514705866606131]
 ```
 
 ---
@@ -379,7 +379,7 @@ explore files, view folders:
 `open -a finder ~`  mac 'home'
 `open -a finder "%c"`  mac to view current folder
 `explorer ,`  windows view 'ThisPC'
-`explorer /select, "%cREADME.md"`  windows view current folder & select file
+`explorer.exe /select, "%cREADME.md"`  windows & wsl view current folder & select file
 `nemo "%cREADME.md"`  Linux mint view current folder & select file
 
 other examples:
