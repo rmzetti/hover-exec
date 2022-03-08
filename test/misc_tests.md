@@ -1,24 +1,14 @@
-# Contents
+## Hover-exec miscellaneous comparative tests
 
-- [Contents](#contents)
+- [](#)
   - [Javascript tests](#javascript-tests)
     - [array operations](#array-operations)
     - [timing in javascript (without using moment.js)](#timing-in-javascript-without-using-momentjs)
     - [using console.log](#using-consolelog)
     - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
   - [Javascript in the browser](#javascript-in-the-browser)
-    - [Plotting comparison](#plotting-comparison)
-    - [Some data for plots](#some-data-for-plots)
-  - [Using scripts via REPL](#using-scripts-via-repl)
-    - [Using the python repl](#using-the-python-repl)
-    - [Lua repl](#lua-repl)
-    - [Node repl](#node-repl)
-    - [Julia repl](#julia-repl)
-    - [Scilab repl](#scilab-repl)
-    - [Octave repl](#octave-repl)
-    - [R (rterm) repl](#r-rterm-repl)
-    - [Check active REPLs](#check-active-repls)
-  - [Typescript](#typescript)
+  - [Plotting comparison](#plotting-comparison)
+    - [Some data for the plots](#some-data-for-the-plots)
   - [Simple cross-platform cross-script speed tests](#simple-cross-platform-cross-script-speed-tests)
     - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
     - [Javascript in the browser](#javascript-in-the-browser-1)
@@ -246,7 +236,7 @@ window.setTimeout(function() {test();},150);
 ```
 
 
-### Plotting comparison
+## Plotting comparison
 
 https://github.com/observablehq/plot 
 
@@ -294,7 +284,6 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 <a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
 ```
 
-
 ```html //google charts
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -320,7 +309,6 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 </script>
 ```
 
-
 ```gnuplot
  # first \n needed to distinguish from previous go1 in script etc 
 $go1 <<EOD
@@ -338,8 +326,7 @@ plot "$javascript1" w lp title "javascript",\
        "$go1" w lp title "go"
 ```
 
-
-### Some data for plots
+### Some data for the plots
 
 #p1
 1,  2.8481913984619769E+002,
@@ -410,184 +397,7 @@ plot "$javascript1" w lp title "javascript",\
 1e+06,  660.4684782172212,
 #go
 
-## Using scripts via REPL
 
-Each of the script REPL examples below shows a 'restart' script followed by a normal continuation which shows the script variables are still available.
-
-### Using the python repl
-
-```python::restart
-from time import time
-t=time()
-b=0
-for c in range(600):
-  for a in range(10000):
-    b+=1
-  b+=1
-print(time()-t)
-b=>>6000600
-```
-```output
-0.4271583557128906
-```
-
-```python::
-from time import time
-b+=1
-b=>>6000607
-int(time())
-b # this now produces output because the repl is being used
-```
-```output
-1646467030
-6000607
-```
-
-### Lua repl
-
-```lua:lua54:
-m=1e7
-n=0.01
-tt = os.clock()
-tt=>>0.305
-for ii=1,m do
-  n=n*ii
-  n=n+1
-  n=n/ii
-end
-tt1=os.clock()-tt
-tt1=>>0.319
-'ok'
-```
-
-```lua:lua54:
-os.clock()-tt
-```
-
-### Node repl
-
-```js:node:restart
-let a=0,b=0,c=0,d=0,e=0;
-'ok'
-```
-
-```js:node:
-a+=1 =>>5
-b+=10 =>>50
-c+=100 =>>500
-```
-
-### Julia repl
-
-```julia::restart
-x=rand(Float64);_
-a=rand(Float64,3);print(string("a=",a,"\nx=",x))
-```
-
-```julia::
-a=a.+1;_
-x=x+1;_
-print(a,'\n',x)
-```
-
-### Scilab repl
-
-```js:scilab:restart
-tic();
-a=1.1;
-m=1000000; //1e6
-for x=1:1:m
-a=a*x;
-a=a+1.1;
-a=a/x;
-end
-t=toc();
-mprintf('Time: %.2f sec',t)
-```
-
-```js:scilab:
-mprintf('a equals %.f',a)
-mprintf('t equals %.2f',t)
-a=a+1;
-```
-
-### Octave repl
-
-```python:octave:restart
-a=1.0;
-t=time;
-m=1000000; #1e6
-for i=1:m
-  a=a*i;
-  a=a+1.1;
-  a=a/i;
-endfor
-t=time-t;
-disp(strcat('time= ',num2str(t),' sec'))
-disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
-```
-
-```python:octave:
-disp('I repeat...')
-disp(strcat('time= ',num2str(t),' sec'))
-disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
-```
-
-### R (rterm) repl
-
-```rterm::restart
-a=7*7-7
-a=>> 42 
-print(noquote(paste('the meaning of life is',a)))
-```
-
-```rterm::
-print(noquote(paste('.. that was',a)))
-```
-
-```rterm::restart #data for plots
-require(tcltk)
-x <- 1:10
-y1 <- x*x
-y2  <- 2*y1
-```
-
-```rterm:: #plotting the above data
-windows()
-# Stair steps plot
-plot(x, y1, type = "S")
-# Lines & points plot
-windows()
-plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
-lines(x, y2,pch=18,col="blue",type="b",lty=2)
-msgBox<-tkmessageBox(title="Plot",message="Close plots first!")
-```
-NB. Use this if the plots remain:
-`js:eval repl.kill()` //kills active repl
-
-### Check active REPLs
-
-```js:eval //find active repl
-chRepl.length=>> 1
-let i=chRepl.findIndex((el)=>el[1]===repl)
-i=>> 0
-chRepl[i][0]=>> python
-```
-
-`js:eval repl.kill()` //kills active repl (but normally use :restart)
-
-## Typescript
-
-First install typescript and ts-node globally with
-  npm i -g typescript ts-node
-Then set ts-node as the cmd in your codeblock:
-```ts  //ts and typescript both defined as ts-node in scripts settings
-let this_works = true;
-    if (this_works) {
-        console.log('It works!')
-    }
-'finish' =>>finish
-```
 
 ## Simple cross-platform cross-script speed tests
 

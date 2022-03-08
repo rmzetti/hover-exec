@@ -37,7 +37,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
     - [Gnuplot](#gnuplot)
   - [Chaining execution code blocks](#chaining-execution-code-blocks)
   - [Including tagged sections using #inhere](#including-tagged-sections-using-inhere)
-  - [Using scripts via REPL](#using-scripts-via-repl)
+  - [Using scripts via REPLs](#using-scripts-via-repls)
     - [Using the python repl](#using-the-python-repl)
     - [Lua repl](#lua-repl)
     - [Node repl](#node-repl)
@@ -1091,8 +1091,7 @@ let x=xrange();
 let j=0,n=0,ii=0;
 let tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 for (ii=0;ii<x.length;ii++) {
-  status('loop '+ii);
-  await delay(1);
+  await status('loop '+ii); //status bar rhs
   n=x[ii];
   let rr=_.range(0,n),m=1,i=0,t1=0;
   for (i=0;i<rr.length;i++) {rr[i]=math.random()};
@@ -1106,6 +1105,7 @@ for (ii=0;ii<x.length;ii++) {
   t1=(moment.now()-t1)/n/m/1000;//msec->sec
   tim[j++]=2/t1/1e6;
 }
+status('');
 console.log('``output :gnuplot noinline') //just two backticks allowed here to
     //ensure an even number of backticks - three will be output below
 console.log('#tag_speed') //inserting an id tag allows other scripts to use the data
@@ -1121,26 +1121,26 @@ console.log('plot "$speed" w lp title "speed"')
 ```output :gnuplot noinline
 #tag_speed
 $speed << EOD
-1 0.3846153846153847
-2 0.5333333333333333
-4 1.3114754098360655
-9 3.0000000000000004
-18 4.931506849315069
-38 7.916666666666667
-78 10.75862068965517
-162 12.461538461538462
-336 14.000000000000002
-695 14.94623655913978
-1438 15.05759162303665
-2976 15.145038167938933
-6158 14.8743961352657
-12743 15.540243902439027
-26367 14.607756232686981
-54556 12.599538106235563
-112884 14.537540244687703
-233572 14.040997896002404
-483293 13.849921192147873
-1000000 13.576810807141404
+1 0.2777777777777778
+2 0.7692307692307694
+4 1.4814814814814816
+9 3.272727272727273
+18 6.428571428571428
+38 11.176470588235292
+78 18.13953488372093
+162 10.451612903225806
+336 28.000000000000004
+695 34.74999999999999
+1438 39.3972602739726
+2976 42.51428571428572
+6158 50.0650406504065
+12743 47.37174721189591
+26367 25.352884615384614
+54556 30.99772727272728
+112884 33.59642857142857
+233572 29.47280757097792
+483293 34.694400574300076
+1000000 33.852403520649965
 EOD
 #tag_speed
 set logscale x
@@ -1173,7 +1173,7 @@ plot "$speed" w lp title "speed"
 
 ---
 
-## Using scripts via REPL
+## Using scripts via REPLs
 
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia. For REPLs, successive script execution will recognise previously defined variables and functions.
 
@@ -1343,14 +1343,14 @@ print(noquote(paste('the meaning of life is',a)))
 print(noquote(paste('.. that was',a)))
 ```
 
-```rterm::restart
+```rterm::restart # data for plots
 require(tcltk)
 x <- 1:10
 y1 <- x*x
 y2  <- 2*y1
 ```
 
-```rterm::
+```rterm::    #plotting the above data
 windows()
 # Stair steps plot
 plot(x, y1, type = "S")
