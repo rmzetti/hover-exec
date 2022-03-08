@@ -495,16 +495,20 @@ export function activate(context: vscode.ExtensionContext) {
     let c=config.inspect('scripts');
     let scripts=config.get('scripts');
     let k=Object.keys(scripts as object);
+    let report='';
     for (let a in k) {
       let s=config.get('scripts.'+k[a]+'_'+os);
       if(s!==undefined && c!==undefined && //and is original default value
         Object.values(c.defaultValue as Object)[a]===Object.values(c.globalValue as Object)[a]){
         let merge=Object.assign({},scripts,{[k[a]]:s});
-        status('config change: {'+k[a]+':'+s+'}');
+        report+='{'+k[a]+':'+s+'}; ';
         await config.update('scripts',merge,1);
       }
     }      
-    config = vscode.workspace.getConfiguration("hover-exec");
+    if(report.length>0){
+      vscode.window.showInformationMessage('h-e scripts updated to x_'+os+' : '+report);
+      config = vscode.workspace.getConfiguration("hover-exec");
+    }
   }
 
   checkJsonVisible();//ensures scripts & swappers available in settings.json
@@ -565,7 +569,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       let d = await vscode.window.showInputBox({
         placeHolder: "config",
-        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'(enter opens settings.json if unchanged)',
+        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'(enter opens settings.json if unchanged)\n',
         value: config.get('scripts.'+cmdId)
       });
       if (d!==undefined){

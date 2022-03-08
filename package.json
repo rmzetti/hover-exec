@@ -16,14 +16,19 @@
 		"vscode": "^1.60.0"
 	},
 	"categories": [
-		"Other","Programming Languages","Notebooks"
+		"Other",
+		"Programming Languages",
+		"Notebooks"
 	],
 	"keywords": [
-		"execute","run","code","codeblock","output"
+		"execute",
+		"run",
+		"code",
+		"codeblock",
+		"output"
 	],
 	"activationEvents": [
-		"onLanguage:markdown",
-    "onView:sidebarMarkdownNotes.webview"
+		"onLanguage:markdown"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -52,7 +57,7 @@
 						"python3": "python3 \"%f.py\"",
 						"streamlit": "streamlit run \"%f.py\" ",
 						"julia": "julia \"%f.jl\"",
-            "julia_mac":"/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
+						"julia_mac": "/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
 						"gnuplot": "gnuplot -p -c \"%f.gp\"",
 						"pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
 						"bash": "bash \"%f.sh\"",
@@ -64,30 +69,30 @@
 						"vm": "vm",
 						"node": "node \"%f.js\"",
 						"javascript": "node \"%f.js\"",
-            "ts": "ts-node \"%f.ts\"",
+						"ts": "ts-node \"%f.ts\"",
 						"typescript": "ts-node \"%f.ts\"",
 						"html": "\"%f.html\"",
-					  "html_mac": "open \"%f.html\"",
-            "html_win": "\"%f.html\"",
-            "html_lnx": "firefox \"%f.html\"",
-            "html_wsl": "firefox \"%f.html\"",
+						"html_mac": "open \"%f.html\"",
+						"html_win": "\"%f.html\"",
+						"html_lnx": "firefox \"%f.html\"",
+						"html_wsl": "firefox \"%f.html\"",
 						"firefox": "firefox \"%f.html\"",
 						"chrome": "google-chrome-stable \"%f.html\"",
-            "safari": "open -a safari \"%f.html\"",
+						"safari": "open -a safari \"%f.html\"",
 						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
 						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
-          }
+					}
 				},
-        "hover-exec.swappers": {
+				"hover-exec.swappers": {
 					"description": "NB. Edit or add swappers using code blocks (see README)",
 					"default": {
 						"octave": "disp(['=>>' $1])",
 						"matlab": "disp([\"=>>\"+($1)])",
 						"rterm": "cat('=>>',$1,'\\n')",
-            "r": "cat('=>>',$1,'\\n')",
-            "scilab": "mprintf('=>>%s\\n',string($1))",
+						"r": "cat('=>>',$1,'\\n')",
+						"scilab": "mprintf('=>>%s\\n',string($1))",
 						"scilabcli": "mprintf('=>>%s\\n',string($1))",
 						"python": "print('=>>'+str($1))",
 						"python3": "print('=>>'+str($1))",
@@ -108,20 +113,154 @@
 					}
 				},
 				"hover-exec.repls": {
-					"description": ["cmd",["opt"],"output ff",["re","in",".."],["re","out",".."]],
-          "default":{
-            "python": ["python",["-q","-i","-u"],"print('\\f')",["^(\\S.*)$","\n$1"],[]],
-            "python3": ["python3",["-q","-i","-u"],"print('\\f')",["^(\\S.*)$","\n$1"],[]],
-            "lua": ["lua",["-i"],"print(utf8.char(12))",[],["^>.*?\\n","","^(>+ )+",""]],
-            "lua54": ["lua54",["-i"],"print(utf8.char(12))",[],["^>.*?\\n","","^(>+ )+",""]],
-            "node": ["node",["-i"],"console.log('\\f')",[],["undefined\\n","","^(>+ )+",""]],
-            "julia": ["julia",["-i -q"],"print('\\f')",[],[]],
-            "scilab": ["scilex",["-nb"],"mprintf(ascii(12))",[],[]],
-            "scilabcli": ["scilab-cli",["-nb"],"mprintf(ascii(12))",[],[]],
-            "octave": ["octave",["-q"],"disp(\"\\f\")",[],[]],
-            "rterm": ["rterm",["-q","--no-echo"],"cat('\\f')",[],["\\[\\d+\\]",""]],
-            "r": ["r",[],"cat('\\f')",[],["\\[\\d+\\]",""]]
-          }
+					"description": [
+						"cmd",
+						[
+							"opt"
+						],
+						"output ff",
+						[
+							"re",
+							"in",
+							".."
+						],
+						[
+							"re",
+							"out",
+							".."
+						]
+					],
+					"default": {
+						"python": [
+							"python",
+							[
+								"-q",
+								"-i",
+								"-u"
+							],
+							"print('\\f')",
+							[
+								"^(\\S.*)$",
+								"\n$1"
+							],
+							[]
+						],
+						"python3": [
+							"python3",
+							[
+								"-q",
+								"-i",
+								"-u"
+							],
+							"print('\\f')",
+							[
+								"^(\\S.*)$",
+								"\n$1"
+							],
+							[]
+						],
+						"lua": [
+							"lua",
+							[
+								"-i"
+							],
+							"print(utf8.char(12))",
+							[],
+							[
+								"^>.*?\\n",
+								"",
+								"^(>+ )+",
+								""
+							]
+						],
+						"lua54": [
+							"lua54",
+							[
+								"-i"
+							],
+							"print(utf8.char(12))",
+							[],
+							[
+								"^>.*?\\n",
+								"",
+								"^(>+ )+",
+								""
+							]
+						],
+						"node": [
+							"node",
+							[
+								"-i"
+							],
+							"console.log('\\f')",
+							[],
+							[
+								"undefined\\n",
+								"",
+								"^(>+ )+",
+								""
+							]
+						],
+						"julia": [
+							"julia",
+							[
+								"-i -q"
+							],
+							"print('\\f')",
+							[],
+							[]
+						],
+						"scilab": [
+							"scilex",
+							[
+								"-nb"
+							],
+							"mprintf(ascii(12))",
+							[],
+							[]
+						],
+						"scilabcli": [
+							"scilab-cli",
+							[
+								"-nb"
+							],
+							"mprintf(ascii(12))",
+							[],
+							[]
+						],
+						"octave": [
+							"octave",
+							[
+								"-q"
+							],
+							"disp(\"\\f\")",
+							[],
+							[]
+						],
+						"rterm": [
+							"rterm",
+							[
+								"-q",
+								"--no-echo"
+							],
+							"cat('\\f')",
+							[],
+							[
+								"\\[\\d+\\]",
+								""
+							]
+						],
+						"r": [
+							"r",
+							[],
+							"cat('\\f')",
+							[],
+							[
+								"\\[\\d+\\]",
+								""
+							]
+						]
+					}
 				},
 				"hover-exec.showOk": {
 					"description": "show message when script completed successfully",
@@ -186,6 +325,6 @@
 		]
 	},
 	"dependencies": {
-		"vm2": "^3.9.5"
+		"vm2": "^3.9.9"
 	}
 }
