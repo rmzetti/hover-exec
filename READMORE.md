@@ -721,16 +721,13 @@ netstat -an
 //js {cmd=node} :node //works in mpe
 //random string generation see https://gist.github.com/6174/6062387
 a=Math.random().toString(36).substring(2, 15)
-a =>>cw6zdk9nxhj
+a =>> 
 a=[...Array(60)].map(_=>(Math.random()*36|0).toString(36)).join``
-a =>>t64ddmf5dg1j19gwny8vvl3jf0ltaqx26ju8i9fbmrunw6dwexaikbq4oprr
+a =>> 
 a=[...Array(30)].map(_=>((Math.random()*26+10)|0).toString(36)).join``
-a =>>xxfvaexpixyzlgwnxmfjxcxhsiglrf
+a =>> 
 console.log(a)
-Math.random(36).toString(36).substring(2,3) =>>0
-```
-```output
-xxfvaexpixyzlgwnxmfjxcxhsiglrf
+Math.random(36).toString(36).substring(2,3) =>> 
 ```
 
 ---
@@ -748,9 +745,6 @@ function swapStr(str,n){
 }
 console.log(swapStr('portsmouth',100))
 ```
-```output
-umtthposro
-```
 
 ---
 
@@ -759,7 +753,7 @@ umtthposro
 function randch(n){
   return ''+Math.random().toString(36).substring(2,2+n)
 }
-randch(36) =>>daevdymyo6p
+randch(36) =>> 
 console.log(randch(36))
 ```
 
@@ -770,25 +764,17 @@ console.log(randch(36))
 ```js
 //js //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
-"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>>js
-Math.random()*100   =>>35.903442020008434
+"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>> 
+Math.random()*100   =>> 
 ```
 
 ---
 
 ```js
-```output
-error SyntaxError: missing ) after argument list
-```
-
 //js {cmd=node} :node //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>>bcBaadefg
-Math.random()*100   =>>33.01236229866507
+'abcdefg'.replace(/^.*(bc)/,'$1Baa') =>> 
+Math.random()*100   =>> 
 console.log(Math.random()*100) //this for *mpe*
-
-```
-```output
-51.58886690089142
 ```
 
 ---
@@ -799,14 +785,14 @@ another regex example
 //js:node
 var myRe = new RegExp('d(b+)d', 'g');
 var myArray = myRe.exec('xxdbbbdwerwr');
-myArray =>>dbbbd,bbb
+myArray =>> 
 if(myArray!==null){
-  myArray.index =>>2
-  myArray.input =>>xxdbbbdwerwr
-  myArray.input[myRe.lastIndex] =>>w
+  myArray.index =>> 
+  myArray.input =>> 
+  myArray.input[myRe.lastIndex] =>> 
 }
-myRe.source =>>d(b+)d
-myRe.lastIndex =>>7
+myRe.source =>> 
+myRe.lastIndex =>> 
 console.log(myRe)
 ```
 
@@ -818,17 +804,9 @@ console.log(myRe)
 //js   //using 'vm' for getting input
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=4.476834080717488
+' uptake='+u  =>> 
 console.log('for',d,'ug uptake is',u,'ug')
 ```
-```output
-for 333 ug uptake is 4.476834080717488 ug
-```
-
----
-
----
-
 
 ---
 
@@ -866,12 +844,9 @@ Notes:
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                     adding ':lua54' means use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>>hello 42.057835623593
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.5594797195084
+'hello ' .. 44-2+math.random() -- =>> 
+"& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
-```
-```output
-lua ok
 ```
 
 ---
@@ -880,7 +855,7 @@ lua ok
 Use `python` to run python. `python3` should be used if that is the python repl start command
 
 ```python {cmd} 
- #python :python3 # nb. adding ':python3' would use 'python3' as start command
+ #python :python3 # use this instead to use 'python3' as start command
 from random import random
 45-2+random()       #  =>>43.046070862300766
 'hello, world 3!'       #  =>>hello, world 3!
@@ -913,13 +888,14 @@ Image from running the above code block and pasting via *Markdown kit* or *Markd
 ---
 
 ```python
- # python {cmd} -- {cmd} is for mpe
+ #python :python3 # use this instead to use 'python3' as start command
+ # python {cmd}     # include {cmd} for mpe
 import pyformulas as pf
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 fig = plt.figure()
-fig.suptitle('To close, first click cancel in hover message, then close plot', fontsize=14)
+fig.suptitle('To close, click cancel in hover, then close plot if necessary', fontsize=14)
 canvas = np.zeros((480,640))
 screen = pf.screen(canvas, 'Sinusoid')
 start = time.time()
@@ -948,15 +924,11 @@ Use `octave` or `python:octave` to run octave. Using 'python' as the command id 
  # python:octave {cmd=octave} -- {cmd..} is for mpe
  # python gets syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.3486
-'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+num2str(7.1+rand(1))  =>> 
+'hello world in-line'  =>> 
+pwd()  =>> 
 disp('hello world in output section!')
 disp(rand(1))
-```
-```output
-hello world in output section!
-0.7596
 ```
 
 ---
@@ -982,13 +954,9 @@ disp('disp puts quotes around strings',rand())
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.6734943706577114, 0.7427929482986604, 0.9621620455660007]
+a   # =>> 
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
-```
-```output
-a=[0.6734943706577114, 42.0, 0.9621620455660007]
-b=[0.6734943706577114, 42.0, 0.9621620455660007]
 ```
 
 ---
@@ -1036,14 +1004,6 @@ func main() {
     }
     fmt.Println("2d: ", twoD)
 }
-```
-```output
-emp: [0 0 0 0 0]
-set: [0 0 0 0 42]
-get: 42
-len: 5
-dcl: [1 2 3 4 5]
-2d:  [[0 1 2] [1 2 3]]
 ```
 
 ---
@@ -1131,6 +1091,8 @@ let x=xrange();
 let j=0,n=0,ii=0;
 let tim=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 for (ii=0;ii<x.length;ii++) {
+  status('loop '+ii);
+  await delay(1);
   n=x[ii];
   let rr=_.range(0,n),m=1,i=0,t1=0;
   for (i=0;i<rr.length;i++) {rr[i]=math.random()};
@@ -1160,25 +1122,25 @@ console.log('plot "$speed" w lp title "speed"')
 #tag_speed
 $speed << EOD
 1 0.3846153846153847
-2 0.7999999999999999
-4 1.5384615384615388
-9 3.050847457627119
-18 5.901639344262295
-38 9.87012987012987
-78 14.71698113207547
-162 18
-336 21.67741935483871
-695 23.559322033898304
-1438 24.16806722689076
-2976 24.393442622950822
-6158 26.20425531914894
-12743 26.00612244897959
-26367 23.027947598253274
-54556 19.346099290780142
-112884 23.131967213114752
-233572 21.96257639868359
-483293 21.594861483467387
-1000000 20.578248791027885
+2 0.5333333333333333
+4 1.3114754098360655
+9 3.0000000000000004
+18 4.931506849315069
+38 7.916666666666667
+78 10.75862068965517
+162 12.461538461538462
+336 14.000000000000002
+695 14.94623655913978
+1438 15.05759162303665
+2976 15.145038167938933
+6158 14.8743961352657
+12743 15.540243902439027
+26367 14.607756232686981
+54556 12.599538106235563
+112884 14.537540244687703
+233572 14.040997896002404
+483293 13.849921192147873
+1000000 13.576810807141404
 EOD
 #tag_speed
 set logscale x
@@ -1191,18 +1153,9 @@ plot "$speed" w lp title "speed"
 
 The following line in a code block
 #inhere `#tag_speed` // hover to view the data
+will include a group of lines surrounded with the #tag_speed tag (lines need not be in a code block).
 
-```js
-/* #inhere %ctest/misc_tests.md `#p1` // hover to view the data
-*/
-console.log('ok')
-```
-
-```output
-ok
-```
-
-will include a group of lines surrounded with the #tag_speed tag. To see what will be included, hover over the tag in the `inhere` line. Note that:
+To see what will be included, hover over the tag in the `inhere` line. Note that:
 
 1. Tags must either stand alone in a line, or end the line (ie. tags can have comment markers in front of them)
 2. Within the `#inhere` line, the tag must be quoted with backticks as above (*hover-exec* uses back-ticks to indicate potential hovers)
@@ -1236,9 +1189,10 @@ Each of the script REPL examples below shows a 'restart' script followed by a RE
 
 ### Using the python repl
 
-`js:eval repl.kill()` //kills active repl (but use :restart)
+`js:eval repl.kill()` //kills active repl (but normally use :restart)
 
 ```python::restart
+ #python:python3:restart # use this instead to use 'python3' as start command
 from time import time
 t=time()
 b=0
@@ -1246,42 +1200,46 @@ for c in range(600):
   for a in range(10000):
     b+=1
   b+=1
-print(time()-t)
-b=>>6000600
-```
-```output
-0.42444634437561035
+time()-t
+b=>> 
 ```
 
 ```python::
+# python :python3:  # use this instead to use 'python3' as start command
 from time import time
+# successively updated with each run because this is a repl
 b=>>6000605
 b=b+1
 time()
-b # this now produces output because the repl is being used
+b # note 'print' not necessary when using repl
+```
+```output
+1646730799.7492275
+6000606
 ```
 
 ---
 
 ### Lua repl
 
-```lua:lua54:
+```lua:lua54: 
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>0.435
+tt=>> 
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.411
-'ok'
+tt1=>> 
 ```
 
 ```lua:lua54:
-os.clock()-tt
+tt1=tt1+1
+tt1 =>> 
+os.clock()-tt =>> 
 ```
 
 ---
@@ -1289,14 +1247,13 @@ os.clock()-tt
 ### Node repl
 
 ```js:node:restart
-let a=0,b=0,c=0,d=0,e=0;
-'ok'
+let a=0,b=0,c=0           //define and initialise a,b,c
+[a,b,c] =>>0,0,0
 ```
 
-```js:node:
-a+=1 =>>2
-b+=10 =>>20
-c+=100 =>>200
+```js:node: //repl vars updated if this block is repeated
+a+=1;b+=10;c+=100; _      // _ suppresses output
+[a,b,c] =>>3,30,300
 ```
 
 ---
@@ -1304,14 +1261,22 @@ c+=100 =>>200
 ### Julia repl
 
 ```julia::restart
-x=rand(Float64);_
+x=rand(Float64);_ 
 a=rand(Float64,3);print(string("a=",a,"\nx=",x))
+```
+```output
+a=[0.18236763255578503, 0.2674762837421547, 0.3501546851836892]
+x=0.8856160156953037
 ```
 
 ```julia::
-a=a.+1;_
-x=x+1;_
+a=a.+1; _          # _ suppresses output
+x=x+1; _
 print(a,'\n',x)
+```
+```output
+[5.182367632555785, 5.2674762837421545, 5.350154685183689]
+9.885616015695303
 ```
 
 ---
@@ -1331,20 +1296,12 @@ t=toc();
 mprintf('Time: %.2f sec',t)
 ```
 
-```output
-Time: 1.27 sec
-```
-
 ```js:scilab:
 mprintf('a equals %.f',a)
 mprintf('t equals %.2f',t)
 a=a+1;
 ```
 
-```output
-a equals 18
-t equals 1.27
-```
 
 ---
 
@@ -1364,10 +1321,6 @@ disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
 
-```output
-time=1.6456 sec
-speed=0.60769 million iterations per sec
-```
 
 ```python:octave:
 disp('I repeat...')
@@ -1375,11 +1328,6 @@ disp(strcat('time= ',num2str(t),' sec'))
 disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 ```
 
-```output
-I repeat...
-time=1.6456 sec
-speed=0.60769 million iterations per sec
-```
 
 ---
 
@@ -1387,7 +1335,7 @@ speed=0.60769 million iterations per sec
 
 ```rterm::restart
 a=7*7-7
-a=>> 42 
+a=>> 
 print(noquote(paste('the meaning of life is',a)))
 ```
 
@@ -1421,10 +1369,10 @@ NB. Use this if the plots remain:
 ### Check active REPLs
 
 ```js:eval
-chRepl.length=>> 1
+chRepl.length=>> 5
 let i=chRepl.findIndex((el)=>el[1]===repl)
-i=>> 0
-chRepl[i][0]=>> python
+i=>> 4
+chRepl[i][0]=>> scilab
 ```
 
 ---
@@ -1542,7 +1490,8 @@ nb. `%f` provides the appropriate temporary file path & name
 sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
-```output
+
+previous output:
 {
   bash: 'bash "%f.sh"',
   buddvs: 'buddvs "%f.txt" ',
@@ -1555,7 +1504,7 @@ console.log(sort(config.get('scripts')));
   html_lnx: 'firefox "%f.html"',
   html_mac: 'open "%f.html"',
   html_win: '"%f.html"',
-  html_wsl: 'chrome "%f.html"',
+  html_wsl: 'firefox "%f.html"',
   javascript: 'node "%f.js"',
   js: 'vm',
   julia: 'julia "%f.jl"',
@@ -1573,15 +1522,15 @@ console.log(sort(config.get('scripts')));
   rterm: 'rterm -q --no-echo -f "%f.r" ',
   safari: 'open -a safari "%f.html"',
   scilab: 'scilex -quit -nb -f "%f.sci" ',
+  scilab_lnx: 'scilab-cli -quit -nb -f "%f.sci" ',
   scilab_mac: 'scilab-cli -quit -nb -f "%f.sci" ',
-  scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
-  scilabcli_mac: 'scilab-cli -quit -nb -f "%f.sci" ',
   streamlit: 'streamlit run "%f.py" ',
   test: 'test -c "%f.tst"',
+  ts: 'ts-node "%f.ts"',
+  typescript: 'ts-node "%f.ts"',
   vm: 'vm',
   zsh: 'zsh -f "%f.sh"'
 }
-```
 
 Any of these can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
 
@@ -1615,12 +1564,13 @@ Note: changes will not be reflected back into this code block.
 
 #### Check settings
 
-For a given code block, in the hover message for the command line there is a `config` link, If this is clicked, a new (executable) code block will be produced. In that code block will be the current setting for the code block script. For `python`:
+For a given code block, in the hover message for the command line there is a `config` link. If this is clicked, the current setting for the code block script is shown in an input box (above). For `python`, the output 'python "%f.py"' is shown.
 
 ```python
  # this is python 'code' example for config check
- # the following code block is produced by clicking *config* in the python hover
 ```
+
+You can also use a script to change, add or undefine a config setting: 
 
 ```js
 //this script can change, add or undefine a config setting
@@ -1632,7 +1582,7 @@ if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.python'))
 ```
 
-The first line shows the python config. So the start command is `python %f.py`. A basic check is if command line python should run when this command is run in a terminal (minus the `%f.py`).
+The first line shows the python config. So the start command is `python %f.py`. A basic check is that python should run when this command is run in a terminal (minus the `%f.py`).
 
 #### Add new script language
 
@@ -1647,7 +1597,9 @@ First write a fenced code block labelled newlang with the appropriate command - 
 print(3-2)
 ```
 
-Second, hover over the new id and click '[config]' in the hover message, this will produce:
+Second, hover over the new id and click '[config]' in the hover message, and enter the desired command.
+
+The following script can also be used:
 
 ```js
 //this script can change, add or undefine a config setting
@@ -1676,9 +1628,6 @@ console.log("editor font size= "+c.get("editor.fontSize"))
 //c.update("editor.fontSize",12,1) //to change it
 ```
 
-```output
-editor font size= 12
-```
 
 ---
 

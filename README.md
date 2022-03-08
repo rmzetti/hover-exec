@@ -252,14 +252,11 @@ print("lua ok") -- this outputs in the output code block below
 ### Python
 
 ```python
- #python :python3 # nb. adding ':python3' would use 'python3' as start command
+ #python :python3 # use this instead to use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.16826858379202
-'hello, world 3!'       #  =>>hello, world 3!
+45-2+random()       #  =>> 
+'hello, world 3!'       #  =>> 
 print('python ok')
-```
-```output
-python ok
 ```
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
@@ -284,13 +281,9 @@ string(rand()) =>>
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>>[0.6616239174411911, 0.6892674541223314, 0.8514705866606131]
+a   # =>> 
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
-```
-```output
-a=[0.6616239174411911, 42.0, 0.8514705866606131]
-b=[0.6616239174411911, 42.0, 0.8514705866606131]
 ```
 
 ---
@@ -312,13 +305,8 @@ pwd
 ```pwsh # (windows) random number, show current directory
   # pwsh # (windows) random number, show current directory
   # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>>0.522081441489086
+Get-Random -Min 0.0 -Max 1.0 # =>> 
 pwd
-```
-```output
-Path
-----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 ---

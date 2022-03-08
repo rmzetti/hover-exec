@@ -1104,6 +1104,7 @@ async function status(s:string): Promise<void> {
   } else {
     statusBarItem.hide();
   }
+  await(delay(1));
 }
 
 function alert(s: string) {
