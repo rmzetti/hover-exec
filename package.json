@@ -51,7 +51,7 @@
 						"r": "r \"%f.r\" ",
 						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
 						"scilab_mac": "scilab-cli -quit -nb -f \"%f.sci\" ",
-						"scilabcli_lnx": "scilab-cli -quit -nb -f \"%f.sci\" ",
+						"scilab_lnx": "scilab-cli -quit -nb -f \"%f.sci\" ",
 						"python": "python \"%f.py\"",
 						"python3": "python3 \"%f.py\"",
 						"streamlit": "streamlit run \"%f.py\" ",

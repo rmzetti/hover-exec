@@ -409,48 +409,6 @@ nb. `%f` provides the appropriate temporary file path & name
 sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
-```output
-{
-  bash: 'bash "%f.sh"',
-  buddvs: 'buddvs "%f.txt" ',
-  chrome: 'google-chrome-stable "%f.html"',
-  eval: 'eval',
-  firefox: 'firefox "%f.html"',
-  gnuplot: 'gnuplot -p -c "%f.gp"',
-  go: 'go run "%f.go"',
-  html: '"%f.html"',
-  html_lnx: 'firefox "%f.html"',
-  html_mac: 'open "%f.html"',
-  html_win: '"%f.html"',
-  html_wsl: 'firefox "%f.html"',
-  javascript: 'node "%f.js"',
-  js: 'vm',
-  julia: 'julia "%f.jl"',
-  julia_mac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
-  lua: 'lua "%f.lua"',
-  lua54: 'lua54 "%f.lua"',
-  matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
-  node: 'node "%f.js"',
-  octave: 'octave "%f.m"',
-  pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
-  pwsh: 'set "NO_COLOR=1" & pwsh -f "%f.ps1" ',
-  python: 'python "%f.py"',
-  python3: 'python3 "%f.py"',
-  r: 'r "%f.r" ',
-  rterm: 'rterm -q --no-echo -f "%f.r" ',
-  safari: 'open -a safari "%f.html"',
-  scilab: 'scilex -quit -nb -f "%f.sci" ',
-  scilab_mac: 'scilab-cli -quit -nb -f "%f.sci" ',
-  scilabcli: 'scilab-cli -quit -nb -f "%f.sci" ',
-  scilabcli_mac: 'scilab-cli -quit -nb -f "%f.sci" ',
-  streamlit: 'streamlit run "%f.py" ',
-  test: 'test -c "%f.tst"',
-  ts: 'ts-node "%f.ts"',
-  typescript: 'ts-node "%f.ts"',
-  vm: 'vm',
-  zsh: 'zsh -f "%f.sh"'
-}
-```
 
 Any of these can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
 
