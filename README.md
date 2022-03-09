@@ -361,7 +361,7 @@ exec notepad with temp file (%f):
 `xedit "%f"`  --linux/wsl
 
 open another instance of vscode:
-`code -n %f`
+`code -n %f`  --windows
 
 explore files, view folders:
 `open -a finder ~`  mac 'home'
@@ -398,7 +398,7 @@ sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
 
-Any of these can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
+Any of the configs shown (in the output from the above script) can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
 
 Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler. Essentially, if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (use "double quotes" if there are spaces in the file path).
 

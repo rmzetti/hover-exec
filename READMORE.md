@@ -355,7 +355,8 @@ The `js:node` command executes a javascript code block in `nodejs` (assuming, of
 //js :node //blanks allowed before the : but not after
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
-    ' the cursor in the output block will delete the output block')```
+    ' the cursor in the output block will delete the output block')
+```
 
 Note:
 - to allow execution also in *markdown preview enhanced*, include `{cmd=node}` in the command line
@@ -1222,24 +1223,26 @@ b # note 'print' not necessary when using repl
 
 ### Lua repl
 
-```lua:lua54: 
+```lua::restart
+-- or for example, lua:lua54:restart
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>> 
+tt=>>0.991
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>> 
+tt1=>>0.318
 ```
 
-```lua:lua54:
+```lua::
+-- or lua:lua54:
 tt1=tt1+1
-tt1 =>> 
-os.clock()-tt =>> 
+tt1 =>>3.32
+os.clock()-tt =>>6.201
 ```
 
 ---
@@ -1260,23 +1263,16 @@ a+=1;b+=10;c+=100; _      // _ suppresses output
 
 ### Julia repl
 
-```julia::restart
-x=rand(Float64);_ 
-a=rand(Float64,3);print(string("a=",a,"\nx=",x))
-```
-```output
-a=[0.18236763255578503, 0.2674762837421547, 0.3501546851836892]
-x=0.8856160156953037
+```julia ::restart
+x=rand(Float64);_   #_ suppresses output
+a=rand(Float64,3);_
+print(string("a=",a,"\nx=",x))
 ```
 
-```julia::
+```julia ::
 a=a.+1; _          # _ suppresses output
 x=x+1; _
 print(a,'\n',x)
-```
-```output
-[5.182367632555785, 5.2674762837421545, 5.350154685183689]
-9.885616015695303
 ```
 
 ---
