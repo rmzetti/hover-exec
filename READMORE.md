@@ -1228,21 +1228,21 @@ b # note 'print' not necessary when using repl
 m=1e7
 n=0.01
 tt = os.clock()
-tt=>>0.991
+tt=>>0.475
 for ii=1,m do
   n=n*ii
   n=n+1
   n=n/ii
 end
 tt1=os.clock()-tt
-tt1=>>0.318
+tt1=>>0.478
 ```
 
 ```lua::
 -- or lua:lua54:
 tt1=tt1+1
-tt1 =>>3.32
-os.clock()-tt =>>6.201
+tt1 =>>2.478
+os.clock()-tt =>>15.353
 ```
 
 ---
@@ -1482,7 +1482,9 @@ The startup commands included are as follows
 nb. `%f` provides the appropriate temporary file path & name
       the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` :
 
-```js //show scripts config settings
+`js console.log(config.get('repls'))` //one-liner - use 'scripts','repls','swappers', unsorted
+
+```js //show scripts config settings sorted
 sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
@@ -1597,15 +1599,24 @@ Second, hover over the new id and click '[config]' in the hover message, and ent
 
 The following script can also be used:
 
-```js
+```js:eval
 //this script can change, add or undefine a config setting
 let s={"newlang":"newlang %f.nu"}; //{"id":"start command"}
-//s={"newlang":undefined}; //uncomment this to undefine newlang
+s={"newlang":undefined}; //uncomment this to undefine newlang
 let scripts=config.get('scripts');
 let merge=Object.assign({},scripts,s);
 if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.newlang'))
 ```
+```output
+new config: undefined
+```
+
+`eval console.log('new config:',config.get('scripts.newlang'))`
+```output
+new config: undefined
+```
+
 
 The first line provides the new setting command which can be changed here if necessary. Make sure the the extension after %f is appropriate. If backslashes are used in a path, they should be escaped, ie. `\\`. Similarly if `"` is used it should be entered as `\"`
 

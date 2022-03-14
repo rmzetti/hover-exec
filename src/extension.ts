@@ -262,18 +262,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-  context.subscriptions.push( //onDidChangeConfigurations
-    vscode.workspace.onDidChangeConfiguration((e) => {
-      function checkConfig(){
-        config = vscode.workspace.getConfiguration("hover-exec");
-        vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
-         execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
-        vmContext={...vmDefault};
-      }
-      checkConfig();
-      progress('config changed, vmContext updated',20);
-    })
-  );
+  
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));
 
   function setExecParams(
@@ -477,45 +466,62 @@ export function activate(context: vscode.ExtensionContext) {
     config.update("repls", merge, 1);
   }
 
-  function checkDefaults(){
-    let c=config.inspect("scripts");
-    if(c===undefined){return false;}
-    let s=c.defaultValue as Object;
-    let t=c.globalValue as Object;
-    for (let k in Object.keys(t)) {
-      let a=Object.values(c.defaultValue as Object)[k];
-      let b=Object.values(t)[k];
-      if(a!==b){ return false;}
-    }
-    return true;
-  }
-
-  async function checkOS() {
-    config = vscode.workspace.getConfiguration("hover-exec");
-    let c=config.inspect('scripts');
-    let scripts=config.get('scripts');
-    let k=Object.keys(scripts as object);
-    let report='';
-    for (let a in k) {
-      let s=config.get('scripts.'+k[a]+'_'+os);
-      if(s!==undefined && c!==undefined && //and is original default value
-        Object.values(c.defaultValue as Object)[a]===Object.values(c.globalValue as Object)[a]){
-        let merge=Object.assign({},scripts,{[k[a]]:s});
-        report+='{'+k[a]+':'+s+'}; ';
-        await config.update('scripts',merge,1);
+  async function checkOS(section: string) {
+    let scripts=config.get(section);
+    if(config.get(section+".os")===""){
+      let k=Object.keys(scripts as object);
+      let merge=Object.assign({},{"os":os});
+      for (let a in k) {
+        let s=config.get(section+'.'+k[a]+'_'+os);
+        if (s!==undefined && s!=="") {
+          merge=Object.assign(merge,{[k[a]]:s});
+        }
       }
-    }      
-    if(report.length>0){
-      vscode.window.showInformationMessage('h-e scripts updated to x_'+os+' : '+report);
-      config = vscode.workspace.getConfiguration("hover-exec");
+      let aa='';
+      function remove(_os: string) {
+        for (let a in k) {
+          let name=''+k[a]+_os;
+          let s=config.get(section+'.'+name);
+          if (s!==undefined && s!=="") {
+            aa+=name+';';
+            merge=Object.assign(merge,{[name]:""});
+          }
+        }   
+      }
+      // remove('_win');remove('_mac'); //uncomment to remove os specific scripts from config
+      // remove('_lnx');remove('_wsl'); //uncomment to remove os specific scripts from config
+      await config.update(section,merge,1)
+      await checkJsonVisible();
+      if(aa!==''){alert('removed scripts: '+aa);}
     }
   }
 
-  checkJsonVisible();//ensures scripts & swappers available in settings.json
-  checkOS(); //changes default configs to match os
+  async function checkConfig(){
+    await checkJsonVisible(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+    await checkOS('scripts'); //changes default scripts to match os if provided
+    await checkOS('repls');   //changes default repls to match os if provided
+    vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
+      execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+    vmContext={...vmDefault};
+  }
+
+  let checkit=true;
+  context.subscriptions.push( //onDidChangeConfigurations
+    vscode.workspace.onDidChangeConfiguration( async (e) => {
+      if (checkit) {
+        checkit=false;
+        await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+        checkit=true;
+      }
+    })
+  );
+
+  checkConfig(); //set default configs (only) to their os values (if provided)
+
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
+
 } //end function activate
 
 

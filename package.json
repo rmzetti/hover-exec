@@ -3,7 +3,7 @@
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
 	"description": "execute code blocks",
-	"version": "0.6.8",
+	"version": "0.7.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rmzetti/hover-exec"
@@ -45,11 +45,13 @@
 				"hover-exec.scripts": {
 					"description": "NB. Edit or add scripts using code blocks (see README)",
 					"default": {
+            "os": "",
 						"octave": "octave \"%f.m\"",
 						"matlab": "matlab -nodesktop -sd \"%p.m/\" -batch temp",
 						"rterm": "rterm -q --no-echo -f \"%f.r\" ",
 						"r": "r \"%f.r\" ",
 						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
+						"scilab_win": "scilex -quit -nb -f \"%f.sci\" ",
 						"scilab_mac": "scilab-cli -quit -nb -f \"%f.sci\" ",
 						"scilab_lnx": "scilab-cli -quit -nb -f \"%f.sci\" ",
 						"python": "python \"%f.py\"",
@@ -78,10 +80,14 @@
 						"firefox": "firefox \"%f.html\"",
 						"chrome": "google-chrome-stable \"%f.html\"",
 						"safari": "open -a safari \"%f.html\"",
-						"test": "test -c \"%f.tst\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" "
+						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" ",
+						"test": "test -c \"%f.tst\"",
+            "test_win": "testwin -c \"%f.tst\"",
+            "test_mac": "testmac -c \"%f.tst\"",
+            "test_lnx": "testlnx -c \"%f.tst\"",
+            "test_wsl": "testwsl -c \"%f.tst\""
 					}
 				},
 				"hover-exec.swappers": {
@@ -130,6 +136,7 @@
 						]
 					],
 					"default": {
+            "os": "",
 						"python": [
 							"python",
 							[
@@ -201,6 +208,15 @@
 							]
 						],
 						"julia": [
+							"julia",
+							[
+								"-i -q"
+							],
+							"print('\\f')",
+							[],
+							[]
+						],
+						"julia_win": [
 							"julia",
 							[
 								"-i -q"
