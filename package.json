@@ -43,7 +43,7 @@
 			"title": "Hover Exec",
 			"properties": {
 				"hover-exec.scripts": {
-					"description": "NB. Edit or add scripts using code blocks (see README)",
+          "description": "shell command to exec script in file %f.ext",
 					"default": {
             "os": "",
 						"octave": "octave \"%f.m\"",
@@ -91,7 +91,7 @@
 					}
 				},
 				"hover-exec.swappers": {
-					"description": "NB. Edit or add swappers using code blocks (see README)",
+          "description": "script code to output '=>> $1'",
 					"default": {
 						"octave": "disp(['=>>' $1])",
 						"matlab": "disp([\"=>>\"+($1)])",
@@ -119,20 +119,20 @@
 				},
 				"hover-exec.repls": {
 					"description": [
-						"cmd",
+						"shell_command_to_exec_repl",
 						[
-							"opt"
+							"option_strings"
 						],
-						"output ff",
+						"scipt_to_output_ff",
 						[
-							"re",
-							"in",
-							".."
+							"preprocess_regex_search_1",
+							"preprocess_regex_replace_1",
+							"etc"
 						],
 						[
-							"re",
-							"out",
-							".."
+							"postprocess_regex_search_1",
+							"postprocess_regex_replace_1",
+							"etc"
 						]
 					],
 					"default": {

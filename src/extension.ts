@@ -470,34 +470,20 @@ export function activate(context: vscode.ExtensionContext) {
     let scripts=config.get(section);
     if(config.get(section+".os")===""){
       let k=Object.keys(scripts as object);
-      let merge=Object.assign({},{"os":os});
+      let merge=Object.assign({},{"os":os+" (auto)"});
       for (let a in k) {
         let s=config.get(section+'.'+k[a]+'_'+os);
         if (s!==undefined && s!=="") {
           merge=Object.assign(merge,{[k[a]]:s});
         }
       }
-      let aa='';
-      function remove(_os: string) {
-        for (let a in k) {
-          let name=''+k[a]+_os;
-          let s=config.get(section+'.'+name);
-          if (s!==undefined && s!=="") {
-            aa+=name+';';
-            merge=Object.assign(merge,{[name]:""});
-          }
-        }   
-      }
-      // remove('_win');remove('_mac'); //uncomment to remove os specific scripts from config
-      // remove('_lnx');remove('_wsl'); //uncomment to remove os specific scripts from config
-      await config.update(section,merge,1)
-      await checkJsonVisible();
-      if(aa!==''){alert('removed scripts: '+aa);}
+      await config.update(section,merge,1);
+      await checkJsonVisible(); //ensures settings visible in settings.json
     }
   }
 
   async function checkConfig(){
-    await checkJsonVisible(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+    await checkJsonVisible(); //ensures settings visible in settings.json (& defines config)
     await checkOS('scripts'); //changes default scripts to match os if provided
     await checkOS('repls');   //changes default repls to match os if provided
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
@@ -521,7 +507,6 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
-
 } //end function activate
 
 

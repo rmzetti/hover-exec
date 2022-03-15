@@ -664,6 +664,7 @@ console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
 ```
 
 
+
 ### View and alter a specific setting
 ```js noInline  //change, add or undefine (remove) a specific config setting
 let settings='scripts';  //can use 'scripts', 'swappers', 'repls'
@@ -675,3 +676,4 @@ let merge=Object.assign({},scripts,s);
 if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.python'))
 ```
+
