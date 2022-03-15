@@ -469,7 +469,7 @@ export function activate(context: vscode.ExtensionContext) {
     let scripts=config.get(section);
     if(!(config.get(section+".os".startsWith(os)))){
       let k=Object.keys(scripts as object);
-      let merge=Object.assign({},{"os":os+" (auto)"});
+      let merge=Object.assign({},scripts,{"os":os+" (auto)"});
       for (let a in k) {
         let s=config.get(section+'.'+k[a]+'_'+os);
         if (s!==undefined && s!=="") {
