@@ -453,7 +453,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   function checkJsonVisible() {
     // ensure script, swapper and repls visible in settings.json
-    config = vscode.workspace.getConfiguration("hover-exec");
     let s = { undefined: undefined };
     let temp = config.get("scripts");
     let merge = Object.assign({}, temp, s);
@@ -478,13 +477,14 @@ export function activate(context: vscode.ExtensionContext) {
         }
       }
       await config.update(section,merge,1);
-      await checkJsonVisible(); //ensures settings visible in settings.json
+      //await checkJsonVisible(); //ensures settings visible in settings.json
     }
   }
 
   let checkit=false;
   async function checkConfig(){
-    await checkJsonVisible(); //ensures settings visible in settings.json (& defines config)
+    //await checkJsonVisible(); //ensures settings visible in settings.json (& defines config)
+    config = vscode.workspace.getConfiguration("hover-exec");
     await checkOS('scripts'); //changes default scripts to match os if provided
     await checkOS('repls');   //changes default repls to match os if provided
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
