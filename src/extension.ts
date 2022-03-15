@@ -482,6 +482,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   }
 
+  let checkit=false;
   async function checkConfig(){
     await checkJsonVisible(); //ensures settings visible in settings.json (& defines config)
     await checkOS('scripts'); //changes default scripts to match os if provided
@@ -489,15 +490,14 @@ export function activate(context: vscode.ExtensionContext) {
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
+    checkit=true;
   }
 
-  let checkit=true;
   context.subscriptions.push( //onDidChangeConfigurations
     vscode.workspace.onDidChangeConfiguration( async (e) => {
       if (checkit) {
         checkit=false;
         await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
-        checkit=true;
       }
     })
   );
