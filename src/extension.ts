@@ -451,18 +451,18 @@ export function activate(context: vscode.ExtensionContext) {
     } //normal start line return line number
   }
 
-  function checkJsonVisible() {
+  async function checkJsonVisible() {
     // ensure script, swapper and repls visible in settings.json
     let s = { undefined: undefined };
     let temp = config.get("scripts");
     let merge = Object.assign({}, temp, s);
-    config.update("scripts", merge, 1);
+    await config.update("scripts", merge, 1);
     temp = config.get("swappers");
     merge = Object.assign({}, temp, s);
-    config.update("swappers", merge, 1);
+    await config.update("swappers", merge, 1);
     temp = config.get("repls");
     merge = Object.assign({}, temp, s);
-    config.update("repls", merge, 1);
+    await config.update("repls", merge, 1);
   }
 
   async function checkOS(section: string) {
@@ -483,10 +483,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   let checkit=false;
   async function checkConfig(){
-    //await checkJsonVisible(); //ensures settings visible in settings.json (& defines config)
+    //await checkJsonVisible(); //ensures settings visible in settings.json
     config = vscode.workspace.getConfiguration("hover-exec");
     await checkOS('scripts'); //changes default scripts to match os if provided
     await checkOS('repls');   //changes default repls to match os if provided
+    await checkJsonVisible(); //ensures settings visible in settings.json
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
