@@ -490,7 +490,7 @@ export function activate(context: vscode.ExtensionContext) {
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
-    checkit=true;
+    //checkit=true;
   }
 
   context.subscriptions.push( //onDidChangeConfigurations
