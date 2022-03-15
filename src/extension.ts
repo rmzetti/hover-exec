@@ -493,16 +493,16 @@ export function activate(context: vscode.ExtensionContext) {
     //checkit=true;
   }
 
-  context.subscriptions.push( //onDidChangeConfigurations
-    vscode.workspace.onDidChangeConfiguration( async (e) => {
-      if (checkit) {
-        checkit=false;
-        await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
-      }
-    })
-  );
+  // context.subscriptions.push( //onDidChangeConfigurations
+  //   vscode.workspace.onDidChangeConfiguration( async (e) => {
+  //     if (checkit) {
+  //       checkit=false;
+  //       await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+  //     }
+  //   })
+  // );
 
-  //checkConfig(); //set default configs (only) to their os values (if provided)
+  checkConfig(); //set default configs (only) to their os values (if provided)
 
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
