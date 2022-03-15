@@ -490,17 +490,17 @@ export function activate(context: vscode.ExtensionContext) {
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
-    //checkit=true;
   }
 
-  // context.subscriptions.push( //onDidChangeConfigurations
-  //   vscode.workspace.onDidChangeConfiguration( async (e) => {
-  //     if (checkit) {
-  //       checkit=false;
-  //       await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
-  //     }
-  //   })
-  // );
+  context.subscriptions.push( //onDidChangeConfigurations
+    vscode.workspace.onDidChangeConfiguration( async (e) => {
+      if (checkit) {
+        checkit=false;
+        await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+        checkit=true;
+      }
+    })
+  );
 
   checkConfig(); //set default configs (only) to their os values (if provided)
 
