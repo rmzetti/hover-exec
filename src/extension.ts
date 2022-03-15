@@ -477,6 +477,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
       }
       await config.update(section,merge,1);
+      config = vscode.workspace.getConfiguration("hover-exec");
       //await checkJsonVisible(); //ensures settings visible in settings.json
     }
   }

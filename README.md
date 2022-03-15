@@ -448,7 +448,9 @@ Initial beta release was 0.6.1
 Published using: vsce package/publish
 
 
-
+```eval
+console.log()
+```
 
 
 
