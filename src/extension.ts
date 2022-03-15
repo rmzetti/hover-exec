@@ -271,7 +271,7 @@ export function activate(context: vscode.ExtensionContext) {
   ) {
     currentFile = doc.uri.path; //current editor file full path /c:...
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
-    windows = currentFsFile.slice(1, 2) === ":"; //true if os is windows
+    //windows = currentFsFile.slice(1, 2) === ":"; //true if os is windows
     if (vscode.workspace.workspaceFolders) {
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -468,7 +468,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   async function checkOS(section: string) {
     let scripts=config.get(section);
-    if(config.get(section+".os")===""){
+    if(!(config.get(section+".os".startsWith(os)))){
       let k=Object.keys(scripts as object);
       let merge=Object.assign({},{"os":os+" (auto)"});
       for (let a in k) {
