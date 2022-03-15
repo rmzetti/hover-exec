@@ -502,7 +502,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  checkConfig(); //set default configs (only) to their os values (if provided)
+  //checkConfig(); //set default configs (only) to their os values (if provided)
 
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
