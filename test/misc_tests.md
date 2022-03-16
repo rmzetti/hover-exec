@@ -488,6 +488,10 @@ func main() {
     fmt.Printf("speed  %.5v million iterations per sec\n",float64(iter)/t/1e6)
 }
 ```
+```output
+total time 0.243 sec
+speed  4123.7 million iterations per sec
+```
 
 > Example output
 > total time 0.24 sec
