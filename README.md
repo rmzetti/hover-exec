@@ -449,14 +449,10 @@ Published using: vsce package/publish
 
 
 ```test
-console.log("hello")
+print("hello1")
 ```
 ```output
-Error: Command failed: testwin -c "c:\Users\ralph\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\temp.tst"
-'testwin' is not recognized as an internal or external command,
-operable program or batch file.
-,'testwin' is not recognized as an internal or external command,
-operable program or batch file.
+hello1
 ```
 
 

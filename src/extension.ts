@@ -571,7 +571,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           vscode.commands.executeCommand('workbench.action.openSettingsJson');
         } else {
           if(d==='undefine'||d==='undefined'||d===''){d=undefined;}
-          let merge=Object.assign({},scripts,{[cmdId]:d});
+          let merge={};
+          merge=Object.assign(merge,scripts,{[cmdId]:d});
           await config.update('scripts',merge,1);
           config = vscode.workspace.getConfiguration("hover-exec");
         }
