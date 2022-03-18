@@ -463,28 +463,27 @@ export function activate(context: vscode.ExtensionContext) {
     temp = config.get("repls");
     merge = Object.assign({}, temp, s);
     await config.update("repls", merge, 1);
-  }
-
-  async function checkOS(section: string) {
-    let scripts=config.get(section);
-    if(!(config.get(section+".os".startsWith(os)))){
-      let k=Object.keys(scripts as object);
-      let merge=Object.assign({},scripts,{"os":os+" (auto)"});
-      for (let a in k) {
-        let s=config.get(section+'.'+k[a]+'_'+os);
-        if (s!==undefined && s!=="") {
-          merge=Object.assign(merge,{[k[a]]:s});
-        }
-      }
-      await config.update(section,merge,1);
-      config = vscode.workspace.getConfiguration("hover-exec");
-      //await checkJsonVisible(); //ensures settings visible in settings.json
-    }
+    config = vscode.workspace.getConfiguration("hover-exec");
   }
 
   let checkit=false;
   async function checkConfig(){
-    //await checkJsonVisible(); //ensures settings visible in settings.json
+    async function checkOS(section: string) {
+      let scripts=config.get(section);
+      if(config.get(section+".os")===""){
+        let k=Object.keys(scripts as object);
+        let merge={};
+        merge=Object.assign(merge,{"os":os+" (auto)"});
+        for (let a in k) {
+          let s=config.get(section+'.'+k[a]+'_'+os);
+          if (s!==undefined && s!=="") {
+            merge=Object.assign(merge,{[k[a]]:s});
+          }
+        }
+        await config.update(section,merge,1);
+        config = vscode.workspace.getConfiguration("hover-exec");
+      }
+    }
     config = vscode.workspace.getConfiguration("hover-exec");
     await checkOS('scripts'); //changes default scripts to match os if provided
     await checkOS('repls');   //changes default repls to match os if provided
@@ -492,6 +491,7 @@ export function activate(context: vscode.ExtensionContext) {
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
+    checkit=true;
   }
 
   context.subscriptions.push( //onDidChangeConfigurations
@@ -499,7 +499,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (checkit) {
         checkit=false;
         await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
-        checkit=true;
       }
     })
   );
