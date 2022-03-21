@@ -843,8 +843,8 @@ Notes:
 ### Lua
 
 ```lua  -- say hello & goodbye
---lua :lua54 -- 'lua' id specifies syntax highlight and default start command
---                     adding ':lua54' means use 'lua54' as start command
+--lua  -- 'lua' id specifies syntax highlight and default start command
+--           add ':lua54' would mean use 'lua54' as start command
 'hello ' .. 44-2+math.random() -- =>> 
 "& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
@@ -1385,16 +1385,18 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 exec notepad with file in current folder:
 `notepad "%cREADME.md"`  --windows
 `open -a textedit "%cREADME.md"`  --mac
-`gedit "%cREADME.md"`  --linux/wsl
-`xedit "%cREADME.md"`  --linux/wsl
+`gedit "%cREADME.md"`  --linux, wsl
+`xedit "%cREADME.md"`  --linux, wsl
 
 exec notepad with temp file (%f):
 `open -a textedit "%f"` --mac
 `notepad "%f"`  --windows
-`xedit "%f"`  --linux/wsl
+`xedit "%f"`  --linux, wsl
 
 open another instance of vscode:
-`code -n %f`
+`code -n %f` --windows, linux, wsl
+`open -na "visual studio code"` --mac
+
 
 explore files, view folders:
 `open -a finder ~`  mac 'home'
@@ -1512,6 +1514,7 @@ previous output:
   matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
   node: 'node "%f.js"',
   octave: 'octave "%f.m"',
+  os: 'win (auto)'
   pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
   pwsh: 'set "NO_COLOR=1" & pwsh -f "%f.ps1" ',
   python: 'python "%f.py"',
@@ -1586,9 +1589,7 @@ The first line shows the python config. So the start command is `python %f.py`. 
 
 If there is a need to add a new scripting language, say `newlang`, this can be done using the settings configuration for *hover-exec*, and following the obvious patterns.
 
-It can also be done using `vm` or `eval` since the *vscode* configuration settings can be accessed with the scripts.
-
-First write a fenced code block labelled newlang with the appropriate command - if this is done correctly the code block should execute in the new script
+It can also be done using `vm` or `eval` since the *vscode* configuration settings can be accessed with the scripts. First write a fenced code block labelled newlang. Then hover over 'newlang' and select config, Then enter the appropriate script startup command (include "%f.ext" as the commandfile to execute.) If the startup command is correct (eg. would work in a terminal window with an actual command file) the code block should execute in the new script
 
 ```newlang
 -- a newlang comment line

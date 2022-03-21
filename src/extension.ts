@@ -369,9 +369,9 @@ export function activate(context: vscode.ExtensionContext) {
       if (/^\w+\s?:\w/.test(s)) {
         cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
                       //eg. for 'js:asdf' cmdId is 'asdf'
-        if(cmdId==='vmdf'){vmContext=undefined;cmdId='vm';}
+        if(cmdId==='vmdf'){vmContext=undefined;cmdId = 'vm';}
                       //for 'js:def' set default context & cmdId='vm'
-        else if (cmdId==='vmin'){vmContext={write};cmdId='vm';}
+        else if (cmdId==='vmin'){vmContext={write};cmdId = 'vm';}
                       //for 'js:min' set min context & cmdId='vm'
       } else {
         cmdId = cmda; //eg. for 'js asdf' cmdId is 'js'
@@ -561,7 +561,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       let d = await vscode.window.showInputBox({
         placeHolder: "config",
-        prompt: cmdId+':'+config.get('scripts.'+cmdId)+'(enter opens settings.json if unchanged)\n',
+        prompt: 'id= '+cmdId+', just enter to open settings.json ',
         value: config.get('scripts.'+cmdId)
       });
       if (d!==undefined){
@@ -1003,7 +1003,7 @@ async function execShell(cmd: string){
   return new Promise<string>((resolve, reject) => {
     let opt={};
     if(process.platform==='darwin'||process.platform==='linux') {
-      opt={shell:'/bin/bash'};
+      opt={shell:'/bin/bash',env:'process.env'};
     }
     ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {

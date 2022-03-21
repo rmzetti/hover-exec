@@ -130,6 +130,9 @@ for (let i = 0; i < n; i++) { //speed test loop
 t2 = Date.now() - p
 console.log('- for n=',n,': using Function',t1,'msec using eval',t2,'msec')
 ```
+```output
+- for n= 1000000 : using Function 678 msec using eval 186 msec
+```
 
 - output:
 - js:node for n= 1000000 : using Function 675 msec using eval 190 msec
@@ -517,8 +520,8 @@ print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
 ```output
-total time  1.9  sec
-speed  5.2622  million iterations per sec
+total time  1.62  sec
+speed  6.1567  million iterations per sec
 ```
 
 > Example output
@@ -531,7 +534,7 @@ ie. for this test javascript is about 30x faster than python
 
 Lua must be installed, and the config startup script should match the installation. If `lua54` is installed, the config start command should use `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the the first bit of the id `js:lua` is used to provide some simple-minded syntax highlighting (via the `js` highlighter) - the hover message makes it clear that `lua` is the actual command.
 
-```js:lua54  //10 million random number calls
+```js:lua  //10 million random number calls
 -- ```lua {cmd=lua53} //10 million random number calls`
 local m=1e8;  -- note: fewer iterations than for js or go
 local n=0.01;
@@ -546,8 +549,8 @@ print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
 ```output
-total time 	1.1	 sec
-speed 	90.74	 million iterations per sec
+total time 	1.04	 sec
+speed 	95.41	 million iterations per sec
 ```
 
 > Example output:
