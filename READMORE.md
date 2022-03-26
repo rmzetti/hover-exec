@@ -1448,6 +1448,8 @@ other examples:
 `control mouse`
 `control /name Microsoft.ProgramsAndFeatures`
 `pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
+`pwsh iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI"` //update powershell
+`pwsh (get-host).version` //show powershell version
 `devmgmt.msc`               //devices
 `mmc diskmgmt.msc`     //disk management
 `mmc azman.msc`	Authorization Manager	Manage Authorization Stores

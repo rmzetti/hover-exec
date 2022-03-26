@@ -40,6 +40,7 @@ let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
+let opt={};
 const log=console.log;
 let vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
   execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
@@ -271,7 +272,6 @@ export function activate(context: vscode.ExtensionContext) {
   ) {
     currentFile = doc.uri.path; //current editor file full path /c:...
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
-    //windows = currentFsFile.slice(1, 2) === ":"; //true if os is windows
     if (vscode.workspace.workspaceFolders) {
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -491,6 +491,17 @@ export function activate(context: vscode.ExtensionContext) {
     vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
       execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
     vmContext={...vmDefault};
+    opt={};
+    let s=(config.get("scripts.os") as string).replace(/.*\((.*)\).*/,'$1');
+    if(s==='auto') {
+      if(process.platform==='darwin'||process.platform==='linux') {
+        opt={shell:'/bin/bash'};
+      } else {
+        opt={shell:true};
+      }
+    } else { 
+      opt={shell:s};
+    }
     checkit=true;
   }
 
@@ -498,7 +509,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeConfiguration( async (e) => {
       if (checkit) {
         checkit=false;
-        await checkConfig(); //ensures scripts, repls & swappers available in settings.json (needed for next to work)
+        await checkConfig(); //ensures scripts, repls & swappers available in settings.json
       }
     })
   );
@@ -963,12 +974,12 @@ async function deleteOutput(asText: boolean) {
 }
 
 function execRepl(cmd: string,args:string[]){
-  let opt={};
-  if(process.platform==='darwin'||process.platform==='linux') {
-    opt={shell:'/bin/bash'};
-  } else {
-    opt={shell:true};
-  }
+  // let opt={};
+  // if(process.platform==='darwin'||process.platform==='linux') {
+  //   opt={shell:'/bin/bash'};
+  // } else {
+  //   opt={shell:true};
+  // }
   repl=cp.spawn(cmd, args, opt);
   if(repl===null){return;}
   repl.stdout?.on('data', (data) => {
@@ -1001,10 +1012,9 @@ async function replOutput(){
 async function execShell(cmd: string){
   //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {
-    let opt={};
-    if(process.platform==='darwin'||process.platform==='linux') {
-      opt={shell:'/bin/bash',env:'process.env'};
-    }
+    // let opt={};
+    // let s=(config.get("scripts.os") as string).replace(/.*\((.*)\).*/,'$1');
+    // if(s!=='auto'){ opt={shell:s};}
     ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {
         needSwap=false; //turn off swaps for errors
@@ -1020,7 +1030,7 @@ async function execShell(cmd: string){
 async function writeFile(path: string, text: string) {
   //write a file in vm & eval. Usage: await writeFile(path,text)
   //`text` is written to the file at path (full path)
-  path=path.replace(/^['"]|['"]$/g,'');
+  path=path.replace(/^['"]|['"]$/g,''); //remove any start or end quotes
   await vscode.workspace.fs.writeFile(vscode.Uri.file(path), Buffer.from(text));
 }
 

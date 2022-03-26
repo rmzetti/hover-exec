@@ -136,8 +136,7 @@
 						]
 					],
 					"default": {
-            "os": "",
-						"python": [
+            "python": [
 							"python",
 							[
 								"-q",
