@@ -1026,6 +1026,13 @@ pwd
 ls -l
 ```
 
+Can also use bash commands direct, since bash is the default shell for child-process
+`ls -al "%p"` //list temp directory files (in the hover command, %p, %f etc are expanded - see the hover message)
+
+Hover-exec can also use `zsh` as the default by setting `scripts.os="mac (zsh)"` rather than the child-process default
+which is used if `scripts.os="mac (auto)"` (if changed, vsode may need a restart)
+
+
 ---
 ### Powershell
 
