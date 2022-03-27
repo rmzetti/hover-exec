@@ -1035,12 +1035,12 @@ Use `pwsh` to run powershell, or `pwsh {cmd}` to also run in *mpe*
 pwd
 ```
 ```output
-[32;1mId     Name            PSJobTypeName   State         HasMoreData     Location             Command[0m
-[32;1m--     ----            -------------   -----         -----------     --------             -------[0m
+Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
+--     ----            -------------   -----         -----------     --------             -------
 1      Job1            BackgroundJob   Running       True            localhost            Microsoft.PowerShell.Man.
 
-[32;1mPath[0m
-[32;1m----[0m
+Path
+----
 C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
@@ -1048,28 +1048,22 @@ Can also get in-line results:
 
 ```pwsh
  #pwsh {cmd}
-Get-Random -Min 0.0 -Max 1.0 =>>0.469209223272842
+Get-Random -Min 0.0 -Max 1.0 =>>0.544770084575177
 "current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 ```output
-[32;1mId     Name            PSJobTypeName   State         HasMoreData     Location             Command[0m
-[32;1m--     ----            -------------   -----         -----------     --------             -------[0m
+Id     Name            PSJobTypeName   State         HasMoreData     Location             Command
+--     ----            -------------   -----         -----------     --------             -------
 1      Job1            BackgroundJob   Running       True            localhost            Microsoft.PowerShell.Man.
 ```
 
-`$PSStyle.OutputRendering = 'PlainText';`
-`pwd`
-```output
-[32;1mPath[0m
-[32;1m----[0m
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
-```
-`(Get-Host).version`
-```output
-[32;1mMajor  Minor  Build  Revision[0m
-[32;1m-----  -----  -----  --------[0m
-7      2      2      -1
-```
+Note that pwsh can be set as the default windows shell by setting `scripts.os="win (pwsh)"` in settings.json.
+Then powershell commands can be issued direct, eg.
+
+`(Get-Host).version` //only works if `scripts.os="win (pwsh)"`
+
+Instead if the shell is the default (cmd), ie. `scripts.os="win (auto)"`, use
+`pwsh (Get-Host).version` //works even if `scripts.os="win (auto)"`
 
 ---
 ### Gnuplot
