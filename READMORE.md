@@ -1032,17 +1032,43 @@ ls -l
 Use `pwsh` to run powershell, or `pwsh {cmd}` to also run in *mpe*
 
 ```pwsh # (windows) random number, show current directory
-  # pwsh # (windows) random number, show current directory
-  # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
 pwd
+```
+```output
+[32;1mId     Name            PSJobTypeName   State         HasMoreData     Location             Command[0m
+[32;1m--     ----            -------------   -----         -----------     --------             -------[0m
+1      Job1            BackgroundJob   Running       True            localhost            Microsoft.PowerShell.Man.
+
+[32;1mPath[0m
+[32;1m----[0m
+C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
 Can also get in-line results:
 
 ```pwsh
  #pwsh {cmd}
-Get-Random -Min 0.0 -Max 1.0 =>> 
-"current dir: "+(pwd) =>> 
+Get-Random -Min 0.0 -Max 1.0 =>>0.469209223272842
+"current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+```
+```output
+[32;1mId     Name            PSJobTypeName   State         HasMoreData     Location             Command[0m
+[32;1m--     ----            -------------   -----         -----------     --------             -------[0m
+1      Job1            BackgroundJob   Running       True            localhost            Microsoft.PowerShell.Man.
+```
+
+`$PSStyle.OutputRendering = 'PlainText';`
+`pwd`
+```output
+[32;1mPath[0m
+[32;1m----[0m
+C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+```
+`(Get-Host).version`
+```output
+[32;1mMajor  Minor  Build  Revision[0m
+[32;1m-----  -----  -----  --------[0m
+7      2      2      -1
 ```
 
 ---
