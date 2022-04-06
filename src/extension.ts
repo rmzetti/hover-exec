@@ -13,7 +13,7 @@ let out: string = ""; //output from code execution
 let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
 let needSwap = false; //no swaps so leave code as is
-let hePath = "abcd"; //path to hover-exec files
+let hePath = ""; //path to hover-exec files
 let windows = process.platform.startsWith("win"); //os is windows
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
@@ -521,6 +521,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
   hePath=context.extensionPath;
+  if(windows){
+    hePath=hePath+'\\';
+  } else {
+    hePath=hePath+'/';
+  }
 } //end function activate
 
 
