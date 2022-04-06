@@ -13,6 +13,7 @@ let out: string = ""; //output from code execution
 let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
 let needSwap = false; //no swaps so leave code as is
+let hePath = "abcd"; //path to hover-exec files
 let windows = process.platform.startsWith("win"); //os is windows
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
@@ -519,6 +520,7 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
+  hePath=context.extensionPath;
 } //end function activate
 
 
@@ -732,8 +734,7 @@ function hrefSrcReplace(s:string) {
 function replaceStrVars(s: string) {
   if(cmdId==='eval' || cmdId==='js' || cmdId==='vm'){tempName='temp.js';}
   //replace %f etc with the appropriate string
-  //s=s.replace(/\\/g,'\\\\'); //replace single \ with \\
-  if (/%[fpx]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %p and %x
+  if (/%[fp]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %p and %x
     tempName= "temp." + s.replace(/.*?%[fp]\.(\w*).*/, "$1"); // \W? before last .
     s= s.replace(/(%[fpx])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
@@ -747,7 +748,7 @@ function replaceStrVars(s: string) {
     .replace(/%c/g, currentFsPath) //%c current file path
     .replace(/%e/g, currentFsFile) //%e current file path/name
     .replace(/%n/g, tempName) //%n temp file name only
-    .replace(/%x/g,'') //%x just used to define ext, so remove
+    .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
   return s;
 }
 

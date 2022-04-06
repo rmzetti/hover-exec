@@ -448,12 +448,28 @@ Initial beta release was 0.6.1
 Published using: vsce package/publish
 
 
-```test
-print("hello1")
+
+`code %x\readmore.md`
+
+
+
+```js
+test
 ```
-```output
-hello1
+
+
+
+```html
+<p>
+adfadfwaf
+<p>
+<a href="https://github.com/rmzetti/hover-exec/blob/HEAD/READMORE.md">test</a>
+<p>
+afawefwaef
+<a href="READMORE.md">test</a>
+<p>
 ```
+
 
 
 

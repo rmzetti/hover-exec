@@ -2,7 +2,7 @@
 	"name": "hover-exec",
 	"publisher": "rmzetti",
 	"displayName": "Hover Exec",
-	"description": "execute code blocks",
+	"description": "execute markdown code blocks",
 	"version": "0.7.1",
 	"repository": {
 		"type": "git",
@@ -17,15 +17,14 @@
 	},
 	"categories": [
 		"Other",
-		"Programming Languages",
 		"Notebooks"
 	],
 	"keywords": [
 		"execute",
 		"run",
-		"code",
-		"codeblock",
-		"output"
+		"markdown",
+    "code",
+		"codeblock"
 	],
 	"activationEvents": [
 		"onLanguage:markdown"

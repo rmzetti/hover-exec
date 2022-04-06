@@ -1051,6 +1051,8 @@ Path
 C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
 
+https://github.com/rmzetti/hover-exec/blob/master/READMORE.md
+
 Can also get in-line results:
 
 ```pwsh
@@ -1071,6 +1073,10 @@ Then powershell commands can be issued direct, eg.
 
 Instead if the shell is the default (cmd), ie. `scripts.os="win (auto)"`, use
 `pwsh (Get-Host).version` //works even if `scripts.os="win (auto)"`
+`ver` //better for the auto (cmd) shell
+```output
+Microsoft Windows [Version 10.0.22581.100]
+```
 
 ---
 ### Gnuplot
