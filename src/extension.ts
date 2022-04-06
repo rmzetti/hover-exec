@@ -736,7 +736,7 @@ function replaceStrVars(s: string) {
   //replace %f etc with the appropriate string
   if (/%[fp]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %p and %x
     tempName= "temp." + s.replace(/.*?%[fp]\.(\w*).*/, "$1"); // \W? before last .
-    s= s.replace(/(%[fpx])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
+    s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
     .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
