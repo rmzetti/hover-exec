@@ -1,6 +1,15 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md).
+This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path 
+`code %x/READMORE.md`       //extended README
+`code %x/test/basic_tests.md` //basic tests
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs
+
+NB. Each of the above commands is surrounded by a backtick, and must start in col 1.
+
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
@@ -9,19 +18,18 @@ This is the README for the VSCode extension *hover-exec*. For more detail, [READ
   - [Basic hover-exec](#basic-hover-exec)
   - [Javascript scripts](#javascript-scripts)
     - [Examples using vm and eval](#examples-using-vm-and-eval)
-    - [Available functions in `vm` and `eval`](#available-functions-in-vm-and-eval)
-    - [Using require & globals with vm and eval](#using-require--globals-with-vm-and-eval)
     - [Using nodejs](#using-nodejs)
     - [Html and javascript](#html-and-javascript)
   - [Other scripts](#other-scripts)
     - [Scripts with command execution strings included](#scripts-with-command-execution-strings-included)
-    - [Lua](#lua)
     - [Python](#python)
-    - [Scilab](#scilab)
     - [Julia](#julia)
+    - [Octave](#octave)
+    - [Scilab](#scilab)
+    - [Lua](#lua)
+    - [Gnuplot](#gnuplot)
     - [Bash & zsh](#bash--zsh)
     - [Powershell](#powershell)
-    - [Gnuplot](#gnuplot)
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
     - [Quickmath examples](#quickmath-examples)
@@ -56,114 +64,58 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 ### Examples using vm and eval
 
-The code block label `js`  by itself defaults to executing javascript via the `vm` module. Appending `:eval` will execute the code block using *eval*.
+The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Appending `:eval` will instead execute the code block using *eval*.
 
-```js  //click this line in the *hover* to execute the block
+```js  {cmd=javascript} //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
-console.log("Notice the in-line random number result ")
-'test: '+Math.random() =>> 
+console.log("Note the in-line random number result (not in mpe)")
+'test: '+Math.random() // =>>test: 0.6540027777133479
 ```
+>     test output:
+>     Note the in-line random number result (not in mpe)
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
 A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
-```js
-//js //using javascript vm, various examples
+```js {cmd=javascript}  :eval
+//js //using javascript vm, or append :eval to use the built in eval instead
 let abc="hello, world 3"
-alert(abc) //not available in nodejs scripts
+alert(abc) //alert produces vscode alerts - not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>> 
-eval('let b=3; 2*b*Math.random()')=>> 
+2*b*Math.random() =>>0.7782289254464549
+eval('let b=3; 2*b*Math.random()')=>>4.972581348554671
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>> 
-process.cwd() =>> 
+'hello '+(2-1+Math.random())=>>hello 1.1375918988008553
+process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
+>     test output:
+>     goodbye world 0.46809536348325254
+>     hello, world 3
 
 ---
 ```js
 //js  //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>> 
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
+```
+
+```js : eval
+//js : eval // javascript regex tester using eval
+'abcdefg'.replace(/^.*(bcde)/,'$1--') =>>bcde--fg
 ```
 
 ---
-All the code blocks above can be executed using `eval` instead of `vm`, eg.
+All the code blocks above can be executed using either `eval` or `vm`.
+The difference is that `vm` scripts are executed within a more restricted *context* - see [READMORE](READMORE.md) .
 
-```js :eval
-//js :eval // javascript regex tester using eval
-'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> 
-```
-
-The difference is that `vm` scripts are executed within a more restricted *context* (see next section).
-
-In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding ` :node` sets the actual exec command to `node`.
+In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `: eval` sets the actual exec command to `eval`.
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
-
----
-### Available functions in `vm` and `eval`
-
-The following functions are included in `vmContext` by default (and are also available to `eval`):
-
-- abort(): abort current script
-- alert(string): provide an alert box (bottom right)
-- config: access to *hover-exec* configuration
-- delay(usec): delay for specified number of usec
-- execShell(string): exec shell command
-- global: define and access global functions and variables (globals persist over separate script execs)
-- globalThis: as for global
-- input(string): provide an input box (top of screen)
-- process: access to process module, eg. `process.cwd()` 
-- progress(string,usec): show a progress bar (bottom right) for specified usec
-- readFile(path): read local file
-- writeFile(path,string): write string to local file at full path
-- require: for `xyx=require("package")`
-- showKey: boolean, show keypressed
-- showOk: boolean, show successful execution
-- status(string): show `=>string` on status bar
-- vscode: access to vscode objects
-- write(string): `console.log` to output block
-- math: access to `mathjs` objects (no need to `require('mathjs')`)
-- moment: access to `moment` objects (no need to `require('moment')`)
-- _ : access to `lodash` objects (no need to `require('lodash')`)
-
-See [READMORE](READMORE.md) for information on restricting or enlarging the vm context.
-
----
-### Using require & globals with vm and eval
-
-Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `eval`.
-
-When using `vm`, function and variable definitions persist across `vm` scripts during the session. A function or variable can be also set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval`, and is then available during the session in both. A global can be removed using, eg. `delete global.a;`
-
-```js
-//js //using lodash, mathjs and process in vm
-function xrange(){
-   let x1=_.range(0,6.1,6/10);
-   let x=math.round(math.exp(math.multiply(x1,math.log(10))));
-   return x
-}
-xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
-let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>/home/rmzetti/hover-exec
-console.log(xrange())
-```
-
-```js
-//js //declare a global function (not needed if just using vm scripts)
-f=global.f=function(m){return 'the meaning of life is '+m;};
-f(44-2)=>> 
-```
-
-```js:eval
-//js:eval //use the global function (can be used in both *eval* & *vm*)
-f(42)=>> 
-```
 
 See [READMORE](READMORE.md) for more information and examples.
 
@@ -172,12 +124,17 @@ See [READMORE](READMORE.md) for more information and examples.
 
 The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed). 
 
-```js :node
-//js :node //blanks allowed before the : but not after
+```js : node
+//js : node //blanks allowed around the :
 console.log('  test using node:\n  '+Math.random())
 console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
+>     test output:
+>     test using node:
+>     0.43884249391182095
+>     Note: hover-exec on the output line, or alt+/ (opt+/) with
+>     the cursor in the output block will delete the output block
 
 ---
 ### Html and javascript
@@ -213,40 +170,21 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of scripts are included (see [Configuration settings](#configuration-settings) near the end of this `README` for the actual command lines used):
+Command lines to conveniently start a number of other scripts are included (see [Configuration settings](READMORE.md#configuration-settings) for the actual command lines used). Some examples (for other script language examples see the [READMORE](READMORE.md)):
 
-- js (or vm) --[javascript via vm, with vscode api included in context](#Examples-using-vm-and-eval)
-- eval --[javascript via eval, with vscode api available](#Examples-using-vm-and-eval)
-- javascript (or node) --[javascript using nodejs](#Using-nodejs)
-- html --[html via the default browser](#Html-and-javascript)
-- powershell
-- bash
-- zsh --macOs
-- python
-- julia
-- octave
-- scilab
-- gnuplot
-- matlab
-- lua
-- go
-- pascal
+- [python](#python)
+- [julia](#julia)
+- [octave](#octave)
+- [scilab](#scilab)
+- [lua](#lua)
+- [gnuplot](#gnuplot)
+- [powershell](#powershell)
+- [bash & zsh](#bash-&-zsh)
 
 Notes:
-- The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
-- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
+- The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](READMORE.md#configuration-settings).
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
-
----
-### Lua
-
-```lua  -- say hello & goodbye
---lua :lua54 -- 'lua' id specifies syntax highlight and default start command
---                     adding ':lua54' means use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>> 
-"& goodbye " .. math.pi+math.random() =>> 
-print("lua ok") -- this outputs in the output code block below
-```
 
 ---
 ### Python
@@ -254,25 +192,14 @@ print("lua ok") -- this outputs in the output code block below
 ```python
  #python :python3 # use this instead to use 'python3' as start command
 from random import random
-45-2+random()       #  =>> 
-'hello, world 3!'       #  =>> 
+45-2+random()       #  =>>43.6264875741003
+'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```
+>     test output (also see inline output):
+>     python ok
 
-Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
-
----
-### Scilab
-
-```js :scilab 
-//js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
-                //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
-rand("seed",getdate('s')); //set new random sequence
-mprintf('%s\n','test '+string(rand())+' '+pwd());
-string(rand())+' '+pwd() =>> 
-string(rand()) =>> 
-//disp('disp puts quotes around strings',rand())
-```
+Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that, for example, *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
 
 ---
 ### Julia
@@ -281,33 +208,61 @@ string(rand()) =>>
   #julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
-a   # =>> 
+a   # =>>[0.9607100451172932, 0.25709634387752067, 0.027822592779326305]
 b=a;b[2]=42;                        # arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
+>     test output (also see inline output):
+>     a=[0.9607100451172932, 42.0, 0.027822592779326305]
+>     b=[0.9607100451172932, 42.0, 0.027822592779326305]
 
 ---
-### Bash & zsh
 
-```zsh # (macos) show current directory
- #zsh # (macos) show current directory
-pwd
-```  
+### Octave
 
-```bash # (macos, linux, wsl) show current directory
- #bash # (macos, linux) show current directory
-pwd
+Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced*
+
+```python :octave
+ # python:octave {cmd=octave} -- {cmd..} is for mpe
+ # python gets syntax highlighter
+ # nb. need mat2str or num2str for numeric output
+num2str(7.1+rand(1))  =>>7.8169
+'hello world in-line'  =>>hello world in-line
+pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+disp('hello world in output section!')
+disp(rand(1))
 ```
+>     test output (also see inline output):
+>     hello world in output section!
+>     0.1295
 
 ---
-### Powershell
+### Scilab
 
-```pwsh # (windows) random number, show current directory
-  # pwsh # (windows) random number, show current directory
-  # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>> 
-pwd
+```js :scilab 
+//js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
+      //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
+rand("seed",getdate('s')); //set new random sequence
+mprintf('%s\n','test '+string(rand())+' '+pwd());
+string(rand())+' '+pwd() =>>0.9321708 c:\Users\rmzetti\GitHub\hover-exec
+string(rand()) =>>0.3329656
+//disp('disp puts quotes around strings',rand())
 ```
+>     test output (also see inline output):
+>     test 0.3161717 c:\Users\rmzetti\GitHub\hover-exec
+
+---
+### Lua
+
+```lua  -- say hello & goodbye
+--lua :lua54 -- 'lua' id specifies syntax highlight and default start command
+--                     adding ':lua54' means use 'lua54' as start command
+'hello ' .. 44-2+math.random() -- =>>hello 42.046598765538
+"& goodbye " .. math.pi+math.random() =>>& goodbye 3.3082099849202
+print("lua ok") -- this outputs in the output code block below
+```
+>     test output (also see inline output):
+>     lua ok
 
 ---
 ### Gnuplot
@@ -340,14 +295,50 @@ plot "$charge" using 1:3 w lp title "charge"
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
 ---
+### Bash & zsh
+
+```zsh # (macos) show current directory
+ #zsh # (macos) show current directory
+pwd
+```  
+>     test output:
+>     /home/rmzetti/hover-exec
+
+```bash # (macos, linux, wsl) show current directory
+ #bash # (macos, linux) show current directory
+pwd
+```
+>     test output:
+>     /home/rmzetti/hover-exec
+
+---
+### Powershell
+
+```pwsh # (windows) random number, show current directory
+  # pwsh # (windows) random number, show current directory
+  # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
+Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
+pwd
+```
+>     test output (also see inline output):
+>     Path
+>     ----
+>     C:\Users\rrmzetti\GitHub\hover-exec
+
+
+---
 ## One-liners and quickmath
 
-*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed on hover-click. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
 
 ---
 ### One-liner examples:
+default shell simple command execution (result depends on the default shell for vscode)
+`pwd` zsh, bash, pwsh, cmd
+`ls` zsh,bash, pwsh
+`dir` cmd
 
 exec notepad with file in current folder:
 `notepad "%cREADME.md"`  --windows
@@ -389,42 +380,7 @@ NB. Copy the answer in the hover to the clipboard with a click.
 ---
 ## Configuration settings
 
-The startup commands included are as follows
-nb. `%f` provides the appropriate temporary file path & name
-      the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` :
-
-```js //show scripts config settings
-sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
-console.log(sort(config.get('scripts')));
-```
-
-Any of the configs shown (in the output from the above script) can be changed to suit the system or setup in use by using vscode `settings` under the *hover-exec* extension, or by selecting `config` from the hover message.
-
-Also note that there is no actual requirement to include a script startup command in the configuration file for the script to be used - they just make the code block command simpler. Essentially, if the command works in the terminal (using the full file name of course), and returns output to the terminal, then it will work as a *hover-exec* command  (use "double quotes" if there are spaces in the file path).
-
-For example, on windows, *hover-exec* will run the following script as a `cmd.exe` `.bat` file, because `.bat` files autostart `cmd.exe` :
-
-```%f.bat //demo cmd execution (windows) without script setup
-@echo off
-dir *.json
-echo Congratulations! Your first batch file was executed successfully.
-```
-
-On macos
-```open -a textedit "%f.txt"
-This text can be viewed in the text editor
-and saved as required -
-changes will not be reflected back into this code block.
-```
-
-On linux/wsl
-```xedit %f.txt
-This text can be viewed in the text editor
-and saved as required -
-changes will not be reflected back into this code block.
-```
-
-There is also a set of strings called `swappers` which enable moving the output of a line so that it appears *in-line*, within the code block itself. Check the  [READMORE](READMORE.md) and files in [test](test) for more info and examples.
+For configuration settings see [READMORE](READMORE.md#configuration-settings)
 
 ---
 
@@ -434,7 +390,7 @@ This is a beta version.
 
 Note that in all the demos above, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md#using-scripts-via-repls), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
 
 There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
 
@@ -447,28 +403,6 @@ The startup times for other included scripts are generally fairly minimal (see t
 Initial beta release was 0.6.1
 Published using: vsce package/publish
 
-
-
-`code %x\readmore.md`
-
-
-
-```js
-test
-```
-
-
-
-```html
-<p>
-adfadfwaf
-<p>
-<a href="https://github.com/rmzetti/hover-exec/blob/HEAD/READMORE.md">test</a>
-<p>
-afawefwaef
-<a href="READMORE.md">test</a>
-<p>
-```
 
 
 

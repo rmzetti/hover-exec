@@ -2,6 +2,17 @@
 
 This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail.
 
+ Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path 
+`code %x/READMORE.md`       //extended README
+`code %x/test/basic_tests.md` //basic tests
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs
+
+NB. Each of the above commands is surrounded by a backtick, and must start in col 1.
+
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+
 ## Contents
 - [Hover-exec READMORE](#hover-exec-readmore)
   - [Contents](#contents)
@@ -92,12 +103,12 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 ### Examples using vm and eval
 
-The code block label `js`  by itself defaults to executing javascript via the `vm` module. Appending `:eval` will execute the code block using *eval*.
+The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Appending `:eval` will instead execute the code block using *eval*.
 
-```js  //click this line in the *hover* to execute the block
+```js  {cmd=javascript} //click this line in the *hover* to execute the block
 //js  //this comment is to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
-console.log("Notice the in-line random number result ")
+console.log("Note the in-line random number result ")
 'test: '+Math.random() =>> 
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
