@@ -54,7 +54,7 @@ Hovering over fenced code block start or end lines which start with a triple bac
 
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
-Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and cannot be executed.
+Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and are ignored by *hover-exec*.
 
 ---
 ## Javascript scripts
