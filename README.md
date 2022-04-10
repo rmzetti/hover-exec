@@ -44,7 +44,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
 Hover script exec in action:
-
+  ![](https://github.com/rmzetti/hover-exec/blob/master/media/Hover-exec.gif)
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
   ![](media/Hover-exec.gif)
 
