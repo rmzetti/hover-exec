@@ -45,8 +45,8 @@ The *hover-exec* extension is activated when a markdown file is opened in the ed
 
 Hover script exec in action:
 
-  ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/Hover-exec.gif)
-  ![](Hover-exec.gif)
+  ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
+  ![](media/Hover-exec.gif)
 
 ---
 ## Basic hover-exec 
