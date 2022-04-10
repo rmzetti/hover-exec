@@ -60,7 +60,7 @@ const refStr =
   " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
 const msgDel =
   "[ [*show %f,%p,..*] ](vscode://rmzetti.hover-exec?ref) " +
-  "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete)\n\n";
+  "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win';
 if (!windows){
@@ -168,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           let msgOpen = //to open last script & result
-            "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear) " +
+            "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear_all) " +
             "[ [*open last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
             "[ [*open last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
@@ -182,9 +182,9 @@ export function activate(context: vscode.ExtensionContext) {
         } else if (cmdId === "output") {
           //create & return message & urls for output hover
           cmdId = "delete";
-          let msgOut = "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?text_output)\n\n";
-          if(iexec===nexec) msgOut+="[full output to text](vscode://rmzetti.hover-exec?full_output)\n\n";
-          msgOut+="[clear output](vscode://rmzetti.hover-exec?delete_output)"; //hover for output delete
+          let msgOut = "*hover-exec:*\n\n[output block to text](vscode://rmzetti.hover-exec?text_output)\n\n";
+          if(iexec===nexec) msgOut+="[all output to text](vscode://rmzetti.hover-exec?full_output)\n\n";
+          msgOut+="[delete output block](vscode://rmzetti.hover-exec?delete_output)"; //hover for output delete
           return new vscode.Hover(new vscode.MarkdownString(msgOut));
         } else if (oneLiner) {
           //create & return hover-message and urls for one-liners
@@ -250,7 +250,7 @@ export function activate(context: vscode.ExtensionContext) {
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           url = "vscode://rmzetti.hover-exec?" + cmdId; //url as for hover execute
         } else if (cmdId === "output") {
-          url = "vscode://rmzetti.hover-exec?delete"; //cursor in output block: delete the block
+          url = "vscode://rmzetti.hover-exec?delete_output"; //cursor in output block: delete the block
         } else if (oneLiner) {
           cmd = full;
           cmd = replaceStrVars(cmd);
@@ -560,7 +560,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       return;
     }
-    if (uri.query === "clear") {
+    if (uri.query === "clear_all") {
          needSwap=true;await clear();
          removeSelection();
       return;
