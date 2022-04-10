@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as cp from "child_process";
 import { performance } from 'perf_hooks'; 
 import _=require("lodash");
-import fs1=require('fs');
+import fs=require('fs');
 import math=require("mathjs");
 import moment=require("moment"); //lodash, mathjs & moment for vm & eval scripts
 import vm = require('vm');
@@ -18,6 +18,8 @@ let windows = process.platform.startsWith("win"); //os is windows
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
 let tempName: string = ""; //file name of temp file for current script
+let outName: string = ""; //file name of temp file for current script output
+let startTime: number = Date.now(); //time of last exec start
 let cmdId = ""; //execution id for current script
 let cmd = ""; //javascript to start current script execution
 let shown = false; //progress message 1 showinf
@@ -26,7 +28,8 @@ let currentFsFile = ""; //path & name as os default string
 let currentPath = ""; //folder containing current edit file
 let currentFsPath = ""; //folder containing current edit file fsPath
 let executing = false; //code is executing
-let nexec = 0; //number of currently executing code (auto incremented)
+let iexec = -1; //number of currently executing code (set to nexec)
+let nexec = 0;  //provides number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
 let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
@@ -58,9 +61,6 @@ const refStr =
 const msgDel =
   "[ [*show %f,%p,..*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete)\n\n";
-const msgOut =
-  "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?remove)\n\n" +
-  "[clear output](vscode://rmzetti.hover-exec?delete)"; //output delete hover
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win';
 if (!windows){
@@ -124,7 +124,7 @@ export function activate(context: vscode.ExtensionContext) {
               f=doc.getText();
             }
             else {
-              //f=fs1.readFileSync(replaceStrVars(f),'utf-8');
+              //f=fs.readFileSync(replaceStrVars(f),'utf-8');
               f=await readFile(replaceStrVars(f));
             }
             status('ok');
@@ -182,6 +182,9 @@ export function activate(context: vscode.ExtensionContext) {
         } else if (cmdId === "output") {
           //create & return message & urls for output hover
           cmdId = "delete";
+          let msgOut = "*hover-exec:*\n\n[output to text](vscode://rmzetti.hover-exec?text_output)\n\n";
+          if(iexec===nexec) msgOut+="[full output to text](vscode://rmzetti.hover-exec?full_output)\n\n";
+          msgOut+="[clear output](vscode://rmzetti.hover-exec?delete_output)"; //hover for output delete
           return new vscode.Hover(new vscode.MarkdownString(msgOut));
         } else if (oneLiner) {
           //create & return hover-message and urls for one-liners
@@ -532,7 +535,6 @@ export function activate(context: vscode.ExtensionContext) {
 const hUri = new (class MyUriHandler implements vscode.UriHandler {
   //handle hover exec commands (command is in uri.query)
   async handleUri(uri: vscode.Uri): Promise<void | null | undefined> {
-    nexec += 1; //script exec number for check to ensure output is from latest script
     if (uri.query === "abort") {
       //cancel has been clicked, kill executing task
       executing = false;
@@ -540,12 +542,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       repl.kill();
       return;
     }
-    if (uri.query === "delete") {
-      await deleteOutput(false); //delete output codeblock
-      return;
-    }
-    if (uri.query === "remove") {
-      await deleteOutput(true); //change output codeblock to text
+    if (uri.query === "delete_output" || uri.query === "text_output" || 
+        uri.query === "full_output") {
+      await deleteOutput(uri.query); //full to text
       return;
     }
     if (uri.query === "ref") {
@@ -597,6 +596,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       }
       return;      
     }
+    nexec += 1; //script exec number for check to ensure output is from latest script
+    startTime=Date.now();//record script start time
     needSwap = inline && codeBlock.includes(swap);
     let code = codeBlock; //code will contain the code for execution
     if (needSwap) {
@@ -625,7 +626,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       },
       async (prog) => {
         executing = true; //set 'executing' flag
-        let iexec = nexec; //& save exec number for this script
+        iexec = nexec; //& save exec number for this script
         out=""; //reset output buffer
         prog.report({ message: "executing "+cmdId }); //progress report; 
         if (config.clearPrevious){
@@ -704,8 +705,9 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           out=uri.toString(); //no ex, return uri
         }
         executing = false;     //execution finished
-        if (iexec === nexec) { //only output if this is the latest result
-          writeFile(tempPath + tempName + ".out.txt", out);//write to output file
+        if (iexec === nexec && Date.now()>startTime) { //only output if this is the latest result
+          outName=tempFsPath + tempName + ".out.txt";
+          writeFile(outName, out);//write to output file
           out=out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
@@ -768,7 +770,7 @@ async function inHere(s: string): Promise<string> {
     for (let i=0;i<n;i++){
       let f=s.replace(re1,'$2').trim(); //file name or ''
       if (f==='') {f=vscode.window.activeTextEditor.document.getText();}
-      else { f=fs1.readFileSync(replaceStrVars(f),'utf8');}
+      else { f=fs.readFileSync(replaceStrVars(f),'utf8');}
       let tag=s.replace(re1,'$3');      //tag is #tag was s1
       let re = new RegExp('[\\s\\S]*?'+tag+'($[\\s\\S]*?)'+tag+'[\\s\\S]*',"m");
       let s1=f.replace(re,'$1').trim(); //s1 is now string to copy to inhere
@@ -955,21 +957,31 @@ async function selectCodeblock(force: boolean,temp:boolean) {
   return;
 } //end function selectCodeblock
 
-async function deleteOutput(asText: boolean) {
+async function deleteOutput(mode:string) {
   //delete output code block, or leave as text
   const { activeTextEditor } = vscode.window;
+  let s='';
+  if(mode==='full_output') {
+    s=''+ fs.statSync(outName).mtime; //output file modified date as first line
+    s='> '+s.replace(/.*?\s/,'').replace(/(.*?\s.*?\s.*?\s.*?\s).*/,'$1')+'\n';
+    s+=await readFile(outName);
+  }
   if (activeTextEditor) {
     await selectCodeblock(true,false);
-    if (asText) {
+    if (mode!=='delete_output') {
       //remove start and end lines, ie. the lines with backticks
       let pos1 = activeTextEditor.selection.start.line + 1;
       let pos2 = activeTextEditor.selection.end.line - 1;
       let sel = new vscode.Selection(pos1, 0, pos2, 0);
       activeTextEditor.edit((selText) => {
-        selText.replace(
-          activeTextEditor.selection,
-          activeTextEditor.document.getText(sel)
-        );
+        if(mode==='text_output'){ //replace output block with the text
+          selText.replace(
+            activeTextEditor.selection,
+            activeTextEditor.document.getText(sel));
+        }
+        else { //replace output block with full output
+          selText.replace(activeTextEditor.selection,s);
+        }
       });
     } else {
       //remove whole output block
@@ -1083,10 +1095,10 @@ async function readFile1(path:string){
 }
 
 async function readFile(path: string) {
-  return  fs1.readFileSync(path,'utf8');
+  return  fs.readFileSync(path,'utf8');
   // path=path.replace(/^['"]|['"]$/g,'');
   // try {
-  // fs1.readFile('file://' + path, (err, data) => {
+  // fs.readFile('file://' + path, (err, data) => {
   //     if (err) { return ''; }
   //     else { return utf8ArrayToStr(data); }
   //   });

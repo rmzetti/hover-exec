@@ -74,7 +74,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 ---
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, comparisons and useful links, using a range of possible scripts.
+*Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
@@ -85,7 +85,7 @@ Hover script exec in action:
 
 ### Compatibility with Markdown Preview Enhanced (*mpe*)
 
-There is also an intention to maintain a certain compatability with the excellent *markdown preview enhanced* extension. The idea is to support the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec* (eg. in-line results, built in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
+There is also an intention to maintain a certain compatability with the excellent *markdown preview enhanced* extension. The idea is to support the usual *mpe* {curly brackets} in the command line. There are a number of elements of *hover-exec* (eg. in-line results, built-in javascript execution rather than `node` only, and the different approach to temporary storage of generated script files) which make full compatability difficult at this stage, but many scripts can still be executed in both extensions.
 
 ---
 ## Basic hover-exec 
@@ -106,12 +106,16 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Appending `:eval` will instead execute the code block using *eval*.
 
 ```js  {cmd=javascript} //click this line in the *hover* to execute the block
-//js  //this comment is to show the command line in markdown previews
+//js  //this comment is for the README to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
+//    //{cmd=..} is only for execution by markdown preview enhanced, it is not used in hover-exec
 console.log("Note the in-line random number result ")
-'test: '+Math.random() =>> 
+'test: '+Math.random() =>>test: 0.8317446744434267
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
+```
+```output
+Note the in-line random number result
 ```
 
 ```js
