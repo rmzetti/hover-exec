@@ -1,15 +1,28 @@
 ## Hover-exec basic tests
 
+This provides basic tests for the VSCode extension *hover-exec*. The test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
+
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
+`code %x/READMORE.md`       //extended README \
+`code %x/test/basic_tests.md` //basic tests \
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs \
+
+NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
+
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+
+## Contents
 - [Hover-exec basic tests](#hover-exec-basic-tests)
-  - [Hover](#hover)
-  - [Exec](#exec)
-  - [Other information from the hover](#other-information-from-the-hover)
-  - [Execution via the keyboard, and in-line output](#execution-via-the-keyboard-and-in-line-output)
-  - [Final comments](#final-comments)
+- [Contents](#contents)
+- [Hover](#hover)
+- [Exec](#exec)
+- [Other information from the hover](#other-information-from-the-hover)
+- [Execution via the keyboard, and in-line output](#execution-via-the-keyboard-and-in-line-output)
+- [Final comments](#final-comments)
 
 The following basic tests are carried out with the code block id `js` . This requires nothing other than `vscode` and the `hover-exec` extension to be installed, and will use `vscode`'s built in `vm` for exec.
 
-### Hover
+## Hover
 Opening a markdown file (eg. this one) in the vscode editor will activate the `hover-exec` extension. To check, after opening the editor, hover over the start line `js ...` or end line of the code block. The following hover message will appear:
 
 >     hover-exec: js [config] [show %f,%p..] [delete block]
@@ -26,7 +39,7 @@ console.log('goodbye world')
 >     test output:
 >     goodbye world
 
-### Exec
+## Exec
 When the bottom line of the hover message is clicked the script will execute, and, in accordance with the script,  an 'alert' box will appear (bottom right of the vscode window) with `(i) hello world` in it.
 
 Other 'clickable' areas will provide information as follows:
@@ -37,17 +50,20 @@ Hover over [`open last script`] to show the `path/name` of the code to be execut
 // The 'random' function call is included so changes to the output are noticeable
 console.log('  *hello world* '+(3+Math.random()))
 ```
+```output
+  *hello world* 3.528460000861524
+```
 
 >     test output:
 >     *hello world* 3.723468830179753
 
 The file accessed via `open last result` in the hover message will also show 'hello world'.
 
-Hovering  over the first or last line of the *output* block will show two options, `delete output` and `output to text`. The last option simply removes the code block triple backtick lines, leaving the contents as markdown text.
+Hovering  over the first or last line of the *output* block will show three options: `output block to text`, `all output to text`, and `delete output block`. The first option simply removes the code block triple backtick lines, leaving the contents as markdown text. The second provides the output from the temporary output file generated, including any in-line results. Note that this should be done before another *exec*, otherwise the newer output will be obtained (which may be from a completely different block). The last option deletes the block. 
 
 Also, a brief note (see later) that `hover-exec` *quickmath* is enabled - just type a math expression inside single backticks and end with '=', eg. `7*7-7=`. Hovering over the expression will show the answer '42' (using *mathjs evaluate*). Clicking the answer will copy it to the clipboard.
 
-### Other information from the hover
+## Other information from the hover
 
 When hovering over the main code block start or end lines below:
 
@@ -81,7 +97,7 @@ And finally the `[config]` option will show the configuration entry for the comm
 >     test output:
 >     python "%f.py"
 
-### Execution via the keyboard, and in-line output
+## Execution via the keyboard, and in-line output
 
 Code blocks can be executed by using the keyboard shortcut `Alt+/` or `Opt+/` when the cursor is inside the code block. If the `Alt+/` or `Opt+/` is used when the cursor is inside an `output` code block, the output block is deleted.
 
@@ -124,7 +140,7 @@ Note that only the first result of the loop execution will made available in-lin
 
 Also note that lines with `=>>` appended are not actually legal javascript. To produce legal javascript simply precede `=>>` with a comment marker, ie for javascript use `// =>>` This will still be updated on execution in the same way.
 
-### Final comments
+## Final comments
 
 The above basic tests should all produce identical results to those shown after `hover-exec` has been installed in `vscode`.
 

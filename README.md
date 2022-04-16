@@ -1,13 +1,13 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
 
-`code %x/README.md`            //%x is a hover-exec command variable giving the extension path 
-`code %x/READMORE.md`       //extended README
-`code %x/test/basic_tests.md` //basic tests
-`code %x/test/misc_tests.md`  //benchmark tests and REPLs
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
+`code %x/READMORE.md`       //extended README \
+`code %x/test/basic_tests.md` //basic tests \
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs \
 
-NB. Each of the above commands is surrounded by a backtick, and must start in col 1.
+NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
 
@@ -329,7 +329,7 @@ pwd
 ---
 ## One-liners and quickmath
 
-*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
 

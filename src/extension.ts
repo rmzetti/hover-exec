@@ -55,11 +55,12 @@ const refStr =
   " - %p `full_path/` for temporary files\n" +
   " - %c `full_path/` of the current folder\n" +
   " - %e `full_path/` of the editor file\n" +
+  " - %x `full_path/` of hover-exec's extension folder\n" +
   " - %n `name.ext` of temporary file\n" +
   " - The default ext is specified by appending .ext, eg. %f.py\n" +
   " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
 const msgDel =
-  "[ [*show %f,%p,..*] ](vscode://rmzetti.hover-exec?ref) " +
+  "[ [*command variables %f..*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win';

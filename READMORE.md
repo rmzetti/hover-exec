@@ -1,15 +1,13 @@
 # Hover-exec READMORE
 
-This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail.
+This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
 
- Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
+`code %x/READMORE.md`       //extended README \
+`code %x/test/basic_tests.md` //basic tests \
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs \
 
-`code %x/README.md`            //%x is a hover-exec command variable giving the extension path 
-`code %x/READMORE.md`       //extended README
-`code %x/test/basic_tests.md` //basic tests
-`code %x/test/misc_tests.md`  //benchmark tests and REPLs
-
-NB. Each of the above commands is surrounded by a backtick, and must start in col 1.
+NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
 

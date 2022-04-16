@@ -1,27 +1,40 @@
 ## Hover-exec miscellaneous comparative tests
 
-- [](#)
-  - [Javascript tests](#javascript-tests)
-    - [array operations](#array-operations)
-    - [timing in javascript (without using moment.js)](#timing-in-javascript-without-using-momentjs)
-    - [using console.log](#using-consolelog)
-    - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
-  - [Javascript in the browser](#javascript-in-the-browser)
-  - [Plotting comparison](#plotting-comparison)
-    - [Some data for the plots](#some-data-for-the-plots)
-  - [Simple cross-platform cross-script speed tests](#simple-cross-platform-cross-script-speed-tests)
-    - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
-    - [Javascript in the browser](#javascript-in-the-browser-1)
-    - [Test using 'go' as a scripting language](#test-using-go-as-a-scripting-language)
-    - [Test using 'python'](#test-using-python)
-    - [Test using 'lua'](#test-using-lua)
-    - [Pascal test](#pascal-test)
-    - [Octave test](#octave-test)
-    - [Test using scilab](#test-using-scilab)
-    - [Julia test](#julia-test)
-  - [Configuration](#configuration)
-    - [View and alter as a set ('scripts, 'swappers,'repls')](#view-and-alter-as-a-set-scripts-swappersrepls)
-    - [View and alter a specific setting](#view-and-alter-a-specific-setting)
+This provides various tests for scripts run in the VSCode extension *hover-exec*. All the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
+
+`code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
+`code %x/READMORE.md`       //extended README \
+`code %x/test/basic_tests.md` //basic tests \
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs \
+
+NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
+
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+
+## Contents
+- [Hover-exec miscellaneous comparative tests](#hover-exec-miscellaneous-comparative-tests)
+- [Contents](#contents)
+- [Javascript tests](#javascript-tests)
+  - [array operations](#array-operations)
+  - [timing in javascript (without using moment.js)](#timing-in-javascript-without-using-momentjs)
+  - [using console.log](#using-consolelog)
+  - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
+- [Javascript in the browser](#javascript-in-the-browser)
+- [Plotting comparison](#plotting-comparison)
+  - [Some data for the plots](#some-data-for-the-plots)
+- [Simple cross-platform cross-script speed tests](#simple-cross-platform-cross-script-speed-tests)
+  - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
+  - [Javascript in the browser](#javascript-in-the-browser-1)
+  - [Test using 'go' as a scripting language](#test-using-go-as-a-scripting-language)
+  - [Test using 'python'](#test-using-python)
+  - [Test using 'lua'](#test-using-lua)
+  - [Pascal test](#pascal-test)
+  - [Octave test](#octave-test)
+  - [Test using scilab](#test-using-scilab)
+  - [Julia test](#julia-test)
+- [Configuration](#configuration)
+  - [View and alter as a set ('scripts, 'swappers,'repls')](#view-and-alter-as-a-set-scripts-swappersrepls)
+  - [View and alter a specific setting](#view-and-alter-a-specific-setting)
 
 ## Javascript tests
 
