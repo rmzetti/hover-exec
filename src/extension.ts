@@ -41,7 +41,6 @@ let useRepl=false; //use useRepl
 let restartRepl=false; //force restart repl
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
-let hoverExec=vscode.extensions.getExtension('rmzetti.hover-exec');
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
@@ -526,11 +525,15 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
   hePath=context.extensionPath;
+  // if(windows){
+  //   hePath=hePath+'\\';
+  // } else {
+  //   hePath=hePath+'/';
+  // }
   if(windows){
-    hePath=hePath+'\\';
-  } else {
-    hePath=hePath+'/';
+    hePath=hePath.replace(/\\/g,'/');
   }
+  hePath=hePath+'/';
 } //end function activate
 
 
