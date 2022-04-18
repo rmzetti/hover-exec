@@ -670,7 +670,7 @@ About the same speed as python.
 
 ### View and alter as a set ('scripts, 'swappers,'repls')
 
-This codeblock shows the settings in another executable codeblock ready to update, saves on exec
+This code block shows the settings in another executable code block ready to update, saves on exec
 
 ```js noInline                //view and update settings for: 
 let settings='scripts';    //can use 'scripts', 'swappers', 'repls'

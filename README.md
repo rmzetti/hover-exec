@@ -5,7 +5,7 @@ This is the README for the VSCode extension *hover-exec*. For more detail, [READ
 `code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
 `code %x/READMORE.md`       //extended README \
 `code %x/test/basic_tests.md` //basic tests \
-`code %x/test/misc_tests.md`  //benchmark tests and REPLs \
+`code %x/test/misc_tests.md`  //benchmark tests and REPLs
 
 NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
@@ -63,7 +63,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 ### Examples using vm and eval
 
-The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Using `js : eval` will instead execute the code block using *eval*.
+The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Using `js : eval` will instead execute the code block using *vscode*'s built in *eval*.
 
 ```js  //click this line in the *hover* to execute the block
 //js  //this comment is for the README to show the command line in markdown previews
@@ -117,7 +117,7 @@ A regex tester using *vscode*'s eval:
 All the code blocks above can be executed using either `eval` or `vm`.
 The difference is that `vm` scripts are executed within a more restricted *context* - see [READMORE](READMORE.md) .
 
-In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `: eval` sets the actual exec command to `eval`.
+In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `:eval` sets the actual exec command to `eval`.
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
@@ -201,7 +201,7 @@ Notes:
 ---
 ### Python
 
-A simple Python script. Depending on your system setup you may need to use the *python3* command. But in either case, the command block id should be *python* to ensure vscode provides syntax highlighting.
+Depending on your system setup you may need to use the *python3* command. But in either case, the command block id should be *python* to ensure vscode provides syntax highlighting.
 
 ```python
 # '''python :python3 #<- append this to use 'python3' as start command
@@ -213,7 +213,7 @@ print('python ok')
 >     test output (also see inline output):
 >     python ok
 
-Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that, for example, *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
+Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that, for example, *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not. If *mpe* is installed, try it by including '{cmd}' after the *'''python* command id, separated using spaces.
 
 ---
 ### Julia
@@ -238,6 +238,8 @@ println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 >     a=[0.9607100451172932, 42.0, 0.027822592779326305]
 >     b=[0.9607100451172932, 42.0, 0.027822592779326305]
 
+Julia can also be executed in *mpe* by appending '{cmd}' after the command id (separated with a space).
+
 ---
 
 ### Octave
@@ -261,7 +263,7 @@ disp(rand(1))
 ---
 ### Scilab
 
-Scilab generally won't have syntax highlighting - identifying the coedblock as *js* will provide some quick and dirty highlighting (not infallible, but generally helpful..)
+Scilab generally won't have syntax highlighting - identifying the code block as *js* will provide some quick and dirty highlighting (not infallible, but generally helpful..)
 
 ```js :scilab 
 //js :scilab //using js :scilab provides quick & dirty (js) syntax highlight

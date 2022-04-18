@@ -145,9 +145,9 @@ process.cwd() =>>
 console.log(abc)
 ```
 
->  Previous output:
-    goodbye world 0.7280946459838489
-    hello, world 3
+>  Test output:
+>  goodbye world 0.7280946459838489
+>  hello, world 3
 
 Note that *[clear output]* in the hover can be used to clear the previous output before execution. There is also a *hover-exec* extension setting to make *clear output* the default, at the expense of a little jerkiness.
 
@@ -158,7 +158,7 @@ Note that *[clear output]* in the hover can be used to clear the previous output
 ```
 
 ---
-All the codeblocks above can be executed using `eval` instead of `vm`, eg.
+All the code blocks above can be executed using `eval` instead of `vm`, eg.
 
 ```js :eval
 //js :eval // javascript regex tester using eval
@@ -210,7 +210,7 @@ for (let x in vmContext){
 }
 ```
 
-> Previous output:
+> Test output:
     global
     globalThis
     config
@@ -254,7 +254,7 @@ for (let x in vmContext){
 }
 ```
 
->  Previous output:
+>  Test output:
     reduced context:
       {write}
 
@@ -265,7 +265,7 @@ In this reduced context, lodash is not available to `vm` scripts:
 console.log(_.range(0,5))
 ```
 
-> Previous output:
+> Test output:
     error ReferenceError: _ is not defined
 
 To get the default back, set `vmContext` to `undefined`:
@@ -285,7 +285,7 @@ In this way, the context used for vm_scripts can be customised to be restricted 
 
 ### Quick specification of vm context
 
-By default the `js` command utilises a default context which is progressively expanded by 'naked' function declarations and variable assignments (eg. `a=43;` rather than `let a=43;` or `var a=43;`). So successive codeblocks can build on previously executed ones.
+By default the `js` command utilises a default context which is progressively expanded by 'naked' function declarations and variable assignments (eg. `a=43;` rather than `let a=43;` or `var a=43;`). So successive code blocks can build on previously executed ones.
 
 Any `js:vm` code block can utilise the following options:
 
@@ -303,10 +303,10 @@ and
 console.log('hello')
 ```
 
-> Previous output:
-    hello
+>  Test output:
+>  hello
 
-Apart from resetting `vmContext`, these are normal `js` codeblocks.
+Apart from resetting `vmContext`, these are normal `js` code blocks.
 
 ---
 ### Using require & globals with vm and eval
@@ -315,7 +315,7 @@ Moment, lodash (_) and mathjs (math) are available by default in both `vm` and `
 
 When using `vm`, function and variable definitions persist across `vm` scripts during the session. A function or variable can be also set as global (eg. `global.a=a;` see examples below) in either `vm` or `eval`, and is then available during the session in both. A global can be removed using, eg. `delete global.a;`
 
-'Naked' assignments (ie. no `let` or `var`) will be available to subsequently executed `js/vm` codeblocks. Global assignments are available to subsequent `js/vm` codeblocks, and also to subsequently executed `eval` codeblocks.
+'Naked' assignments (ie. no `let` or `var`) will be available to subsequently executed `js/vm` code blocks. Global assignments are available to subsequent `js/vm` code blocks, and also to subsequently executed `eval` code blocks.
 
 ```js
 //js //using lodash, mathjs and process in vm
@@ -351,10 +351,10 @@ test = function () {
 There is no output, but the function `test` is now available to vm:
 
 ```js
-//js //function available to subsequent codeblocks
+//js //function available to subsequent code blocks
 test()
 ```
->  Previous output:
+>  Test output:
     test works
 
 For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. Instead, the 'global' prefix needs to be used in the function def, as above.
@@ -1552,8 +1552,8 @@ sort=o=>Object.keys(o).sort().reduce((r, k)=>(r[k]=o[k],r),{});
 console.log(sort(config.get('scripts')));
 ```
 
-previous output:
-{
+> Test output:
+> {
   bash: 'bash "%f.sh"',
   buddvs: 'buddvs "%f.txt" ',
   chrome: 'google-chrome-stable "%f.html"',
