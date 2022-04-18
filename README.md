@@ -84,13 +84,13 @@ A couple more examples using `js`, showing use of *vscode* api functions and som
 let abc="hello, world 3"
 alert(abc) //alert produces vscode alerts - not available in nodejs scripts
 let a='goodbye world'
-//vscode.window.showInformationMessage(a) //not available in node scripts
+vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
 2*b*Math.random() // =>> 2.3470376208640706
 eval('let b=3; 2*b*Math.random()') // =>> 2.757493399289601
 console.log(a,Math.random())
 'hello '+(2-1+Math.random()) // =>> hello 1.8468812061012565
-process.cwd() // =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+process.cwd() // =>> c:\Users\rmZetti\GitHub\hover-exec
 console.log(abc)
 ```
 >     test output: see also alert box bottom right
@@ -98,10 +98,15 @@ console.log(abc)
 >     hello, world 3
 
 ---
+
+A regex tester using the *javascript* vm:
+
 ```js
 //js  //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
+
+A regex tester using *vscode*'s eval:
 
 ```js : eval
 //js : eval // javascript regex tester using eval
@@ -141,6 +146,8 @@ console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
 
 ### Html and javascript
 
+A simple html 'script' which will open in the default browser:
+
 ```html
 <!-- '''html  //Hello world -->
 <h1 align='center'>Hello world</h1>
@@ -150,6 +157,8 @@ console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
 document.getElementById("test").innerHTML="<em>Text via javascript</em>"
 </script>
 ```
+
+A more complex html script, including a more substantial javascript component:
 
 ```html
 <!-- '''html // tunnel *what am I going to do now*  -->
@@ -192,6 +201,8 @@ Notes:
 ---
 ### Python
 
+A simple Python script. Depending on your system setup you may need to use the *python3* command. But in either case, the command block id should be *python* to ensure vscode provides syntax highlighting.
+
 ```python
 # '''python :python3 #<- append this to use 'python3' as start command
 from random import random
@@ -206,6 +217,14 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 
 ---
 ### Julia
+
+If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line). The following oneliners could be used to do this:
+
+`julia using Pkg;Pkg.add("Compat");`  \
+`julia using Pkg;Pkg.add("LinearAlgebra");`  \
+`julia using Pkg;Pkg.add("Statistics");`
+
+Note that these may often take some time (there will be a *julia executing* message in the *vscode* status bar)
 
 ```julia
 # '''julia
@@ -223,7 +242,7 @@ println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 
 ### Octave
 
-Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced*
+Use `octave` or `python : octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses *octave* for execution.
 
 ```python :octave
  # '''python:octave {cmd=octave} -- {cmd..} is for mpe
@@ -242,6 +261,8 @@ disp(rand(1))
 ---
 ### Scilab
 
+Scilab generally won't have syntax highlighting - identifying the coedblock as *js* will provide some quick and dirty highlighting (not infallible, but generally helpful..)
+
 ```js :scilab 
 //js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
       //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
@@ -256,6 +277,8 @@ string(rand()) =>>0.3329656
 
 ---
 ### Lua
+
+Lua has a syntax highlighter available for *vscode*. Many installations however require running, say, *lua51*, or *lua54* rather than updating and setting *lua* as the run-time (unlike, say, *julia*). So use 'lua : lua54' as the command id, etc., or check/adjust the *hover-exec* script config.
 
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
@@ -298,7 +321,10 @@ plot "$charge" using 1:3 w lp title "charge"
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
 ---
+
 ### Bash & zsh
+
+*Bash* and *zsh* scripts can be run for appropriate systems:
 
 ```zsh # (macos) show current directory
  #zsh # (macos) show current directory
@@ -306,6 +332,7 @@ pwd
 ```  
 >     test output:
 >     /home/rmzetti/hover-exec
+\
 
 ```bash # (macos, linux, wsl) show current directory
  #bash # (macos, linux) show current directory
@@ -317,8 +344,10 @@ pwd
 ---
 ### Powershell
 
-```pwsh # (windows) random number, show current directory
-  # pwsh # (windows) random number, show current directory
+Powershell scripts can be run, usually in *windows*
+
+```pwsh #  random number, show current directory
+  # pwsh # random number, show current directory
   # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
 Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
 pwd
@@ -343,7 +372,7 @@ default shell simple command execution (result depends on the default shell for 
 
 `pwd` zsh, bash, pwsh, cmd \
 `ls` zsh,bash, pwsh \
-`dir` cmd \
+`dir` cmd
 
 exec notepad with file in current folder:
 
@@ -403,10 +432,6 @@ Note that in all the demos above, except *js:vm* and *js:eval* which allow defin
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see the [READMORE](READMORE.md#using-scripts-via-repls), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
 
 There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - see the [READMORE](READMORE.md) for details and examples.
-
-Matlab takes a substantial amount of time to run from a code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
-
-The startup times for other included scripts are generally fairly minimal (see the demo gif above). 
 
 ---
 
