@@ -1,15 +1,15 @@
 ## Hover-exec miscellaneous comparative tests
 
-This provides various tests for scripts run in the VSCode extension *hover-exec*. All the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
+This provides various tests for scripts run in the VSCode extension *hover-exec*. All the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
 
 `code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
 `code %x/READMORE.md`       //extended README \
 `code %x/test/basic_tests.md` //basic tests \
 `code %x/test/misc_tests.md`  //benchmark tests and REPLs \
 
-NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
+NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
-Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
 - [Hover-exec miscellaneous comparative tests](#hover-exec-miscellaneous-comparative-tests)

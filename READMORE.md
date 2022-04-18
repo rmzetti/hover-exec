@@ -7,7 +7,7 @@ This is the READMORE for VS Code extension *hover exec*. Tldr? ..check [the READ
 `code %x/test/basic_tests.md` //basic tests \
 `code %x/test/misc_tests.md`  //benchmark tests and REPLs \
 
-NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
+NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
 
@@ -1027,7 +1027,7 @@ Use `zsh` to run zsh, or `zsh {cmd}` to also run in *mpe*
 
 
 ```zsh # (macos) show current directory
- #zsh # (macos) show current directory
+# zsh # (macos) show current directory
 pwd
 ```  
 
@@ -1069,7 +1069,7 @@ https://github.com/rmzetti/hover-exec/blob/master/READMORE.md
 Can also get in-line results:
 
 ```pwsh
- #pwsh {cmd}
+#pwsh {cmd}
 Get-Random -Min 0.0 -Max 1.0 =>>0.544770084575177
 "current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 ```
@@ -1096,8 +1096,8 @@ Microsoft Windows [Version 10.0.22581.100]
 
 *Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (see the  next section).
 
-```gnuplot
- #gnuplot //here gnuplot is being used stand-alone
+```gnuplot {cmd} # {cmd is for markdown preview enhanced}
+#gnuplot //here gnuplot is being used stand-alone
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -1117,7 +1117,7 @@ set format x "%d"
 set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
-![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled using *markdown memo*)
+![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
@@ -1428,70 +1428,83 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ---
 #### One-liner examples:
 
+default shell simple command execution (result depends on the default
+shell for vscode on your system):
+`pwd` zsh, bash, pwsh, cmd \
+`ls` zsh,bash, pwsh \
+`dir` cmd
+
 exec notepad with file in current folder:
-`notepad "%cREADME.md"`  --windows
-`open -a textedit "%cREADME.md"`  --mac
-`gedit "%cREADME.md"`  --linux, wsl
+
+`notepad "%cREADME.md"`  --windows \
+`open -a textedit "%cREADME.md"`  --mac \
+`gedit "%cREADME.md"`  --linux, wsl \
 `xedit "%cREADME.md"`  --linux, wsl
 
 exec notepad with temp file (%f):
-`open -a textedit "%f"` --mac
-`notepad "%f"`  --windows
+
+`open -a textedit "%f"` --mac \
+`notepad "%f"`  --windows \
 `xedit "%f"`  --linux, wsl
 
 open another instance of vscode:
-`code -n %f` --windows, linux, wsl
+
+`code -n %c`
+`code -n %f` --windows, linux, wsl \
 `open -na "visual studio code"` --mac
 
 
 explore files, view folders:
-`open -a finder ~`  mac 'home'
-`open -a finder "%c"`  mac to view current folder
-`explorer ,`  windows view 'ThisPC'
-`explorer /select, "%cREADME.md"`  windows view current folder & select file
+
+`open -a finder ~`  mac 'home' \
+`open -a finder "%c"`  mac to view current folder \
+`explorer ,`  windows view 'ThisPC' \
+`explorer /select, "%cREADME.md"`  windows view current folder & select file \
 `nemo "%cREADME.md"`  Linux mint view current folder & select file
 
 other examples:
-`devmgmt.msc` for windows show devices
-`system_profiler SPHardwareDataType` for mac show hardware info
-`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  windows default browser with href
-`html <h1>Hello world!</h1>` windows default browser with some html
-`safari <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  mac safari with href
-`safari <h1>Hello world!</h1>` mac safari with some html
-`firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  linux firefox with href
-`firefox <h1>Hello world!</h1>` linux firefox with some html
-`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href
+
+`devmgmt.msc` for windows show devices \
+`system_profiler SPHardwareDataType` for mac show hardware info \
+`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  windows default browser with href \
+`html <h1>Hello world!</h1>` windows default browser with some html \
+`safari <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  mac safari with href \
+`safari <h1>Hello world!</h1>` mac safari with some html \
+`firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  linux firefox with href \
+`firefox <h1>Hello world!</h1>` linux firefox with some html \
+`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href \
 
 #### html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners
-`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url
-`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`
-`js console.log(7*7-7)`
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners \
+`html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url \
+`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>`  \
+`js console.log(7*7-7)`  \
 `vm progress(''+(7*7-7),4000)`  //quick calculator output via 4sec message
 
 ---
 
 #### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>`
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"`
+`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` \
+`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"` \
 `pwsh start wmplayer "%cmedia/fnt2b.mp3"`
 
 ---
 
 
 #### Windows one-liners: ms-settings, control panel and management console
-`start ms-settings:`
-`start ms-settings:windowsupdate`
-`start ms-settings:network`
-`start ms-settings:personalization-start`
-`start ms-settings:yourinfo`
-`start ms-settings:powersleep`
-`start ms-settings:privacy-activityhistory`
-    [more ms-settings commands](https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/history/?revision=1555539)
-`control /name Microsoft.DevicesAndPrinters`
-`control mouse`
+
+`start ms-settings:` \
+`start ms-settings:windowsupdate` \
+`start ms-settings:network` \
+`start ms-settings:personalization-start` \
+`start ms-settings:yourinfo` \
+`start ms-settings:powersleep` \
+`start ms-settings:privacy-activityhistory` 
+
+`control /name Microsoft.DevicesAndPrinters` \
+`control mouse` \
 `control /name Microsoft.ProgramsAndFeatures`
 `pwsh explorer --% shell:::{ED7BA470-8E54-465E-825C-99712043E01C}`   //godmode
 `pwsh iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI"` //update powershell

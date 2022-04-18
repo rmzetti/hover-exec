@@ -1,15 +1,15 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
+This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
 
 `code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
 `code %x/READMORE.md`       //extended README \
 `code %x/test/basic_tests.md` //basic tests \
 `code %x/test/misc_tests.md`  //benchmark tests and REPLs \
 
-NB. Each of the above commands must be surrounded by a backtick, and must start in col 1.
+NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
-Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
@@ -63,38 +63,37 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 ### Examples using vm and eval
 
-The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Appending `:eval` will instead execute the code block using *eval*.
+The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Using `js : eval` will instead execute the code block using *eval*.
 
-```js  {cmd=javascript} //click this line in the *hover* to execute the block
+```js  //click this line in the *hover* to execute the block
 //js  //this comment is for the README to show the command line in markdown previews
 //    //the default for the `js` command is to execute using the `vm` module
-//    //{cmd=..} is only for execution by  markdown preview enhanced, it is not used in hover-exec
-console.log("Note the in-line random number result (not in mpe)")
-'test: '+Math.random() // =>>test: 0.6540027777133479
+console.log("Note the in-line random number result")
+'test: '+Math.random()  =>>test: 0.5918216346770233
 ```
 >     test output:
->     Note the in-line random number result (not in mpe)
+>     Note the in-line random number result
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
 A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
-```js {cmd=javascript}  :eval
-//js //using javascript vm, or append :eval to use the built in eval instead
+```js  :eval
+//js //appending  :eval uses the built in eval instead
 let abc="hello, world 3"
 alert(abc) //alert produces vscode alerts - not available in nodejs scripts
 let a='goodbye world'
-vscode.window.showInformationMessage(a) //not available in node scripts
+//vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>0.7782289254464549
-eval('let b=3; 2*b*Math.random()')=>>4.972581348554671
+2*b*Math.random() // =>> 2.3470376208640706
+eval('let b=3; 2*b*Math.random()') // =>> 2.757493399289601
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>hello 1.1375918988008553
-process.cwd() =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+'hello '+(2-1+Math.random()) // =>> hello 1.8468812061012565
+process.cwd() // =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
 console.log(abc)
 ```
->     test output:
+>     test output: see also alert box bottom right
 >     goodbye world 0.46809536348325254
 >     hello, world 3
 
@@ -124,23 +123,26 @@ See [READMORE](READMORE.md) for more information and examples.
 
 The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed). 
 
-```js : node
-//js : node //blanks allowed around the :
-console.log('  test using node:\n  '+Math.random())
+```js {cmd=node} : node
+//js {cmd=node} : node  // :node changes the js command to use nodejs
+//   {cmd=node} is to allow execution in markdown preview enhanced (mpe)
+//                        mpe requires {..} to be placed immediately after the js command
+console.log('  using node:\n  '+Math.random())
 console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
 >     test output:
->     test using node:
+>     using node:
 >     0.43884249391182095
 >     Note: hover-exec on the output line, or alt+/ (opt+/) with
 >     the cursor in the output block will delete the output block
 
 ---
+
 ### Html and javascript
 
 ```html
-<!--Hello world-->
+<!-- '''html  //Hello world -->
 <h1 align='center'>Hello world</h1>
 <p>Html will be displayed in the browser
 <p id='test'>Text here</p>
@@ -150,7 +152,7 @@ document.getElementById("test").innerHTML="<em>Text via javascript</em>"
 ```
 
 ```html
-<!-- tunnel *what am I going to do now*  -->
+<!-- '''html // tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
 <canvas id="c"></canvas> 
@@ -170,7 +172,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of other scripts are included (see [Configuration settings](READMORE.md#configuration-settings) for the actual command lines used). Some examples (for other script language examples see the [READMORE](READMORE.md)):
+Command lines to conveniently start a number of other scripts are included (see [Configuration settings](READMORE.md#configuration-settings) for the actual command lines used). Some examples:
 
 - [python](#python)
 - [julia](#julia)
@@ -183,14 +185,15 @@ Command lines to conveniently start a number of other scripts are included (see 
 
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
-- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](READMORE.md#configuration-settings).
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [READMORE: Configuration settings](READMORE.md#configuration-settings).
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [READMORE](READMORE.md) for examples.
+- For other script language examples see the [READMORE](READMORE.md)
 
 ---
 ### Python
 
 ```python
- #python :python3 # use this instead to use 'python3' as start command
+# '''python :python3 #<- append this to use 'python3' as start command
 from random import random
 45-2+random()       #  =>>43.6264875741003
 'hello, world 3!'       #  =>>hello, world 3!
@@ -205,7 +208,7 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ### Julia
 
 ```julia
-  #julia
+# '''julia
 using LinearAlgebra, Statistics, Compat
 a=rand(Float64,3);
 a   # =>>[0.9607100451172932, 0.25709634387752067, 0.027822592779326305]
@@ -223,12 +226,12 @@ println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 Use `octave` or `python:octave` to run octave. Using 'python' as the command id provides syntax highlighting, adding :octave uses octave. The {...} is for *markdown preview enhanced*
 
 ```python :octave
- # python:octave {cmd=octave} -- {cmd..} is for mpe
- # python gets syntax highlighter
+ # '''python:octave {cmd=octave} -- {cmd..} is for mpe
+ # using '''python:octave instead of just '''octave gives syntax highlighter
  # nb. need mat2str or num2str for numeric output
 num2str(7.1+rand(1))  =>>7.8169
 'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+pwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
 disp('hello world in output section!')
 disp(rand(1))
 ```
@@ -269,7 +272,7 @@ print("lua ok") -- this outputs in the output code block below
 
 *Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (see the  [READMORE](READMORE.md)).
 
-```gnuplot
+```gnuplot {cmd}
  #gnuplot //here gnuplot is being used stand-alone
 $charge << EOD
 2-07-2021 22:32 44
@@ -290,7 +293,7 @@ set format x "%d"
 set mouse mouseformat 3
 plot "$charge" using 1:3 w lp title "charge"
 ```
-![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled using *markdown memo*)
+![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
  The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
 
@@ -335,42 +338,49 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 
 ---
 ### One-liner examples:
-default shell simple command execution (result depends on the default shell for vscode)
-`pwd` zsh, bash, pwsh, cmd
-`ls` zsh,bash, pwsh
-`dir` cmd
+
+default shell simple command execution (result depends on the default shell for vscode on your system):
+
+`pwd` zsh, bash, pwsh, cmd \
+`ls` zsh,bash, pwsh \
+`dir` cmd \
 
 exec notepad with file in current folder:
-`notepad "%cREADME.md"`  --windows
-`open -a textedit "%cREADME.md"`  --mac
-`gedit "%cREADME.md"`  --linux/wsl
+
+`notepad "%cREADME.md"`  --windows \
+`open -a textedit "%cREADME.md"`  --mac \
+`gedit "%cREADME.md"`  --linux/wsl \
 `xedit "%cREADME.md"`  --linux/wsl
 
 exec notepad with temp file (%f):
-`open -a textedit "%f"` --mac
-`notepad "%f"`  --windows
+
+`open -a textedit "%f"` --mac \
+`notepad "%f"`  --windows \
 `xedit "%f"`  --linux/wsl
 
 open another instance of vscode:
-`code -n %f`  --windows
+
+`code -n %e`  -- %e is current file -- mac, windows, linux, wsl 
 
 explore files, view folders:
-`open -a finder ~`  mac 'home'
-`open -a finder "%c"`  mac to view current folder
-`explorer ,`  windows view 'ThisPC'
-`explorer.exe /select, "%cREADME.md"`  windows & wsl view current folder & select file
+
+`open -a finder ~`  mac 'home' \
+`open -a finder "%c"`  mac to view current folder \
+`explorer ,`  windows view 'ThisPC' \
+`explorer.exe /select, "%cREADME.md"`  windows & wsl view current folder & select file \
 `nemo "%cREADME.md"`  Linux mint view current folder & select file
 
 other examples:
-`devmgmt.msc` for windows show devices
-`system_profiler SPHardwareDataType` for mac show hardware info
-`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  windows default browser with href
-`html <h1>Hello world!</h1>` windows default browser with some html
-`safari <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  mac safari with href
-`safari <h1>Hello world!</h1>` mac safari with some html
-`firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  linux firefox with href
-`firefox <h1>Hello world!</h1>` linux firefox with some html
-`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href
+
+`devmgmt.msc` for windows show devices \
+`system_profiler SPHardwareDataType` for mac show hardware info \
+`html <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  windows default browser with href \
+`html <h1>Hello world!</h1>` windows default browser with some html \
+`safari <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  mac safari with href \
+`safari <h1>Hello world!</h1>` mac safari with some html \
+`firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  linux firefox with href \
+`firefox <h1>Hello world!</h1>` linux firefox with some html \
+`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href \
 
 ### Quickmath examples
 And finally, some *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html). More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
