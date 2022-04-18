@@ -225,7 +225,7 @@ If the *julia* extension is included, *vscode* will provide syntax highlighting.
 `julia using Pkg;Pkg.add("LinearAlgebra");`  \
 `julia using Pkg;Pkg.add("Statistics");`
 
-**Note:** these may often take some time (there will be a *executing julia* message in the *vscode* status bar)
+**Note:** these may often take some time, sometimes about 5 minutes for me... there will be an *executing julia* message in the *vscode* status bar, and there will be *output* when they are complete.
 
 ```julia
 # '''julia
@@ -335,7 +335,7 @@ pwd
 ```  
 >     test output:
 >     /home/rmzetti/hover-exec
-\
+
 
 ```bash # (macos, linux, wsl) show current directory
 #bash # (macos, linux) show current directory
@@ -358,7 +358,7 @@ pwd
 >     test output (also see inline output):
 >     Path
 >     ----
->     C:\Users\rrmzetti\GitHub\hover-exec
+>     C:\Users\rmzetti\GitHub\hover-exec
 
 
 ---
