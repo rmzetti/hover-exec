@@ -3,7 +3,7 @@
 This is the READMORE for VS Code extension _hover exec_. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor. Note that any changes made will be lost if _hover-exec_ is updated, so save the file locally if you wnat to keep changes.
 
 `code %x/README.md` //%x is a hover-exec command variable giving the extension path \
-`code %x/READMORE.md` //extended README \
+`code %x/READMORE.md` //extended README
 `code %x/test/basic_tests.md` //basic tests \
 `code %x/test/misc_tests.md` //benchmark tests and REPLs \
 
@@ -1137,6 +1137,13 @@ disp('disp puts quotes around strings',rand())
 
 ### Julia
 
+If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following oneliners could be used to do this for the script below (if you're reading this in the preview, the onel iners are surrounded with single backticks and start in col 1):
+
+`julia using Pkg;Pkg.add("Compat");`
+`julia using Pkg;Pkg.add("LinearAlgebra");`
+`julia using Pkg;Pkg.add("Statistics");`
+
+**Note:** these may often take some time, sometimes about 5 minutes for me... there will be an *executing julia* message in the *vscode* status bar, and there will be *output* when they are complete.
 ```julia
   #julia
 using LinearAlgebra, Statistics, Compat
