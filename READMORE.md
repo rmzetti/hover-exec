@@ -822,7 +822,7 @@ vscode.window.showInformationMessage(a) //not available in node
 eval('let a=3;2*a*Math.random()')=>> 0.7643622808992236
 console.log(a,Math.random())
 'hello '+(2-1+Math.random())=>> hello 1.5621808078990533
-process.cwd() =>> c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+process.cwd() =>> c:\Users\rmzetti\GitHub\hover-exec
 console.log(abc)
 ```
 
@@ -1128,7 +1128,7 @@ Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax high
                 //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
 rand("seed",getdate('s')); //set new random sequence
 mprintf('%s\n','test '+string(rand())+' '+pwd());
-string(rand())+' '+pwd() =>>0.2521066 c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+string(rand())+' '+pwd() =>>0.2521066 c:\Users\rmzetti\GitHub\hover-exec
 string(rand()) =>>0.6041776
 disp('disp puts quotes around strings',rand())
 ```
@@ -1235,7 +1235,7 @@ Id     Name            PSJobTypeName   State         HasMoreData     Location   
 
 Path
 ----
-C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+C:\Users\rmzetti\GitHub\hover-exec
 ```
 
 https://github.com/rmzetti/hover-exec/blob/master/READMORE.md
@@ -1245,7 +1245,7 @@ Can also get in-line results:
 ```pwsh
 #pwsh {cmd}
 Get-Random -Min 0.0 -Max 1.0 =>>0.544770084575177
-"current dir: "+(pwd) =>>current dir: C:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+"current dir: "+(pwd) =>>current dir: C:\Users\rmzetti\GitHub\hover-exec
 ```
 
 ```output

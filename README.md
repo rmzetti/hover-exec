@@ -97,6 +97,7 @@ console.log(abc)
 >     goodbye world 0.46809536348325254
 >     hello, world 3
 
+
 ---
 
 A regex tester using the *javascript* vm:
@@ -218,13 +219,20 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ---
 ### Julia
 
-If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following oneliners could be used to do this for the script below:
+If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following oneliners could be used to do this for the script below (if you're reading this in the preview, the onel iners are surrounded with single backticks and start in col 1):
 
 `julia using Pkg;Pkg.add("Compat");`  \
 `julia using Pkg;Pkg.add("LinearAlgebra");`  \
 `julia using Pkg;Pkg.add("Statistics");`
+```output
+   Updating registry at `C:\Users\ralph\.julia\registries\General`
+  Resolving package versions...
+Updating `C:\Users\ralph\.julia\environments\v1.5\Project.toml`
+  [10745b16] + Statistics
+No Changes to `C:\Users\ralph\.julia\environments\v1.5\Manifest.toml`
+```
 
-**Note** that these may often take some time (there will be a *julia executing* message in the *vscode* status bar)
+**Note:** these may often take some time (there will be a *executing julia* message in the *vscode* status bar)
 
 ```julia
 # '''julia
