@@ -224,13 +224,6 @@ If the *julia* extension is included, *vscode* will provide syntax highlighting.
 `julia using Pkg;Pkg.add("Compat");`  \
 `julia using Pkg;Pkg.add("LinearAlgebra");`  \
 `julia using Pkg;Pkg.add("Statistics");`
-```output
-   Updating registry at `C:\Users\ralph\.julia\registries\General`
-  Resolving package versions...
-Updating `C:\Users\ralph\.julia\environments\v1.5\Project.toml`
-  [10745b16] + Statistics
-No Changes to `C:\Users\ralph\.julia\environments\v1.5\Manifest.toml`
-```
 
 **Note:** these may often take some time (there will be a *executing julia* message in the *vscode* status bar)
 
