@@ -74,7 +74,7 @@ console.log("Note the in-line random number result")
 >     test output:
 >     Note the in-line random number result
 
-Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over `output` provides options *output to text* or *delete*. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
+Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over the `output` id of an output code block provides options *output block to text* or *delete output block*. If the block has recently been executed, a third option *all output to text* will provide the full output as in the *temp...* output file generated.  Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
 A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
@@ -218,13 +218,13 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ---
 ### Julia
 
-If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line). The following oneliners could be used to do this:
+If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following oneliners could be used to do this for the script below:
 
 `julia using Pkg;Pkg.add("Compat");`  \
 `julia using Pkg;Pkg.add("LinearAlgebra");`  \
 `julia using Pkg;Pkg.add("Statistics");`
 
-Note that these may often take some time (there will be a *julia executing* message in the *vscode* status bar)
+**Note** that these may often take some time (there will be a *julia executing* message in the *vscode* status bar)
 
 ```julia
 # '''julia
@@ -280,7 +280,7 @@ string(rand()) =>>0.3329656
 ---
 ### Lua
 
-Lua has a syntax highlighter available for *vscode*. Many installations however require running, say, *lua51*, or *lua54* rather than updating and setting *lua* as the run-time (unlike, say, *julia*). So use 'lua : lua54' as the command id, etc., or check/adjust the *hover-exec* script config.
+Lua has a syntax highlighter available for *vscode*. Many installations however require running, say, *lua51*, or *lua54*, rather than updating and setting *lua* as the run-time (unlike, say, *julia*). So use 'lua : lua54' as the command id, etc., or check/adjust the *hover-exec* script config.
 
 ```lua  -- say hello & goodbye
 --lua :lua54 -- 'lua' id specifies syntax highlight and default start command
@@ -329,7 +329,7 @@ plot "$charge" using 1:3 w lp title "charge"
 *Bash* and *zsh* scripts can be run for appropriate systems:
 
 ```zsh # (macos) show current directory
- #zsh # (macos) show current directory
+#zsh # (macos) show current directory
 pwd
 ```  
 >     test output:
@@ -337,7 +337,7 @@ pwd
 \
 
 ```bash # (macos, linux, wsl) show current directory
- #bash # (macos, linux) show current directory
+#bash # (macos, linux) show current directory
 pwd
 ```
 >     test output:
@@ -349,8 +349,8 @@ pwd
 Powershell scripts can be run, usually in *windows*
 
 ```pwsh #  random number, show current directory
-  # pwsh # random number, show current directory
-  # $PSStyle.OutputRendering = 'PlainText' # stops color codes appearing in output
+# pwsh # random number, show current directory
+# $PSStyle.OutputRendering = 'PlainText'   # stops color codes appearing in output
 Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
 pwd
 ```
@@ -370,6 +370,7 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ---
 ### One-liner examples:
 
+All these example commands are surrounded with single backticks, eg  ****\`pwd\`****, and start in col 1
 default shell simple command execution (result depends on the default shell for vscode on your system):
 
 `pwd` zsh, bash, pwsh, cmd \
@@ -414,7 +415,9 @@ other examples:
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href \
 
 ### Quickmath examples
-And finally, some *quickmath* expressions: `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html). More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
+And finally, some *quickmath* expressions. As before these are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick. The first example is actually ***\`254cm in inches=\`***
+
+So `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html). More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
 
 NB. Copy the answer in the hover to the clipboard with a click.
 
