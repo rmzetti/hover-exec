@@ -15,9 +15,9 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 - [Hover-exec miscellaneous comparative tests](#hover-exec-miscellaneous-comparative-tests)
 - [Contents](#contents)
 - [Javascript tests](#javascript-tests)
+  - [using console.log](#using-consolelog)
   - [array operations](#array-operations)
   - [timing in javascript (without using moment.js)](#timing-in-javascript-without-using-momentjs)
-  - [using console.log](#using-consolelog)
   - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
 - [Javascript in the browser](#javascript-in-the-browser)
 - [Plotting comparison](#plotting-comparison)
@@ -45,9 +45,24 @@ Commands:
 
 For javascript in the browser see the following section [Javascript in the browser](#javascript-in-the-browser)
 
+### using console.log
+
+```js
+// '''js //can use js, js:eval or js:node
+let name='Fred'
+'hello '+name+', how are you '+3+' doing, ok?'=>>hello Fred, how are you 3 doing, ok?
+console.log('hello %s, how are you %s doing', name,3,', ok?')
+```
+>      Test output (also identical output in-line):
+>      hello Fred, how are you 3 doing , ok?
+
+
 ### array operations
 
 ```js
+// '''js //uses vm by default
+// '''js:eval //uses js syntax highlight and eval to exec
+// '''js:node // uses js syntax highlight and nodejs to exec
 let a=[1,2,3,4,5,6,7,8];
 a.slice(2)=>>3,4,5,6,7,8
 a.slice(0,2)=>>1,2
@@ -79,53 +94,43 @@ if(i===-1){i=a.length;} //because if index not found, i=-1, & splice(i,1) wrong
 a.splice(i,1)=>>goodbye,false
 a=>>12,3,4,5,6,hello,true
 a.indexOf(6)=>>4
-b=a.find((el) => el[0]==='hell')
-b=>>undefined
+b=a.find((el) => el[0]==='hello')
+b=>>hello,true
 console.log("hello ".repeat(3))
 ```
-```output
-hello hello hello
-```
+>      Test output (mostly in-line):
+>      hello hello hello
+
 
 ### timing in javascript (without using moment.js)
 
 ```js //can use js, js:eval or js:node
+// '''js //can use js, js:eval or js:node
+// the following line is required by node, ignored by eval & vm
 const {performance}=require('perf_hooks');
-//previous line required by node, ignored by eval & vm
 let array1 = Array(1000000).fill(42);
 let p=performance.now();
 console.time('timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>520.0142999999225
+performance.now()-p=>>530.5593000017107
 console.timeEnd('timer')  //vm & eval output this in dev-tools console only
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
 console.log('abc',Date.now(),'def')
 ```
-```output
-[ '0.096983213443955', '0.9457753674082905' ]
-hello  520
-abc 1646451010757 def
-```
-
-### using console.log
-
-```js
-let name='Fred'
-'hello '+name+', how are you '+3+' doing, ok?'=>>hello Fred, how are you 3 doing, ok?
-console.log('hello %s, how are you %s doing', name,3,', ok?')
-```
-```output
-hello Fred, how are you 3 doing , ok?
-```
+>      Test output
+>      [ '0.5418360655969707', '0.19301233896461345' ]
+>      hello  531
+>      abc 1650601634968 def
 
 ---
 
 ### speed of eval vs Function within javascript code
 
 ```js:node
+// '''js //can use js, js:eval or js:node
 let n=1e6; //in the debugger use 1e5 (crashes for 1e6)
 let expr = "7*7-7";
 let result,t1, t2;
@@ -146,13 +151,11 @@ console.log('- for n=',n,': using Function',t1,'msec using eval',t2,'msec')
 ```output
 - for n= 1000000 : using Function 678 msec using eval 186 msec
 ```
-
-- output:
-- js:node for n= 1000000 : using Function 675 msec using eval 190 msec
-- js:eval   for n= 1000000 : using Function 574 msec using eval 164 msec
-- js:vm    for n= 1000000 : using Function 858 msec using eval 364 msec
-
-- in the debugger use n=1e5 (crashes for n=1e6)
+>      Test output:
+>      js:node for n= 1000000 : using Function 675 msec using eval 190 msec
+>      js:eval   for n= 1000000 : using Function 574 msec using eval 164 msec
+>      js:vm    for n= 1000000 : using Function 858 msec using eval 364 msec
+>      NB: in the debugger use n=1e5 (crashes for n=1e6)
 
 ---
 
@@ -160,6 +163,8 @@ console.log('- for n=',n,': using Function',t1,'msec using eval',t2,'msec')
 On windows use `html` to use the default browser, on linux use `html:firefox`, or `html:chrome` or whatever is installed, and, if needed, check the *hover-exec* configuration for `firefox` (or `chrome`)
 
 ```html
+<!-- '''html //test output shown in the browser -->
+<!--            //along with calculation timings -->
 <script>
 function test(){
   let t='\n Live:';
@@ -251,12 +256,13 @@ window.setTimeout(function() {test();},150);
 </script>
 ```
 
-
 ## Plotting comparison
 
-https://github.com/observablehq/plot 
+These tests all use the same data utilising *hover-exec*'s #inhere macro. 
+To see the data quickly, hover over a line containing an *inhere* tag reference (not in preview).
 
 ```html  //chartjs
+<!-- '''html //test using chartjs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 <script>
@@ -280,6 +286,7 @@ new Chart("myChart", {
 ```
 
 ```html //plotly
+<!-- '''html //test using plotly -->
  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
  <!-- Plots go in blank <div> elements. You can size them in the plot layout,  or size the div-->
 <div id="plot" style="width:70%;height:400px"></div>
@@ -301,6 +308,7 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 ```
 
 ```html //google charts
+<!-- '''html //test using google charts -->
 <div id="chart_div" style="width: 100%; height: 500px;"></div>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
@@ -325,7 +333,15 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 </script>
 ```
 
-```gnuplot
+```js :eval
+write(3)
+```
+```output
+3
+```
+
+```js : gnuplot
+ # '''js: gnuplot? //test using *gnuplot*, (js: gives some artificial syntax highlighting)
  # first \n needed to distinguish from previous go1 in script etc 
 $go1 <<EOD
  #inhere  `#go`
@@ -340,6 +356,9 @@ set logscale x
 plot "$javascript1" w lp title "javascript",\
        "$pascal1" w lp title "pascal",\
        "$go1" w lp title "go"
+```
+```output
+error SyntaxError: Invalid or unexpected token
 ```
 
 ### Some data for the plots
@@ -548,7 +567,7 @@ ie. for this test javascript is about 30x faster than python
 Lua must be installed, and the config startup script should match the installation. If `lua54` is installed, the config start command should use `lua54` - check the `hover-exec` configuration and make sure the command used matches you installation. Note that the the first bit of the id `js:lua` is used to provide some simple-minded syntax highlighting (via the `js` highlighter) - the hover message makes it clear that `lua` is the actual command.
 
 ```js:lua  //10 million random number calls
--- ```lua {cmd=lua53} //10 million random number calls`
+-- '''lua {cmd=lua53} //10 million random number calls`
 local m=1e8;  -- note: fewer iterations than for js or go
 local n=0.01;
 local tt = os.clock();

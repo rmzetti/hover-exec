@@ -35,19 +35,21 @@ let quickmathResult='';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
-let repl:cp.ChildProcess;
-let chRepl:Array<[string,cp.ChildProcess]>=[];
-let useRepl=false; //use useRepl
-let restartRepl=false; //force restart repl
+let repl:cp.ChildProcess; //current REPL
+let chRepl:Array<[string,cp.ChildProcess]>=[]; //array of active REPLs
+let useRepl=false; //use REPL to execute code
+let restartRepl=false; //force restart REPL
 let cursLine: number = 0; //cursor line pos
 let cursChar: number = 0; //cursor char pos
 let showKey=false; //show key pressed (use when creating gif)
 let replaceSel = new vscode.Selection(0, 0, 0, 0); //section in current editor which will be replaced
 let config = vscode.workspace.getConfiguration("hover-exec"); //hover-exec settings
-let opt={};
-const log=console.log;
-let vmDefault={global,globalThis,config,vscode,console,util,process,performance,abort,alert,delay,
-  execShell,input,progress,status,readFile,writeFile,write,require:vmRequire,_,math,moment};
+let opt={}; //child process execution options
+const log=console.log; //saves console.log address to allow reconfig
+let vmDefault={global,globalThis,config,vscode, //vm default context
+  console,util,process,performance,abort,alert,delay,
+  execShell,input,progress,status,readFile,writeFile,
+  write,require:vmRequire,_,math,moment};
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
 const refStr =
   "*hover-exec:* predefined strings:\n" +
@@ -63,7 +65,7 @@ const msgDel =
   "[ [*command variables %f..*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
-let os='win';
+let os='win'; //set current os
 if (!windows){
     if (process.platform==='darwin') {os='mac';}
     else {
@@ -334,7 +336,7 @@ export function activate(context: vscode.ExtensionContext) {
     function posComment(s: string) {
       //find start of comment in command line <!--,//,# only
       let ipos = s.indexOf("<!--"); // find <!--
-      if (ipos <= 0) { // find // but exclude ://
+      if (ipos <= 0) { // find // but exclude ://, ie. allow links in the line
         ipos = s.replace("://", "xxx").indexOf("//");
       }
       if (ipos <= 0) { // find #
@@ -363,16 +365,16 @@ export function activate(context: vscode.ExtensionContext) {
       mpe = s.replace(/.*({.*}).*/, "$1"); //save it
       s = s.replace(/{.*}/, ""); //and remove
     }
-    s = s.replace(/\s+/, " ").trim(); //collapse multiple spaces
+    s = s.replace(/\s+/g, " ").trim(); //collapse multiple spaces //here added g
     full = s; //save full command line minus comments & {..}
     if (/^\w/.test(s)) {
       cmda = s.replace(/^(\w*).*/, "$1");
-      useRepl=/^\w+\s?:\w*:/.test(s);
+      useRepl=/^\w+\s?:\s?\w*:/.test(s);//here added second \s?
       if(useRepl){
-        restartRepl=/^\w+\s?:\w*:restart/.test(s);
+        restartRepl=/^\w+\s?:\s?\w*:restart/.test(s);//here added second \s?
       }
-      if (/^\w+\s?:\w/.test(s)) {
-        cmdId = s.replace(/^\w*\s?:(\w*).*/, "$1");
+      if (/^\w+\s?:\s?\w/.test(s)) {//here added second \s?
+        cmdId = s.replace(/^\w*\s?:\s?(\w*).*/, "$1");//here added second \s?
                       //eg. for 'js:asdf' cmdId is 'asdf'
         if(cmdId==='vmdf'){vmContext=undefined;cmdId = 'vm';}
                       //for 'js:def' set default context & cmdId='vm'
@@ -525,11 +527,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(statusBarItem);
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
   hePath=context.extensionPath;
-  // if(windows){
-  //   hePath=hePath+'\\';
-  // } else {
-  //   hePath=hePath+'/';
-  // }
   if(windows){
     hePath=hePath.replace(/\\/g,'/');
   }
@@ -716,7 +713,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           out=out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {
             if(tempName.endsWith('.html')){out='';}
-            await selectCodeblock(false,false);
+            await selectCodeblock(false);
             await paste(out);   //paste into editor
             removeSelection(); //deselect
           }
@@ -795,7 +792,7 @@ async function clear(){
       temp = codeBlock.replace(/=>>.*?(\r?\n)/mg,'=>> $1');
     }
     await activeTextEditor.edit((selText) => {
-      selectCodeblock(false,false); //select codeblock to replace
+      selectCodeblock(false); //select codeblock to replace
       if (needSwap) {
         selText.replace(replaceSel, temp + "```\n");
       } else {
@@ -840,17 +837,18 @@ async function paste(text: string) {
     }
     text = text.replace(/.[\b]/g,''); //remove any character followed by a backspace
     text = text.replace(/^\s*[\r\n]/, "").trimEnd(); //remove blank line if any
-    text = text.replace(/^[\s\S]*?\n```output/,'```output'); //'output' lines remove all preceding text
-    text = text.replace(/^[\s\S]*?\n``output/,'```output');  //(can be viewed in the output file)
-    text = text.replace(/^```/gm, " ```"); //put a space in front of starting ```
-    text = text.replace(/^``/gm, " ```");  //allow `` to mean ``` allows ` to appear in even numbers
+    //following 3 lines allow for explicitly specifying the output block label
+    text = text.replace(/^output([\s:])/,'```output$1'); //if output is first word the first line becomes the label
+    text = text.replace(/^[\s\S]*?\n`+output/,'```output'); //a `+output line removes preceding text & becomes the label
+    text = text.replace(/^`+/, " ```"); //set all starting ` to ``` & temporarily mark with leading space
+    text = text.replace(/^```/mg, "'''"); //don't allow displayed lines to start with ``` (would end the code block)
     text = text.replace(/^\[.+?m(.*)\[0m$/gm, "$1"); //remove color codes (mostly pwsh)
     //if there is any output left, it will go into an ```output codeblock
-    await selectCodeblock(false,true);
+    await selectCodeblock(false); //select codeblock to replace
     activeTextEditor.edit((selText) => {
-      //selectCodeblock(false); //select codeblock to replace
-      let lbl = "```output\n"; //can start output with ``` to replace ```output
+      let lbl = "```output\n"; //normal output block label
       if (text.startsWith(" ```")) {
+        // " ```" indicates that the output block label was produced during script execution
         text = text.slice(1);
         lbl = "";
       }
@@ -859,7 +857,7 @@ async function paste(text: string) {
         if (needSwap) {
           selText.replace(replaceSel, codeBlock + "```\n");
         } else {
-          selText.replace(replaceSel, '');//lbl + text + "\n```\n");  
+          selText.replace(replaceSel, '');
         }
       } else if (oneLiner || !needSwap) {
         //only producing an output block
@@ -888,7 +886,7 @@ function removeSelection() {
   }
 }
 
-async function selectCodeblock(force: boolean,temp:boolean) {
+async function selectCodeblock(force: boolean) {
   //select codeblock appropriately depending on type
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
@@ -972,7 +970,7 @@ async function deleteOutput(mode:string) {
     s+=await readFile(outName);
   }
   if (activeTextEditor) {
-    await selectCodeblock(true,false);
+    await selectCodeblock(true);
     if (mode!=='delete_output') {
       //remove start and end lines, ie. the lines with backticks
       let pos1 = activeTextEditor.selection.start.line + 1;
@@ -998,12 +996,6 @@ async function deleteOutput(mode:string) {
 }
 
 function execRepl(cmd: string,args:string[]){
-  // let opt={};
-  // if(process.platform==='darwin'||process.platform==='linux') {
-  //   opt={shell:'/bin/bash'};
-  // } else {
-  //   opt={shell:true};
-  // }
   repl=cp.spawn(cmd, args, opt);
   if(repl===null){return;}
   repl.stdout?.on('data', (data) => {

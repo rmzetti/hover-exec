@@ -1,13 +1,13 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
 
 `code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
 `code %x/READMORE.md`       //extended README \
 `code %x/test/basic_tests.md` //basic tests \
 `code %x/test/misc_tests.md`  //benchmark tests and REPLs
 
-NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
+- NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
@@ -32,6 +32,12 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
     - [Powershell](#powershell)
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
+        - [Default shell simple command execution:](#default-shell-simple-command-execution)
+        - [exec notepad with file in current folder:](#exec-notepad-with-file-in-current-folder)
+        - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
+        - [open another instance of vscode:](#open-another-instance-of-vscode)
+        - [explore files, view folders:](#explore-files-view-folders)
+        - [other examples:](#other-examples)
     - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
   - [Release Notes and Known Issues](#release-notes-and-known-issues)
@@ -47,6 +53,8 @@ Hover script exec in action:
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
   ![](media/Hover-exec.gif)
 
+In addition to executing scripts, *hover-exec* can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
+
 ---
 ## Basic hover-exec 
 
@@ -55,6 +63,24 @@ Hovering over fenced code block start or end lines which start with a triple bac
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
 Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and are ignored by *hover-exec*.
+
+There are three elements to a code block label that *hover-exec* utilises:
+- *id* to indicate the script language being employed, used for syntax highlighting by *vscode*
+- *cmdid* to indicate the command to use to execute the script (omitted if the same as *id*)
+- *repl* or *restart* to indicate a REPL is to be used or restarted (see the READMORE)
+
+Example code block labels - these are 'fake' (use quotes instead of backticks) to allow visibility in previews:
+
+```
+'''id : cmdid : repl  -- the general format - spaces can be omitted around the :
+'''python    --a python code block, here id & cmdid are both python
+'''js : eval   --a javascript code block which uses eval for execution
+'''octave     --uses octave as both id & cmdid
+'''python:octave  --python is id for syntax highlight, octave is cmdid for execution
+'''output     --output blocks are produced by executing scripts
+```
+
+There is a comment in the READMORE about the code block label when also using *markdown preview enhanced*.
 
 ---
 ## Javascript scripts
@@ -65,13 +91,13 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Using `js : eval` will instead execute the code block using *vscode*'s built in *eval*.
 
-```js  //click this line in the *hover* to execute the block
-//js  //this comment is for the README to show the command line in markdown previews
-//    //the default for the `js` command is to execute using the `vm` module
+```js     //click this line in the *hover* to execute the block
+//'''js  //this comment is to show the command line in markdown previews
+//       //the default for the `js` command is to execute using the `vm` module
 console.log("Note the in-line random number result")
 'test: '+Math.random()  =>>test: 0.5918216346770233
 ```
->     test output:
+>     Test output:
 >     Note the in-line random number result
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over the `output` id of an output code block provides options *output block to text* or *delete output block*. If the block has recently been executed, a third option *all output to text* will provide the full output as in the *temp...* output file generated.  Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
@@ -80,7 +106,7 @@ Intermediate results can be viewed in line, as above, by appending `=>>` instead
 A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
 ```js  :eval
-//js //appending  :eval uses the built in eval instead
+//'''js :eval  //appending :eval uses *vscode*'s eval instead of the vm
 let abc="hello, world 3"
 alert(abc) //alert produces vscode alerts - not available in nodejs scripts
 let a='goodbye world'
@@ -93,7 +119,7 @@ console.log(a,Math.random())
 process.cwd() // =>> c:\Users\rmZetti\GitHub\hover-exec
 console.log(abc)
 ```
->     test output: see also alert box bottom right
+>     Test output: see also alert box bottom right
 >     goodbye world 0.46809536348325254
 >     hello, world 3
 
@@ -103,14 +129,14 @@ console.log(abc)
 A regex tester using the *javascript* vm:
 
 ```js
-//js  //javascript regex tester
+//'''js  //javascript regex tester
 'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
 ```
 
 A regex tester using *vscode*'s eval:
 
 ```js : eval
-//js : eval // javascript regex tester using eval
+//'''js : eval // javascript regex tester using eval
 'abcdefg'.replace(/^.*(bcde)/,'$1--') =>>bcde--fg
 ```
 
@@ -129,15 +155,15 @@ See [READMORE](READMORE.md) for more information and examples.
 
 The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed). 
 
-```js {cmd=node} : node
-//js {cmd=node} : node  // :node changes the js command to use nodejs
-//   {cmd=node} is to allow execution in markdown preview enhanced (mpe)
+```js  {cmd=node} : node
+//'''js {cmd=node} : node  // :node changes the js command to use nodejs
+//      {cmd=node} is to allow execution in markdown preview enhanced (mpe)
 //                        mpe requires {..} to be placed immediately after the js command
 console.log('  using node:\n  '+Math.random())
 console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
->     test output:
+>     Test output:
 >     using node:
 >     0.43884249391182095
 >     Note: hover-exec on the output line, or alt+/ (opt+/) with
@@ -211,7 +237,7 @@ from random import random
 'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```
->     test output (also see inline output):
+>     Test output (also see inline output):
 >     python ok
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that, for example, *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not. If *mpe* is installed, try it by including '{cmd}' after the *'''python* command id, separated using spaces.
@@ -219,25 +245,25 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ---
 ### Julia
 
-If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following oneliners could be used to do this for the script below (if you're reading this in the preview, the onel iners are surrounded with single backticks and start in col 1):
+If the *julia* extension is included, *vscode* will provide syntax highlighting. Note that when doing this test, you will need to ensure *julia* has the appropriate packages available (see the *using* line in the example script below). The following one-liner could be used to do this for the script below (if you're reading this in the preview, the one-liner is surrounded with single backticks and starts in col 1):
 
-`julia using Pkg;Pkg.add("Compat");`  \
-`julia using Pkg;Pkg.add("LinearAlgebra");`  \
-`julia using Pkg;Pkg.add("Statistics");`
+`julia using Pkg;Pkg.add("LinearAlgebra");`
 
 **Note:** these may often take some time, sometimes about 5 minutes for me... there will be an *executing julia* message in the *vscode* status bar, and there will be *output* when they are complete.
 
 ```julia
 # '''julia
-using LinearAlgebra, Statistics, Compat
+using LinearAlgebra # this package is not needed if dot(a',a) is commented out
 a=rand(Float64,3);
-a   # =>>[0.9607100451172932, 0.25709634387752067, 0.027822592779326305]
-b=a;b[2]=42;                        # arrays are shallow copied here
+a   # =>>[0.8999280817338797, 0.05500849893486204, 0.8299019559590521]
+a'*a # =>>1.5016337437529477
+dot(a',a) # =>>1.5016337437529477
+b=a;b[2]=42;  # demonstrates that arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
->     test output (also see inline output):
->     a=[0.9607100451172932, 42.0, 0.027822592779326305]
->     b=[0.9607100451172932, 42.0, 0.027822592779326305]
+>     Test output (also see inline output):
+>      a=[0.8999280817338797, 42.0, 0.8299019559590521]
+>      b=[0.8999280817338797, 42.0, 0.8299019559590521]
 
 Julia can also be executed in *mpe* by appending '{cmd}' after the command id (separated with a space).
 
@@ -257,7 +283,7 @@ pwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
 disp('hello world in output section!')
 disp(rand(1))
 ```
->     test output (also see inline output):
+>     Test output (also see inline output):
 >     hello world in output section!
 >     0.1295
 
@@ -267,15 +293,15 @@ disp(rand(1))
 Scilab generally won't have syntax highlighting - identifying the code block as *js* will provide some quick and dirty highlighting (not infallible, but generally helpful..)
 
 ```js :scilab 
-//js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
-      //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
+//'''js :scilab //using js :scilab provides quick & dirty (js) syntax highlight
+  //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
 rand("seed",getdate('s')); //set new random sequence
 mprintf('%s\n','test '+string(rand())+' '+pwd());
 string(rand())+' '+pwd() =>>0.9321708 c:\Users\rmzetti\GitHub\hover-exec
 string(rand()) =>>0.3329656
 //disp('disp puts quotes around strings',rand())
 ```
->     test output (also see inline output):
+>     Test output (also see inline output):
 >     test 0.3161717 c:\Users\rmzetti\GitHub\hover-exec
 
 ---
@@ -284,13 +310,13 @@ string(rand()) =>>0.3329656
 Lua has a syntax highlighter available for *vscode*. Many installations however require running, say, *lua51*, or *lua54*, rather than updating and setting *lua* as the run-time (unlike, say, *julia*). So use 'lua : lua54' as the command id, etc., or check/adjust the *hover-exec* script config.
 
 ```lua  -- say hello & goodbye
---lua :lua54 -- 'lua' id specifies syntax highlight and default start command
---                     adding ':lua54' means use 'lua54' as start command
+--'''lua :lua54 -- 'lua' id specifies syntax highlight and default start command
+--                  adding ':lua54' means use 'lua54' as start command
 'hello ' .. 44-2+math.random() -- =>>hello 42.046598765538
 "& goodbye " .. math.pi+math.random() =>>& goodbye 3.3082099849202
 print("lua ok") -- this outputs in the output code block below
 ```
->     test output (also see inline output):
+>     Test output (also see inline output):
 >     lua ok
 
 ---
@@ -299,7 +325,7 @@ print("lua ok") -- this outputs in the output code block below
 *Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (see the  [READMORE](READMORE.md)).
 
 ```gnuplot {cmd}
- #gnuplot //here gnuplot is being used stand-alone
+ # '''gnuplot //here gnuplot is being used stand-alone
 $charge << EOD
 2-07-2021 22:32 44
 3-07-2021 13:34 42
@@ -329,19 +355,19 @@ plot "$charge" using 1:3 w lp title "charge"
 
 *Bash* and *zsh* scripts can be run for appropriate systems:
 
-```zsh # (macos) show current directory
-#zsh # (macos) show current directory
+```zsh    # (macos) show current directory
+# '''zsh # (macos) show current directory
 pwd
 ```  
->     test output:
+>     Test output:
 >     /home/rmzetti/hover-exec
 
 
 ```bash # (macos, linux, wsl) show current directory
-#bash # (macos, linux) show current directory
+#'''bash # (macos, linux) show current directory
 pwd
 ```
->     test output:
+>     Test output:
 >     /home/rmzetti/hover-exec
 
 ---
@@ -350,12 +376,12 @@ pwd
 Powershell scripts can be run, usually in *windows*
 
 ```pwsh #  random number, show current directory
-# pwsh # random number, show current directory
+# '''pwsh # random number, show current directory
 # $PSStyle.OutputRendering = 'PlainText'   # stops color codes appearing in output
 Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
 pwd
 ```
->     test output (also see inline output):
+>     Test output (also see inline output):
 >     Path
 >     ----
 >     C:\Users\rmzetti\GitHub\hover-exec
@@ -366,36 +392,39 @@ pwd
 
 *One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
-Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be `=` before the last backtick (essentially to stop popups for other quoted strings).
+Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
 ---
 ### One-liner examples:
 
-All these example commands are surrounded with single backticks, eg  ****\`pwd\`****, and start in col 1
-default shell simple command execution (result depends on the default shell for vscode on your system):
+All these example commands are surrounded with single backticks, eg  *\`pwd\`*.
+They must start in col 1.
+
+##### Default shell simple command execution:
+(result depends on the default shell for vscode on your system)
 
 `pwd` zsh, bash, pwsh, cmd \
 `ls` zsh,bash, pwsh \
 `dir` cmd
 
-exec notepad with file in current folder:
+##### exec notepad with file in current folder:
 
 `notepad "%cREADME.md"`  --windows \
 `open -a textedit "%cREADME.md"`  --mac \
 `gedit "%cREADME.md"`  --linux/wsl \
 `xedit "%cREADME.md"`  --linux/wsl
 
-exec notepad with temp file (%f):
+##### exec notepad with temp file (%f):
 
 `open -a textedit "%f"` --mac \
 `notepad "%f"`  --windows \
 `xedit "%f"`  --linux/wsl
 
-open another instance of vscode:
+##### open another instance of vscode:
 
 `code -n %e`  -- %e is current file -- mac, windows, linux, wsl 
 
-explore files, view folders:
+##### explore files, view folders:
 
 `open -a finder ~`  mac 'home' \
 `open -a finder "%c"`  mac to view current folder \
@@ -403,7 +432,7 @@ explore files, view folders:
 `explorer.exe /select, "%cREADME.md"`  windows & wsl view current folder & select file \
 `nemo "%cREADME.md"`  Linux mint view current folder & select file
 
-other examples:
+##### other examples:
 
 `devmgmt.msc` for windows show devices \
 `system_profiler SPHardwareDataType` for mac show hardware info \
@@ -413,14 +442,21 @@ other examples:
 `safari <h1>Hello world!</h1>` mac safari with some html \
 `firefox <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  linux firefox with href \
 `firefox <h1>Hello world!</h1>` linux firefox with some html \
-`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href \
+`chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href 
+
+There are many more one-liner examples in the READMORE.
 
 ### Quickmath examples
-And finally, some *quickmath* expressions. As before these are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick. The first example is actually ***\`254cm in inches=\`***
 
-So `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html). More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
+And finally, some *quickmath* expressions. As before these are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick.
 
-NB. Copy the answer in the hover to the clipboard with a click.
+If viewing in preview, for example, the first expression is actually written ***\`254cm in inches=\`*** 
+
+So `254cm in inches=` will show 100 inches in the hover message, using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
+
+More examples to try:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
+
+NB. You can copy the answer in the hover to the clipboard with a click.
 
 ---
 ## Configuration settings
@@ -445,7 +481,9 @@ Initial beta release was 0.6.1
 Published using: vsce package/publish
 
 
+todo:
 
-
+- [x] check links are links to github, not to local files
+- [ ] remove this list
 
 
