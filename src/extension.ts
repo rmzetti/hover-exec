@@ -165,21 +165,29 @@ export function activate(context: vscode.ExtensionContext) {
         startCode = pos.line; //save start of code line number
         parseLine(line.text);
         cursLine = 0; //do not reset cursor pos for hover click
-        if (comment===''){ comment=' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;' }
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
         if (script) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
-          let msgOpen = //to open last script & result
-            "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear_all) " +
-            "[ [*open last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
-            "[ [*open last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
           codeBlock = getCodeBlockAt(doc, pos); //save codeblock
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
-          let msg =
-            cmdId + "[ [*config*] ](" + url + "_config) " + //add hover info
-            msgDel + msgOpen + "**[" + cmdId + " =>> " + comment + "](" + url + ")**";
-          const contents = new vscode.MarkdownString("hover-exec:" + msg);
+          if (comment!=='') {
+            comment=' *'+comment+'*';
+          }
+          let msg=comment+"\n\n";
+          comment
+          if (oneLiner) {
+            msg += "**[" + replaceStrVars(full) + " =>>](" + url + ")**";
+          } else {
+            let msgOpen = //to open last script & result
+              "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear_all) " +
+              "[ [*open last script*] ]("+vscode.Uri.file(tempPath+tempName)+") "+
+              "[ [*open last result*] ]("+vscode.Uri.file(tempPath+tempName+".out.txt")+")\n\n";
+            msg +=
+              "[ [*config*] ](" + url + "_config) " + //add hover info
+              msgDel + msgOpen + "**[ exec: " + cmdId+" =>> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ](" + url + ")**";
+          }
+          const contents = new vscode.MarkdownString("hover-exec: " + msg);
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //and return it
         } else if (cmdId === "output") {
@@ -755,23 +763,23 @@ function replaceStrVars(s: string) {
     s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
+    .replace(/%n/g, tempName) //%n temp file name only
+    .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
+
     .replace(/%f/g, tempPath + tempName) // '/%f' uses /
     .replace(/%p/g, tempPath) // '/%p' uses /
     .replace(/%c/g, currentPath) // '/%c' uses /
     .replace(/%e/g, currentFile) // '/%e' uses /
-    .replace(/%n/g, tempName) //%n temp file name only
-    .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
 
     // .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
     // .replace(/\/%p/g, tempPath) // '/%p' uses /
     // .replace(/\/%c/g, currentPath) // '/%c' uses /
     // .replace(/\/%e/g, currentFile) // '/%e' uses /
+    
     // .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
     // .replace(/%p/g, tempFsPath) //%p temp folder path
     // .replace(/%c/g, currentFsPath) //%c current file path
     // .replace(/%e/g, currentFsFile) //%e current file path/name
-    // .replace(/%n/g, tempName) //%n temp file name only
-    // .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
   return s;
 }
 

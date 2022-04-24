@@ -6,18 +6,16 @@ To help with this, *hover-exec* provides a command to open the README in the edi
 
 From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor:
 
-`code %x/README.md`            // open the *hover-exec* *README* (this file) in the editor \
-`code %x/READMORE.md`       // open the *READMORE*, which cover the same ground as the README but in more detail \
-`code %x/test/basic_tests.md` // open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
-`code %x/test/misc_tests.md`  // open *misc_tests.md* for various benchmark tests and REPLs
+`code %x/README.md`            - open the *hover-exec* *README* (this file) in the editor \
+`code %x/READMORE.md`       - open the *READMORE*, which cover the same ground as the README but in more detail \
+`code %x/test/basic_tests.md`  - open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
+`code %x/test/misc_tests.md`   - open *misc_tests.md* for various benchmark tests and REPLs
 
-For the above, %x is a hover-exec command variable giving the extension path. If you are viewing these in a markdown preview, the commands are highlighted, and if typed in the editor must start in col 1 and start and end with a single backtick.
+For the above, %x is a hover-exec command variable giving the extension path.
 
-[test](C:/Users/ralph/.vscode/extensions/rmzetti.hover-exec-0.7.1/READMORE.md)
+- NB. If you are viewing these in a markdown preview, one-liner commands are highlighted. They start in col 1, and start & end with a single backtick.
 
 `js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))`
-
-- NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
