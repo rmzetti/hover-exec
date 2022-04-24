@@ -21,7 +21,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
   - [speed of eval vs Function within javascript code](#speed-of-eval-vs-function-within-javascript-code)
 - [Javascript in the browser](#javascript-in-the-browser)
 - [Plotting comparison](#plotting-comparison)
-  - [Some data for the plots](#some-data-for-the-plots)
+  - [Data for the plots](#data-for-the-plots)
 - [Simple cross-platform cross-script speed tests](#simple-cross-platform-cross-script-speed-tests)
   - [Javascript tests: 'vm', 'eval' and 'node'](#javascript-tests-vm-eval-and-node)
   - [Javascript in the browser](#javascript-in-the-browser-1)
@@ -333,16 +333,8 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 </script>
 ```
 
-```js :eval
-write(3)
-```
-```output
-3
-```
-
 ```js : gnuplot
- # '''js: gnuplot? //test using *gnuplot*, (js: gives some artificial syntax highlighting)
- # first \n needed to distinguish from previous go1 in script etc 
+# '''js: gnuplot? //test using *gnuplot*, (js: gives some artificial syntax highlighting)
 $go1 <<EOD
  #inhere  `#go`
 EOD
@@ -357,11 +349,8 @@ plot "$javascript1" w lp title "javascript",\
        "$pascal1" w lp title "pascal",\
        "$go1" w lp title "go"
 ```
-```output
-error SyntaxError: Invalid or unexpected token
-```
 
-### Some data for the plots
+### Data for the plots
 
 #p1
 1,  2.8481913984619769E+002,
@@ -432,17 +421,18 @@ error SyntaxError: Invalid or unexpected token
 1e+06,  660.4684782172212,
 #go
 
-
-
 ## Simple cross-platform cross-script speed tests
 
-Each test is a loop run 1e7, 1e8 or 1e9 times (depending on the script speed), with speed calculated in 1m iterations per sec
+Each test is a loop run 1e7, 1e8 or 1e9 times (depending on the script speed), with speed calculated in 1m iterations per sec.
+
+These test all use straightforward calculations within a loop, rather than specific numerical packages.
 
 ### Javascript tests: 'vm', 'eval' and 'node'
 
 The following code block can be executed with the code block identifier set to `js` or `js:vm` for the vscode `vm` to execute, to 'js:eval' for vscode's built-in `eval` to execute, or to `js:node` for nodejs to execute. Note that to execute with `nodejs`, that package must have been previously installed on the system and should be executable with the command `node`.
 
 ```js  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
+// '''js  //can be 'js' to use vm, 'js:eval' to use 'eval', or 'js:node' to use nodejs
 //timing and speed results for the three alternatives should be similar
 const {performance}=require('perf_hooks'); //ignored by eval & vm
 let iter=1e8;
@@ -454,16 +444,16 @@ let tot=(t2-t1)/1000;
 console.log("total time ",Math.round(tot*100)/100," sec")
 console.log("speed ",Math.round(iter/tot/1e6*10)/10," million iterations per sec")
 ```
-
-> Example output (vm, eval & node are fairly similar)
-> total time  0.47  sec
-> speed  212.3  million iterations per sec
+>      Test output (vm, eval & node are fairly similar)
+>      total time  0.47  sec
+>      speed  212.3  million iterations per sec
 
 ### Javascript in the browser
 
 This will execute the same javascript code in the default browser:
 
 ```html
+<!-- '''html -->
 <script>
 function test(){
 let iter=1e8;
@@ -488,10 +478,9 @@ r2=document.getElementById("r2");
 test()
 </script>
 ```
-
-> Example output
-> Total time: 0.47 sec
-> Speed: 210.7 million iterations per sec
+>      Test output (in the browser):
+>      Total time: 0.47 sec
+>      Speed: 210.7 million iterations per sec
 
 A similar speed to `js`, `eval` and `node`.
 
@@ -499,11 +488,15 @@ A similar speed to `js`, `eval` and `node`.
 
 If `go` is installed, it can be used as a scripting language
 
-> `go` should be executable in a terminal using > go
-> files go.sum and go.mod need to be present in the following folder
-`%p` //just hover to see the folder on your system
+>      `go` should be executable in a terminal using > go
+>      The required files go.sum and go.mod need to be present in the
+>      globalStorage/temp folder. The path of this folder can be
+>      seen by hovering over the following line (in the editor):
+
+`%p` //hover here to see the path of *hover-exec*'s temp folder.
 
 ```go //speed test 2
+// '''go //speed test 2
 package main
 import ("fmt";"time")
 func main() {
@@ -523,22 +516,17 @@ func main() {
     fmt.Printf("speed  %.5v million iterations per sec\n",float64(iter)/t/1e6)
 }
 ```
-```output
-total time 0.243 sec
-speed  4123.7 million iterations per sec
-```
-
-> Example output
-> total time 0.24 sec
-> speed  4170 million iterations per sec
-
-ie. about 20 times faster than javascript.
+>      Test output:
+>      total time 0.24 sec
+>      speed  4170 million iterations per sec
+>      (ie. about 20 times faster than javascript)
 
 ### Test using 'python'
 
-Again, the appropriate `python` needs to be executed when the `python` command is executed in a terminal. For this run, 'python 3.8.7` was used. Note that fewer iterations have been used because it takes rather longer.
+Again, the appropriate `python` needs to be executed when the `python` command is executed in a terminal. For this run, 'python 3.8.7` was used. Note that fewer iterations have been used because it takes rather longer than *javascript* or *go*.
 
 ```python //speed test
+# '''python //speed test
 from time import time
 m=1e7  # note: fewer iterations than for js or go
 n=0.01
@@ -551,14 +539,9 @@ tt1=time()-tt
 print("total time ",round(tt1,2)," sec")
 print("speed ",round(m/tt1/1e6,4)," million iterations per sec")
 ```
-```output
-total time  1.62  sec
-speed  6.1567  million iterations per sec
-```
-
-> Example output
-> total time  1.68  sec
-> speed  5.958  million iterations per sec
+>      Test output:
+>      total time  1.68  sec
+>      speed  5.958  million iterations per sec
 
 ie. for this test javascript is about 30x faster than python
 
@@ -580,20 +563,17 @@ local tt1=os.clock()-tt;
 print("total time ",math.floor(tt1*100)/100," sec")
 print("speed ",math.floor(m/tt1/1e6*100)/100," million iterations per sec")
 ```
-```output
-total time 	1.04	 sec
-speed 	95.41	 million iterations per sec
-```
-
-> Example output:
-> total time 	1.05	 sec
-> speed 	94.87	 million iterations per sec
+>      Test output:
+>      total time 	1.05	 sec
+>      speed 	94.87	 million iterations per sec
 
 So about 15x faster than python on this benchmark, and about half the speed of javascript.
 
 ### Pascal test
 
 ```js:pascal //executes frepascal compile and run
+// '''js:pascal //js used here for quick & dirty syntax highlighter
+//      if there is a pascal syntax highlighter, just use '''pascal
 program Hello;
   uses Math,SysUtils,DateUtils;
   var i,m:int64;
@@ -614,16 +594,16 @@ begin //30
   writeln('speed= ',m/t1/1e6:6:2,' million iterations per sec')
 end.
 ```
-
-> Example output:
-> time=   1.03 sec
-> speed=  97.09 million iterations per sec
+>      Test output:
+>      time=   1.03 sec
+>      speed=  97.09 million iterations per sec
 
 That's about half the speed of the javascript code
 
 ### Octave test
 
 ```python:octave
+# '''python:octave
 a=1.0;
 t=time;
 m=1000000; # 1e6
@@ -635,16 +615,16 @@ endfor
 disp(strcat('time= ',num2str(time-t),' sec'))
 disp(strcat('speed= ',num2str(m/(time-t)/1e6),' million iterations per sec'))
 ```
-
-> Example output:
-> time=1.7275 sec
-> speed=0.57593 million iterations per sec
+>      Test output:
+>      time=1.7275 sec
+>      speed=0.57593 million iterations per sec
 
 That's one tenth of python's speed.
 
 ### Test using scilab
 
 ```js:scilab
+// '''js:scilab
 tic();
 a=1.1;
 m=1000000; //1e6
@@ -657,16 +637,16 @@ t=toc();
 mprintf('Time: %.2f sec\n',t)
 mprintf('Speed: %.2f  million iterations per sec\n',m/t/1e6)
 ```
-
-> Example output:
-> Time: 1.15 sec
-> Speed: 0.87  million iterations per sec
+>      Test output:
+>      Time: 1.15 sec
+>      Speed: 0.87  million iterations per sec
 
 About 50% faster than octave
 
 ### Julia test
 
 ```julia
+# '''julia
 m=10000000; # 1e7
 a=1.1;
 t=time();
@@ -678,41 +658,45 @@ t=time()-t;
 println("time= ",round(t,digits=2)," sec")
 println("speed= ",round(m/t/1e6,digits=3)," million iterations per sec")
 ```
-
->Example output:
->time= 1.69 sec
-> speed= 5.917 million iterations per sec
+>      Test output:
+>      time= 1.69 sec
+>      speed= 5.917 million iterations per sec
 
 About the same speed as python.
 
 ## Configuration
 
 ### View and alter as a set ('scripts, 'swappers,'repls')
+This code block shows all settings for `scripts','swappers' or 'repls'
+The are shown in another executable code block ready to update after changes
 
-This code block shows the settings in another executable code block ready to update, saves on exec
-
-```js noInline                //view and update settings for: 
-let settings='scripts';    //can use 'scripts', 'swappers', 'repls'
+```js noInline  //noinline is necessary to ensure =>> in strings is not misinterpreted
+// '''js noInline              //view and update settings for
+let settings='scripts';    // 'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");
 let k=config.get(settings)
-console.log('``js:eval //exec here to incorporate any changes')
+console.log('``js:eval')
+console.log('output:eval //exec here to incorporate any changes')
 //using 2 backticks above allows backticks to remain even,  will still produce 3 to start & end the output
 console.log('let settings="'+settings+'";');
 console.log('let s=',k)
 console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
 ```
 
-
-
 ### View and alter a specific setting
-```js noInline  //change, add or undefine (remove) a specific config setting
+This code block can spefy a new or existing cmdid, and its start command
+
+```js noInline      //noinline is necessary to ensure =>> in strings is not misinterpreted
+// '''js noInline  //change, add or undefine (remove) a specific config setting
 let settings='scripts';  //can use 'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");
 let k=config.get(settings)
-let s={"python":"python \"%f.py\""};   //make changes here, or
-//s={"python":undefined};                   //uncomment this to undefine
+let s={"newlang":"python \"%f.py\""};   //specify cmdid & start command, or
+//s={"newlang":undefined};                   //uncomment this to undefine cmdid
 let merge=Object.assign({},scripts,s);
 if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.python'))
 ```
+
+
 

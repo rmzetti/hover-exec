@@ -218,6 +218,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })()
   );
+  
+  context.subscriptions.push( //register readme command
+    vscode.commands.registerCommand("hover-exec.readme", () => {
+      vscode.window.showInformationMessage(context.extensionPath + "/README.md");
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/README.md"));
+    })
+  );
+
   context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
       //process exec command (default shortcut Alt+/ ) -- find start of block and execute
@@ -365,16 +373,16 @@ export function activate(context: vscode.ExtensionContext) {
       mpe = s.replace(/.*({.*}).*/, "$1"); //save it
       s = s.replace(/{.*}/, ""); //and remove
     }
-    s = s.replace(/\s+/g, " ").trim(); //collapse multiple spaces //here added g
-    full = s; //save full command line minus comments & {..}
+    s = s.replace(/\s+/g, " ").trim(); //collapse multiple spaces
+    full = s;        //save full command line minus comments & {..}
     if (/^\w/.test(s)) {
       cmda = s.replace(/^(\w*).*/, "$1");
-      useRepl=/^\w+\s?:\s?\w*:/.test(s);//here added second \s?
+      useRepl=/^\w+\s?:\s?\w*:/.test(s); //allow spaces either side of :
       if(useRepl){
-        restartRepl=/^\w+\s?:\s?\w*:restart/.test(s);//here added second \s?
+        restartRepl=/^\w+\s?:\s?\w*:restart/.test(s);
       }
-      if (/^\w+\s?:\s?\w/.test(s)) {//here added second \s?
-        cmdId = s.replace(/^\w*\s?:\s?(\w*).*/, "$1");//here added second \s?
+      if (/^\w+\s?:\s?\w/.test(s)) {
+        cmdId = s.replace(/^\w*\s?:\s?(\w*).*/, "$1");
                       //eg. for 'js:asdf' cmdId is 'asdf'
         if(cmdId==='vmdf'){vmContext=undefined;cmdId = 'vm';}
                       //for 'js:def' set default context & cmdId='vm'
@@ -608,7 +616,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       code = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg,''); //remove commented lines with swap
       //disable swap in fully commented lines by appending a space
       codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg,'$1 ');
-      re = new RegExp("(--|#|%|\/\/)\\s*" + swap+'$', "mg"); //find any comment chars directly preceding a swap
+      re = new RegExp(";?\\s*(--|#|%|\/\/)*\\s*" + swap+'$', "mg"); //find any comment chars directly preceding a swap
       code = code.replace(re, swap); //remove them -- note \\s required in re, not just \s
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
       let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");

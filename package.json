@@ -35,6 +35,10 @@
 			{
 				"command": "hover-exec.exec",
 				"title": "Hover-exec: execute codeblock"
+			},
+      {
+				"command": "hover-exec.readme",
+				"title": "Hover-exec: open the hover-exec readme"
 			}
 		],
 		"configuration": {

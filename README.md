@@ -2,10 +2,18 @@
 
 This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
 
-`code %x/README.md`            //%x is a hover-exec command variable giving the extension path \
-`code %x/READMORE.md`       //extended README \
-`code %x/test/basic_tests.md` //basic tests \
-`code %x/test/misc_tests.md`  //benchmark tests and REPLs
+`code %x/README.md`            // [README](https://github.com/rmzetti/hover-exec/raw/master/README.md) \
+`code %x/READMORE.md`       // [READMORE](https://github.com/rmzetti/hover-exec/raw/master/READMORE.md) \
+`code %x/test/basic_tests.md` // [basic_tests](https://github.com/rmzetti/hover-exec/raw/master/test/basic_tests.md) \
+`code %x/test/misc_tests.md`  // [misc_tests (benchmark tests and REPLs)](https://github.com/rmzetti/hover-exec/raw/master/test/basic_tests.md)
+
+For the above, %x is a hover-exec command variable giving the extension path
+
+[test](C:/Users/ralph/.vscode/extensions/rmzetti.hover-exec-0.7.1/READMORE.md)
+
+`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%x/README.md'))`
+
+
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
@@ -100,7 +108,9 @@ console.log("Note the in-line random number result")
 >     Test output:
 >     Note the in-line random number result
 
-Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . Other results are produced in an `output` block. Hovering over the `output` id of an output code block provides options *output block to text* or *delete output block*. If the block has recently been executed, a third option *all output to text* will provide the full output as in the *temp...* output file generated.  Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
+Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . When this is done the line effectively becomes the argument of a console.log (or the equivalent in other scripts), and should not be terminated with ;
+
+Other results are produced in an `output` block. Hovering over the `output` id of an output code block provides options *output block to text* or *delete output block*. If the block has recently been executed, a third option *all output to text* will provide the full output as in the *temp...* output file generated.  Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
 A couple more examples using `js`, showing use of *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
@@ -483,7 +493,7 @@ Published using: vsce package/publish
 
 todo:
 
-- [x] check links are links to github, not to local files
+- [ ] check links are links to github, not to local files
 - [ ] remove this list
 
 
