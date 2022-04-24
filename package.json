@@ -27,7 +27,8 @@
 		"codeblock"
 	],
 	"activationEvents": [
-		"onLanguage:markdown"
+		"onLanguage:markdown",
+    "onCommand:hover-exec.readme"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {

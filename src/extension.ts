@@ -221,7 +221,6 @@ export function activate(context: vscode.ExtensionContext) {
   
   context.subscriptions.push( //register readme command
     vscode.commands.registerCommand("hover-exec.readme", () => {
-      vscode.window.showInformationMessage(context.extensionPath + "/README.md");
       vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/README.md"));
     })
   );
