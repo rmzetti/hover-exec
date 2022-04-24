@@ -1,23 +1,27 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. For more detail, [READMORE](READMORE.md). Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
+This is the README for the VSCode extension *hover-exec*. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the README etc have many example codeblocks that can be executed to try it out.
 
-`code %x/README.md`            // [README](https://github.com/rmzetti/hover-exec/raw/master/README.md) \
-`code %x/READMORE.md`       // [READMORE](https://github.com/rmzetti/hover-exec/raw/master/READMORE.md) \
-`code %x/test/basic_tests.md` // [basic_tests](https://github.com/rmzetti/hover-exec/raw/master/test/basic_tests.md) \
-`code %x/test/misc_tests.md`  // [misc_tests (benchmark tests and REPLs)](https://github.com/rmzetti/hover-exec/raw/master/test/basic_tests.md)
+To help with this, *hover-exec* provides a command to open the README in the editor. After the extension has been installed, type *ctrl+shift+p* to open the commands, then *hov..* and you will see the command *open the hover-exec README*
 
-For the above, %x is a hover-exec command variable giving the extension path
+From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor:
+
+`code %x/README.md`            // open the *hover-exec* *README* (this file) in the editor \
+`code %x/READMORE.md`       // open the *READMORE*, which cover the same ground as the README but in more detail \
+`code %x/test/basic_tests.md` // open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
+`code %x/test/misc_tests.md`  // open *misc_tests.md* for various benchmark tests and REPLs
+
+For the above, %x is a hover-exec command variable giving the extension path. If you are viewing these in a markdown preview, the commands are highlighted, and if typed in the editor must start in col 1 and start and end with a single backtick.
 
 [test](C:/Users/ralph/.vscode/extensions/rmzetti.hover-exec-0.7.1/READMORE.md)
 
-`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%x/README.md'))`
-
-
+`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))`
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
+
+For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READMORE.md).
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)

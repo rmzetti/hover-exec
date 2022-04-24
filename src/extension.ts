@@ -755,16 +755,23 @@ function replaceStrVars(s: string) {
     s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
-    .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
-    .replace(/\/%p/g, tempPath) // '/%p' uses /
-    .replace(/\/%c/g, currentPath) // '/%c' uses /
-    .replace(/\/%e/g, currentFile) // '/%e' uses /
-    .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
-    .replace(/%p/g, tempFsPath) //%p temp folder path
-    .replace(/%c/g, currentFsPath) //%c current file path
-    .replace(/%e/g, currentFsFile) //%e current file path/name
+    .replace(/%f/g, tempPath + tempName) // '/%f' uses /
+    .replace(/%p/g, tempPath) // '/%p' uses /
+    .replace(/%c/g, currentPath) // '/%c' uses /
+    .replace(/%e/g, currentFile) // '/%e' uses /
     .replace(/%n/g, tempName) //%n temp file name only
     .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
+
+    // .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
+    // .replace(/\/%p/g, tempPath) // '/%p' uses /
+    // .replace(/\/%c/g, currentPath) // '/%c' uses /
+    // .replace(/\/%e/g, currentFile) // '/%e' uses /
+    // .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
+    // .replace(/%p/g, tempFsPath) //%p temp folder path
+    // .replace(/%c/g, currentFsPath) //%c current file path
+    // .replace(/%e/g, currentFsFile) //%e current file path/name
+    // .replace(/%n/g, tempName) //%n temp file name only
+    // .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
   return s;
 }
 
