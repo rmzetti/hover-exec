@@ -67,6 +67,7 @@
 						"pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
 						"bash": "bash \"%f.sh\"",
 						"zsh": "zsh -f \"%f.sh\"",
+            "cmd": "cmd /c \"%f.bat\"",
 						"lua54": "lua54 \"%f.lua\"",
 						"lua": "lua \"%f.lua\"",
 						"js": "vm",

@@ -45,6 +45,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
     - [Gnuplot](#gnuplot)
     - [Bash & zsh](#bash--zsh)
     - [Powershell](#powershell)
+    - [Cmd](#cmd)
   - [Chaining execution code blocks](#chaining-execution-code-blocks)
   - [Including tagged sections using #inhere](#including-tagged-sections-using-inhere)
   - [Using scripts via REPLs](#using-scripts-via-repls)
@@ -82,14 +83,13 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 
 ## Features
 
-*hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
+*Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
-Hover script exec in action:
+*Hover-exec* in action:
 
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
-  ![](media/Hover-exec.gif)
 
 In addition to executing scripts, *hover-exec* can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 
@@ -112,7 +112,7 @@ There are three elements to a code block label that *hover-exec* utilises:
 - *cmdid* to indicate the command to use to execute the script (omitted if the same as *id*)
 - *repl* or *restart* to indicate a REPL is to be used or restarted
 
-Example code block labels - these are 'fake' (use quotes instead of backticks) to allow visibility in previews:
+Example code block labels - these are 'fake' (ie. they use quotes instead of backticks) to allow visibility in previews:
 
 ```
 '''id : cmdid : repl  -- the general format - spaces can be omitted around the :
@@ -150,7 +150,6 @@ console.log("Note the in-line random number result ")
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
 ```
-
 >     Test output:
 >     Note the in-line random number result
 
@@ -167,7 +166,6 @@ Intermediate results can be viewed in line, as above, by appending `=>>` instead
 Other results are produced in an `output` block. Hovering over the `output` id of an output code block provides options  *output block to text* or  *delete output block*. If the block has recently been executed, a third option  *all output to text* will provide the full output as in the  *temp...* output file generated. Using the shortcut `Alt+/` or `Opt+/` with the cursor in the `output` block deletes the block.
 
 ---
-
 A couple more examples using `js`, showing use of  *vscode* api functions and some extra functions published by *hover-exec* (eg. `alert`).
 
 ```js
@@ -185,15 +183,14 @@ process.cwd() =>>
 console.log(abc)
 ```
 
- >     Test output (alerts appear in a message box bottom right):
+ >     Test output (note inline results above, and alerts appear in a message box bottom right):
  >     goodbye world 0.7280946459838489
  >     hello, world 3
 
 Note that  *[clear output]* in the main hover can be used to clear all the previous output before execution, including the in-line output. The hover will remain active so that exec is easy. There is also a *hover-exec* extension setting to make  *clear output* the default, at the expense of a little jerkiness.
 
 ---
-
-A useful example is a regex tester:
+A useful example is a regex tester using the *javascript* vm (try clicking *clear output* before *exec*)::
 
 ```js
 //'''js  //javascript regex tester
@@ -201,7 +198,6 @@ A useful example is a regex tester:
 ```
 
 ---
-
 All the code blocks above can be executed using `eval` instead of `vm`, eg.
 
 ```js :eval
@@ -216,7 +212,6 @@ In the command line (eg. above), using `js` for the code block id produces javas
 - Note that `vm` and `eval` both allow the internal  *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
 ---
-
 ### Available functions in *vm* and *eval*
 
 The following functions are included in `vmContext` by default (and are also available to `eval`):
@@ -246,7 +241,6 @@ The following functions are included in `vmContext` by default (and are also ava
 ---
 
 ### Using a custom vm context
-
 The context for *vm* can be restricted, enlarged or set back to the default. The *vmContext* object can be directly specified by using *eval*. Examples:
 
 ```js:eval
@@ -255,7 +249,6 @@ for (let x in vmContext){
   write(''+x);
 }
 ```
-
 >     Test output:
 >     global
 >     globalThis
@@ -290,7 +283,9 @@ With this context, for example, the following works in `vm`:
 _.range(0,5)=>>0,1,2,3,4
 ```
 
-Now reduce the context using `eval`:
+The following four examples showhow to reduce the *vm* context, and re-enable the default context.
+
+First reduce the context using `eval`:
 
 ```js:eval
 //'''js:eval
@@ -310,7 +305,6 @@ In this reduced context, lodash is not available to `vm` scripts:
 //'''js //can't use lodash in reduced context
 console.log(_.range(0, 5));
 ```
-
 >     Test output:
 >     error ReferenceError: _ is not defined
 
@@ -336,23 +330,31 @@ By default the `js` command utilises a default context which is progressively ex
 
 Any `js:vm` code block can utilise the following options:
 
-```js:vmdf
-//'''js:vmdf     //set 'vmContext' to default
-//On execution, the vmContext returns to the default
-```
-
-and
+Set the *vmContext* to the minimum
 
 ```js:vmin
 //'''js:vmin    //set 'vmContext' to minimum
 //This will set the vmContext to a minimum (ie. just
 //including 'write' which enables 'console.log' for output)
 console.log('hello')
+console.log(_.range(0, 5));
 ```
- >     Test output:
- >     hello
+>      Test output:
+>      error ReferenceError: _ is not defined
 
-Apart from resetting `vmContext`, these are normal `js` code blocks.
+Restore the *vmContext* to the default.
+
+```js:vmdf
+//'''js:vmdf     //set 'vmContext' to default
+//On execution, the vmContext returns to the default
+console.log('hello')
+console.log(_.range(0, 5));
+```
+>      Test output:
+>      hello
+>      [ 0, 1, 2, 3, 4 ]
+
+Apart from resetting `vmContext`, these are normal `js:vm` code blocks.
 
 ---
 
@@ -371,22 +373,33 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>>
+xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>
+cd =>>c:/Users/../GitHub/hover-exec
 console.log(xrange())
 ```
+>      Test output (also inline):
+>      [
+>             1,       4,    16,
+>            63,     251,  1000,
+>          3981,   15849, 63096,
+>        251189, 1000000
+>      ]
+
 
 ```js
 //'''js //declare a global function (not needed if just using vm scripts)
 f=global.f=function(m){return 'the meaning of life is '+m;};
-f(44-2)=>>
+f(44-2)=>>the meaning of life is 42
 ```
+>      Test output inline.
+
 
 ```js:eval
 //'''js:eval //use the global function (can be used in both *eval* & *vm*)
 f(42)=>> the meaning of life is 42
 ```
+>      Test output inline.
 
 ```js
 //'''js //naked function definition (no 'let')
@@ -394,6 +407,7 @@ test = function () {
   console.log('test works');
 };
 ```
+>      Test output - none.
 
 There is no output, but the function `test` is now available to vm:
 
@@ -401,34 +415,54 @@ There is no output, but the function `test` is now available to vm:
 //'''js //function available to subsequent code blocks
 test();
 ```
+>      Test output:
+>      test works
 
->     Test output:
->     test works
+For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. 
+Instead, the 'global' prefix needs to be used in the function def, as was done above.
 
-For `eval`, neither 'naked' nor 'var' function defs are available to subsequent `eval` code blocks. Instead, the 'global' prefix needs to be used in the function def, as above.
+```js:eval
+//'''js //naked function definition (no 'let')
+global.test = function () {
+  console.log('test works');
+};
+```
+>      Test output - none.
+
+There is no output, but the function `test` is now available to vm:
+```js:eval
+//'''js //function available to subsequent code blocks
+test();
+```
+>      Test output:
+>      test works
 
 ---
-
 ### Using nodejs
 
 The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed).
 
-```js
-//'''js :node //blanks allowed before the : but not after
+```js : node
+//'''js:node //blanks allowed around the ;
 console.log('  test using node:\n  ' + Math.random());
 console.log(
   '  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
   ' the cursor in the output block will delete the output block'
 );
 ```
+>      Test output:
+>        test using node:
+>        0.11440220953136393
+>        Note: hover-exec on the output line, or alt+/ (opt+/) with
+>        the cursor in the output block will delete the output block
+
 
 Note:
-
 - to allow execution also in *markdown preview enhanced*, include `{cmd=node}` in the command line
-  -- eg. `js {command=node} :node`.
-- note that in-line output is not available in *mpe*.
+  -- eg. `js {command=node} : node`.
+- in-line output is not available in *mpe*.
 
-```js
+```js {cmd=node} :node
 //'''js {cmd=node} :node
 console.log(process.cwd());
 console.log('test using node: ' + Math.random());
@@ -440,13 +474,14 @@ console.log(a + Math.random());
 >     test using node: 0.6890891280183384
 >     5.083428662334198
 
-```js
+```js {cmd=node} :node
 //'''js {cmd=node} :node
-process.cwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
+process.cwd()  =>>c:\Users\...\GitHub\hover-exec
 'test: '+Math.random() =>>test: 0.5575077736488605
 let a=5;
 a+Math.random() =>>5.639220383136484
 ```
+>     Test output inline.
 
 ---
 
@@ -456,7 +491,7 @@ Html and In-browser javascript can be used..
 
 The following three examples are from the [js1k demos](https://js1k.com/). This will also work in *mpe*...
 
-```html
+```html  // hello world 
 <!--'''html // Hello world -->
 <h1 align="center">Hello world</h1>
 <p>Html will be displayed in the browser</p>
@@ -466,7 +501,7 @@ The following three examples are from the [js1k demos](https://js1k.com/). This 
 </script>
 ```
 
-```html 
+```html  // what am I going to do now
 <!-- '''html // tunnel *what am I going to do now*  -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
@@ -482,7 +517,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 </script></body>
 ```
 
-```html
+```html  // psychedelic
 <!-- '''html  // psychedelic -->
 <html>
   <head> </head>
@@ -608,7 +643,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 </html>
 ```
 
-```html
+```html  // breathing galaxies
 <!-- '''html  // breathing galaxies -->
 <html>
   <head>
@@ -749,10 +784,10 @@ vscode.window.showInformationMessage(a) //not available in node
 eval('let a=3;2*a*Math.random()')=>>2.0640811299649973
 console.log(a,Math.random())
 'hello '+(2-1+Math.random())=>>hello 1.1809207030007176
-process.cwd() =>>c:\Users\rmzetti\GitHub\hover-exec
+process.cwd() =>>c:\Users\,,\GitHub\hover-exec
 console.log(abc)
 ```
->      Test output:
+>      Test output (also inline, and in message boxes bottom right of window):
 >      goodbye 0.5267435608368682
 >      abcde
 
@@ -776,7 +811,6 @@ new Date().getTime()=>>1643491780855
 >     Test output: all inline
 
 ---
-
 Time and date using node
 
 ```js {cmd=node} :node
@@ -833,7 +867,7 @@ netstat -an
 #### Random strings
 
 ```js
-//'''js {cmd=node} :node //works in mpe
+//'''js {cmd=node} :node //alternative using node, also works in mpe
 //random string generation see https://gist.github.com/6174/6062387
 a=Math.random().toString(36).substring(2, 15)
 a =>>rbd7mswsp5k
@@ -848,7 +882,7 @@ Math.random(36).toString(36).substring(2,3) =>>9
 >      hxnxshjsjblbtyqlovrbrrvnjmffrr
 
 ---
-```js
+```js {cmd=node} :node //string jumbler, works in mpe
 //'''js {cmd=node} :node //string jumbler, works in mpe
 function swapStr(str, n) {
   var arr = [...str];
@@ -865,12 +899,12 @@ console.log(swapStr('portsmouth', 100));
 >      mhtoprsout
 
 ---
-```js
+```js {cmd=node} :node //generate random string
 //'''js {cmd=node} :node //generate random string
 function randch(n){
   return ''+Math.random().toString(36).substring(2,2+n)
 }
-randch(36) =>>alxgrlb8lu8
+randch(36) // =>>alxgrlb8lu8
 console.log(randch(36))
 ```
 >      Test output:
@@ -880,19 +914,23 @@ console.log(randch(36))
 
 #### Regular expression testing
 
-Here are several examples of regex testing - the output is in-line.
+Here are several other examples of regex testing - the output is in-line.
 To see that the output is being regenerated click *[clear output]* in the hover before executing
 
-```js
-//'''js //javascript regex tester (use node for mpe)
+```js {cmd=node}
+//'''js {cmd} //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
-"xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'') =>>js
+let s="xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'');
+s+' this output not from mpe.' // =>>js this output not from mpe.
+console.log(s); //this needed for mpe
 ```
+>      Test output:
+>      js
 
 ---
-```js
-//'''js {cmd=node} :node //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1Baa')  // =>>bcBaadefg
+```js {cmd=node} :eval // for mpe the {..} needs to be before the : 
+//'''js {cmd=node} :eval //javascript regex tester
+'abcdefg'.replace(/^.*(bc)/,'$1Baa')  // =>> bcBaadefg
 console.log('abcdefg'.replace(/^.*(bc)/,'$1Baa'))  //this for *mpe*
 ```
 >      Test output:
@@ -900,11 +938,10 @@ console.log('abcdefg'.replace(/^.*(bc)/,'$1Baa'))  //this for *mpe*
 
 
 ---
-
 another regex example
 
-```js:node
-//'''js:node
+```js {cmd=node} : node // for mpe the {..} needs to be before the : 
+//'''js :node // if the space is not included before the : the codeblock disappears in mpe
 var myRe = new RegExp('d(b+)d', 'g');
 var myArray = myRe.exec('xxdbbbdwerwr');
 myArray =>>dbbbd,bbb
@@ -961,13 +998,13 @@ Command lines to conveniently start a number of scripts are included (see [Confi
 Notes:
 
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed
-- Some of the commands to run the scripts ** *may need customising *** to suit your particular installation - see [Configuration settings](#configuration-settings) below.
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [Configuration settings](#configuration-settings).
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - see the [Add new script language](#add-new-script-language) section for examples.
 
 ---
 ### Python
 
-Use `python` to run python. `python3` should be used if that is the python repl start command
+Use `python` to run python. `python3` can be used if that is the python start command
 
 ```python {cmd}
 # '''python :python3 # use this instead to use 'python3' as start command
@@ -983,13 +1020,11 @@ print('python ok')
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed between) so that *markdown preview enhanced* can execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
 
 ---
-
 This one-liner can be used to install python packages via pip:
 
 `pwsh python -m pip install pyformulas`
 
 ---
-
 In the following example, `{cmd matplotlib=true}` will allow execution in *markdown preview enhanced* & plot graphs inline. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension). If you also use  *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover.
 
 ```python {cmd matplotlib=true}
@@ -1020,8 +1055,8 @@ fig.suptitle('To close, click cancel in hover, then close plot if necessary', fo
 canvas = np.zeros((480,640))
 screen = pf.screen(canvas, 'Sinusoid')
 start = time.time()
-while True:
-    now = time.time() - start
+now = time.time() - start
+while now<4:
     x = np.linspace(now-2, now, 100)
     y = np.sin(2*np.pi*x) + np.sin(3*np.pi*x)
     plt.xlim(now-2,now+1)
@@ -1029,10 +1064,10 @@ while True:
     plt.plot(x, y, c='black')
     # If we haven't already shown or saved the plot, then we need to draw the figure first...
     fig.canvas.draw()
-    image = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
     image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     screen.update(image)
- # cancel script execution using link in hover, then close plot
+    now = time.time() - start
 ```
 >      Test output is the plot.
 
@@ -1073,7 +1108,7 @@ Use `octave` or `python : octave` to run octave. Using 'python' as the command i
  #   nb. in octave, need mat2str or num2str for numeric output
 num2str(7.1+rand(1))  =>>7.2741
 'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
+pwd()  =>>c:\Users\...\GitHub\hover-exec
 disp('hello world in output section!')
 disp(rand(1))
 ```
@@ -1103,7 +1138,10 @@ disp('disp puts quotes around strings',rand())
 ---
 ### Lua
 
-Lua has a syntax highlighter available for *vscode*. Many installations however require running, say, *lua51*, or *lua54*, rather than updating and setting *lua* as the run-time (unlike, say, *julia*). So use 'lua : lua54' as the command id, etc., or check/adjust the *hover-exec* script config.
+Lua has a syntax highlighter available for *vscode*.
+
+Many installations require running, say, *lua51*, or *lua54*, rather than setting *lua* as the run-time (unlike, say, *julia*).
+So use 'lua : lua54' as the command id, etc. ... or check/adjust using [config] in the hover (top left).
 
 ```lua -- say hello & goodbye
 -- '''lua  -- 'lua' id specifies syntax highlight and default start command
@@ -1116,7 +1154,6 @@ print("lua ok") -- this outputs in the output code block below
 >      lua ok
 
 ---
-
 ### Matlab
 
 And `matlab` can be used to run  *matlab*, although it's a slow starter...
@@ -1226,7 +1263,7 @@ ls -l
 >      total 22
 >      drwxr-xr-x ... etc.
 
-Can also use bash commands direct, since bash is the default shell for child-process
+Can also use bash commands direct, since for macos/linux/wsl bash is the default shell for child-process
 `ls -al "%g"` //list temp directory files (in the hover command, %e, %f etc are expanded - see the hover message)
 
 Hover-exec can also use `zsh` as the default by setting `scripts.os="mac (zsh)"` rather than the child-process default `bash` which is used if `scripts.os="mac (auto)"` (if changed, *vscode* may need a restart)
@@ -1264,6 +1301,15 @@ Instead if the shell is the default (cmd), ie. `scripts.os="win (auto)"`, use
 >      Microsoft Windows [Version 10.0.22581.100]
 
 which would be great, except that I'm actually running Windows 11.. c'est la Microsoft.
+
+---
+### Cmd
+
+Cmd is the default child-process in Windows, and can be
+
+`
+
+
 
 ---
 ## Chaining execution code blocks

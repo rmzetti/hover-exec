@@ -42,6 +42,7 @@ For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READ
     - [Gnuplot](#gnuplot)
     - [Bash & zsh](#bash--zsh)
     - [Powershell](#powershell)
+    - [Cmd](#cmd)
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
         - [Default shell simple command execution:](#default-shell-simple-command-execution)
@@ -61,9 +62,9 @@ For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READ
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
-Hover script exec in action:
+*Hover-exec* in action:
+
   ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
-  ![](media/Hover-exec.gif)
 
 In addition to executing scripts, *hover-exec* can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 
@@ -139,8 +140,7 @@ console.log(abc)
 
 
 ---
-
-A regex tester using the *javascript* vm:
+A regex tester using the *javascript* vm (try clicking *clear output* before *exec*):
 
 ```js
 //'''js  //javascript regex tester
@@ -361,10 +361,9 @@ plot "$charge" using 1:3 w lp title "charge"
 ```
 ![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
- The above is a *png* file created (using the *paste image* extension) from a screen copy of the plot window.
+The above is a *png* file created (using the *paste image* extension) from a copy of the plot window.
 
 ---
-
 ### Bash & zsh
 
 *Bash* and *zsh* scripts can be run for appropriate systems:
@@ -399,6 +398,10 @@ pwd
 >     Path
 >     ----
 >     C:\Users\rmzetti\GitHub\hover-exec
+
+---
+### Cmd
+
 
 
 ---
