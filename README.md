@@ -2,20 +2,22 @@
 
 This is the README for the VSCode extension *hover-exec*. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the README etc have many example codeblocks that can be executed to try it out.
 
-To help with this, *hover-exec* provides a command to open the README in the editor. After the extension has been installed, type *ctrl+shift+p* to open the commands, then *hov..* and you will see the command *open the hover-exec README*
+To help with this, *hover-exec* provides a command to open the README in the editor:
 
-From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor:
+> After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. Click the command to open this README in the editor.
+
+From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor.   If the cursor is in the line the shortcut alt-/ or opt-/ can be used instead of the hover command.
 
 `code %x/README.md`            - open the *hover-exec* *README* (this file) in the editor \
 `code %x/READMORE.md`       - open the *READMORE*, which cover the same ground as the README but in more detail \
 `code %x/test/basic_tests.md`  - open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
 `code %x/test/misc_tests.md`   - open *misc_tests.md* for various benchmark tests and REPLs
 
-For the above, %x is a hover-exec command variable giving the extension path.
+In the above, %x is a hover-exec command variable giving the extension path.
 
-- NB. If you are viewing these in a markdown preview, one-liner commands are highlighted. They start in col 1, and start & end with a single backtick.
+- NB. If you are viewing this in a markdown preview, the one-liner commands are highlighted. They start in col 1, and start & end with a single backtick.
 
-`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))`
+`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))` //one-liner to show the preview for the current file.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 

@@ -321,6 +321,7 @@ export function activate(context: vscode.ExtensionContext) {
     tempPath = context.globalStorageUri.path + "/"; //temp folder path
     tempFsPath = context.globalStorageUri.fsPath; //temp folder path, %p
     if (windows) {
+      tempPath=tempPath.replace(/^\//, "");
       tempFsPath += "\\";
     } else {
       tempFsPath += "/";
@@ -336,6 +337,9 @@ export function activate(context: vscode.ExtensionContext) {
     if (v.includes("/")) {
       tempName = v.slice(v.lastIndexOf("/") + 1);
       tempPath = v.slice(0, v.lastIndexOf("/") + 1);
+      if (windows) {
+        tempPath=tempPath.replace(/^\//, "");
+      }
       tempFsPath = tempPath.replace(/\//g, "\\");
       if (tempPath.startsWith("/")) {
         tempFsPath = tempFsPath.slice(1);
