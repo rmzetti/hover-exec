@@ -51,7 +51,7 @@
 					"default": {
             "os": "",
 						"octave": "octave \"%f.m\"",
-						"matlab": "matlab -nodesktop -sd \"%p.m/\" -batch temp",
+						"matlab": "matlab -nodesktop -sd \"%g.m/\" -batch temp",
 						"rterm": "rterm -q --no-echo -f \"%f.r\" ",
 						"r": "r \"%f.r\" ",
 						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
@@ -86,7 +86,7 @@
 						"safari": "open -a safari \"%f.html\"",
 						"go": "go run \"%f.go\"",
 						"buddvs": "buddvs \"%f.txt\" ",
-						"pascal": "fpc \"%f.pas\" -v0 && \"%ptemp\" ",
+						"pascal": "fpc \"%f.pas\" -v0 && \"%gtemp\" ",
 						"test": "test -c \"%f.tst\"",
             "test_win": "testwin -c \"%f.tst\"",
             "test_mac": "testmac -c \"%f.tst\"",

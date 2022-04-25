@@ -45,7 +45,7 @@ For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READ
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
         - [Default shell simple command execution:](#default-shell-simple-command-execution)
-        - [exec notepad with file in current folder:](#exec-notepad-with-file-in-current-folder)
+        - [exec notepad with file in current file's folder::](#exec-notepad-with-file-in-current-files-folder)
         - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
         - [open another instance of vscode:](#open-another-instance-of-vscode)
         - [explore files, view folders:](#explore-files-view-folders)
@@ -404,7 +404,7 @@ pwd
 ---
 ## One-liners and quickmath
 
-*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current workspace folder path, %d current file path, %e current file path+name, %f temp file path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
@@ -421,12 +421,12 @@ They must start in col 1.
 `ls` zsh,bash, pwsh \
 `dir` cmd
 
-##### exec notepad with file in current folder:
+##### exec notepad with file in current file's folder::
 
-`notepad "%cREADME.md"`  --windows \
-`open -a textedit "%cREADME.md"`  --mac \
-`gedit "%cREADME.md"`  --linux/wsl \
-`xedit "%cREADME.md"`  --linux/wsl
+`notepad "%dREADMORE.md"`  --windows \
+`open -a textedit "%dREADME.md"`  --mac \
+`gedit "%dREADMORE.md"`  --linux/wsl \
+`xedit "%dREADME.md"`  --linux/wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -441,10 +441,9 @@ They must start in col 1.
 ##### explore files, view folders:
 
 `open -a finder ~`  mac 'home' \
-`open -a finder "%c"`  mac to view current folder \
+`open -a finder "%c"`  mac to view current workspace folder \
 `explorer ,`  windows view 'ThisPC' \
-`explorer.exe /select, "%cREADME.md"`  windows & wsl view current folder & select file \
-`nemo "%cREADME.md"`  Linux mint view current folder & select file
+`nemo "%e"`  Linux mint view current folder & select file
 
 ##### other examples:
 

@@ -59,7 +59,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
         - [Default shell simple command execution:](#default-shell-simple-command-execution)
-        - [exec notepad with file in current folder:](#exec-notepad-with-file-in-current-folder)
+        - [exec notepad with file in current file's folder:](#exec-notepad-with-file-in-current-files-folder)
         - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
         - [open another instance of vscode:](#open-another-instance-of-vscode)
         - [explore files, view folders:](#explore-files-view-folders)
@@ -1139,7 +1139,7 @@ disp("matlab ok!")
 
 Using go as a 'scripting language'.
 Note that the go.mod and go.sum files provided in the 'test' directory need to be in the following folder: \
-`echo %p` //hover here (in the editor) to view the actual path for your system
+`echo %g` //hover here (in the editor) to view the actual path for your system
 
 ```go
 // '''go
@@ -1227,7 +1227,7 @@ ls -l
 >      drwxr-xr-x ... etc.
 
 Can also use bash commands direct, since bash is the default shell for child-process
-`ls -al "%p"` //list temp directory files (in the hover command, %p, %f etc are expanded - see the hover message)
+`ls -al "%g"` //list temp directory files (in the hover command, %e, %f etc are expanded - see the hover message)
 
 Hover-exec can also use `zsh` as the default by setting `scripts.os="mac (zsh)"` rather than the child-process default `bash` which is used if `scripts.os="mac (auto)"` (if changed, *vscode* may need a restart)
 
@@ -1368,14 +1368,14 @@ To see what will be included, hover over the tag reference in the `inhere` line.
 2. Within the `#inhere` line, the tag reference must be quoted with backticks as above (*hover-exec* uses back-ticks to indicate potential hovers)
 3. To include lines from another file use the format
 >     #inhere file_path/name `#tag`
->     (nb. file_path can include %c current folder, or %p temp files folder command variables):
+>     (nb. file_path can include %c current folder, or %g temp files folder command variables):
 
 Here is an example:
 
 ```gnuplot
 # '''gnuplot
 $speed <<EOD
-  #inhere %c/test/misc_tests.md `#p1`     // hover to view the data in misc_test.md
+  #inhere %d/test/misc_tests.md `#p1`     // hover to view the data in misc_test.md
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
@@ -1655,7 +1655,7 @@ chRepl[i][0]=>> rterm
 ---
 ## One-liners and quickmath
 
- *One-liners* starting with a single backtick  in column 1 and ending with a single backtick can also be executed with *hover-click*. The pre-defined variables %c current folder, %f temp file full path+name, %p temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+ *One-liners* starting with a single backtick  in column 1 and ending with a single backtick can also be executed with *hover-click*. The pre-defined variables %c current workspace folder, %d current file path only, %e current file full path+name, %f temp file full path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
 
 Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using  *mathjs* `math.evaluate(..)`) and the result will be shown immediately in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
@@ -1672,12 +1672,12 @@ They must start in col 1.
 `ls` zsh,bash, pwsh \
 `dir` cmd
 
-##### exec notepad with file in current folder:
+##### exec notepad with file in current file's folder:
 
-`notepad "%cREADME.md"` --windows \
-`open -a textedit "%cREADME.md"` --mac \
-`gedit "%cREADME.md"` --linux, wsl \
-`xedit "%cREADME.md"` --linux, wsl
+`notepad "%dREADME.md"` --windows \
+`open -a textedit "%dREADME.md"` --mac \
+`gedit "%dREADME.md"` --linux, wsl \
+`xedit "%dREADME.md"` --linux, wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -1694,10 +1694,10 @@ They must start in col 1.
 ##### explore files, view folders:
 
 `open -a finder ~` mac 'home' \
-`open -a finder "%c"` mac to view current folder \
+`open -a finder "%c"` mac to view current workspace folder in finder \
 `explorer ,` windows view 'ThisPC' \
-`explorer /select, "%cREADME.md"` windows view current folder & select file \
-`nemo "%cREADME.md"` Linux mint view current folder & select file
+`explorer /select, "%dREADME.md"` windows view current file's folder & select file \
+`nemo "%dREADME.md"` Linux mint view current file's folder & select file
 
 ##### other examples:
 
@@ -1713,9 +1713,9 @@ They must start in col 1.
 
 ##### bash html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %chover-exec.gif` //chrome with media or html file - can use %c etc in one-liners \
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" %dhover-exec.gif` //chrome with media or html file - can use %d etc in one-liners \
 `html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url \
-`html <h1 align='center' >this: %c</h1><br><h3 align='center' >or this: /%c</h3>` \
+`html <h1 align='center' >this: %d</h1><br><h3 align='center' >or this: /%d</h3>` \
 `js console.log(7*7-7)` \
 `js progress(''+(7*7-7),4000)` //quick calculator output via 4sec message
 
@@ -1723,8 +1723,8 @@ They must start in col 1.
 ### audio one-liners
 
 `html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` \
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%cmedia\fnt2b.mp3"` \
-`pwsh start wmplayer "%cmedia/fnt2b.mp3"`
+`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%dmedia\fnt2b.mp3"` \
+`pwsh start wmplayer "%dmedia/fnt2b.mp3"`
 
 ---
 ### Windows one-liners: ms-settings, control panel and management console
@@ -1801,10 +1801,11 @@ All configuration settings can be viewed in *vscode*'s configurations view for *
 Several *hover-exec* command line variables are used. These can be viewed via the hover for an code block: clicking *[command variables]* will produce a list:
 
 On windows the list looks like this
-- %f.ext  temp file 'path/name.ext': c:\Users\rmzetti\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\temp.ext
-- %p       temp folder 'path/': c:\Users\rmzetti\AppData\Roaming\Code\User\globalStorage\rmzetti.hover-exec\
-- %c       this folder 'path/': c:\Users\rmzetti\GitHub\hover-exec\
-- %e       this file 'path/': c:\Users\rmzetti\GitHub\hover-exec\READMORE.md
+- %c       workspace folder 'path/': c:/Users/ ... /
+- %d       this file 'path/': c:/Users/.../READMORE.md
+- %e       this file 'path/': c:/Users/.../READMORE.md
+- %f.ext  temp file 'path/name.ext': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec/temp.ext
+- %g       temp folder 'path/': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec/
 - %n.ext temp file 'name.ext': temp.js.ext, where ext is an appropriate extension
 
 So
@@ -1819,7 +1820,7 @@ The following one-liner will provide an unsorted config list for 'scripts','repl
 >      {
 >        os: 'win (auto)',
 >        octave: 'octave "%f.m"',
->        matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
+>        matlab: 'matlab -nodesktop -sd "%g.m/" -batch temp',
 >        rterm: 'rterm -q --no-echo -f "%f.r" ',
 >        r: 'r "%f.r" ',
 >        scilab: 'scilex -quit -nb -f "%f.sci" ',
@@ -1857,11 +1858,11 @@ console.log(sort(config.get('scripts')));
 >      julia_mac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
 >      lua: 'lua "%f.lua"',
 >      lua54: 'lua54 "%f.lua"',
->      matlab: 'matlab -nodesktop -sd "%p.m/" -batch temp',
+>      matlab: 'matlab -nodesktop -sd "%g.m/" -batch temp',
 >      node: 'node "%f.js"',
 >      octave: 'octave "%f.m"',
 >      os: 'win (auto)'
->      pascal: 'fpc "%f.pas" -v0 && "%ptemp" ',
+>      pascal: 'fpc "%f.pas" -v0 && "gtemp" ',
 >      pwsh: 'set "NO_COLOR=1" & pwsh -f "%f.ps1" ',
 >      python: 'python "%f.py"',
 >      python3: 'python3 "%f.py"',

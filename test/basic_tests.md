@@ -26,7 +26,7 @@ The following basic tests are carried out with the code block id `js` . This req
 Opening a markdown file (eg. this one) in the vscode editor will activate the *hover-exec* extension. To check, after opening the editor, hover over the start line `js ...` or over the end line of the code block. The following hover message will appear:
 
 >      Test output (in the hover):
->      hover-exec: js [config] [show %f,%p..] [delete block]
+>      hover-exec: js [config] [show %f, %g ..] [delete block]
 >      [clear output] [open last script] [open last result]
 >      js =>> //this is a code block with id 'js'
 
@@ -69,7 +69,7 @@ When hovering over the main code block start or end lines below:
 console.log('the meaning of life: ', 7*7-7)
 ```
 >       Test output (shown in the hover):
->       hover-exec: js [config] [show %f,%p..] [delete block]
+>       hover-exec: js [config] [show %f, %g ..] [delete block]
 >       [clear output] [open last script] [open last result]
 >       js =>> //this is a code block with id 'js'
 
@@ -78,10 +78,11 @@ The top right hand `[delete block]` option will delete the code block (`ctrl-z` 
 The `[command variables %f..]` option will provide some further information on possible shortcuts that can be used in command lines (not in the code itself):
 
 >      Test output (top of the editor pane) from clicking [command variables..]:
+>      %c     workspace folder 'path/': c:\Users\...\
+>      %d     this file 'path/': c:\Users\...\basic_tests.md
+>      %e     this file 'path/name': c:\Users\...\basic_tests.md
 >      %f.ext temp file 'path/name.ext': c:\Users\...\globalStorage\rmzetti.hover-exec\temp.ext
->      %p     temp folder 'path/': c:\Users\...\globalStorage\rmzetti.hover-exec\
->      %c     this folder 'path/': c:\Users\...\hover-exec\
->      %e     this file 'path/': c:\Users\...\basic_tests.md
+>      %g     temp folder 'path/': c:\Users\...\globalStorage\rmzetti.hover-exec\
 >      %n.ext temp file 'name.ext': temp.js.ext
 
 And finally the `[config]` option will show the configuration entry for the command above the editor, for example:

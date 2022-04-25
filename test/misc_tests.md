@@ -493,7 +493,7 @@ If `go` is installed, it can be used as a scripting language
 >      globalStorage/temp folder. The path of this folder can be
 >      seen by hovering over the following line (in the editor):
 
-`%p` //hover here to see the path of *hover-exec*'s temp folder.
+`%g` //hover here to see the path of *hover-exec*'s temp folder.
 
 ```go //speed test 2
 // '''go //speed test 2

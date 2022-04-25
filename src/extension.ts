@@ -53,16 +53,16 @@ let vmDefault={global,globalThis,config,vscode, //vm default context
 let vmContext:vm.Context | undefined=undefined; //only shallow clone needed
 const refStr =
   "*hover-exec:* predefined strings:\n" +
-  " - %f `full_path/name.ext` of temp file\n" +
-  " - %p `full_path/` for temporary files\n" +
-  " - %c `full_path/` of the current folder\n" +
-  " - %e `full_path/` of the editor file\n" +
-  " - %x `full_path/` of hover-exec's extension folder\n" +
+  " - %c `path/` of the current workspace folder\n" +
+  " - %d `path/` of the current editor file\n" +
+  " - %e `path/name.ext` of the current editor file\n" +
+  " - %f `path/name.ext` of temporary file\n" +
+  " - %g `path/` for temporary files\n" +
+  " - %x `path/` of hover-exec's extension folder\n" +
   " - %n `name.ext` of temporary file\n" +
-  " - The default ext is specified by appending .ext, eg. %f.py\n" +
-  " - In windows, if needed, /%f etc produces /c:/linux/web/style/path/";
+  " - The required ext can be specified by appending .ext, eg. %f.py\n";
 const msgDel =
-  "[ [*command variables %f..*] ](vscode://rmzetti.hover-exec?ref) " +
+  "[ [*command variables %f etc*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
 let msg = "",cmda = "",mpe = "",comment = "",full = "";  //for cmd line parse
 let os='win'; //set current os
@@ -113,45 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         else if(quickmath){ //evaluate math expressions like `44-2=` using mathjs
                        //also evaluate re eg. `/($speed << EOD.*EOD)/`
-          let s=line.text;
-          if(s[pos.character]==='`'){return null;} //hover over the expression not backticks
-          let s1=s.slice(0,pos.character);//there may be more than one expression in a line
-          let s2=s.slice(pos.character);  //so isolate parts before & after hover pos
-          if(!s1.includes('`') || !s2.includes('`')){return null;}
-          s2=s2.slice(0,s2.indexOf('`'));
-          quickmath=s2.endsWith('='); //otherwise regex
-          let f='';
-          if(!quickmath){ // then if an inhere line get the file name if present
-            f=s1.replace(/.*#inhere (.*?)`.*/,'$1').trim();
-            if(f===''){
-              f=doc.getText();
-            }
-            else {
-              //f=fs.readFileSync(replaceStrVars(f),'utf-8');
-              f=await readFile(replaceStrVars(f));
-            }
-            status('ok');
-          }
-          s1=s1.slice(s1.lastIndexOf('`')+1);
-          if(!quickmath){s1=s1.slice(1);}
-          s2=s2.slice(0,s2.length-1);
-          s1=s1+s2;
-          if(quickmath){
-            s2='hover-exec via mathjs';
-            quickmathResult=''+math.evaluate(s1);
-          } else { //evaluate 'simplified' regex on file contents
-            //which specifies what is being looked for, & interprets . as [\s\S] 
-            s2='hover-exec via regex:\n';
-            s1=s1.replace(/\./g,'[\\s\\S]'); //make . mean all chars
-            s1=s1.replace(/[*]([^?])/g,'*?$1');   //make * not greedy
-            let re = new RegExp('[\\s\\S]*?('+s1+')[\\s\\S]*',"m");
-            quickmathResult=f.replace(re,'$1');
-          } //save result for copy to clipboard
-          if(quickmathResult===''){return null;}
-          s1= "[ " + quickmathResult + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
-          const contents = new vscode.MarkdownString(s2+":\n\n"+s1);
-          if(quickmath){status(quickmathResult);}
-          return new vscode.Hover(contents);
+          return await doQuickmath();
         }
         if (line.text === "```") {
           //allow hover-exec from end of codeblock
@@ -223,7 +185,48 @@ export function activate(context: vscode.ExtensionContext) {
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //and return it
         }
-      }
+        async function doQuickmath() {
+          let s=line.text;
+          if(s[pos.character]==='`'){return null;} //hover over the expression not backticks
+          let s1=s.slice(0,pos.character);//there may be more than one expression in a line
+          let s2=s.slice(pos.character);  //so isolate parts before & after hover pos
+          if(!s1.includes('`') || !s2.includes('`')){return null;}
+          s2=s2.slice(0,s2.indexOf('`'));
+          quickmath=s2.endsWith('='); //otherwise regex
+          let f='';
+          if(!quickmath){ // then if an inhere line get the file name if present
+            f=s1.replace(/.*#inhere (.*?)`.*/,'$1').trim();
+            if(f===''){
+              f=doc.getText();
+            }
+            else {
+              //f=fs.readFileSync(replaceStrVars(f),'utf-8');
+              f=await readFile(replaceStrVars(f));
+            }
+            status('ok');
+          }
+          s1=s1.slice(s1.lastIndexOf('`')+1);
+          if(!quickmath){s1=s1.slice(1);}
+          s2=s2.slice(0,s2.length-1);
+          s1=s1+s2;
+          if(quickmath){
+            s2='hover-exec via mathjs';
+            quickmathResult=''+math.evaluate(s1);
+          } else { //evaluate 'simplified' regex on file contents
+            //which specifies what is being looked for, & interprets . as [\s\S] 
+            s2='hover-exec via regex:\n';
+            s1=s1.replace(/\./g,'[\\s\\S]'); //make . mean all chars
+            s1=s1.replace(/[*]([^?])/g,'*?$1');   //make * not greedy
+            let re = new RegExp('[\\s\\S]*?('+s1+')[\\s\\S]*',"m");
+            quickmathResult=f.replace(re,'$1');
+          } //save result for copy to clipboard
+          if(quickmathResult===''){return null;}
+          s1= "[ " + quickmathResult + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
+          const contents = new vscode.MarkdownString(s2+":\n\n"+s1);
+          if(quickmath){status(quickmathResult);}
+          return new vscode.Hover(contents);
+        }
+      };
     })()
   );
   
@@ -293,9 +296,11 @@ export function activate(context: vscode.ExtensionContext) {
     doc: vscode.TextDocument
   ) {
     currentFile = doc.uri.path; //current editor file full path /c:...
+    if(windows){ currentFile = currentFile.replace(/^\//,''); } //remove starting / for windows
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
     if (vscode.workspace.workspaceFolders) {
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
+      if(windows){ currentPath = currentPath.replace(/^\//,''); } //remove starting / for windows
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
     } else {
       currentPath = currentFile.slice(0,currentFile.lastIndexOf('/'));
@@ -319,7 +324,7 @@ export function activate(context: vscode.ExtensionContext) {
     mpe = ""; //reset start line parameters
     tempName = "temp.txt"; //temp file name, can be used as (%n)
     tempPath = context.globalStorageUri.path + "/"; //temp folder path
-    tempFsPath = context.globalStorageUri.fsPath; //temp folder path, %p
+    tempFsPath = context.globalStorageUri.fsPath; //temp folder path, %g
     if (windows) {
       tempPath=tempPath.replace(/^\//, "");
       tempFsPath += "\\";
@@ -570,10 +575,11 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     }
     if (uri.query === "ref") {
       const value = await vscode.window.showQuickPick(
-        ["%f.ext temp file 'path/name.ext': "+replaceStrVars('%f.ext'), 
-         "%p     temp folder 'path/': "+replaceStrVars('%p'), 
-         "%c     this folder 'path/': "+replaceStrVars('%c'), 
-         "%e     this file 'path/': "+replaceStrVars('%e'), 
+        ["%c     workspace folder 'path/': "+replaceStrVars('%c'),
+         "%d     this file 'path/': "+replaceStrVars('%d'), 
+         "%e     this file 'path/name.ext': "+replaceStrVars('%e'), 
+         "%f.ext temp file 'path/name.ext': "+replaceStrVars('%f.ext'), 
+         "%g     temp folder 'path/': "+replaceStrVars('%g'), 
          "%n.ext temp file 'name.ext': "+replaceStrVars('%n.ext')], 
          {placeHolder: "Predefined paths reference (can add .ext, eg. python temp file is %f.py)"});
       if(value){
@@ -762,26 +768,27 @@ function hrefSrcReplace(s:string) {
 function replaceStrVars(s: string) {
   if(cmdId==='eval' || cmdId==='js' || cmdId==='vm'){tempName='temp.js';}
   //replace %f etc with the appropriate string
-  if (/%[fp]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %p and %x
-    tempName= "temp." + s.replace(/.*?%[fp]\.(\w*).*/, "$1"); // \W? before last .
-    s= s.replace(/(%[fp])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
+  if (/%[fg]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %g and %x
+    tempName= "temp." + s.replace(/.*?%[fg]\.(\w*).*/, "$1"); // \W? before last .
+    s= s.replace(/(%[fg])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
   s= s
     .replace(/%n/g, tempName) //%n temp file name only
     .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
 
-    .replace(/%f/g, tempPath + tempName) // '/%f' uses /
-    .replace(/%p/g, tempPath) // '/%p' uses /
-    .replace(/%c/g, currentPath) // '/%c' uses /
-    .replace(/%e/g, currentFile) // '/%e' uses /
-
-    // .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
-    // .replace(/\/%p/g, tempPath) // '/%p' uses /
+    .replace(/%c/g, currentPath)
+    .replace(/%d/g, currentPath.slice(0,currentPath.lastIndexOf('/')+1))
+    .replace(/%e/g, currentFile)
+    .replace(/%f/g, tempPath + tempName) 
+    .replace(/%g/g, tempPath)
+    
+    .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
+    // .replace(/\/%g/g, tempPath) // '/%g' uses /
     // .replace(/\/%c/g, currentPath) // '/%c' uses /
     // .replace(/\/%e/g, currentFile) // '/%e' uses /
     
     // .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
-    // .replace(/%p/g, tempFsPath) //%p temp folder path
+    // .replace(/%g/g, tempFsPath) //%g temp folder path
     // .replace(/%c/g, currentFsPath) //%c current file path
     // .replace(/%e/g, currentFsFile) //%e current file path/name
   return s;
