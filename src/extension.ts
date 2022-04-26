@@ -775,12 +775,12 @@ function replaceStrVars(s: string) {
     .replace(/%g/g, tempPath)
     .replace(/%x/g, hePath) // %h hover-exec path for readme etc.
     //the following are mainly for windows, although mostly the prev will work ok
-    .replace(/%C/g, currentFsPath.replace(/\\/g,'\\\\')) // %c\ uses FsPath
-    .replace(/%D/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\').replace(/\\/g,'\\\\')
-    .replace(/%E/g, currentFsFile.replace(/\\/g,'\\\\')) // %e\ uses FsPath
-    .replace(/%F/g, tempFsPath.replace(/\\/g,'\\\\') + tempName) // %f\ uses FsPath
-    .replace(/%G/g, tempFsPath.replace(/\\/g,'\\\\')) // %g\ uses FsPath
-    .replace(/%X/g, hePath.replace(/\//,'\\\\')) // %h\ hover-exec fsPath
+    .replace(/%C/g, currentFsPath) // %C uses FsPath
+    .replace(/%D/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
+    .replace(/%E/g, currentFsFile) // %E uses FsPath
+    .replace(/%F/g, tempFsPath + tempName) // %F uses FsPath
+    .replace(/%G/g, tempFsPath) // %G uses FsPath
+    .replace(/%X/g, hePath) // %H hover-exec fsPath
   return s;
 }
 
