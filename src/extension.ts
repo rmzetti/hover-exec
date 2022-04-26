@@ -311,8 +311,8 @@ export function activate(context: vscode.ExtensionContext) {
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
       if(windows){ currentPath = currentPath.replace(/^\//,''); } //remove starting / for windows
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    } else { //if no workspace open
-      currentPath = currentFile.slice(0,currentFile.lastIndexOf('/')-1);
+    } else { //if no workspace open use current file path
+      currentPath = currentFile.slice(0,currentFile.lastIndexOf('/')) + "/";
       if(windows){
         currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'));
       } else {
