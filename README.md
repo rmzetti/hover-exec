@@ -23,8 +23,17 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 
 For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READMORE.md).
 
+## temp
+
+`eval "%d"=>>`
+```output
+=>> c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec/
+```
+
+
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
+  - [temp](#temp)
   - [Contents](#contents)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)

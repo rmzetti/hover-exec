@@ -573,7 +573,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
          "%e     this file 'path/name.ext': "+replaceStrVars('%e'), 
          "%f.ext temp file 'path/name.ext': "+replaceStrVars('%f.ext'), 
          "%g     temp folder 'path/': "+replaceStrVars('%g'), 
-         "%n.ext temp file 'name.ext': "+replaceStrVars('%n.ext')], 
+         "%n.ext temp file 'name.ext': "+replaceStrVars('%n.ext'),
+         "%x     h-e extension folder 'path/': "+replaceStrVars('%x')], 
          {placeHolder: "Predefined paths reference (can add .ext, eg. python temp file is %f.py)"});
       if(value){
          await vscode.env.clipboard.writeText(value);
@@ -767,15 +768,17 @@ function replaceStrVars(s: string) {
   }
   s= s
     .replace(/%n/g, tempName) //%n temp file name only
-    .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
-    .replace(/\\%c/g, currentPath) // '/%c' uses /
-    .replace(/%c/g, currentPath)
-    .replace(/%d/g, currentPath.slice(0,currentPath.lastIndexOf('/')+1))
-    .replace(/\\%e/g, currentFile) // '/%e' uses /
+    .replace(/%x\\/g, hePath.replace(/\//,'\\')) // %h\ hover-exec fsPath
+    .replace(/%x/g, hePath) // %h hover-exec path for readme etc.
+    .replace(/%c\\/g, currentFsPath) // %c\ uses FsPath
+    .replace(/%c/g, currentPath) // %c workspace folder path
+    .replace(/%d\\/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
+    .replace(/%d/g, currentFile.slice(0,currentFile.lastIndexOf('/'))+'/')
+    .replace(/%e\\/g, currentFsFile) // %e\ uses FsPath
     .replace(/%e/g, currentFile)
-    .replace(/\\%f/g, tempPath + tempName) // '/%f' uses /
+    .replace(/%f\\/g, tempFsPath + tempName) // %f\ uses FsPath
     .replace(/%f/g, tempPath + tempName) 
-    .replace(/\\%g/g, tempPath) // '/%g' uses /
+    .replace(/%g\\/g, tempFsPath) // %g\ uses FsPath
     .replace(/%g/g, tempPath)
   return s;
 }
