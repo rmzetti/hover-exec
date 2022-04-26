@@ -768,17 +768,17 @@ function replaceStrVars(s: string) {
   }
   s= s
     .replace(/%n/g, tempName) //%n temp file name only
-    .replace(/%x\\/g, hePath.replace(/\//,'\\')) // %h\ hover-exec fsPath
+    .replace(/%%x/g, hePath.replace(/\//,'\\')) // %h\ hover-exec fsPath
     .replace(/%x/g, hePath) // %h hover-exec path for readme etc.
-    .replace(/%c\\/g, currentFsPath) // %c\ uses FsPath
+    .replace(/%%c/g, currentFsPath) // %c\ uses FsPath
     .replace(/%c/g, currentPath) // %c workspace folder path
-    .replace(/%d\\/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
+    .replace(/%%d/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
     .replace(/%d/g, currentFile.slice(0,currentFile.lastIndexOf('/'))+'/')
-    .replace(/%e\\/g, currentFsFile) // %e\ uses FsPath
+    .replace(/%%e/g, currentFsFile) // %e\ uses FsPath
     .replace(/%e/g, currentFile)
-    .replace(/%f\\/g, tempFsPath + tempName) // %f\ uses FsPath
+    .replace(/%%f/g, tempFsPath + tempName) // %f\ uses FsPath
     .replace(/%f/g, tempPath + tempName) 
-    .replace(/%g\\/g, tempFsPath) // %g\ uses FsPath
+    .replace(/%%g/g, tempFsPath) // %g\ uses FsPath
     .replace(/%g/g, tempPath)
   return s;
 }
