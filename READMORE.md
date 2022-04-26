@@ -1168,7 +1168,7 @@ uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
 7*7-7 =>>42
 disp("matlab ok!")
 ```
->      Test output (plus the plot in a separate window):
+>      Test output (need to close the plot to see this, after a delay.. ):
 >      matlab ok!
 
 ---
@@ -1305,11 +1305,22 @@ which would be great, except that I'm actually running Windows 11.. c'est la Mic
 ---
 ### Cmd
 
-Cmd is the default child-process in Windows, and can be
+Cmd executes cmd.exe in Windows and runs a batch file with contents from the code block.
 
-`
+```cmd
+@pwd
+@echo "hello world 3"
+```
+>      Test output:
+>      c:\Users\..\GitHub\hover-exec
+>      "hello world 3"
 
+Because cmd.exe is the default windows child-process, if the default is being used, one-liners can directly exec cmd commands:
 
+`pwd & @echo "done"` //direct execution of cmd commands in one-liners
+>      Test output:
+>      c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+>      "done"
 
 ---
 ## Chaining execution code blocks

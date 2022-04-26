@@ -402,7 +402,22 @@ pwd
 ---
 ### Cmd
 
+Cmd executes cmd.exe in Windows and runs a batch file with contents from the code block.
 
+```cmd
+@pwd
+@echo "hello world 3"
+```
+>      Test output:
+>      c:\Users\..\GitHub\hover-exec
+>      "hello world 3"
+
+Because cmd.exe is the default windows child-process, if the default is being used, one-liners can directly exec cmd commands:
+
+`pwd & @echo "done"` //direct execution of cmd commands in one-liners
+>      Test output:
+>      c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+>      "done"
 
 ---
 ## One-liners and quickmath

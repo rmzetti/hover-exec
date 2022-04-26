@@ -13,7 +13,7 @@ let out: string = ""; //output from code execution
 let out1: string = ""; //output from code execution
 const swap = "=>>"; //3 char string to indicate pos for in-line result
 let needSwap = false; //no swaps so leave code as is
-let hePath = ""; //path to hover-exec files
+let hePath = ""; //path to hover-exec extension files
 let windows = process.platform.startsWith("win"); //os is windows
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
@@ -230,12 +230,6 @@ export function activate(context: vscode.ExtensionContext) {
     })()
   );
   
-  context.subscriptions.push( //register readme command
-    vscode.commands.registerCommand("hover-exec.readme", () => {
-      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/README.md"));
-    })
-  );
-
   context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
       //process exec command (default shortcut Alt+/ ) -- find start of block and execute
@@ -291,18 +285,33 @@ export function activate(context: vscode.ExtensionContext) {
   
   context.subscriptions.push(vscode.window.registerUriHandler(hUri));
 
+  context.subscriptions.push( //register readme command
+    vscode.commands.registerCommand("hover-exec.readme", () => {
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/README.md"));
+    })
+  );
+
   function setExecParams(
     context: vscode.ExtensionContext,
     doc: vscode.TextDocument
   ) {
+    cmd = ""; //reset start line parameters
+    cmda = "";
+    cmdId = "";
+    comment = "";
+    full = "";
+    mpe = "";
+    needSwap = false; //set true if in-line swaps required
+    codeBlock = "";
+    //reset paths and names
     currentFile = doc.uri.path; //current editor file full path /c:...
     if(windows){ currentFile = currentFile.replace(/^\//,''); } //remove starting / for windows
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
-    if (vscode.workspace.workspaceFolders) {
+    if (vscode.workspace.workspaceFolders) { //if workspace open
       currentPath = vscode.workspace.workspaceFolders[0].uri.path + "/";
       if(windows){ currentPath = currentPath.replace(/^\//,''); } //remove starting / for windows
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    } else {
+    } else { //if no workspace open
       currentPath = currentFile.slice(0,currentFile.lastIndexOf('/'));
       if(windows){
         currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'));
@@ -310,29 +319,18 @@ export function activate(context: vscode.ExtensionContext) {
         currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('/'));
       }
     }
-    if (windows) {
-      currentFsPath += "\\";
-    } else {
-      currentFsPath += "/";
-    }
     vscode.workspace.fs.createDirectory(context.globalStorageUri); //create temp folder if necessary
-    cmd = "";
-    cmda = "";
-    cmdId = "";
-    comment = "";
-    full = "";
-    mpe = ""; //reset start line parameters
+    tempPath = context.globalStorageUri.path + "/"; //temp folder path %g
+    tempFsPath = context.globalStorageUri.fsPath; //temp folder path
     tempName = "temp.txt"; //temp file name, can be used as (%n)
-    tempPath = context.globalStorageUri.path + "/"; //temp folder path
-    tempFsPath = context.globalStorageUri.fsPath; //temp folder path, %g
-    if (windows) {
-      tempPath=tempPath.replace(/^\//, "");
+    if (windows) { //all paths end with slashes in hover-exec
+      currentFsPath += "\\";
+      tempPath=tempPath.replace(/^\//, ""); //remove starting / for windows
       tempFsPath += "\\";
     } else {
+      currentFsPath += "/";
       tempFsPath += "/";
     }
-    needSwap = false; //set true if in-line swaps required
-    codeBlock = "";
   } //end function setExecParams
 
   function getSpecialPath(s: string) {
@@ -546,17 +544,12 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   checkConfig(); //set default configs (only) to their os values (if provided)
-
+  hePath=context.extensionPath.replace(/\\/g,'/')+'/'; //path to hover-exec extension files
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 500);
-  context.subscriptions.push(statusBarItem);
+  context.subscriptions.push(statusBarItem); //setup status bar item & show h-e version
   status(os+' v'+vscode.extensions.getExtension('rmzetti.hover-exec')?.packageJSON.version);
-  hePath=context.extensionPath;
-  if(windows){
-    hePath=hePath.replace(/\\/g,'/');
-  }
-  hePath=hePath+'/';
+  
 } //end function activate
-
 
 const hUri = new (class MyUriHandler implements vscode.UriHandler {
   //handle hover exec commands (command is in uri.query)
