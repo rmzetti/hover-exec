@@ -775,7 +775,7 @@ function replaceStrVars(s: string) {
     .replace(/%g/g, tempPath)
     .replace(/%x/g, hePath) // %h hover-exec path for readme etc.
     //the following are mainly for windows, although mostly the prev will work ok
-    .replace(/%C/g, currentFsPath) // %c\ uses FsPath
+    .replace(/%C/g, currentFsPath.replace(/\\/,'\\\\')) // %c\ uses FsPath
     .replace(/%D/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
     .replace(/%E/g, currentFsFile) // %e\ uses FsPath
     .replace(/%F/g, tempFsPath + tempName) // %f\ uses FsPath
