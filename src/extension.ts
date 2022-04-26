@@ -312,7 +312,7 @@ export function activate(context: vscode.ExtensionContext) {
       if(windows){ currentPath = currentPath.replace(/^\//,''); } //remove starting / for windows
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
     } else { //if no workspace open
-      currentPath = currentFile.slice(0,currentFile.lastIndexOf('/'));
+      currentPath = currentFile.slice(0,currentFile.lastIndexOf('/')-1);
       if(windows){
         currentFsPath = currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'));
       } else {
@@ -768,22 +768,15 @@ function replaceStrVars(s: string) {
   s= s
     .replace(/%n/g, tempName) //%n temp file name only
     .replace(/%x/g, hePath) //%h hover-exec path for readme etc.
-
+    .replace(/\\%c/g, currentPath) // '/%c' uses /
     .replace(/%c/g, currentPath)
     .replace(/%d/g, currentPath.slice(0,currentPath.lastIndexOf('/')+1))
+    .replace(/\\%e/g, currentFile) // '/%e' uses /
     .replace(/%e/g, currentFile)
+    .replace(/\\%f/g, tempPath + tempName) // '/%f' uses /
     .replace(/%f/g, tempPath + tempName) 
+    .replace(/\\%g/g, tempPath) // '/%g' uses /
     .replace(/%g/g, tempPath)
-    
-    .replace(/\/%f/g, tempPath + tempName) // '/%f' uses /
-    // .replace(/\/%g/g, tempPath) // '/%g' uses /
-    // .replace(/\/%c/g, currentPath) // '/%c' uses /
-    // .replace(/\/%e/g, currentFile) // '/%e' uses /
-    
-    // .replace(/%f/g, tempFsPath + tempName) //%f temp file path/name
-    // .replace(/%g/g, tempFsPath) //%g temp folder path
-    // .replace(/%c/g, currentFsPath) //%c current file path
-    // .replace(/%e/g, currentFsFile) //%e current file path/name
   return s;
 }
 

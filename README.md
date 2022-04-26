@@ -435,8 +435,8 @@ They must start in col 1.
 ##### Default shell simple command execution:
 (result depends on the default shell for vscode on your system)
 
-`pwd` zsh, bash, pwsh, cmd \
-`ls` zsh,bash, pwsh \
+`pwd`  zsh, bash, pwsh, cmd \
+`ls`  zsh, bash, pwsh \
 `dir` cmd
 
 ##### exec notepad with file in current file's folder::
