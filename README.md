@@ -23,17 +23,8 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 
 For more detail, [READMORE](https://github.com/rmzetti/hover-exec/blob/HEAD/READMORE.md).
 
-## temp
-
-`eval "%d"=>>`
-```output
-=>> c:/Users/ralph/OneDrive/Documents/GitHub/hover-exec/
-```
-
-
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
-  - [temp](#temp)
   - [Contents](#contents)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
@@ -113,7 +104,7 @@ Javascript code blocks can be executed using the `vm` module, also by using *vsc
 
 The code block label `js`  by itself defaults to executing javascript via the built-in `vm` module. Using `js : eval` will instead execute the code block using *vscode*'s built in *eval*.
 
-```js     //click this line in the *hover* to execute the block
+```js     //click the *exec:* line at the bottom of the *hover* to execute the block
 //'''js  //this comment is to show the command line in markdown previews
 //       //the default for the `js` command is to execute using the `vm` module
 console.log("Note the in-line random number result")
@@ -241,6 +232,7 @@ Command lines to conveniently start a number of other scripts are included (see 
 - [gnuplot](#gnuplot)
 - [powershell](#powershell)
 - [bash & zsh](#bash-&-zsh)
+- [cmd](#cmd)
 
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
@@ -425,7 +417,7 @@ Because cmd.exe is the default windows child-process, if the default is being us
 
 `pwd & @echo "done"` //direct execution of cmd commands in one-liners
 >      Test output:
->      c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+>      c:\Users\...\GitHub\hover-exec
 >      "done"
 
 ---

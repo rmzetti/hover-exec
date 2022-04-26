@@ -60,7 +60,8 @@ const refStr =
   " - %g `path/` for temporary files\n" +
   " - %x `path/` of hover-exec's extension folder\n" +
   " - %n `name.ext` of temporary file\n" +
-  " - The required ext can be specified by appending .ext, eg. %f.py\n";
+  " - The required ext can be specified by appending .ext, eg. %f.py\n" +
+  " - %C,D,E,F,G,X use \ instead of /, windows is usually ok with either\n";
 const msgDel =
   "[ [*command variables %f etc*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
@@ -774,7 +775,7 @@ function replaceStrVars(s: string) {
     .replace(/%f/g, tempPath + tempName) 
     .replace(/%g/g, tempPath)
     .replace(/%x/g, hePath) // %h hover-exec path for readme etc.
-    //the following are mainly for windows, although mostly the prev will work ok
+    //the following are for windows, although mostly the previous will work ok
     .replace(/%C/g, currentFsPath) // %C uses FsPath
     .replace(/%D/g, currentFsFile.slice(0,currentFsFile.lastIndexOf('\\'))+'\\')
     .replace(/%E/g, currentFsFile) // %E uses FsPath
@@ -884,6 +885,9 @@ async function paste(text: string) {
         }
       } else if (oneLiner || !needSwap) {
         //only producing an output block
+        if (activeTextEditor.document.lineCount===activeTextEditor.selection.end.line) {
+          lbl = "\n"+lbl; 
+        }
         selText.replace(replaceSel, lbl + text + "\n```\n");
       } else {
         //replace codeblock (has inline results) & output

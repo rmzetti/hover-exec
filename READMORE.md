@@ -141,7 +141,7 @@ Javascript code blocks can be executed using the `vm` module, also by using  *vs
 
 The code block label `js` by itself defaults to executing javascript via the built-in `vm` module. Appending `:eval` will instead execute the code block using  *eval*.
 
-```js {cmd=javascript}  //click this line in the *hover* to execute the block
+```js {cmd=javascript}  //click the **exec:** line at the bottom of the *hover* to execute the block
 //'''js {cmd=javascript}  //this comment is to show the command line in markdown previews
 //                        //the default for the `js` command is to execute using the `vm` module
 //   {cmd=..} is only for execution by markdown preview enhanced, it is not used in hover-exec
@@ -1319,7 +1319,7 @@ Because cmd.exe is the default windows child-process, if the default is being us
 
 `pwd & @echo "done"` //direct execution of cmd commands in one-liners
 >      Test output:
->      c:\Users\ralph\OneDrive\Documents\GitHub\hover-exec
+>      c:\Users\...\GitHub\hover-exec
 >      "done"
 
 ---
