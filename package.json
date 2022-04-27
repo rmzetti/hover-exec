@@ -1,349 +1,349 @@
 {
-	"name": "hover-exec",
-	"publisher": "rmzetti",
-	"displayName": "Hover Exec",
-	"description": "execute markdown code blocks",
-	"version": "0.7.1",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rmzetti/hover-exec"
-	},
-	"license": "NCSA",
-	"contributors": [
-		"rmzetti"
-	],
-	"engines": {
-		"vscode": "^1.60.0"
-	},
-	"categories": [
-		"Other",
-		"Notebooks"
-	],
-	"keywords": [
-		"execute",
-		"run",
-		"markdown",
+  "name": "hover-exec",
+  "publisher": "rmzetti",
+  "displayName": "Hover Exec",
+  "description": "execute markdown code blocks",
+  "version": "0.7.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmzetti/hover-exec"
+  },
+  "license": "NCSA",
+  "contributors": [
+    "rmzetti"
+  ],
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other",
+    "Notebooks"
+  ],
+  "keywords": [
+    "execute",
+    "run",
+    "markdown",
     "code",
-		"codeblock"
-	],
-	"activationEvents": [
-		"onLanguage:markdown",
+    "codeblock"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
     "onCommand:hover-exec.readme"
-	],
-	"main": "./dist/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "hover-exec.exec",
-				"title": "Hover-exec: execute codeblock"
-			},
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
       {
-				"command": "hover-exec.readme",
-				"title": "Hover-exec: open the hover-exec readme"
-			}
-		],
-		"configuration": {
-			"type": "object",
-			"title": "Hover Exec",
-			"properties": {
-				"hover-exec.scripts": {
+        "command": "hover-exec.exec",
+        "title": "Hover-exec: execute codeblock"
+      },
+      {
+        "command": "hover-exec.readme",
+        "title": "Hover-exec: open the hover-exec readme"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Hover Exec",
+      "properties": {
+        "hover-exec.scripts": {
           "description": "shell command to exec script in file %f.ext",
-					"default": {
+          "default": {
             "os": "",
-						"octave": "octave \"%f.m\"",
-						"matlab": "matlab -nodesktop -sd \"%g.m/\" -batch temp",
-						"rterm": "rterm -q --no-echo -f \"%f.r\" ",
-						"r": "r \"%f.r\" ",
-						"scilab": "scilex -quit -nb -f \"%f.sci\" ",
-						"scilab_win": "scilex -quit -nb -f \"%f.sci\" ",
-						"scilab_mac": "scilab-cli -quit -nb -f \"%f.sci\" ",
-						"scilab_lnx": "scilab-cli -quit -nb -f \"%f.sci\" ",
-						"python": "python \"%f.py\"",
-						"python3": "python3 \"%f.py\"",
-						"streamlit": "streamlit run \"%f.py\" ",
-						"julia": "julia \"%f.jl\"",
-						"julia_mac": "/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
-						"gnuplot": "gnuplot -p -c \"%f.gp\"",
-						"pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
-						"bash": "bash \"%f.sh\"",
-						"zsh": "zsh -f \"%f.sh\"",
+            "octave": "octave \"%f.m\"",
+            "matlab": "matlab -nodesktop -sd \"%g.m/\" -batch temp",
+            "rterm": "rterm -q --no-echo -f \"%f.r\" ",
+            "r": "r \"%f.r\" ",
+            "scilab": "scilex -quit -nb -f \"%f.sci\" ",
+            "scilab_win": "scilex -quit -nb -f \"%f.sci\" ",
+            "scilab_mac": "scilab-cli -quit -nb -f \"%f.sci\" ",
+            "scilab_lnx": "scilab-cli -quit -nb -f \"%f.sci\" ",
+            "python": "python \"%f.py\"",
+            "python3": "python3 \"%f.py\"",
+            "streamlit": "streamlit run \"%f.py\" ",
+            "julia": "julia \"%f.jl\"",
+            "julia_mac": "/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
+            "gnuplot": "gnuplot -p -c \"%f.gp\"",
+            "pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
+            "bash": "bash \"%f.sh\"",
+            "zsh": "zsh -f \"%f.sh\"",
             "cmd": "cmd /c \"%f.bat\"",
-						"lua54": "lua54 \"%f.lua\"",
-						"lua": "lua \"%f.lua\"",
-						"js": "vm",
-						"eval": "eval",
-						"vm": "vm",
-						"node": "node \"%f.js\"",
-						"javascript": "node \"%f.js\"",
-						"ts": "ts-node \"%f.ts\"",
-						"typescript": "ts-node \"%f.ts\"",
-						"html": "\"%f.html\"",
-						"html_mac": "open \"%f.html\"",
-						"html_win": "\"%f.html\"",
-						"html_lnx": "firefox \"%f.html\"",
-						"html_wsl": "firefox \"%f.html\"",
-						"firefox": "firefox \"%f.html\"",
-						"chrome": "google-chrome-stable \"%f.html\"",
-						"safari": "open -a safari \"%f.html\"",
-						"go": "go run \"%f.go\"",
-						"buddvs": "buddvs \"%f.txt\" ",
-						"pascal": "fpc \"%f.pas\" -v0 && \"%gtemp\" ",
-						"test": "test -c \"%f.tst\"",
+            "lua54": "lua54 \"%f.lua\"",
+            "lua": "lua \"%f.lua\"",
+            "js": "vm",
+            "eval": "eval",
+            "vm": "vm",
+            "node": "node \"%f.js\"",
+            "javascript": "node \"%f.js\"",
+            "ts": "ts-node \"%f.ts\"",
+            "typescript": "ts-node \"%f.ts\"",
+            "html": "\"%f.html\"",
+            "html_mac": "open \"%f.html\"",
+            "html_win": "\"%f.html\"",
+            "html_lnx": "firefox \"%f.html\"",
+            "html_wsl": "firefox \"%f.html\"",
+            "firefox": "firefox \"%f.html\"",
+            "chrome": "google-chrome-stable \"%f.html\"",
+            "safari": "open -a safari \"%f.html\"",
+            "go": "go run \"%f.go\"",
+            "buddvs": "buddvs \"%f.txt\" ",
+            "pascal": "fpc \"%f.pas\" -v0 && \"%g/temp\" ",
+            "test": "test -c \"%f.tst\"",
             "test_win": "testwin -c \"%f.tst\"",
             "test_mac": "testmac -c \"%f.tst\"",
             "test_lnx": "testlnx -c \"%f.tst\"",
             "test_wsl": "testwsl -c \"%f.tst\""
-					}
-				},
-				"hover-exec.swappers": {
+          }
+        },
+        "hover-exec.swappers": {
           "description": "script code to output '=>> $1'",
-					"default": {
-						"octave": "disp(['=>>' $1])",
-						"matlab": "disp([\"=>>\"+($1)])",
-						"rterm": "cat('=>>',$1,'\\n')",
-						"r": "cat('=>>',$1,'\\n')",
-						"scilab": "mprintf('=>>%s\\n',string($1))",
-						"scilabcli": "mprintf('=>>%s\\n',string($1))",
-						"python": "print('=>>'+str($1))",
-						"python3": "print('=>>'+str($1))",
-						"julia": "println(string(\"=>>\",$1))",
-						"pwsh": "'=>>'+($1)",
-						"zsh": "'=>>'+($1)",
-						"lua": "print('=>>'..($1))",
-						"lua54": "print('=>>'..($1))",
-						"js": "console.log('=>>'+($1))",
-						"ts": "console.log('=>>'+($1))",
-						"typescript": "console.log('=>>'+($1))",
-						"eval": "console.log('=>>',($1))",
-						"node": "console.log('=>>'+($1))",
-						"vm": "console.log('=>>',($1))",
-						"go": "'=>>'+($1)",
-						"buddvs": "write('=>>'+$1);",
-						"pascal": "writeln('=>>',$1);"
-					}
-				},
-				"hover-exec.repls": {
-					"description": [
-						"shell_command_to_exec_repl",
-						[
-							"option_strings"
-						],
-						"scipt_to_output_ff",
-						[
-							"preprocess_regex_search_1",
-							"preprocess_regex_replace_1",
-							"etc"
-						],
-						[
-							"postprocess_regex_search_1",
-							"postprocess_regex_replace_1",
-							"etc"
-						]
-					],
-					"default": {
+          "default": {
+            "octave": "disp(['=>>' $1])",
+            "matlab": "disp([\"=>>\"+($1)])",
+            "rterm": "cat('=>>',$1,'\\n')",
+            "r": "cat('=>>',$1,'\\n')",
+            "scilab": "mprintf('=>>%s\\n',string($1))",
+            "scilabcli": "mprintf('=>>%s\\n',string($1))",
+            "python": "print('=>>'+str($1))",
+            "python3": "print('=>>'+str($1))",
+            "julia": "println(string(\"=>>\",$1))",
+            "pwsh": "'=>>'+($1)",
+            "zsh": "'=>>'+($1)",
+            "lua": "print('=>>'..($1))",
+            "lua54": "print('=>>'..($1))",
+            "js": "console.log('=>>'+($1))",
+            "ts": "console.log('=>>'+($1))",
+            "typescript": "console.log('=>>'+($1))",
+            "eval": "console.log('=>>',($1))",
+            "node": "console.log('=>>'+($1))",
+            "vm": "console.log('=>>',($1))",
+            "go": "'=>>'+($1)",
+            "buddvs": "write('=>>'+$1);",
+            "pascal": "writeln('=>>',$1);"
+          }
+        },
+        "hover-exec.repls": {
+          "description": [
+            "shell_command_to_exec_repl",
+            [
+              "option_strings"
+            ],
+            "scipt_to_output_ff",
+            [
+              "preprocess_regex_search_1",
+              "preprocess_regex_replace_1",
+              "etc"
+            ],
+            [
+              "postprocess_regex_search_1",
+              "postprocess_regex_replace_1",
+              "etc"
+            ]
+          ],
+          "default": {
             "python": [
-							"python",
-							[
-								"-q",
-								"-i",
-								"-u"
-							],
-							"print('\\f')",
-							[
-								"^(\\S.*)$",
-								"\n$1"
-							],
-							[]
-						],
-						"python3": [
-							"python3",
-							[
-								"-q",
-								"-i",
-								"-u"
-							],
-							"print('\\f')",
-							[
-								"^(\\S.*)$",
-								"\n$1"
-							],
-							[]
-						],
-						"lua": [
-							"lua",
-							[
-								"-i"
-							],
-							"print(utf8.char(12))",
-							[],
-							[
-								"^>.*?\\n",
-								"",
-								"^(>+ )+",
-								""
-							]
-						],
-						"lua54": [
-							"lua54",
-							[
-								"-i"
-							],
-							"print(utf8.char(12))",
-							[],
-							[
-								"^>.*?\\n",
-								"",
-								"^(>+ )+",
-								""
-							]
-						],
-						"node": [
-							"node",
-							[
-								"-i"
-							],
-							"console.log('\\f')",
-							[],
-							[
-								"undefined\\n",
-								"",
-								"^(>+ )+",
-								""
-							]
-						],
-						"julia": [
-							"julia",
-							[
-								"-i -q"
-							],
-							"print('\\f')",
-							[],
-							[]
-						],
-						"julia_win": [
-							"julia",
-							[
-								"-i -q"
-							],
-							"print('\\f')",
-							[],
-							[]
-						],
-						"scilab": [
-							"scilex",
-							[
-								"-nb"
-							],
-							"mprintf(ascii(12))",
-							[],
-							[]
-						],
-						"scilabcli": [
-							"scilab-cli",
-							[
-								"-nb"
-							],
-							"mprintf(ascii(12))",
-							[],
-							[]
-						],
-						"octave": [
-							"octave",
-							[
-								"-q"
-							],
-							"disp(\"\\f\")",
-							[],
-							[]
-						],
-						"rterm": [
-							"rterm",
-							[
-								"-q",
-								"--no-echo"
-							],
-							"cat('\\f')",
-							[],
-							[
-								"\\[\\d+\\]",
-								""
-							]
-						],
-						"r": [
-							"r",
-							[],
-							"cat('\\f')",
-							[],
-							[
-								"\\[\\d+\\]",
-								""
-							]
-						]
-					}
-				},
-				"hover-exec.showOk": {
-					"description": "show message when script completed successfully",
-					"type": "boolean",
-					"default": false
-				},
-				"hover-exec.clearPrevious": {
-					"description": "clear previous output before execution",
-					"type": "boolean",
-					"default": false
-				}
-			}
-		},
-		"keybindings": [
-			{
-				"command": "hover-exec.exec",
-				"key": "alt+/",
-				"mac": "opt+/",
-				"when": "editorLangId == markdown"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run package",
-		"compile": "webpack",
-		"watch": "webpack --watch --devtool eval",
-		"package": "webpack --mode production",
-		"test-compile": "tsc -p ./",
-		"test-watch": "tsc -watch -p ./",
-		"pretest": "npm run test-compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.3",
-		"@types/lodash": "^4.14.176",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"@types/request-promise": "^4.1.48",
-		"@types/vscode": "^1.56.0",
-		"@typescript-eslint/eslint-plugin": "^4.14.1",
-		"@typescript-eslint/parser": "^4.14.1",
-		"eslint": "^7.32.0",
-		"glob": "^7.1.6",
-		"lodash": "^4.17.21",
-		"mathjs": "^9.5.0",
-		"mocha": "^8.2.1",
-		"moment": "^2.29.1",
-		"ts-loader": "^8.3.0",
-		"typescript": "^4.1.3",
-		"vscode-test": "^1.5.0",
-		"webpack": "^5.40.0",
-		"webpack-cli": "^4.7.2"
-	},
-	"comments": {
-		"//": [
-			"originally in package:",
-			"webpack --mode production --devtool hidden-source-map",
-			"for hover, did not need under contributes:",
-			"  'capabilities':{'hoverProvider':'true'},",
-			"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
-		]
-	},
-	"dependencies": {
-		"vm2": "^3.9.9"
-	}
+              "python",
+              [
+                "-q",
+                "-i",
+                "-u"
+              ],
+              "print('\\f')",
+              [
+                "^(\\S.*)$",
+                "\n$1"
+              ],
+              []
+            ],
+            "python3": [
+              "python3",
+              [
+                "-q",
+                "-i",
+                "-u"
+              ],
+              "print('\\f')",
+              [
+                "^(\\S.*)$",
+                "\n$1"
+              ],
+              []
+            ],
+            "lua": [
+              "lua",
+              [
+                "-i"
+              ],
+              "print(utf8.char(12))",
+              [],
+              [
+                "^>.*?\\n",
+                "",
+                "^(>+ )+",
+                ""
+              ]
+            ],
+            "lua54": [
+              "lua54",
+              [
+                "-i"
+              ],
+              "print(utf8.char(12))",
+              [],
+              [
+                "^>.*?\\n",
+                "",
+                "^(>+ )+",
+                ""
+              ]
+            ],
+            "node": [
+              "node",
+              [
+                "-i"
+              ],
+              "console.log('\\f')",
+              [],
+              [
+                "undefined\\n",
+                "",
+                "^(>+ )+",
+                ""
+              ]
+            ],
+            "julia": [
+              "julia",
+              [
+                "-i -q"
+              ],
+              "print('\\f')",
+              [],
+              []
+            ],
+            "julia_win": [
+              "julia",
+              [
+                "-i -q"
+              ],
+              "print('\\f')",
+              [],
+              []
+            ],
+            "scilab": [
+              "scilex",
+              [
+                "-nb"
+              ],
+              "mprintf(ascii(12))",
+              [],
+              []
+            ],
+            "scilabcli": [
+              "scilab-cli",
+              [
+                "-nb"
+              ],
+              "mprintf(ascii(12))",
+              [],
+              []
+            ],
+            "octave": [
+              "octave",
+              [
+                "-q"
+              ],
+              "disp(\"\\f\")",
+              [],
+              []
+            ],
+            "rterm": [
+              "rterm",
+              [
+                "-q",
+                "--no-echo"
+              ],
+              "cat('\\f')",
+              [],
+              [
+                "\\[\\d+\\]",
+                ""
+              ]
+            ],
+            "r": [
+              "r",
+              [],
+              "cat('\\f')",
+              [],
+              [
+                "\\[\\d+\\]",
+                ""
+              ]
+            ]
+          }
+        },
+        "hover-exec.showOk": {
+          "description": "show message when script completed successfully",
+          "type": "boolean",
+          "default": false
+        },
+        "hover-exec.clearPrevious": {
+          "description": "clear previous output before execution",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "hover-exec.exec",
+        "key": "alt+/",
+        "mac": "opt+/",
+        "when": "editorLangId == markdown"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch --devtool eval",
+    "package": "webpack --mode production",
+    "test-compile": "tsc -p ./",
+    "test-watch": "tsc -watch -p ./",
+    "pretest": "npm run test-compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/lodash": "^4.14.176",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^12.11.7",
+    "@types/request-promise": "^4.1.48",
+    "@types/vscode": "^1.56.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "eslint": "^7.32.0",
+    "glob": "^7.1.6",
+    "lodash": "^4.17.21",
+    "mathjs": "^9.5.0",
+    "mocha": "^8.2.1",
+    "moment": "^2.29.1",
+    "ts-loader": "^8.3.0",
+    "typescript": "^4.1.3",
+    "vscode-test": "^1.5.0",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "comments": {
+    "//": [
+      "originally in package:",
+      "webpack --mode production --devtool hidden-source-map",
+      "for hover, did not need under contributes:",
+      "  'capabilities':{'hoverProvider':'true'},",
+      "Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
+    ]
+  },
+  "dependencies": {
+    "vm2": "^3.9.9"
+  }
 }

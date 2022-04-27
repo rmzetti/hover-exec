@@ -2,10 +2,10 @@
 
 This is the READMORE for VS Code extension *hover-exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
 
-`code %x/README.md` //%x is a hover-exec command variable giving the extension path \
-`code %x/READMORE.md` //extended README \
-`code %x/test/basic_tests.md` //basic tests \
-`code %x/test/misc_tests.md` //benchmark tests and REPLs
+`code %h/README.md` //%h is a hover-exec command variable giving the extension path \
+`code %h/READMORE.md` //extended README \
+`code %h/test/basic_tests.md` //basic tests \
+`code %h/test/misc_tests.md` //benchmark tests and REPLs
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
 
@@ -64,7 +64,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
         - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
         - [open another instance of vscode:](#open-another-instance-of-vscode)
         - [explore files, view folders:](#explore-files-view-folders)
-        - [other examples:](#other-examples)
+        - [other examples (also see READMORE):](#other-examples-also-see-readmore)
         - [bash html & javascript](#bash-html--javascript)
     - [audio one-liners](#audio-one-liners)
     - [Windows one-liners: ms-settings, control panel and management console](#windows-one-liners-ms-settings-control-panel-and-management-console)
@@ -1731,10 +1731,10 @@ They must start in col 1.
 
 ##### exec notepad with file in current file's folder:
 
-`notepad "%dREADME.md"` --windows \
-`open -a textedit "%dREADME.md"` --mac \
-`gedit "%dREADME.md"` --linux, wsl \
-`xedit "%dREADME.md"` --linux, wsl
+`notepad "%d/README.md"` --windows \
+`open -a textedit "%d/README.md"` --mac \
+`gedit "%d/README.md"` --linux, wsl \
+`xedit "%d/README.md"` --linux, wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -1753,10 +1753,10 @@ They must start in col 1.
 `open -a finder ~` mac 'home' \
 `open -a finder "%c"` mac to view current workspace folder in finder \
 `explorer ,` windows view 'ThisPC' \
-`explorer /select, "%dREADME.md"` windows view current file's folder & select file \
-`nemo "%dREADME.md"` Linux mint view current file's folder & select file
+`explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
+`nemo "%d/README.md"` Linux mint view current file's folder & select file
 
-##### other examples:
+##### other examples (also see READMORE):
 
 `devmgmt.msc` for windows show devices \
 `system_profiler SPHardwareDataType` for mac show hardware info \
@@ -1770,7 +1770,7 @@ They must start in col 1.
 
 ##### bash html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %dhover-exec.gif` //chrome with media or html file - can use %d etc in one-liners \
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" %d/hover-exec.gif` //chrome with media or html file - can use %d etc in one-liners \
 `html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url \
 `html <h1 align='center' >this: %d</h1><br><h3 align='center' >or this: /%d</h3>` \
 `js console.log(7*7-7)` \
@@ -1780,8 +1780,8 @@ They must start in col 1.
 ### audio one-liners
 
 `html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` \
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%dmedia\fnt2b.mp3"` \
-`pwsh start wmplayer "%dmedia/fnt2b.mp3"`
+`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%d/media\fnt2b.mp3"` \
+`pwsh start wmplayer "%d/media/fnt2b.mp3"`
 
 ---
 ### Windows one-liners: ms-settings, control panel and management console
@@ -2047,7 +2047,7 @@ The  *swapper* for  *julia* is `println(string(\"=>>\",$1))`, where the double q
 
 Check `misc_tests.md` for more info and examples. The following one-liner can be used to open `misc_tests.md` in the editor:
 
-`code %x/test/misc_tests.md` //exec this to open misc_tests in the vscode editor
+`code %h/test/misc_tests.md` //exec this to open misc_tests in the vscode editor
 
 ## Release Notes and Known Issues
 

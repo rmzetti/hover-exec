@@ -8,12 +8,12 @@ To help with this, *hover-exec* provides a command to open the README in the edi
 
 From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor.   If the cursor is in the line the shortcut alt-/ or opt-/ can be used instead of the hover command.
 
-`code %x/README.md`            - open the *hover-exec* *README* (this file) in the editor \
-`code %x/READMORE.md`       - open the *READMORE*, which cover the same ground as the README but in more detail \
-`code %x/test/basic_tests.md`  - open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
-`code %x/test/misc_tests.md`   - open *misc_tests.md* for various benchmark tests and REPLs
+`code %h/README.md`            - open the *hover-exec* *README* (this file) in the editor \
+`code %h/READMORE.md`       - open the *READMORE*, which cover the same ground as the README but in more detail \
+`code %h/test/basic_tests.md`  - open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
+`code %h/test/misc_tests.md`   - open *misc_tests.md* for various benchmark tests and REPLs
 
-In the above, %x is a hover-exec command variable giving the extension path.
+In the above, %h is a hover-exec command variable giving the extension path.
 
 - NB. If you are viewing this in a markdown preview, the one-liner commands are highlighted. They start in col 1, and start & end with a single backtick.
 
@@ -442,10 +442,10 @@ They must start in col 1.
 
 ##### exec notepad with file in current file's folder::
 
-`notepad "%dREADMORE.md"`  --windows \
-`open -a textedit "%dREADME.md"`  --mac \
-`gedit "%dREADMORE.md"`  --linux/wsl \
-`xedit "%dREADME.md"`  --linux/wsl
+`notepad "%d/READMORE.md"`  --windows \
+`open -a textedit "%d/README.md"`  --mac \
+`gedit "%d/READMORE.md"`  --linux/wsl \
+`xedit "%d/README.md"`  --linux/wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -462,6 +462,7 @@ They must start in col 1.
 `open -a finder ~`  mac 'home' \
 `open -a finder "%c"`  mac to view current workspace folder \
 `explorer ,`  windows view 'ThisPC' \
+`explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
 `nemo "%e"`  Linux mint view current folder & select file
 
 ##### other examples:
