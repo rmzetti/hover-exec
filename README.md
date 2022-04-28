@@ -4,7 +4,7 @@ This is the README for the VSCode extension *hover-exec*. Once the extension is 
 
 To help with this, *hover-exec* provides a command to open the README in the editor:
 
-> After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. Click the command to open this README in the editor.
+- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. Click the command to open this README in the editor.
 
 From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor.   If the cursor is in the line the shortcut alt-/ or opt-/ can be used instead of the hover command.
 
@@ -110,8 +110,8 @@ The code block label `js`  by itself defaults to executing javascript via the bu
 console.log("Note the in-line random number result")
 'test: '+Math.random()  =>>test: 0.5918216346770233
 ```
->     Test output:
->     Note the in-line random number result
+>      Test output:
+>      Note the in-line random number result
 
 Intermediate results can be viewed in line, as above, by appending `=>>` instead of using `console.log()` . When this is done the line effectively becomes the argument of a console.log (or the equivalent in other scripts), and should not be terminated with ;
 
@@ -134,9 +134,9 @@ console.log(a,Math.random())
 process.cwd() // =>> c:\Users\rmZetti\GitHub\hover-exec
 console.log(abc)
 ```
->     Test output: see also alert box bottom right
->     goodbye world 0.46809536348325254
->     hello, world 3
+>      Test output: see also alert box bottom right
+>      goodbye world 0.46809536348325254
+>      hello, world 3
 
 
 ---
@@ -177,11 +177,11 @@ console.log('  using node:\n  '+Math.random())
 console.log('  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
     ' the cursor in the output block will delete the output block')
 ```
->     Test output:
->     using node:
->     0.43884249391182095
->     Note: hover-exec on the output line, or alt+/ (opt+/) with
->     the cursor in the output block will delete the output block
+>      Test output:
+>      using node:
+>      0.43884249391182095
+>      Note: hover-exec on the output line, or alt+/ (opt+/) with
+>      the cursor in the output block will delete the output block
 
 ---
 
@@ -252,8 +252,8 @@ from random import random
 'hello, world 3!'       #  =>>hello, world 3!
 print('python ok')
 ```
->     Test output (also see inline output):
->     python ok
+>      Test output (also see inline output):
+>      python ok
 
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed after) so that, for example, *markdown preview enhanced* will execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not. If *mpe* is installed, try it by including '{cmd}' after the *'''python* command id, separated using spaces.
 
@@ -276,7 +276,7 @@ dot(a',a) # =>>1.5016337437529477
 b=a;b[2]=42;  # demonstrates that arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
->     Test output (also see inline output):
+>      Test output (also see inline output):
 >      a=[0.8999280817338797, 42.0, 0.8299019559590521]
 >      b=[0.8999280817338797, 42.0, 0.8299019559590521]
 
@@ -298,9 +298,9 @@ pwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
 disp('hello world in output section!')
 disp(rand(1))
 ```
->     Test output (also see inline output):
->     hello world in output section!
->     0.1295
+>      Test output (also see inline output):
+>      hello world in output section!
+>      0.1295
 
 ---
 ### Scilab
@@ -316,8 +316,8 @@ string(rand())+' '+pwd() =>>0.9321708 c:\Users\rmzetti\GitHub\hover-exec
 string(rand()) =>>0.3329656
 //disp('disp puts quotes around strings',rand())
 ```
->     Test output (also see inline output):
->     test 0.3161717 c:\Users\rmzetti\GitHub\hover-exec
+>      Test output (also see inline output):
+>      test 0.3161717 c:\Users\rmzetti\GitHub\hover-exec
 
 ---
 ### Lua
@@ -331,8 +331,8 @@ Lua has a syntax highlighter available for *vscode*. Many installations however 
 "& goodbye " .. math.pi+math.random() =>>& goodbye 3.3082099849202
 print("lua ok") -- this outputs in the output code block below
 ```
->     Test output (also see inline output):
->     lua ok
+>      Test output (also see inline output):
+>      lua ok
 
 ---
 ### Gnuplot
@@ -373,7 +373,7 @@ The above is a *png* file created (using the *paste image* extension) from a cop
 # '''zsh # (macos) show current directory
 pwd
 ```  
->     Test output:
+>      Test output:
 >     /home/rmzetti/hover-exec
 
 
@@ -381,7 +381,7 @@ pwd
 #'''bash # (macos, linux) show current directory
 pwd
 ```
->     Test output:
+>      Test output:
 >     /home/rmzetti/hover-exec
 
 ---
@@ -395,10 +395,10 @@ Powershell scripts can be run, usually in *windows*
 Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
 pwd
 ```
->     Test output (also see inline output):
->     Path
+>      Test output (also see inline output):
+>      Path
 >     ----
->     C:\Users\rmzetti\GitHub\hover-exec
+>      C:\Users\rmzetti\GitHub\hover-exec
 
 ---
 ### Cmd

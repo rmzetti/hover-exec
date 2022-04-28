@@ -39,9 +39,10 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 ## Javascript tests
 
 Commands:
-> `js` or `js:vm` to use `vm`
-> `js:node` to use node
-> `js:eval` to use `eval`.
+
+>      `js` or `js:vm` to use `vm`
+>      `js:node` to use node
+>      `js:eval` to use `eval`.
 
 For javascript in the browser see the following section [Javascript in the browser](#javascript-in-the-browser)
 

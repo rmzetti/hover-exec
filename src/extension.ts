@@ -364,7 +364,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       return ipos;
     }
-    noOutput = s.includes("`>");
+    noOutput = s.includes("`>"); //in a one-liner, appending > suppresses output
     inline = !s.toLowerCase().includes("noinline"); //allows normal use of =>>
     if (!inline) {
       s = s.replace(/noInline|noinline/, "");
@@ -781,7 +781,7 @@ function replaceStrVars(s: string) {
     .replace(/%E/g, currentFsFile) // %E uses FsPath
     .replace(/%F/g, tempFsPath + slash + tempName) // %F uses FsPath
     .replace(/%G/g, tempFsPath) // %G uses FsPath
-    .replace(/%H/g, hePath.replace(/\//g,slash)) // %H hover-exec fsPath
+    .replace(/%H/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath
     .replace(/%`/g, '%'); //unescape %
   return s;
 }
@@ -865,9 +865,9 @@ async function paste(text: string) {
     //following 3 lines allow for explicitly specifying the output block label
     text = text.replace(/^output([\s:])/, '```output$1'); //if output is first word the first line becomes the label
     text = text.replace(/^[\s\S]*?\n`+output/, '```output'); //a `+output line removes preceding text & becomes the label
-    text = text.replace(/^`+/, " ```"); //set all starting ` to ``` & temporarily mark with leading space
+    text = text.replace(/^`+/, " ```"); //set one or more starting ` to ``` & temporarily mark with leading space
     text = text.replace(/^```/mg, "'''"); //don't allow displayed lines to start with ``` (would end the code block)
-    text = text.replace(/^\[.+?m(.*)\[0m$/gm, "$1"); //remove color codes (mostly pwsh)
+    text = text.replace(/\[\d\d?m/g,""); //remove in-text color codes (mostly pwsh)
     //if there is any output left, it will go into an ```output codeblock
     await selectCodeblock(false); //select codeblock to replace
     activeTextEditor.edit((selText) => {

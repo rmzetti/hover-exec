@@ -150,8 +150,8 @@ console.log("Note the in-line random number result ")
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
 ```
->     Test output:
->     Note the in-line random number result
+>      Test output:
+>      Note the in-line random number result
 
 ```js
 //'''js //execute the previous *vm* block first
@@ -249,32 +249,32 @@ for (let x in vmContext){
   write(''+x);
 }
 ```
->     Test output:
->     global
->     globalThis
->     config
->     vscode
->     console
->     util
->     process
->     performance
->     abort
->     alert
->     delay
->     execShell
->     input
->     progress
->     status
->     readFile
->     writeFile
->     write
->     require
->     _
->     math
->     moment
->     __main
->     aa
->     bb
+>      Test output:
+>      global
+>      globalThis
+>      config
+>      vscode
+>      console
+>      util
+>      process
+>      performance
+>      abort
+>      alert
+>      delay
+>      execShell
+>      input
+>      progress
+>      status
+>      readFile
+>      writeFile
+>      write
+>      require
+>      _
+>      math
+>      moment
+>      __main
+>      aa
+>      bb
 
 With this context, for example, the following works in `vm`:
 
@@ -295,8 +295,8 @@ for (let x in vmContext){
   console.log('  {'+x+'}');
 }
 ```
->     Test output:
->     reduced context:
+>      Test output:
+>      reduced context:
 >       {write}
 
 In this reduced context, lodash is not available to `vm` scripts:
@@ -305,8 +305,8 @@ In this reduced context, lodash is not available to `vm` scripts:
 //'''js //can't use lodash in reduced context
 console.log(_.range(0, 5));
 ```
->     Test output:
->     error ReferenceError: _ is not defined
+>      Test output:
+>      error ReferenceError: _ is not defined
 
 To get the default back, set `vmContext` to `undefined`:
 
@@ -469,10 +469,10 @@ console.log('test using node: ' + Math.random());
 let a = 5;
 console.log(a + Math.random());
 ```
->     Test output:
->     c:\Users\rmzetti\GitHub\hover-exec
->     test using node: 0.6890891280183384
->     5.083428662334198
+>      Test output:
+>      c:\Users\rmzetti\GitHub\hover-exec
+>      test using node: 0.6890891280183384
+>      5.083428662334198
 
 ```js {cmd=node} :node
 //'''js {cmd=node} :node
@@ -481,7 +481,7 @@ process.cwd()  =>>c:\Users\...\GitHub\hover-exec
 let a=5;
 a+Math.random() =>>5.639220383136484
 ```
->     Test output inline.
+>      Test output inline.
 
 ---
 
@@ -808,7 +808,7 @@ new Date().toString()=>>Sun Jan 30 2022 10:29:40 GMT+1300 (New Zealand Daylight 
 new Date().toLocaleString()=>>30/01/2022, 10:29:40 am
 new Date().getTime()=>>1643491780855
 ```
->     Test output: all inline
+>      Test output: all inline
 
 ---
 Time and date using node
@@ -1090,7 +1090,7 @@ dot(a',a) # =>>1.5016337437529477
 b=a;b[2]=42;  # demonstrates that arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
->     Test output (also see inline output):
+>      Test output (also see inline output):
 >      a=[0.8999280817338797, 42.0, 0.8299019559590521]
 >      b=[0.8999280817338797, 42.0, 0.8299019559590521]
 
