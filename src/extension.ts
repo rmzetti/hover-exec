@@ -334,20 +334,19 @@ export function activate(context: vscode.ExtensionContext) {
   } //end function setExecParams
 
   function getSpecialPath(s: string) {
-    //special path/name in command line or first line comment
-    let v = s.slice(s.indexOf(">") + 1);
-    v = replaceStrVars(v);
-    if (v.includes("/")) {
-      tempName = v.slice(v.lastIndexOf("/") + 1);
-      tempPath = v.slice(0, v.lastIndexOf("/"));
+    //special path/name in command line
+    s = replaceStrVars(s); //special path can include %f %g etc
+    if (s.includes("/")) {
+      tempName = s.slice(s.lastIndexOf("/") + 1);
+      tempPath = s.slice(0, s.lastIndexOf("/"));
       tempFsPath = tempPath;
-      if (windows) {
+      if (windows) { //remove starting / and use \ for tempFsPath
         tempPath = tempPath.replace(/^\//, "");
         tempFsPath = tempPath.replace(/\//g, "\\");
       }
-    } else {
-      tempName = v.slice(v.lastIndexOf("\\") + 1);
-      tempFsPath = v.slice(0, v.lastIndexOf("\\"));
+    } else { //this usually windows
+      tempName = s.slice(s.lastIndexOf("\\") + 1);
+      tempFsPath = s.slice(0, s.lastIndexOf("\\"));
       tempPath = tempFsPath.replace(/\\/g, "/").replace(/\/\//g, "/");
     }
   }
@@ -402,13 +401,17 @@ export function activate(context: vscode.ExtensionContext) {
         cmdId = cmda; //eg. for 'js asdf' cmdId is 'js'
       }
     }
-    if ( //check for special paths, ie. >path/to/file.abc
-      full.indexOf(">") > 0 &&
+    if ( //check for special paths: >path/to/file.abc, >'path/to/fi le.abc', & ".."
+      full.indexOf(">") > 0 && //if there's a > with no preceding < (ignores <..>)
       (full.indexOf("<") === -1 || full.indexOf("<") >  full.indexOf(">"))
     ) {
       full += " ";
-      getSpecialPath(full.replace(/(\s>.*?)[\s,;].*/, "$1")); //if special path included, use it
-      full = full.replace(/>.*?[\s,;]+/, "").trim(); //& remove from full
+      //getSpecialPath(full.replace(/(\s>.*?)[\s,;].*/, "$1")); //if special path included, use it
+      //full = full.replace(/>.*?[\s,;]+/, "").trim(); //& remove from full
+      getSpecialPath(full.replace(/.*?>"(.*?)".*/,'$1')  //if special path included, use it
+        .replace(/.*?>'(.*?)'.*/,'$1')
+        .replace(/.*?>([^\s]*?)\s.*/,'$1'));
+      full=full.replace(/>".*?"/,'').replace(/>'.*?'/,'').replace(/>[^\s]*?\s/,''); //& remove it
     }
   }
 
@@ -625,7 +628,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       code = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg, ''); //remove commented lines with swap
       //disable swap in fully commented lines by appending a space
       codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg, '$1 ');
-      re = new RegExp(";?\\s*(--|#|%|\/\/)*\\s*" + swap + '$', "mg"); //find any comment chars directly preceding a swap
+
+      re = new RegExp("\\s*(--|#|%|\/\/)*\\s*" + swap + '$', "mg"); //find any comment chars directly preceding a swap
       code = code.replace(re, swap); //remove them -- note \\s required in re, not just \s
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
       let re1 = new RegExp("[`]=>>", "");//new RegExp("[`'\"]=>>", "");
