@@ -847,6 +847,9 @@ async function paste(text: string) {
           if (i >= 0) {
             //if so
             let s = text.slice(i + 3).replace(/\n[\s\S]*/, "");
+            if (s === "") { //if the remainder is empty just provide ' '
+              s = " ";
+            } 
             codeBlock = codeBlock.replace(/=>>$/m, "=>>" + s); //do the swap
             text = text.replace(re, ""); //remove the swapped output to clear for the next
           } else {
