@@ -366,47 +366,45 @@ export function activate(context: vscode.ExtensionContext) {
     }
     noOutput = s.includes("`>"); //in a one-liner, appending > suppresses output
     inline = !s.toLowerCase().includes("noinline"); //allows normal use of =>>
-    if (!inline) {
-      s = s.replace(/noInline|noinline/, "");
-    }
+    s = s.replace(/noInline|noinline/, "");
     let ipos = posComment(s); //find comment in cmd line <!--,//,#
     if (ipos > 0) {
       comment = s.slice(ipos); //save comment as msg for hover
       s = s.slice(0, ipos); //and remove
     }
-    if (oneLiner) {
+    if (oneLiner) { //get backtick content
       s = s.replace(/^`(.*?)`.*/, "$1");
-    } //get backtick content
-    else {
+    }
+    else { //remove initial triple backtick
       s = s.slice(3);
-    } //or remove initial triple backtick
-    if (/{.*}/.test(s)) {
-      //check for markdown preview enhanced bracket
-      mpe = s.replace(/.*({.*}).*/, "$1"); //save it
+    }
+    if (/{.*}/.test(s)) { //for markdown preview enhanced
+      mpe = s.replace(/.*({.*}).*/, "$1"); //save bracket
       s = s.replace(/{.*}/, ""); //and remove
     }
     s = s.replace(/\s+/g, " ").trim(); //collapse multiple spaces
     full = s;        //save full command line minus comments & {..}
-    if (/^\w/.test(s)) {
+    if (/^\w/.test(s)) { //if starts with an id determine cmdId
       cmda = s.replace(/^(\w*).*/, "$1");
       useRepl = /^\w+\s?:\s?\w*:/.test(s); //allow spaces either side of :
-      if (useRepl) {
+      if (useRepl) { //check for repl restart
         restartRepl = /^\w+\s?:\s?\w*:restart/.test(s);
       }
-      if (/^\w+\s?:\s?\w/.test(s)) {
+      if (/^\w+\s?:\s?\w/.test(s)) { //if `id1:id2 is used, set cmdId=id2
         cmdId = s.replace(/^\w*\s?:\s?(\w*).*/, "$1");
-        //eg. for 'js:asdf' cmdId is 'asdf'
+        //eg. for 'js:eval' cmdId is 'eval'
+        //for vmdf and cmin set cmdId to vm and set vmContext appropriately
         if (cmdId === 'vmdf') { vmContext = undefined; cmdId = 'vm'; }
         //for 'js:def' set default context & cmdId='vm'
         else if (cmdId === 'vmin') { vmContext = { write }; cmdId = 'vm'; }
         //for 'js:min' set min context & cmdId='vm'
-      } else {
+      } else { //otherwise set cmdId=id1
         cmdId = cmda; //eg. for 'js asdf' cmdId is 'js'
       }
     }
-    if (
+    if ( //check for special paths, ie. >path/to/file.abc
       full.indexOf(">") > 0 &&
-      (full.indexOf("<") === -1 || full.indexOf("<") > full.indexOf(">"))
+      (full.indexOf("<") === -1 || full.indexOf("<") >  full.indexOf(">"))
     ) {
       full += " ";
       getSpecialPath(full.replace(/(\s>.*?)[\s,;].*/, "$1")); //if special path included, use it
@@ -849,9 +847,6 @@ async function paste(text: string) {
           if (i >= 0) {
             //if so
             let s = text.slice(i + 3).replace(/\n[\s\S]*/, "");
-            if (s === "") {
-              s = ";";
-            } //if the remainder is empty just provide ';'
             codeBlock = codeBlock.replace(/=>>$/m, "=>>" + s); //do the swap
             text = text.replace(re, ""); //remove the swapped output to clear for the next
           } else {
