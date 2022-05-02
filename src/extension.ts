@@ -755,6 +755,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
 })(); //end hUri=new class MyUriHandler
 
 function hrefSrcReplace(s: string) { //allow use of command line vars in href and src
+  alert("%c="+currentPath);
   s=s.replace(/(<[^>]*(href|src)[^>]*)%c/g,'$1'+currentPath);
   s=s.replace(/(<[^>]*(href|src)[^>]*)%d/g,'$1'+currentFilePath);
   s=s.replace(/(<[^>]*(href|src)[^>]*)%g/g,'$1'+tempPath);
