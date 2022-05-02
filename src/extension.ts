@@ -26,7 +26,9 @@ let cmdId = ""; //execution id for current script
 let cmd = ""; //javascript to start current script execution
 let shown = false; //progress message 1 showinf
 let currentFile = ""; //path & name of current edit file
+let currentFilePath = ""; //path of current edit file
 let currentFsFile = ""; //path & name as os default string
+let currentFsFilePath = ""; //path as os default string
 let currentPath = ""; //folder containing current edit file
 let currentFsPath = ""; //folder containing current edit file fsPath
 let executing = false; //code is executing
@@ -310,19 +312,24 @@ export function activate(context: vscode.ExtensionContext) {
     codeBlock = "";
     //reset paths and names
     currentFile = doc.uri.path; //current editor file full path /c:...
-    if (windows) { currentFile = currentFile.replace(/^\//, ''); } //remove starting / for windows
+    currentFilePath = currentFile.slice(0, currentFile.lastIndexOf('/'));
+    if (windows) { //remove starting / for windows
+      currentFile = currentFile.replace(/^\//, '');
+      currentFilePath = currentFilePath.replace(/^\//, '');
+    } 
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
+    if (windows) {
+      currentFsFilePath = currentFsFile.slice(0, currentFsFile.lastIndexOf('\\'));
+    } else {
+      currentFsFilePath = currentFsFile.slice(0, currentFsFile.lastIndexOf('/'));
+    }
     if (vscode.workspace.workspaceFolders) { //if workspace open
       currentPath = vscode.workspace.workspaceFolders[0].uri.path;
       if (windows) { currentPath = currentPath.replace(/^\//, ''); } //remove starting / for windows
       currentFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
     } else { //if no workspace open use current file path
-      currentPath = currentFile.slice(0, currentFile.lastIndexOf('/'));
-      if (windows) {
-        currentFsPath = currentFsFile.slice(0, currentFsFile.lastIndexOf('\\'));
-      } else {
-        currentFsPath = currentFsFile.slice(0, currentFsFile.lastIndexOf('/'));
-      }
+      currentPath = currentFilePath;
+      currentFsPath = currentFsFilePath;
     }
     vscode.workspace.fs.createDirectory(context.globalStorageUri); //create temp folder if necessary
     tempPath = context.globalStorageUri.path; //temp folder path %g
@@ -747,40 +754,35 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
   }
 })(); //end hUri=new class MyUriHandler
 
-function hrefSrcReplace(s: string) {
-  s = s.replace(/(href\s*=\s*['"`]\s*)(https?:)/g, '$1:$2'); //avoid http in href
-  s = s.replace(/(href\s*=\s*['"`]\s*)(\w)/g, '$1' + currentFsPath + '/$2');//add path to direct href
-  s = s.replace(/(href\s*=\s*['"`]\s*):(https?:)/g, '$1$2'); //replace http
-  s = s.replace(/(src\s*=\s*['"`]\s*)(https?:)/g, '$1:$2');  //avoid http in src
-  s = s.replace(/(src\s*=\s*['"`]\s*)(\w)/g, '$1' + currentFsPath + '/$2'); //add path to direct src
-  s = s.replace(/(src\s*=\s*['"`]\s*):(https?:)/g, '$1$2');  //replace http
-  s = s.replace(/(href\s*=\s*['"`]\s*)\.\./g, '$1' + currentFsPath + '/..'); //replace ".." in href
-  s = s.replace(/(href\s*=\s*['"`]\s*)\./g, '$1' + currentFsPath); //replace "." in href
-  s = s.replace(/(src\s*=\s*['"`]\s*)\.\./g, '$1' + currentFsPath + '/..'); //replace ".." in src
-  s = s.replace(/(src\s*=\s*['"`]\s*)\./g, '$1' + currentFsPath);  //replace "." in src
+function hrefSrcReplace(s: string) { //allow use of command line vars in href and src
+  s=s.replace(/(<[^>]*(href|src)[^>]*)%c/g,'$1'+currentPath);
+  s=s.replace(/(<[^>]*(href|src)[^>]*)%d/g,'$1'+currentFilePath);
+  s=s.replace(/(<[^>]*(href|src)[^>]*)%g/g,'$1'+tempPath);
+  s=s.replace(/(<[^>]*(href|src)[^>]*)%h/g,'$1'+hePath);
   return s;
 }
 
 function replaceStrVars(s: string) {
   if (cmdId === 'eval' || cmdId === 'js' || cmdId === 'vm') { tempName = 'temp.js'; }
-  //replace %f etc with the appropriate string
+  //if .ext is included with %f or %g change tempName to include it
   if (/%[fg]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %g and %h
     tempName = "temp." + s.replace(/.*?%[fg]\.(\w*).*/, "$1"); // \W? before last .
     s = s.replace(/(%[fg])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
   }
+  //replace %n, %c-h, %C-H with the appropriate string
   s = s
-    .replace(/\\%/g, '%`') //escape %
+    .replace(/\\%/g, '%`') //where \% used, escape %
     .replace(/%n/g, tempName) //%n temp file name only
     .replace(/%c/g, currentPath) // %c workspace folder path
-    .replace(/%d/g, currentFile.slice(0, currentFile.lastIndexOf('/')))
+    .replace(/%d/g, currentFilePath) // %d current file path
     .replace(/%e/g, currentFile)
     .replace(/%f/g, tempPath + '/' + tempName)
     .replace(/%g/g, tempPath)
     .replace(/%h/g, hePath) // %h hover-exec path for readme etc.
     //the following are for windows, although mostly the previous will work ok
     .replace(/%C/g, currentFsPath) // %C uses FsPath
-    .replace(/%D/g, currentFsFile.slice(0, currentFsFile.lastIndexOf('\\')))
-    .replace(/%E/g, currentFsFile) // %E uses FsPath
+    .replace(/%D/g, currentFsFilePath) // %D uses FsFilePath
+    .replace(/%E/g, currentFsFile) // %E uses Fs file path & name
     .replace(/%F/g, tempFsPath + slash + tempName) // %F uses FsPath
     .replace(/%G/g, tempFsPath) // %G uses FsPath
     .replace(/%H/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath

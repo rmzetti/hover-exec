@@ -182,7 +182,6 @@ console.log(a,Math.random())
 process.cwd() =>>
 console.log(abc)
 ```
-
  >     Test output (note inline results above, and alerts appear in a message box bottom right):
  >     goodbye world 0.7280946459838489
  >     hello, world 3
@@ -283,7 +282,7 @@ With this context, for example, the following works in `vm`:
 _.range(0,5)=>>0,1,2,3,4
 ```
 
-The following four examples showhow to reduce the *vm* context, and re-enable the default context.
+The following four examples show how to reduce the *vm* context, and re-enable the default context.
 
 First reduce the context using `eval`:
 
@@ -430,6 +429,7 @@ global.test = function () {
 >      Test output - none.
 
 There is no output, but the function `test` is now available to vm:
+
 ```js:eval
 //'''js //function available to subsequent code blocks
 test();
@@ -443,7 +443,7 @@ test();
 The `js:node` command executes a javascript code block in `nodejs` (assuming, of course, `nodejs` has been installed).
 
 ```js : node
-//'''js:node //blanks allowed around the ;
+//'''js:node //blanks allowed around the : in the command line
 console.log('  test using node:\n  ' + Math.random());
 console.log(
   '  Note: hover-exec on the output line, or alt+/ (opt+/) with\n',
@@ -459,7 +459,8 @@ console.log(
 
 Note:
 - to allow execution also in *markdown preview enhanced*, include `{cmd=node}` in the command line
-  -- eg. `js {command=node} : node`.
+  -- eg. `js {command=node} : node`
+- *mpe* requires the { .. } to be placed immediately after the id, separated by space(s)
 - in-line output is not available in *mpe*.
 
 ```js {cmd=node} :node
@@ -474,8 +475,8 @@ console.log(a + Math.random());
 >      test using node: 0.6890891280183384
 >      5.083428662334198
 
-```js {cmd=node} :node
-//'''js {cmd=node} :node
+```js :node
+//'''js :node
 process.cwd()  =>>c:\Users\...\GitHub\hover-exec
 'test: '+Math.random() =>>test: 0.5575077736488605
 let a=5;
@@ -808,7 +809,7 @@ new Date().toString()=>>Sun Jan 30 2022 10:29:40 GMT+1300 (New Zealand Daylight 
 new Date().toLocaleString()=>>30/01/2022, 10:29:40 am
 new Date().getTime()=>>1643491780855
 ```
->      Test output: all inline
+>      Test output: all inline (and a progress message bottom right)
 
 ---
 Time and date using node
@@ -1022,7 +1023,8 @@ Note that the inline indicator `=>>` has been prefixed by a python comment chara
 ---
 This one-liner can be used to install python packages via pip:
 
-`pwsh python -m pip install pyformulas`
+`pwsh python -m pip install --upgrade pip` // this example will upgrade pip
+`pwsh python -m pip install pyformulas`     // this example will install pyformulas 
 
 ---
 In the following example, `{cmd matplotlib=true}` will allow execution in *markdown preview enhanced* & plot graphs inline. In *hover-exec* they are plotted in a separate window (and can be 'pasted' in using the `paste image` vscode extension). If you also use  *markdown memo* the image link can be changed to the wiki form `[[...]]` and viewed on hover.
@@ -1039,11 +1041,11 @@ plt.show()
 
 Image from running the above code block & pasting via  *Markdown kit* or  *Markdown memo*:
 
-![[READMORE_matplotlib example.png]]
+![[media/READMORE_matplotlib example.png]]
 
 ---
 
-```python
+```python  //show live plot (for about 4 sec)
 # '''python :python3 # use this instead to use 'python3' as start command
 # '''python {cmd}    # include {cmd} for mpe
 import pyformulas as pf
@@ -1141,7 +1143,7 @@ disp('disp puts quotes around strings',rand())
 Lua has a syntax highlighter available for *vscode*.
 
 Many installations require running, say, *lua51*, or *lua54*, rather than setting *lua* as the run-time (unlike, say, *julia*).
-So use 'lua : lua54' as the command id, etc. ... or check/adjust using [config] in the hover (top left).
+If this is the case use 'lua : lua54' as the command id, etc. ... or check/adjust using [config] in the hover (top left).
 
 ```lua -- say hello & goodbye
 -- '''lua  -- 'lua' id specifies syntax highlight and default start command
@@ -1274,7 +1276,6 @@ Hover-exec can also use `zsh` as the default by setting `scripts.os="mac (zsh)"`
 Use `pwsh` to run powershell, or `pwsh {cmd}` to also run in *mpe*
 
 ```pwsh # (windows) random number, show current directory
-
 pwd
 ```
 >      Test output:
@@ -1296,10 +1297,9 @@ Note that pwsh can be set as the default windows shell by setting `scripts.os="w
 
 Instead if the shell is the default (cmd), ie. `scripts.os="win (auto)"`, use
 `pwsh [System.Environment]::OSVersion.Version`
-`ver` //better for the auto (cmd) shell
+`ver` //better for the default shell (cmd)
 >      Test output: both previous commands indicate (different format)
 >      Microsoft Windows [Version 10.0.22581.100]
-
 which would be great, except that I'm actually running Windows 11.. c'est la Microsoft.
 
 ---
@@ -1327,7 +1327,7 @@ Because cmd.exe is the default windows child-process, if the default is being us
 
 Here a javascript code block produces output in the form of an `output:gnuplot` labelled code block. This block has *id* `output` and so will be replaced if the javascript is executed again. Because it also has *cmdid* `gnuplot` it can be directly executed in the usual ways to produce the plot.
 
-```js
+```js  //takes about 5-10 sec to run - the output is a gnuplot code block
 // '''js //example to show chaining output to gnuplot
 function xrange() {
   let x1 = _.range(0, 6.1, 6 / 19);
@@ -1360,7 +1360,7 @@ for (ii = 0; ii < x.length; ii++) {
   } else {
     m = 100;
   }
-  m = m;
+  m =m/5; //adjust m to adjust time taken
   t1 = moment.now();
   for (i = 0; i < m; i++) {
     rr = math.add(math.dotMultiply(rr1, rr2), rr1);
@@ -1436,6 +1436,24 @@ $speed <<EOD
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
+```
+>      Test output is the plot.
+
+Or use 'plotly' for the same example data:
+
+```html //plotly
+<!-- '''html //test using plotly -->
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div id="plot" style="width:70%;height:400px"></div>
+<script>
+let lm='lines+markers'
+let a=[ #inhere  %d/test/misc_tests.md `#p1` ]   //note *inhere* is inside the array designator square brackets
+let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
+let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
+plot1 = document.getElementById('plot');
+Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },]);
+</script>
+<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
 ```
 >      Test output is the plot.
 
