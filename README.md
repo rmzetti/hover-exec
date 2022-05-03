@@ -339,30 +339,51 @@ print("lua ok") -- this outputs in the output code block below
 
 *Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (see the  [READMORE](READMORE.md)).
 
-```gnuplot {cmd}
- # '''gnuplot //here gnuplot is being used stand-alone
+```gnuplot {cmd} # cmd is for markdown preview enhanced
+# '''gnuplot //here gnuplot is being used stand-alone
+#   tagging the data allows it to be used in another script (see next)
 $charge << EOD
-2-07-2021 22:32 44
-3-07-2021 13:34 42
-4-07-2021 14:22 39
-5-07-2021 15:10 32
-5-07-2021 23:57 21
-6-07-2021 18:10 100
-7-07-2021 17:02 95
-7-07-2021 22:46 93
-8-07-2021 16:38 91
-9-07-2021 16:08 87
-16-07-2021 23:30 66
+#tag1
+"2-07-2021 22:32", 44,
+"3-07-2021 13:34", 42,
+"4-07-2021 14:22", 39,
+"5-07-2021 15:10", 32,
+"5-07-2021 23:57", 21,
+"6-07-2021 18:10", 100,
+"7-07-2021 17:02", 95,
+"7-07-2021 22:46", 93,
+"8-07-2021 16:38", 91,
+"9-07-2021 16:08", 87,
+"16-07-2021 23:30", 66,
+#tag1
 EOD
-set xdata time;
-set timefmt "%d-%m-%Y %H%M"
-set format x "%d"
+set datafile separator comma
+timefmt = "%d-%m-%Y %H:%M"
+set format x "%d-%m" time
 set mouse mouseformat 3
-plot "$charge" using 1:3 w lp title "charge"
+plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
 ```
 ![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
 The above is a *png* file created (using the *paste image* extension) from a copy of the plot window.
+
+If you don't have 'gnuplot' installed, here is the same plot in 'plotly', shown in the browser.
+The data in the above script is used by utilising the '#inhere' tag '#tag1'
+
+```html //plotly
+<!-- '''html //test using plotly -->
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div id="plot" style="width:80%;height:500px"></div>
+<script>
+let lm='lines+markers'
+let a=[#inhere  `#tag1`] //hover here to see the data from the previous script
+let x1=Array(a.length/2).fill(0).map((x,i) => a[i*2])
+let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
+plot1 = document.getElementById('plot');
+Plotly.plot( plot1, [{ x: x1, y: y1, mode: lm, name:'pascal'}]);
+</script>
+<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+```
 
 ---
 ### Bash & zsh

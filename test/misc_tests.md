@@ -149,9 +149,6 @@ for (let i = 0; i < n; i++) { //speed test loop
 t2 = Date.now() - p
 console.log('- for n=',n,': using Function',t1,'msec using eval',t2,'msec')
 ```
-```output
-- for n= 1000000 : using Function 678 msec using eval 186 msec
-```
 >      Test output:
 >      js:node for n= 1000000 : using Function 675 msec using eval 190 msec
 >      js:eval   for n= 1000000 : using Function 574 msec using eval 164 msec
@@ -216,6 +213,7 @@ function test(){
 }
 </script>
 <h1 align="center"><br>Test results</h1>
+<p align="center"> time to see live results: from 0.25 to 25 sec. depending on processor </p>
 <div style="display:flex;align:center">
 <div id="r1" style="margin:10;width:45%;color:blue;text-align:right">
 <br> Guide (Chrome):
@@ -246,7 +244,7 @@ function test(){
 <br> eval test, check result is 42
 <br> time = ~200ms
 <br> Function test, check result is 42
-<br> time = ~450ms
+<br> time (Asus ~2020) = ~450ms
 </div>
 <div id="r2" style="margin:10;color:red;align:left;">calculating ...</div>
 </div>
