@@ -202,7 +202,7 @@ document.getElementById("test").innerHTML="<em>Text via javascript</em>"
 A more complex html script, including a more substantial javascript component:
 
 ```html
-<!-- '''html // tunnel *what am I going to do now*  -->
+<!-- '''html // tunnel *what am I going to do now* -->
 <head>modified slightly from [tunnel](https://js1k.com/2010-first/demo/763)</head>
 <body style="margin:0;width:100%;background:#000815;overflow:hidden"> 
 <canvas id="c"></canvas> 
