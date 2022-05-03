@@ -75,7 +75,7 @@ console.log('the meaning of life: ', 7*7-7)
 
 The top right hand `[delete block]` option will delete the code block (`ctrl-z` or `cmd-z` to restore). If there is an output block, that will be deleted on the first click.
 
-The `[command variables %f..]` option will provide some further information on possible shortcuts that can be used in command lines (not in the code itself):
+The `[command line vars %f..]` shows command line variables  that can be used (but not in the code itself, except for 'href=' or 'src=' paths):
 
 >      Test output (top of the editor pane) from clicking [command variables..]:
 >      %c     workspace folder 'path/': c:\Users\...\
@@ -84,14 +84,15 @@ The `[command variables %f..]` option will provide some further information on p
 >      %f.ext temp file 'path/name.ext': c:\Users\...\globalStorage\rmzetti.hover-exec\temp.ext
 >      %g     temp folder 'path/': c:\Users\...\globalStorage\rmzetti.hover-exec\
 >      %n.ext temp file 'name.ext': temp.js.ext
+>      %h     h-e extension folder 'path/': c:/Users/.../.vscode/extensions/rmzetti.hover-exec-0.7.1
 
 And finally the `[config]` option will show the configuration entry for the command above the editor, for example:
 
 ```python
 # '''python
 # click config in the hover to show the command configuration above the editor
-# you can edit the command and press enter to change the command to suit
-# escape to ignore, & enter without edit to view all config settings in settings.json
+# you can edit the command and press enter to change the command to suit, or
+# escape to ignore, or enter without edit to view all config settings in settings.json
 ```
 >      Test output (top of the editor pane) from clicking [config]:
 >      python "%f.py"
@@ -142,6 +143,8 @@ for (let i=0;i<5;i++){
 Note that only the first result of the loop execution will made available in-line, the rest are left in the `output` block. If there are further in-line results requested, they will not appear in the right place - avoid in-line results for statements in a loop.
 
 Also note that lines with `=>>` appended are not actually legal javascript. To produce legal javascript simply precede `=>>` with a comment marker, ie for javascript use `// =>>` This will still be updated on execution in the same way.
+
+In line results can be made available for all script engines.
 
 ## Final comments
 

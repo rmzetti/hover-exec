@@ -69,7 +69,7 @@ const refStr =
   " - The required ext can be specified by appending .ext, eg. %f.py\n" +
   " - %C,D,E,F,G,X use \ instead of /, windows is usually ok with either\n";
 const msgDel =
-  "[ [*command variables %f etc*] ](vscode://rmzetti.hover-exec?ref) " +
+  "[ [*command line vars %f etc*] ](vscode://rmzetti.hover-exec?ref) " +
   "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
 let msg = "", cmda = "", mpe = "", comment = "", full = "";  //for cmd line parse
 let os = 'win'; //set current os

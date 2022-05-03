@@ -479,7 +479,7 @@ r2=document.getElementById("r2");
 test()
 </script>
 ```
->      Test output (in the browser):
+>      Test output (in the browser, can click browser reload to repeat):
 >      Total time: 0.47 sec
 >      Speed: 210.7 million iterations per sec
 
@@ -572,7 +572,9 @@ So about 15x faster than python on this benchmark, and about half the speed of j
 
 ### Pascal test
 
-```js:pascal //executes frepascal compile and run
+This assumes freepascal is installed.
+
+```js:pascal //executes freepascal compile and run
 // '''js:pascal //js used here for quick & dirty syntax highlighter
 //      if there is a pascal syntax highlighter, just use '''pascal
 program Hello;
@@ -676,19 +678,19 @@ The are shown in another executable code block ready to update after changes
 let settings='scripts';    // 'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");
 let k=config.get(settings)
-console.log('``js:eval')
-console.log('output:eval //exec here to incorporate any changes')
-//using 2 backticks above allows backticks to remain even,  will still produce 3 to start & end the output
+console.log('output:eval noinline //exec here to make any changes permanent')
+console.log("//nb. the hover shows that default for '''output:eval is to exec 'eval', not to delete the 'output' block")
+console.log("//      use '[delete block]' in the hover (top right) to delete")
 console.log('let settings="'+settings+'";');
 console.log('let s=',k)
 console.log("if(config.update(settings,s,1)){write(settings+' updated!');}")
 ```
 
 ### View and alter a specific setting
-This code block can spefy a new or existing cmdid, and its start command
+This template code block can spefy a new or existing cmdid, and its start or swapper command
 
 ```js noInline      //noinline is necessary to ensure =>> in strings is not misinterpreted
-// '''js noInline  //change, add or undefine (remove) a specific config setting
+// '''js noInline  //template to change, add or undefine (remove) a specific config setting
 let settings='scripts';  //can use 'scripts', 'swappers', 'repls'
 config = vscode.workspace.getConfiguration("hover-exec");
 let k=config.get(settings)
@@ -698,6 +700,5 @@ let merge=Object.assign({},scripts,s);
 if(await config.update('scripts',merge,1)){}
 console.log('new config:',config.get('scripts.python'))
 ```
-
 
 

@@ -1665,9 +1665,9 @@ disp(strcat('speed= ',num2str(m/t/1e6),' million iterations per sec'))
 
 The first script uses 'restart' to ensure previous rterm variables are removed. 
 
-```python :rterm :restart
+```python:rterm:restart
 # '''python :rterm :restart    # two colons for REPL, python just for syntax highlight
-a=7*7-7
+a <- 7*7-7
 a=>> 42 
 print(noquote(paste('the meaning of life is',a)))
 ```
@@ -1676,12 +1676,12 @@ print(noquote(paste('the meaning of life is',a)))
 
 The second script can use rterm variables defined in any other rterm REPL scripts run since a 'restart'.
 
-```python :rterm:
-# '''python :rterm:    # two colons for REPL, python just for syntax highlight
-print(noquote(paste('.. reminder: that was',a)))
+```python:rterm:
+print(noquote(paste('the meaning of life is',a)))
 ```
 >      Test output:
->       .. reminder: that was 42
+>      the meaning of life is 42
+
 
 Here is a slightly more complex rterm REPL script
 
@@ -1705,7 +1705,7 @@ plot(x, y1, type = "S")
 windows()
 plot(x,y1,type="b",pch=19,col="red",xlab= "x",ylab="y")
 lines(x, y2,pch=18,col="blue",type="b",lty=2)
-msgBox<-tkmessageBox(title="R plots",message="Close plots, then this message box!")
+msgBox<-tkmessageBox(title="R plots",message="Close plots FIRST, then this message box!")
 ```
 >      No output, just the plots..
 
@@ -1720,9 +1720,9 @@ The following *eval* script can be used to check for active REPLs
 ```js:eval
 // '''js:eval
 //chRepl is a *hover-exec* internal variable containing the active REPLs
-chRepl.length=>> 7
+chRepl.length=>> 1
 let i=chRepl.findIndex((el)=>el[1]===repl)
-i=>> 6
+i=>> 0
 chRepl[i][0]=>> rterm
 ```
 >      Test output - see in-line output
@@ -1797,7 +1797,7 @@ They must start in col 1.
 ---
 ### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="media/fnt2b.mp3"/>` \
+`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="%d/media/fnt2b.mp3"/>` \
 `"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%d/media\fnt2b.mp3"` \
 `pwsh start wmplayer "%d/media/fnt2b.mp3"`
 
@@ -1876,16 +1876,20 @@ All configuration settings can be viewed in *vscode*'s configurations view for *
 Several *hover-exec* command line variables are used. These can be viewed via the hover for an code block: clicking *[command variables]* will produce a list:
 
 On windows the list looks like this
-- %c       workspace folder 'path/': c:/Users/ ... /
-- %d       this file 'path/': c:/Users/.../READMORE.md
-- %e       this file 'path/': c:/Users/.../READMORE.md
+- %c       workspace folder 'path': c:/Users/ ... 
+- %d       current file 'path': c:/Users/...
+- %e       current file 'path/name': c:/Users/.../READMORE.md
 - %f.ext  temp file 'path/name.ext': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec/temp.ext
-- %g       temp folder 'path/': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec/
-- %n.ext temp file 'name.ext': temp.js.ext, where ext is an appropriate extension
+- %g       temp folder 'path': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec
+- %h       hover-exec extension folder 'path': c:/Users/.../.vscode/extensions/rmzetti.hover-exec-0.7.1
+- %n.ext temp file 'name.ext': temp.js.ext, where ext is an extension (default is .txt)
 
 So
 - `%f` provides the appropriate temporary file path & name
 - in addition, the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` .
+
+Generally (currently) these are not available for use within scripts, but only in command lines.
+An exception is that they may be used in 'href' and 'src' strings.
 
 ### Viewing script settings using scripts
 
@@ -1967,7 +1971,7 @@ For any code block, the hover message includes *[config]*. Clicking this will pr
 # this is python 'code' example for config check
 ```
 
-To view the *script* setting, click *[config]* in the hover:
+To view the *script* setting, click *[config]* in the hover (top left):
 
 >      Test output (appears in an input box at the top of the editor):
 >      python "%f.py"
@@ -2052,6 +2056,8 @@ let c = vscode.workspace.getConfiguration('');
 console.log('editor font size= ' + c.get('editor.fontSize'));
 //c.update("editor.fontSize",12,1)  //uncomment this to change the editor font size
 ```
+>      Test output:
+>      editor font size= 13
 
 ---
 
