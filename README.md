@@ -4,18 +4,18 @@ This is the README for the VSCode extension *hover-exec*. Once the extension is 
 
 To help with this, *hover-exec* provides a command to open the README in the editor:
 
-- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. Click the command to open this README in the editor.
+- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. 
+- Click the command to open this README in the editor.
 
-From inside the editor the following 'one-liners' are available - hover over the line, then click the command to open the file in the editor.   If the cursor is in the line the shortcut alt-/ or opt-/ can be used instead of the hover command.
+From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`code %h/README.md`            - open the *hover-exec* *README* (this file) in the editor \
-`code %h/READMORE.md`       - open the *READMORE*, which cover the same ground as the README but in more detail \
-`code %h/test/basic_tests.md`  - open *basic_tests.md* for some basic test code blocks, mostly javascript (vm, eval, nodejs & browser examples) \
-`code %h/test/misc_tests.md`   - open *misc_tests.md* for various benchmark tests and REPLs
+`edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
+`edit %h/READMORE.md` //extended README \
+`edit %h/test/basic_tests.md` //basic tests \
+`edit %h/test/misc_tests.md` //benchmark tests and REPLs
 
-In the above, %h is a hover-exec command variable giving the extension path.
-
-- NB. If you are viewing this in a markdown preview, the one-liner commands are highlighted. They start in col 1, and start & end with a single backtick.
+- NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
+- In the above, %h is a hover-exec command variable giving the extension path.
 
 `js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))` //one-liner to show the preview for the current file.
 

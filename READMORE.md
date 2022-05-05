@@ -1,16 +1,25 @@
 # Hover-exec READMORE
 
-This is the READMORE for VS Code extension *hover-exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor. Note that any changes made will be lost if *hover-exec* is updated, so save the file locally if you wnat to keep changes.
+This is the READMORE for VS Code extension *hover-exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
 
-`code %h/README.md` //%h is a hover-exec command variable giving the extension path \
-`code %h/READMORE.md` //extended README \
-`code %h/test/basic_tests.md` //basic tests \
-`code %h/test/misc_tests.md` //benchmark tests and REPLs
+To help with this, *hover-exec* provides a command to open the README in the editor:
 
-- NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
+- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. 
+- Click the command to open this README in the editor.
 
+From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided.
+`edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
+`edit %h/READMORE.md` //extended README \
+`edit %h/test/basic_tests.md` //basic tests \
+`edit %h/test/misc_tests.md` //benchmark tests and REPLs
+
+- NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
+- In the above, %h is a hover-exec command variable giving the extension path.
+
+`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))` //one-liner to show the preview for the current file.
+
+Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
 - [Hover-exec READMORE](#hover-exec-readmore)
@@ -859,9 +868,9 @@ netstat -ano | findstr :13
 ```zsh
  # '''zsh - server usually killed on 'cancel'
  # to check, exec once & look for pid to kill (line TCP 127.0.0.1:1337)
- # then enter pid in kill statement below and exec again
+ # then replace pid in kill statement below with the one found and exec again
 kill 49845
-netstat -an
+netstat -vanp tcp | grep -e 1337 -e pid
 ```
 
 ---
@@ -1021,9 +1030,10 @@ print('python ok')
 Note that the inline indicator `=>>` has been prefixed by a python comment character `#` (only spaces allowed between) so that *markdown preview enhanced* can execute the code. *hover-exec* will still update the in-line output, but *mpe*, of course, will not.
 
 ---
-This one-liner can be used to install python packages via pip:
+This one-liner can be used to install python packages via pip (change cmdId to `pwsh`,`bash`,`zsh` as appropriate):
 
 `pwsh python -m pip install --upgrade pip` // this example will upgrade pip
+`pwsh python -m pip install numpy`            // this example will install numpy 
 `pwsh python -m pip install pyformulas`     // this example will install pyformulas 
 
 ---
@@ -1217,29 +1227,49 @@ func main() {
 
 ```gnuplot {cmd} # cmd is for markdown preview enhanced
 # '''gnuplot //here gnuplot is being used stand-alone
+#   tagging the data allows it to be used in another script (see next)
 $charge << EOD
-2-07-2021 22:32 44
-3-07-2021 13:34 42
-4-07-2021 14:22 39
-5-07-2021 15:10 32
-5-07-2021 23:57 21
-6-07-2021 18:10 100
-7-07-2021 17:02 95
-7-07-2021 22:46 93
-8-07-2021 16:38 91
-9-07-2021 16:08 87
-16-07-2021 23:30 66
+#tag1
+"2-07-2021 22:32", 44,
+"3-07-2021 13:34", 42,
+"4-07-2021 14:22", 39,
+"5-07-2021 15:10", 32,
+"5-07-2021 23:57", 21,
+"6-07-2021 18:10", 100,
+"7-07-2021 17:02", 95,
+"7-07-2021 22:46", 93,
+"8-07-2021 16:38", 91,
+"9-07-2021 16:08", 87,
+"16-07-2021 23:30", 66,
+#tag1
 EOD
-set xdata time;
-set timefmt "%d-%m-%Y %H%M"
-set format x "%d"
+set datafile separator comma
+timefmt = "%d-%m-%Y %H:%M"
+set format x "%d-%m" time
 set mouse mouseformat 3
-plot "$charge" using 1:3 w lp title "charge"
+plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
 ```
+![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
-![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using the *markdown memo* extension)
+The above is a *png* file created (using the *paste image* extension) from a copy of the plot window.
 
-The above is a  *png* file created (using the  *paste image* extension) from a screen copy of the plot window.
+If you don't have 'gnuplot' installed, here is the same plot in 'plotly', shown in the browser.
+The data in the above script is used by utilising the '#inhere' tag '#tag1'
+
+```html //plotly
+<!-- '''html //test using plotly -->
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div id="plot" style="width:80%;height:500px"></div>
+<script>
+let lm='lines+markers'
+let a=[#inhere  `#tag1`] //hover here to see the data from the previous script
+let x1=Array(a.length/2).fill(0).map((x,i) => a[i*2])
+let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
+plot1 = document.getElementById('plot');
+Plotly.plot( plot1, [{ x: x1, y: y1, mode: lm, name:'pascal'}]);
+</script>
+<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+```
 
 ---
 ### Bash & zsh
@@ -1327,7 +1357,7 @@ Because cmd.exe is the default windows child-process, if the default is being us
 
 Here a javascript code block produces output in the form of an `output:gnuplot` labelled code block. This block has *id* `output` and so will be replaced if the javascript is executed again. Because it also has *cmdid* `gnuplot` it can be directly executed in the usual ways to produce the plot.
 
-```js  //takes about 5-10 sec to run - the output is a gnuplot code block
+```js  //takes from 1-10 sec to run - the output is a gnuplot code block
 // '''js //example to show chaining output to gnuplot
 function xrange() {
   let x1 = _.range(0, 6.1, 6 / 19);
@@ -1380,29 +1410,29 @@ console.log('#tag_speed'); //same id tag at end of data
 console.log('set logscale x');
 console.log('plot "$speed" w lp title "speed"');
 ```
-```output :gnuplot noinline
+```output :gnuplot
 #tag_speed
 $speed << EOD
-1 0.2777777777777778
-2 0.7692307692307694
-4 1.4814814814814816
-9 3.272727272727273
-18 6.428571428571428
-38 11.176470588235292
-78 18.13953488372093
-162 10.451612903225806
-336 28.000000000000004
-695 34.74999999999999
-1438 39.3972602739726
-2976 42.51428571428572
-6158 50.0650406504065
-12743 47.37174721189591
-26367 25.352884615384614
-54556 30.99772727272728
-112884 33.59642857142857
-233572 29.47280757097792
-483293 34.694400574300076
-1000000 33.852403520649965
+1 0.21052631578947367
+2 0.5714285714285715
+4 1.142857142857143
+9 2.7692307692307696
+18 5.142857142857142
+38 10.133333333333335
+78 14.857142857142858
+162 21.6
+336 19.2
+695 21.384615384615387
+1438 23.008
+2976 25.878260869565214
+6158 27.36888888888889
+12743 27.702173913043477
+26367 25.72390243902439
+54556 20.0205504587156
+112884 26.10034682080925
+233572 23.012019704433502
+483293 24.595063613231556
+1000000 22.222222222222225
 EOD
 #tag_speed
 set logscale x

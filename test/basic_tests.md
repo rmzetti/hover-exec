@@ -1,13 +1,13 @@
 ## Hover-exec basic tests
 
-This provides basic tests for the VSCode extension *hover-exec*. The test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path, or exec by clicking or alt-/ or opt-/ to open the file in the editor.
+This provides basic tests for the VSCode extension *hover-exec*. The test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path/name, then click the path/name to open the file in the editor. If the cursor is in the command, using the shortcut alt+/ or opt+/ will open the file.
 
-`code %h/README.md`            //%h is a hover-exec command variable giving the extension path \
-`code %h/READMORE.md`       //extended README \
-`code %h/test/basic_tests.md` //basic tests \
-`code %h/test/misc_tests.md`  //benchmark tests and REPLs \
+`edit %h/README.md`            //%h is a hover-exec command line variable giving the extension path \
+`edit %h/READMORE.md`       //extended README \
+`edit %h/test/basic_tests.md` //basic tests \
+`edit %h/test/misc_tests.md`  //benchmark tests and REPLs \
 
-NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks, and must start in col 1.
+NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks. The 'edit' one-liners need not start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 

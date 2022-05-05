@@ -35,6 +35,7 @@ let executing = false; //code is executing
 let iexec = -1; //number of currently executing code (set to nexec)
 let nexec = 0;  //provides number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
+let edit = false; //open link in vscode editor
 let quickmathResult = '';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
@@ -101,17 +102,19 @@ export function activate(context: vscode.ExtensionContext) {
         status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
         let quickmath = false; //current script is 'quickmath' (executed by hover)
+        edit = false; //current script is not 'edit' (executed by hover)
         oneLiner = false; //one-liner
         quickmath = false;  //quick evaluate using mathjs, or a regex search
         let includeHere = false;    //an 'inhere' (include) line
         setExecParams(context, doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
-          quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text);
+          quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text); //allow eg. `1+2=` or `/1+2/`
+          edit = line.text.includes("`edit");
           includeHere = /#inhere.*#\w+/.test(line.text);
-          if (!oneLiner && !quickmath && !includeHere) {
+          if (!oneLiner && !quickmath && !includeHere && !edit) {
             return null;
-          } //ignore if not a code block, oneLiner or quickmath
+          } //ignore if not a code block, oneLiner, edit or quickmath
         }
         if (includeHere) { //show tagged content
           return new vscode.Hover(new vscode.MarkdownString(
@@ -121,6 +124,18 @@ export function activate(context: vscode.ExtensionContext) {
         else if (quickmath) { //evaluate math expressions like `44-2=` using mathjs
           //also evaluate re eg. `/($speed << EOD.*EOD)/`
           return await doQuickmath();
+        }
+        else if (edit) { //open in vscode editor
+          cmd = getFileToEdit(line.text,pos.character);
+          if (cmd==="") { return null; }
+          cmdId = "oneliner";
+          let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
+          const contents = new vscode.MarkdownString(
+            "*hover-exec:* edit in vsCode " + "\n\n**[" + cmd + " =>>](" + url + ")**"
+          );
+          cmd='code '+cmd;
+          contents.isTrusted = true; //set hover links as trusted
+          return new vscode.Hover(contents); //return link string
         }
         if (line.text === "```") {
           //allow hover-exec from end of codeblock
@@ -248,6 +263,16 @@ export function activate(context: vscode.ExtensionContext) {
         }
         let doc = editor.document; //get document
         let pos = editor.selection.active; //and position
+        let s = doc.lineAt(pos).text; //get current line text
+        if (s.includes('`edit')) { //possibly an edit command
+          cmd=getFileToEdit(s, pos.character); 
+          if(cmd!==""){ //if it is an edit command
+            cmd='code '+cmd;
+            cmdId="oneliner";
+            hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?oneLiner"));
+          }
+          return;
+        }
         cursLine = pos.line;
         cursChar = pos.character; //when command was executed
         let n = getStartOfBlock(doc, pos); //get start of codeblock
@@ -422,6 +447,18 @@ export function activate(context: vscode.ExtensionContext) {
     }
   }
 
+  function getFileToEdit(s :string, n:number) {
+    if (s[n] === '`') { n-=1; } //hover over the expression not backticks
+    let s1 = s.slice(0, n);//there may be more than one expression in a line
+    let s2 = s.slice(n);  //so isolate parts before & after hover pos
+    if (!s1.includes('`') || !s2.includes('`')) { return ""; }
+    s1 = s1.slice(s1.lastIndexOf('`') + 1);
+    s2 = s2.slice(0,s2.indexOf('`'));
+    s1 = s1 + s2;
+    if(!s1.startsWith('edit')) { return ""; }
+    return replaceStrVars(s1.slice(5));
+  }
+  
   function pad(s: string) {
     if (s.includes("&emsp;")) {
       //remove previous padding
