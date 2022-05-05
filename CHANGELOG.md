@@ -9,6 +9,7 @@ All notable changes to the "hover-exec" extension will be documented in this fil
 ## Ref log with version ids (updated 2022-05-04)
 
 ### May 22
+df91c34 HEAD@{2022-05-05 22:02:48 +1200}: commit: include edit oneliner, update reads, [ver_0.7.2]
 44c2fd7 HEAD@{2022-05-03 21:00:31 +1200}: commit: fix readme error caused by vsce bug
 ad48b07 HEAD@{2022-05-03 20:22:47 +1200}: commit: adjust readme
 1bdc377 HEAD@{2022-05-03 19:55:32 +1200}: commit: adjust reads

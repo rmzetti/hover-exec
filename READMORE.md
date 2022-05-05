@@ -73,7 +73,7 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
         - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
         - [open another instance of vscode:](#open-another-instance-of-vscode)
         - [explore files, view folders:](#explore-files-view-folders)
-        - [other examples (also see READMORE):](#other-examples-also-see-readmore)
+        - [other examples:](#other-examples)
         - [bash html & javascript](#bash-html--javascript)
     - [audio one-liners](#audio-one-liners)
     - [Windows one-liners: ms-settings, control panel and management console](#windows-one-liners-ms-settings-control-panel-and-management-console)
@@ -1804,7 +1804,7 @@ They must start in col 1.
 `explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
 `nemo "%d/README.md"` Linux mint view current file's folder & select file
 
-##### other examples (also see READMORE):
+##### other examples:
 
 `devmgmt.msc` for windows show devices \
 `system_profiler SPHardwareDataType` for mac show hardware info \
@@ -2099,9 +2099,7 @@ As an example, the  *swapper* for javascript (`vm`, `eval` & `node`) is `console
 
 The  *swapper* for  *julia* is `println(string(\"=>>\",$1))`, where the double quotes required by  *julia* have to be escaped `\"` because they will be part of a  *json* string in the settings.json file.
 
-Check `misc_tests.md` for more info and examples. The following one-liner can be used to open `misc_tests.md` in the editor:
-
-`code %h/test/misc_tests.md` //exec this to open misc_tests in the vscode editor
+Try `edit %h/test/misc_tests.md` for more info and examples.
 
 ## Release Notes and Known Issues
 
@@ -2109,7 +2107,7 @@ This is a beta version.
 
 Note that in all the demos above, except  *js:vm* and  *js:eval* which allow definition of  *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or [misc_tests](test/misc_tests.md). For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %h/test/misc_tests.md`. For REPLs, successive script execution will recognise previously defined variables and functions.
 
 There is also an  *include* capability, known as `#inhere` (to distinguish from  *includes* in scripts) - see [Including tagged sections using #inhere](#including-tagged-sections-using-inhere) for details and examples.
 
