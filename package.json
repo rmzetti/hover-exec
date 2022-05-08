@@ -299,7 +299,14 @@
         "key": "alt+/",
         "mac": "opt+/",
         "when": "editorLangId == markdown"
+      },
+      {
+        "command": "hover-exec.readme",
+        "key": "ctrl+alt+/",
+        "mac": "ctrl+opt+/",
+        "when": "editorLangId == markdown"
       }
+
     ]
   },
   "scripts": {
