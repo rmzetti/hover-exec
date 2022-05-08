@@ -68,10 +68,10 @@ When hovering over the main code block start or end lines below:
 // '''js
 console.log('the meaning of life: ', 7*7-7)
 ```
->       Test output (shown in the hover):
->       hover-exec: js [config] [show %f, %g ..] [delete block]
->       [clear output] [open last script] [open last result]
->       js =>> //this is a code block with id 'js'
+>      Test output (shown in the hover):
+>      hover-exec: js [config] [show %f, %g ..] [delete block]
+>      [clear output] [open last script] [open last result]
+>      js =>> //this is a code block with id 'js'
 
 The top right hand `[delete block]` option will delete the code block (`ctrl-z` or `cmd-z` to restore). If there is an output block, that will be deleted on the first click.
 

@@ -1,6 +1,6 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the README etc have many example codeblocks that can be executed to try it out.
+This is the README for the VSCode extension *hover-exec*. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. This is because *hover-exec* is all about facilitating the execution of markdown code blocks in the editor, and the README etc have many example code blocks that can be executed to try it out.
 
 To help with this, *hover-exec* provides a command to open the README in the editor:
 
@@ -11,7 +11,7 @@ From inside the editor the following 'one-liners' are available - hover over the
 
 `edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
 `edit %h/READMORE.md` //extended README \
-`edit %h/test/basic_tests.md` //basic tests \
+`edit %h/test/basic_tests.md` //basic tests for javascript code blocks\
 `edit %h/test/misc_tests.md` //benchmark tests and REPLs
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
@@ -156,7 +156,7 @@ A regex tester using *vscode*'s eval:
 
 ---
 All the code blocks above can be executed using either `eval` or `vm`.
-The difference is that `vm` scripts are executed within a more restricted *context* - see [READMORE](READMORE.md) .
+The difference is that `vm` scripts are executed within a more restricted *context* - see [READMORE](READMORE.md).
 
 In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `:eval` sets the actual exec command to `eval`.
 
@@ -395,7 +395,7 @@ Plotly.plot( plot1, [{ x: x1, y: y1, mode: lm, name:'pascal'}]);
 pwd
 ```  
 >      Test output:
->     /home/rmzetti/hover-exec
+>      /home/rmzetti/hover-exec
 
 
 ```bash # (macos, linux, wsl) show current directory
@@ -403,7 +403,7 @@ pwd
 pwd
 ```
 >      Test output:
->     /home/rmzetti/hover-exec
+>      /home/rmzetti/hover-exec
 
 ---
 ### Powershell
@@ -418,7 +418,7 @@ pwd
 ```
 >      Test output (also see inline output):
 >      Path
->     ----
+>      ----
 >      C:\Users\rmzetti\GitHub\hover-exec
 
 ---

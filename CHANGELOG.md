@@ -6,7 +6,7 @@ All notable changes to the "hover-exec" extension will be documented in this fil
 
 `git reflog --date=iso` //Hover-exec one-liner to provide dated list of commits
 
-## Ref log with version ids (updated 2022-05-04)
+## Ref log with version ids
 
 ### May 22
 df91c34 HEAD@{2022-05-05 22:02:48 +1200}: commit: include edit oneliner, update reads, [ver_0.7.2]
@@ -111,7 +111,7 @@ aaea83d HEAD@{2021-09-05 16:14:56 +1200}: commit: update for linux file paths
 8ae80f4 HEAD@{2021-08-29 21:35:49 +1200}: commit: update for compatibility with markdown preview enhanced
 6120be7 HEAD@{2021-08-26 13:53:36 +1200}: commit: [ver_0.5.0]
 c55fc13 HEAD@{2021-08-26 13:40:40 +1200}: commit: change config settings structure
-74fd91b HEAD@{2021-07-31 22:10:43 +1200}: commit: provide internal variables for eval codeblocks
+74fd91b HEAD@{2021-07-31 22:10:43 +1200}: commit: provide internal variables for eval code blocks
 ### Jul 21
 e4eb76c HEAD@{2021-07-26 22:34:35 +1200}: commit: readme
 6e57f8a HEAD@{2021-07-26 20:26:07 +1200}: commit: readme gif

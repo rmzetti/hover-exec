@@ -133,12 +133,12 @@ export function activate(context: vscode.ExtensionContext) {
           const contents = new vscode.MarkdownString(
             "*hover-exec:* edit in vsCode " + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
-          cmd='code '+cmd;
+          cmd='code -g '+cmd;
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
         }
         if (line.text === "```") {
-          //allow hover-exec from end of codeblock
+          //allow hover-exec from end of code block
           let n = getStartOfBlock(doc, pos); //if at end, get start of block
           if (n < 0) {
             return null;
@@ -153,7 +153,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (script) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
-          codeBlock = getCodeBlockAt(doc, pos); //save codeblock
+          codeBlock = getCodeBlockAt(doc, pos); //save code block
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
           if (comment !== '') {
             comment = ' *' + comment + '*';
@@ -194,7 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
         } else {
           //create and return hover message & urls for non-built-in commands
           cmd = replaceStrVars(full); //replace %f etc in full string
-          codeBlock = getCodeBlockAt(doc, pos); //save codeblock
+          codeBlock = getCodeBlockAt(doc, pos); //save code block
           let url = "vscode://rmzetti.hover-exec?"; //create hover message
           let msg =
             "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
@@ -267,7 +267,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (s.includes('`edit')) { //possibly an edit command
           cmd=getFileToEdit(s, pos.character); 
           if(cmd!==""){ //if it is an edit command
-            cmd='code '+cmd;
+            cmd='code -g '+cmd;
             cmdId="oneliner";
             hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?oneLiner"));
           }
@@ -275,10 +275,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
         cursLine = pos.line;
         cursChar = pos.character; //when command was executed
-        let n = getStartOfBlock(doc, pos); //get start of codeblock
+        let n = getStartOfBlock(doc, pos); //get start of code block
         if (n < 0) {
           return null;
-        } //if not in codeblock ignore
+        } //if not in code block ignore
         setExecParams(context, doc); //reset basic execute parameters
         pos = new vscode.Position(n, 0); //set position at start of block
         let line = doc.lineAt(pos); //get command line contents
@@ -294,7 +294,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (script) {
           //predefined script engine strings
           cmd = replaceStrVars(script as string); //expand %f etc & get tempName
-          codeBlock = getCodeBlockAt(doc, pos); //save codeblock
+          codeBlock = getCodeBlockAt(doc, pos); //save code block
           url = "vscode://rmzetti.hover-exec?" + cmdId; //url as for hover execute
         } else if (cmdId === "output") {
           url = "vscode://rmzetti.hover-exec?delete_output"; //cursor in output block: delete the block
@@ -307,10 +307,10 @@ export function activate(context: vscode.ExtensionContext) {
           //other commands
           line = doc.lineAt(cursLine); //get line where command was executed
           cmd = replaceStrVars(full);
-          codeBlock = getCodeBlockAt(doc, pos); //save codeblock
+          codeBlock = getCodeBlockAt(doc, pos); //save code block
           url = "vscode://rmzetti.hover-exec?" + cmdId; //using url enables re-use of hover-execute code
         }
-        hUri.handleUri(vscode.Uri.parse(url)); //execute codeblock via url
+        hUri.handleUri(vscode.Uri.parse(url)); //execute code block via url
       }
     })
   );
@@ -499,7 +499,8 @@ export function activate(context: vscode.ExtensionContext) {
     return s;
   } //end function getCodeBlockAt
 
-  function getStartOfBlock(doc: vscode.TextDocument, pos: vscode.Position) { //return start of codeblock containing ```, or -1
+  function getStartOfBlock(doc: vscode.TextDocument, pos: vscode.Position) { 
+    //return start of code block containing ```, or -1
     let temptxt = doc.lineAt(pos).text;
     oneLiner =
       !temptxt.startsWith("```") &&
@@ -858,7 +859,7 @@ async function clear() {
       temp = codeBlock.replace(/=>>.*?(\r?\n)/mg, '=>> $1');
     }
     await activeTextEditor.edit((selText) => {
-      selectCodeblock(false); //select codeblock to replace
+      selectCodeblock(false); //select code block to replace
       if (needSwap) {
         selText.replace(replaceSel, temp + "```\n");
       } else {
@@ -880,7 +881,7 @@ async function paste(text: string) {
       let re1 = new RegExp(swap + "\r?\n", "g"); //allows checking for swaps
       if (re1.test(codeBlock)) {
         //if there are any swaps
-        //copy in-line results into the codeblock
+        //copy in-line results into the code block
         let re = new RegExp("=>>.*?\r?\n", ""); //regex to remove swapped output line
         let n = (codeBlock.match(re1) || []).length;
         for (let i1 = 0; i1 < n; i1++) {
@@ -909,8 +910,8 @@ async function paste(text: string) {
     text = text.replace(/^`+/, " ```"); //set one or more starting ` to ``` & temporarily mark with leading space
     text = text.replace(/^```/mg, "'''"); //don't allow displayed lines to start with ``` (would end the code block)
     text = text.replace(/\[\d\d?m/g,""); //remove in-text color codes (mostly pwsh)
-    //if there is any output left, it will go into an ```output codeblock
-    await selectCodeblock(false); //select codeblock to replace
+    //if there is any output left, it will go into an ```output code block
+    await selectCodeblock(false); //select code block to replace
     activeTextEditor.edit((selText) => {
       let lbl = "```output\n"; //normal output block label
       if (text.startsWith(" ```")) {
@@ -932,7 +933,7 @@ async function paste(text: string) {
         }
         selText.replace(replaceSel, lbl + text + "\n```\n");
       } else {
-        //replace codeblock (has inline results) & output
+        //replace code block (has inline results) & output
         selText.replace(
           replaceSel,
           codeBlock + "```\n" + lbl + text + "\n```\n"
@@ -956,7 +957,7 @@ function removeSelection() {
 }
 
 async function selectCodeblock(force: boolean) {
-  //select codeblock appropriately depending on type
+  //select code block appropriately depending on type
   const { activeTextEditor } = vscode.window;
   if (activeTextEditor && startCode >= 0) {
     const doc = activeTextEditor.document;

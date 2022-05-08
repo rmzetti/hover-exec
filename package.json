@@ -24,7 +24,7 @@
     "run",
     "markdown",
     "code",
-    "codeblock"
+    "code block"
   ],
   "activationEvents": [
     "onLanguage:markdown",
@@ -35,7 +35,7 @@
     "commands": [
       {
         "command": "hover-exec.exec",
-        "title": "Hover-exec: execute codeblock"
+        "title": "Hover-exec: execute code block"
       },
       {
         "command": "hover-exec.readme",
