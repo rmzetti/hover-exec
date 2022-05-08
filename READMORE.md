@@ -9,7 +9,7 @@ To help with this, *hover-exec* provides a command to open the README in the edi
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit -g %h/README.md:1` //%h is a hover-exec command line variable giving the extension path \
+`edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
 `edit %h/READMORE.md` //extended README \
 `edit %h/test/basic_tests.md` //basic tests \
 `edit %h/test/misc_tests.md` //benchmark tests and REPLs

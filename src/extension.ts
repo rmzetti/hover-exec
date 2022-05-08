@@ -455,8 +455,10 @@ export function activate(context: vscode.ExtensionContext) {
     s1 = s1.slice(s1.lastIndexOf('`') + 1);
     s2 = s2.slice(0,s2.indexOf('`'));
     s1 = s1 + s2;
-    if(!s1.startsWith('edit')) { return ""; }
-    return replaceStrVars(s1.slice(5));
+    if(!s1.startsWith('edit')) { return ""; } //not edit command
+    s1=replaceStrVars(s1.slice(5)); //allow use of %cdefgh
+    if(!/\.[^\/]*$/.test(s1)) { s1+='.md'; } //no .ext, default is .md
+    return s1;
   }
   
   function pad(s: string) {
