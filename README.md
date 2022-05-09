@@ -1,25 +1,23 @@
 # Hover-exec README
 
-This is the README for the VSCode extension *hover-exec*. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor. This is because *hover-exec* is all about facilitating the execution of markdown code blocks in the editor, and the README etc have many example code blocks that can be executed to try it out.
+This is the README for the VSCode extension *hover-exec*.
+Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
+This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the README etc have many example codeblocks that can be executed to try it out.
 
-To help with this, *hover-exec* provides a command to open the README in the editor:
-
-- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. 
-- Click the command to open this README in the editor.
+To help with this, *hover-exec* provides the command *open the hover-exec README* to open the README in the editor (shortcut *ctrl+alt+/*  or *ctrl+opt+/*):
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit %h/README` //%h is a hover-exec command line variable giving the extension path \
-`edit %h/READMORE` //extended README \
-`edit %h/test/basic_tests` //basic tests for javascript code blocks\
+`edit %h/README` //opens the README in the vscode editor \
+`edit %h/READMORE` //the README but with more detail \
+`edit %h/test/basic_tests` //basic tests \
 `edit %h/test/misc_tests` //benchmark tests and REPLs
 
-- NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
-- In the above, %h is a hover-exec command variable giving the extension path.
-
-Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
-
-For more detail, `edit %h/READMORE`.
+Notes:
+1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
+2. In the above, %h is a hover-exec command line variable giving the extension path `edit %h/READMORE#what settings`
+3. Using *hover-exec* in the vscode editor on these files allows live testing, and comparison with the 'test outputs' provided.
+4. Any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
@@ -469,7 +467,7 @@ They must start in col 1.
 ##### exec notepad with temp file (%f):
 
 `open -a textedit "%f"` --mac \
-`notepad "%f"`  --windows \
+`notepad "%f.md"`  --windows \
 `xedit "%f"`  --linux/wsl
 
 ##### open another instance of vscode:

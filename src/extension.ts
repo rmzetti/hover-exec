@@ -165,7 +165,7 @@ export function activate(context: vscode.ExtensionContext) {
             let msgOpen = //to open last script & result
               "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear_all) " +
               "[ [*open last script*] ](" + vscode.Uri.file(tempPath + '/' + tempName) + ") " +
-              "[ [*open last result*] ](" + vscode.Uri.file(tempPath + '/' + tempName + ".out.txt") + ")\n\n";
+              "[ [*open last result*] ](" + vscode.Uri.file(tempPath + '/' + tempName + ".out.md") + ")\n\n";
             msg +=
               "[ [*config*] ](" + url + "_config) " + //add hover info
               msgDel + msgOpen + "**[ exec: " + cmdId + " =>> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ](" + url + ")**";
@@ -199,7 +199,7 @@ export function activate(context: vscode.ExtensionContext) {
             "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
             vscode.Uri.file(tempPath + '/' + tempName) + ")" + "[ [*last result* ] ](" +
             vscode.Uri.file(tempPath + '/' + tempName) +
-            ".out.txt)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + cmdId + ")**";
+            ".out.md)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + cmdId + ")**";
           const contents = new vscode.MarkdownString(
             "hover-exec:" + cmdId + msg
           );
@@ -357,7 +357,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.fs.createDirectory(context.globalStorageUri); //create temp folder if necessary
     tempPath = context.globalStorageUri.path; //temp folder path %g
     tempFsPath = context.globalStorageUri.fsPath; //temp folder path
-    tempName = "temp.txt"; //temp file name, can be used as (%n)
+    tempName = "temp.md"; //temp file name, can be used as (%n)
     if (windows) {
       tempPath = tempPath.replace(/^\//, ""); //remove starting / for windows
     }
@@ -789,7 +789,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
         }
         executing = false;     //execution finished
         if (iexec === nexec && Date.now() > startTime) { //only output if this is the latest result
-          outName = tempFsPath + slash + tempName + ".out.txt";
+          outName = tempFsPath + slash + tempName + ".out.md";
           writeFile(outName, out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {

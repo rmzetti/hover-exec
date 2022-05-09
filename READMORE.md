@@ -1,25 +1,21 @@
 # Hover-exec READMORE
 
-This is the READMORE for VS Code extension *hover-exec*. Tldr? ..check [the README](README.md) instead. The two files use the same structure and basic content, this one just goes into more detail. Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
+This is the READMORE for VS Code extension *hover-exec*.
 
-To help with this, *hover-exec* provides a command to open the README in the editor:
+Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
 
-- After the extension has been installed, type *ctrl+shift+p* to open the commands, then type *h*, and you will see the command *open the hover-exec README*. 
-- Click the command to open this README in the editor.
+Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
 
-From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
-
-`edit %h/README` //%h is a hover-exec command line variable giving the extension path \
-`edit %h/READMORE` //extended README \
+`edit %h/README` //opens the README in the vscode editor \
+`edit %h/READMORE` //the README but with more detail \
 `edit %h/test/basic_tests` //basic tests \
 `edit %h/test/misc_tests` //benchmark tests and REPLs
 
-- NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
-- In the above, %h is a hover-exec command variable giving the extension path.
-
-`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))` //one-liner to show the preview for the current file.
-
-Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
+Notes:
+1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
+2. In the above, %h is a hover-exec command line variable giving the extension path `edit %e#what settings`
+3. Using *hover-exec* in the vscode editor on these files allows live testing, and comparison with the 'test outputs' provided.
+4. Any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
 - [Hover-exec READMORE](#hover-exec-readmore)
@@ -1915,7 +1911,7 @@ On windows the list looks like this
 - %n.ext temp file 'name.ext': temp.js.ext, where ext is an extension (default is .txt)
 
 So
-- `%f` provides the appropriate temporary file path & name
+- `%f` provides the temporary file path & name
 - in addition, the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` .
 
 Generally (currently) these are not available for use within scripts, but only in command lines.
@@ -2111,7 +2107,7 @@ Scripts can also be run using their REPL version, if this is available - eg. for
 
 There is also an  *include* capability, known as `#inhere` (to distinguish from  *includes* in scripts) - see [Including tagged sections using #inhere](#including-tagged-sections-using-inhere) for details and examples.
 
-Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly strightforward.)
+Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly straightforward.)
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above).
 

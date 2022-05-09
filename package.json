@@ -86,7 +86,7 @@
             "chrome": "google-chrome-stable \"%f.html\"",
             "safari": "open -a safari \"%f.html\"",
             "go": "go run \"%f.go\"",
-            "buddvs": "buddvs \"%f.txt\" ",
+            "buddvs": "buddvs \"%f\" ",
             "pascal": "fpc \"%f.pas\" -v0 && \"%g/temp\" ",
             "test": "test -c \"%f.tst\"",
             "test_win": "testwin -c \"%f.tst\"",
