@@ -126,14 +126,13 @@ export function activate(context: vscode.ExtensionContext) {
           return await doQuickmath();
         }
         else if (edit) { //open in vscode editor
-          cmd = getFileToEdit(line.text,pos.character);
+          [cmd,cmda] = getFileToEdit(line.text,pos.character);
           if (cmd==="") { return null; }
-          cmdId = "oneliner";
+          cmdId="edit";
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
           const contents = new vscode.MarkdownString(
             "*hover-exec:* edit in vsCode " + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
-          cmd='code -g '+cmd;
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
         }
@@ -264,14 +263,13 @@ export function activate(context: vscode.ExtensionContext) {
         let doc = editor.document; //get document
         let pos = editor.selection.active; //and position
         let s = doc.lineAt(pos).text; //get current line text
+        let h='';
         if (s.includes('`edit')) { //possibly an edit command
-          cmd=getFileToEdit(s, pos.character); 
+          [cmd,cmda]=getFileToEdit(s, pos.character); 
           if(cmd!==""){ //if it is an edit command
-            cmd='code -g '+cmd;
-            cmdId="oneliner";
-            hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?oneLiner"));
+            hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?edit"));
+            return;
           }
-          return;
         }
         cursLine = pos.line;
         cursChar = pos.character; //when command was executed
@@ -290,7 +288,7 @@ export function activate(context: vscode.ExtensionContext) {
         startCode = pos.line; //save start of code line number
         parseLine(line.text);
         let url = "";
-        let script = config.get("scripts." + cmdId); //json object if cmd1 is a 'built-in' script
+        let script = config.get("scripts." + cmdId); //json object if cmdId is a 'built-in' script
         if (script) {
           //predefined script engine strings
           cmd = replaceStrVars(script as string); //expand %f etc & get tempName
@@ -457,8 +455,14 @@ export function activate(context: vscode.ExtensionContext) {
     s1 = s1 + s2;
     if(!s1.startsWith('edit')) { return ""; } //not edit command
     s1=replaceStrVars(s1.slice(5)); //allow use of %cdefgh
+    let m=s1.indexOf('#');
+    let h='';
+    if(m>0) { 
+      h=s1.slice(m+1);
+      s1=s1.slice(0,m);
+    } //remove comment
     if(!/\.[^\/]*$/.test(s1)) { s1+='.md'; } //no .ext, default is .md
-    return s1;
+    return [s1,h];
   }
   
   function pad(s: string) {
@@ -608,6 +612,15 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       ch.kill();
       repl.kill();
       return;
+    }
+    if(uri.query === "edit" && vscode.window.activeTextEditor) {
+      await vscode.window.showTextDocument(vscode.Uri.file(cmd));
+      let f = vscode.window.activeTextEditor.document.getText();
+      let myRe = new RegExp('^#* '+cmda,'mi');
+      let m=vscode.window.activeTextEditor.document.positionAt(f.search(myRe)).line;
+      let replaceSel = new vscode.Selection(m, 0, m+30, 0);
+      vscode.window.activeTextEditor.revealRange(replaceSel);
+      return;      
     }
     if (uri.query === "delete_output" || uri.query === "text_output" ||
       uri.query === "full_output") {
@@ -1035,7 +1048,7 @@ async function selectCodeblock(force: boolean) {
 async function deleteOutput(mode: string) {
   //delete output code block, or leave as text
   const { activeTextEditor } = vscode.window;
-  let s = '';
+  let s = ''; 
   if (mode === 'full_output') {
     s = '' + fs.statSync(outName).mtime; //output file modified date as first line
     s = '> ' + s.replace(/.*?\s/, '').replace(/(.*?\s.*?\s.*?\s.*?\s).*/, '$1') + '\n';
