@@ -9,19 +9,17 @@ To help with this, *hover-exec* provides a command to open the README in the edi
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
-`edit %h/READMORE.md` //extended README \
-`edit %h/test/basic_tests.md` //basic tests for javascript code blocks\
-`edit %h/test/misc_tests.md` //benchmark tests and REPLs
+`edit %h/README` //%h is a hover-exec command line variable giving the extension path \
+`edit %h/READMORE` //extended README \
+`edit %h/test/basic_tests` //basic tests for javascript code blocks\
+`edit %h/test/misc_tests` //benchmark tests and REPLs
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
 - In the above, %h is a hover-exec command variable giving the extension path.
 
-`js vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file('%e'))` //one-liner to show the preview for the current file.
-
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
-For more detail, `edit %h/READMORE.md`.
+For more detail, `edit %h/READMORE`.
 
 ## Contents
 - [Hover-exec README](#hover-exec-readme)
@@ -162,7 +160,7 @@ In the command line (eg. above), using `js` for the code block id produces javas
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
-See the READMORE, `edit %h/READMORE.md` for more information and examples.
+See the READMORE, `edit %h/READMORE#regular` for more information and examples.
 
 ---
 ### Using nodejs
@@ -236,9 +234,9 @@ Command lines to conveniently start a number of other scripts are included (see 
 
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
-- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [READMORE: Configuration settings](READMORE.md#configuration-settings), or `edit %h/READMORE.md`.
-- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/READMORE.md` for examples.
-- For other script language examples, `edit %h/READMORE.md`
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [READMORE: Configuration settings](READMORE.md#configuration-settings), or `edit %h/READMORE#config`.
+- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/READMORE#config` for examples.
+- For other script language examples, `edit %h/READMORE#other`
 
 ---
 ### Python
@@ -337,7 +335,7 @@ print("lua ok") -- this outputs in the output code block below
 ---
 ### Gnuplot
 
-*Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (`edit %h/READMORE.md` for examples).
+*Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (`edit %h/READMORE#chaining` for examples).
 
 ```gnuplot {cmd} # cmd is for markdown preview enhanced
 # '''gnuplot //here gnuplot is being used stand-alone
@@ -498,7 +496,7 @@ They must start in col 1.
 `firefox <h1>Hello world!</h1>` linux firefox with some html \
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href 
 
-There are many more one-liner examples in the READMORE: `edit %h/READMORE.md`.
+There are many more one-liner examples in the READMORE: `edit %h/READMORE#one-liners`.
 
 ### Quickmath examples
 
@@ -515,7 +513,7 @@ NB. You can copy the answer in the hover to the clipboard with a click.
 ---
 ## Configuration settings
 
-For configuration settings see [READMORE](READMORE.md#configuration-settings) or `edit %h/READMORE.md`.
+For configuration settings see [READMORE](READMORE.md#configuration-settings) or `edit %h/READMORE#config`.
 
 ---
 
@@ -525,9 +523,10 @@ This is a beta version.
 
 Note that in all the demos above, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/READMORE.md` or `edit %h/test/misc_tests.md` for examples. For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/READMORE#using scripts` for examples.
+In REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - `edit %h/READMORE.md` for details and examples.
+There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - `edit %h/READMORE#including` for details and examples.
 
 ---
 

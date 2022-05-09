@@ -618,8 +618,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       let f = vscode.window.activeTextEditor.document.getText();
       let myRe = new RegExp('^#* '+cmda,'mi');
       let m=vscode.window.activeTextEditor.document.positionAt(f.search(myRe)).line;
-      let replaceSel = new vscode.Selection(m, 0, m+30, 0);
-      vscode.window.activeTextEditor.revealRange(replaceSel);
+      vscode.window.activeTextEditor.revealRange(new vscode.Selection(m, 0, m+30, 0));
+      vscode.window.activeTextEditor.selection = new vscode.Selection(m, 0, m, 0);
       return;      
     }
     if (uri.query === "delete_output" || uri.query === "text_output" ||

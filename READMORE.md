@@ -9,10 +9,10 @@ To help with this, *hover-exec* provides a command to open the README in the edi
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit %h/README.md` //%h is a hover-exec command line variable giving the extension path \
-`edit %h/READMORE.md` //extended README \
-`edit %h/test/basic_tests.md` //basic tests \
-`edit %h/test/misc_tests.md` //benchmark tests and REPLs
+`edit %h/README` //%h is a hover-exec command line variable giving the extension path \
+`edit %h/READMORE` //extended README \
+`edit %h/test/basic_tests` //basic tests \
+`edit %h/test/misc_tests` //benchmark tests and REPLs
 
 - NB. Each of the above commands (highlighted in preview) must be surrounded by single backtick. The 'edit' one-liner does not have to start in column 1.
 - In the above, %h is a hover-exec command variable giving the extension path.
@@ -2099,7 +2099,7 @@ As an example, the  *swapper* for javascript (`vm`, `eval` & `node`) is `console
 
 The  *swapper* for  *julia* is `println(string(\"=>>\",$1))`, where the double quotes required by  *julia* have to be escaped `\"` because they will be part of a  *json* string in the settings.json file.
 
-Try `edit %h/test/misc_tests.md` for more info and examples.
+Try `edit %h/test/misc_tests#view.*swappers` for more info and examples.
 
 ## Release Notes and Known Issues
 
@@ -2107,7 +2107,7 @@ This is a beta version.
 
 Note that in all the demos above, except  *js:vm* and  *js:eval* which allow definition of  *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %h/test/misc_tests.md`. For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %h/test/misc_tests#using.*repl`. For REPLs, successive script execution will recognise previously defined variables and functions.
 
 There is also an  *include* capability, known as `#inhere` (to distinguish from  *includes* in scripts) - see [Including tagged sections using #inhere](#including-tagged-sections-using-inhere) for details and examples.
 
@@ -2119,29 +2119,3 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
-
-
-`code --help`
-```output
-Visual Studio Code 1.67.0
-
-Usage: code.exe [options][paths...]
-
-To read output from another program, append '-' (e.g. 'echo Hello World | code.exe -')
-
-Options
-  -d --diff <file> <file>           Compare two files with each other.
-  -a --add <folder>                 Add folder(s) to the last active window.
-  -g --goto <file:line[:character]> Open a file at the path on the specified
-                                    line and character position.
-  -n --new-window                   Force to open a new window.
-  -r --reuse-window                 Force to open a file or folder in an
-                                    already opened window.
-  -w --wait                         Wait for the files to be closed before
-                                    returning.
-  --locale <locale>                 The locale to use (e.g. en-US or zh-TW).
-  --user-data-dir <dir>             Specifies the directory that user data is
-                                    kept in. Can be used to open multiple
-                                    distinct instances of Code.
-  -h --help                         Print usage.
-```
