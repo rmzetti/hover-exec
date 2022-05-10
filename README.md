@@ -218,7 +218,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of other scripts are included (see [Configuration settings](readmore.md#configuration-settings) for the actual command lines used). Some examples:
+Command lines to conveniently start a number of other scripts are included (go `edit %h/test/readmore#configuration settings` for the actual command lines used). Some examples:
 
 - [python](#python)
 - [julia](#julia)
@@ -232,7 +232,7 @@ Command lines to conveniently start a number of other scripts are included (see 
 
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
-- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [readmore: Configuration settings](readmore.md#configuration-settings), or `edit %h/test/readmore#config`.
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - go `edit %h/test/readmore#config`.
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/test/readmore#config` for examples.
 - For other script language examples, `edit %h/test/readmore#other scripts`
 
@@ -511,7 +511,7 @@ NB. You can copy the answer in the hover to the clipboard with a click.
 ---
 ## Configuration settings
 
-For configuration settings see [readmore](test/readmore.md#configuration-settings) or `edit %h/test/readmore#config`.
+For configuration settings, go `edit %h/test/readmore#config`.
 
 ---
 
