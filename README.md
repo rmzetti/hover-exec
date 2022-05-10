@@ -15,7 +15,7 @@ From inside the editor the following 'one-liners' are available - hover over the
 
 Notes:
 1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
-2. In the above, %h is a hover-exec command line variable giving the extension path `edit %h/test/readmore#what settings`
+2. In the above, %h is a hover-exec command line variable giving the extension path, see `edit %h/test/readmore#what settings`.
 3. Using *hover-exec* in the vscode editor on these files allows live testing, and comparison with the 'test outputs' provided.
 4. Any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
