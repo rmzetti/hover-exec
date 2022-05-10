@@ -152,7 +152,7 @@ A regex tester using *vscode*'s eval:
 
 ---
 All the code blocks above can be executed using either `eval` or `vm`.
-The difference is that `vm` scripts are executed within a more restricted *context* - see [[readmore]] 
+The difference is that `vm` scripts are executed within a more restricted *context* - `edit %h/test/readmore`
 
 In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `:eval` sets the actual exec command to `eval`.
 
