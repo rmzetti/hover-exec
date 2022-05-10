@@ -126,11 +126,11 @@ export function activate(context: vscode.ExtensionContext) {
           return await doQuickmath();
         }
         else if (edit) { //open in vscode editor
-          [cmd,cmda] = getFileToEdit(line.text,pos.character);
-          if (cmd==="") { return null; }
-          cmdId="edit";
-          let msg='';
-          if (cmda!="") { msg=" at heading #"+cmda+".."; }
+          [cmd, cmda] = getFileToEdit(line.text, pos.character);
+          if (cmd === "") { return null; }
+          cmdId = "edit";
+          let msg = '';
+          if (cmda != "") { msg = " at heading #" + cmda + ".."; }
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
           const contents = new vscode.MarkdownString(
             "*hover-exec:* edit in vsCode" + msg + "\n\n**[" + cmd + " =>>](" + url + ")**"
@@ -265,10 +265,10 @@ export function activate(context: vscode.ExtensionContext) {
         let doc = editor.document; //get document
         let pos = editor.selection.active; //and position
         let s = doc.lineAt(pos).text; //get current line text
-        let h='';
+        let h = '';
         if (/`edit.*`/.test(s)) { //possibly an edit command
-          [cmd,cmda]=getFileToEdit(s, pos.character); 
-          if(cmd !== ""){ //if it is an edit command
+          [cmd, cmda] = getFileToEdit(s, pos.character);
+          if (cmd !== "") { //if it is an edit command
             hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?edit"));
             return;
           }
@@ -319,7 +319,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push( //register readme command
     vscode.commands.registerCommand("hover-exec.readme", () => {
-      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/README.md"));
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(context.extensionPath + "/readme.md"));
     })
   );
 
@@ -341,7 +341,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (windows) { //remove starting / for windows
       currentFile = currentFile.replace(/^\//, '');
       currentFilePath = currentFilePath.replace(/^\//, '');
-    } 
+    }
     currentFsFile = doc.uri.fsPath; //os specific currentFile c:\...  (%e)
     if (windows) {
       currentFsFilePath = currentFsFile.slice(0, currentFsFile.lastIndexOf('\\'));
@@ -435,42 +435,42 @@ export function activate(context: vscode.ExtensionContext) {
     }
     if ( //check for special paths: >path/to/file.abc, >'path/to/fi le.abc', & ".."
       full.indexOf(">") > 0 && //if there's a > with no preceding < (ignores <..>)
-      (full.indexOf("<") === -1 || full.indexOf("<") >  full.indexOf(">"))
+      (full.indexOf("<") === -1 || full.indexOf("<") > full.indexOf(">"))
     ) {
       full += " ";
       //getSpecialPath(full.replace(/(\s>.*?)[\s,;].*/, "$1")); //if special path included, use it
       //full = full.replace(/>.*?[\s,;]+/, "").trim(); //& remove from full
-      getSpecialPath(full.replace(/.*?>"(.*?)".*/,'$1')  //if special path included, use it
-        .replace(/.*?>'(.*?)'.*/,'$1')
-        .replace(/.*?>([^\s]*?)\s.*/,'$1'));
-      full=full.replace(/>".*?"/,'').replace(/>'.*?'/,'').replace(/>[^\s]*?\s/,''); //& remove it
+      getSpecialPath(full.replace(/.*?>"(.*?)".*/, '$1')  //if special path included, use it
+        .replace(/.*?>'(.*?)'.*/, '$1')
+        .replace(/.*?>([^\s]*?)\s.*/, '$1'));
+      full = full.replace(/>".*?"/, '').replace(/>'.*?'/, '').replace(/>[^\s]*?\s/, ''); //& remove it
     }
   }
 
-  function getFileToEdit(s :string, n:number) {
+  function getFileToEdit(s: string, n: number) {
     if (/`.*`.*`/.test(s)) { //more than one backticked expression in line
-      if (s[n] === '`') { n-=1; } //hover over the expression not backticks
+      if (s[n] === '`') { n -= 1; } //hover over the expression not backticks
       let s1 = s.slice(0, n);//there may be more than one expression in a line
       let s2 = s.slice(n);  //so isolate parts before & after hover pos
-      if (!s1.includes('`') || !s2.includes('`')) { return ["",""]; }
+      if (!s1.includes('`') || !s2.includes('`')) { return ["", ""]; }
       s1 = s1.slice(s1.lastIndexOf('`') + 1);
-      s2 = s2.slice(0,s2.indexOf('`'));
+      s2 = s2.slice(0, s2.indexOf('`'));
       s = s1 + s2;
     } else {
-      s=s.replace(/.*?`(.*?)`.*/, "$1"); //get backtick content
+      s = s.replace(/.*?`(.*?)`.*/, "$1"); //get backtick content
     }
-    if(!s.startsWith('edit')) { return ["",""]; } //not edit command
-    s=replaceStrVars(s.slice(5)); //allow use of %cdefgh
-    let m=s.indexOf('#');
-    let h='';
-    if(m>0) { 
-      h=s.slice(m+1);
-      s=s.slice(0,m);
+    if (!s.startsWith('edit')) { return ["", ""]; } //not edit command
+    s = replaceStrVars(s.slice(5)); //allow use of %cdefgh
+    let m = s.indexOf('#');
+    let h = '';
+    if (m > 0) {
+      h = s.slice(m + 1);
+      s = s.slice(0, m);
     } //remove comment
-    if(!/\.[^\/]*$/.test(s)) { s+='.md'; } //no .ext, default is .md
-    return [s,h];
+    if (!/\.[^\/]*$/.test(s)) { s += '.md'; } //no .ext, default is .md
+    return [s, h];
   }
-  
+
   function pad(s: string) {
     if (s.includes("&emsp;")) {
       //remove previous padding
@@ -511,7 +511,7 @@ export function activate(context: vscode.ExtensionContext) {
     return s;
   } //end function getCodeBlockAt
 
-  function getStartOfBlock(doc: vscode.TextDocument, pos: vscode.Position) { 
+  function getStartOfBlock(doc: vscode.TextDocument, pos: vscode.Position) {
     //return start of code block containing ```, or -1
     let temptxt = doc.lineAt(pos).text;
     oneLiner =
@@ -619,14 +619,14 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       repl.kill();
       return;
     }
-    if(uri.query === "edit" && vscode.window.activeTextEditor) {
+    if (uri.query === "edit" && vscode.window.activeTextEditor) {
       await vscode.window.showTextDocument(vscode.Uri.file(cmd));
       let f = vscode.window.activeTextEditor.document.getText();
-      let myRe = new RegExp('^#+ +'+cmda,'mi');
-      let m=vscode.window.activeTextEditor.document.positionAt(f.search(myRe)).line;
-      vscode.window.activeTextEditor.revealRange(new vscode.Selection(m, 0, m+30, 0));
+      let myRe = new RegExp('^#+ +' + cmda, 'mi');
+      let m = vscode.window.activeTextEditor.document.positionAt(f.search(myRe)).line;
+      vscode.window.activeTextEditor.revealRange(new vscode.Selection(m, 0, m + 30, 0));
       vscode.window.activeTextEditor.selection = new vscode.Selection(m, 0, m, 0);
-      return;      
+      return;
     }
     if (uri.query === "delete_output" || uri.query === "text_output" ||
       uri.query === "full_output") {
@@ -814,10 +814,10 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
 })(); //end hUri=new class MyUriHandler
 
 function hrefSrcReplace(s: string) { //allow use of command line vars in href and src
-  s=s.replace(/(<[^>]*(href|src)[^>]*)%c/g,'$1'+currentPath);
-  s=s.replace(/(<[^>]*(href|src)[^>]*)%d/g,'$1'+currentFilePath);
-  s=s.replace(/(<[^>]*(href|src)[^>]*)%g/g,'$1'+tempPath);
-  s=s.replace(/(<[^>]*(href|src)[^>]*)%h/g,'$1'+hePath);
+  s = s.replace(/(<[^>]*(href|src)[^>]*)%c/g, '$1' + currentPath);
+  s = s.replace(/(<[^>]*(href|src)[^>]*)%d/g, '$1' + currentFilePath);
+  s = s.replace(/(<[^>]*(href|src)[^>]*)%g/g, '$1' + tempPath);
+  s = s.replace(/(<[^>]*(href|src)[^>]*)%h/g, '$1' + hePath);
   return s;
 }
 
@@ -914,7 +914,7 @@ async function paste(text: string) {
             let s = text.slice(i + 3).replace(/\n[\s\S]*/, "");
             if (s === "") { //if the remainder is empty just provide ' '
               s = " ";
-            } 
+            }
             codeBlock = codeBlock.replace(/=>>$/m, "=>>" + s); //do the swap
             text = text.replace(re, ""); //remove the swapped output to clear for the next
           } else {
@@ -930,7 +930,7 @@ async function paste(text: string) {
     text = text.replace(/^[\s\S]*?\n`+output/, '```output'); //a `+output line removes preceding text & becomes the label
     text = text.replace(/^`+/, " ```"); //set one or more starting ` to ``` & temporarily mark with leading space
     text = text.replace(/^```/mg, "'''"); //don't allow displayed lines to start with ``` (would end the code block)
-    text = text.replace(/\[\d\d?m/g,""); //remove in-text color codes (mostly pwsh)
+    text = text.replace(/\[\d\d?m/g, ""); //remove in-text color codes (mostly pwsh)
     //if there is any output left, it will go into an ```output code block
     await selectCodeblock(false); //select code block to replace
     activeTextEditor.edit((selText) => {
@@ -1054,7 +1054,7 @@ async function selectCodeblock(force: boolean) {
 async function deleteOutput(mode: string) {
   //delete output code block, or leave as text
   const { activeTextEditor } = vscode.window;
-  let s = ''; 
+  let s = '';
   if (mode === 'full_output') {
     s = '' + fs.statSync(outName).mtime; //output file modified date as first line
     s = '> ' + s.replace(/.*?\s/, '').replace(/(.*?\s.*?\s.*?\s.*?\s).*/, '$1') + '\n';

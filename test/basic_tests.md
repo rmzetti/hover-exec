@@ -2,8 +2,8 @@
 
 This provides basic tests for the VSCode extension *hover-exec*. The test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path/name, then click the path/name to open the file in the editor. If the cursor is in the command, using the shortcut alt+/ or opt+/ will open the file.
 
-`edit %h/README`            //%h is a hover-exec command line variable giving the extension path \
-`edit %h/READMORE`       //extended README \
+`edit %h/readme`            //%h is a hover-exec command line variable giving the extension path \
+`edit %h/test/readmore`       //extended readme \
 `edit %h/test/basic_tests` //basic tests \
 `edit %h/test/misc_tests`  //benchmark tests and REPLs \
 

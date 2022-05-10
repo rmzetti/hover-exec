@@ -1,24 +1,24 @@
-# Hover-exec READMORE
+# Hover-exec readmore
 
-This is the READMORE for VS Code extension *hover-exec*.
+This is the readmore for VS Code extension *hover-exec*.
 
-Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
+Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
 
 Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
 
-`edit %h/README` //opens the README in the vscode editor \
-`edit %h/READMORE` //the README but with more detail \
+`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/test/readmore` //the readme but with more detail \
 `edit %h/test/basic_tests` //basic tests \
 `edit %h/test/misc_tests` //benchmark tests and REPLs
 
 Notes:
 1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
-2. In the above, %h is a hover-exec command line variable giving the extension path `edit %e#what settings`
+2. In the above, %h is a hover-exec command line variable giving the extension path, see `edit %e#what settings`
 3. Using *hover-exec* in the vscode editor on these files allows live testing, and comparison with the 'test outputs' provided.
 4. Any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
-- [Hover-exec READMORE](#hover-exec-readmore)
+- [Hover-exec readmore](#hover-exec-readmore)
   - [Contents](#contents)
   - [Features](#features)
     - [Compatibility with Markdown Preview Enhanced (*mpe*)](#compatibility-with-markdown-preview-enhanced-mpe)
@@ -1047,7 +1047,7 @@ plt.show()
 
 Image from running the above code block & pasting via  *Markdown kit* or  *Markdown memo*:
 
-![[media/READMORE_matplotlib example.png]]
+![[matplotlib_example.png]]
 
 ---
 
@@ -1775,10 +1775,10 @@ They must start in col 1.
 
 ##### exec notepad with file in current file's folder:
 
-`notepad "%d/README.md"` --windows \
-`open -a textedit "%d/README.md"` --mac \
-`gedit "%d/README.md"` --linux, wsl \
-`xedit "%d/README.md"` --linux, wsl
+`notepad "%d/readme.md"` --windows \
+`open -a textedit "%d/readme.md"` --mac \
+`gedit "%d/readme.md"` --linux, wsl \
+`xedit "%d/readme.md"` --linux, wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -1798,7 +1798,7 @@ They must start in col 1.
 `open -a finder "%c"` mac to view current workspace folder in finder \
 `explorer ,` windows view 'ThisPC' \
 `explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
-`nemo "%d/README.md"` Linux mint view current file's folder & select file
+`nemo "%d/readme.md"` Linux mint view current file's folder & select file
 
 ##### other examples:
 
@@ -1904,7 +1904,7 @@ Several *hover-exec* command line variables are used. These can be viewed via th
 On windows the list looks like this
 - %c       workspace folder 'path': c:/Users/ ... 
 - %d       current file 'path': c:/Users/...
-- %e       current file 'path/name': c:/Users/.../READMORE.md
+- %e       current file 'path/name': c:/Users/.../readmore.md
 - %f.ext  temp file 'path/name.ext': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec/temp.ext
 - %g       temp folder 'path': c:/Users/.../AppData/Roaming/Code/User/globalStorage/rmzetti.hover-exec
 - %h       hover-exec extension folder 'path': c:/Users/.../.vscode/extensions/rmzetti.hover-exec-0.7.1

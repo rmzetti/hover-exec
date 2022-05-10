@@ -1,26 +1,26 @@
-# Hover-exec README
+# Hover-exec readme
 
-This is the README for the VSCode extension *hover-exec*.
-Once the extension is installed, the README, the READMORE and the test files are best viewed in the editor.
-This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the README etc have many example codeblocks that can be executed to try it out.
+This is the readme for the VSCode extension *hover-exec*.
+Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
+This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the readme etc have many example codeblocks that can be executed to try it out.
 
-To help with this, *hover-exec* provides the command *open the hover-exec README* to open the README in the editor (shortcut *ctrl+alt+/*  or *ctrl+opt+/*):
+To help with this, *hover-exec* provides the command *open the hover-exec readme* to open the readme in the editor (shortcut *ctrl+alt+/*  or *ctrl+opt+/*):
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit %h/README` //opens the README in the vscode editor \
-`edit %h/READMORE` //the README but with more detail \
+`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/test/readmore` //the readme but with more detail \
 `edit %h/test/basic_tests` //basic tests \
 `edit %h/test/misc_tests` //benchmark tests and REPLs
 
 Notes:
 1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
-2. In the above, %h is a hover-exec command line variable giving the extension path `edit %h/READMORE#what settings`
+2. In the above, %h is a hover-exec command line variable giving the extension path `edit %h/test/readmore#what settings`
 3. Using *hover-exec* in the vscode editor on these files allows live testing, and comparison with the 'test outputs' provided.
 4. Any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
-- [Hover-exec README](#hover-exec-readme)
+- [Hover-exec readme](#hover-exec-readme)
   - [Contents](#contents)
   - [Features](#features)
   - [Basic hover-exec](#basic-hover-exec)
@@ -42,7 +42,7 @@ Notes:
   - [One-liners and quickmath](#one-liners-and-quickmath)
     - [One-liner examples:](#one-liner-examples)
         - [Default shell simple command execution:](#default-shell-simple-command-execution)
-        - [exec notepad with file in current file's folder::](#exec-notepad-with-file-in-current-files-folder)
+        - [exec notepad with file in hover-exec extension folder:](#exec-notepad-with-file-in-hover-exec-extension-folder)
         - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
         - [open another instance of vscode:](#open-another-instance-of-vscode)
         - [explore files, view folders:](#explore-files-view-folders)
@@ -76,7 +76,7 @@ Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled,
 There are three elements to a code block label that *hover-exec* utilises:
 - *id* to indicate the script language being employed, used for syntax highlighting by *vscode*
 - *cmdid* to indicate the command to use to execute the script (omitted if the same as *id*)
-- *repl* or *restart* to indicate a REPL is to be used or restarted (see the READMORE)
+- *repl* or *restart* to indicate a REPL is to be used or restarted (see the readmore)
 
 Example code block labels - these are 'fake' (use quotes instead of backticks) to allow visibility in previews:
 
@@ -89,7 +89,7 @@ Example code block labels - these are 'fake' (use quotes instead of backticks) t
 '''output     --output blocks are produced by executing scripts
 ```
 
-There is a comment in the READMORE about the code block label when also using *markdown preview enhanced*.
+There is a comment in the readmore about the code block label when also using *markdown preview enhanced*.
 
 ---
 ## Javascript scripts
@@ -152,13 +152,13 @@ A regex tester using *vscode*'s eval:
 
 ---
 All the code blocks above can be executed using either `eval` or `vm`.
-The difference is that `vm` scripts are executed within a more restricted *context* - see [READMORE](READMORE.md).
+The difference is that `vm` scripts are executed within a more restricted *context* - see [[readmore]] 
 
 In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `:eval` sets the actual exec command to `eval`.
 
 Note that `vm` and `eval` both allow the internal *vscode* API to be used. Installation of `nodejs` is not required for `vm` or `eval` scripts to execute.
 
-See the READMORE, `edit %h/READMORE#regular` for more information and examples.
+See the readmore, `edit %h/test/readmore#regular` for more information and examples.
 
 ---
 ### Using nodejs
@@ -218,7 +218,7 @@ setInterval('o.fillStyle=0;o.fillRect(r,s,p,q);g=+new Date;y-=.0625;if(y<0){y+=.
 
 ### Scripts with command execution strings included
 
-Command lines to conveniently start a number of other scripts are included (see [Configuration settings](READMORE.md#configuration-settings) for the actual command lines used). Some examples:
+Command lines to conveniently start a number of other scripts are included (see [Configuration settings](readmore.md#configuration-settings) for the actual command lines used). Some examples:
 
 - [python](#python)
 - [julia](#julia)
@@ -232,9 +232,9 @@ Command lines to conveniently start a number of other scripts are included (see 
 
 Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
-- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [READMORE: Configuration settings](READMORE.md#configuration-settings), or `edit %h/READMORE#config`.
-- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/READMORE#config` for examples.
-- For other script language examples, `edit %h/READMORE#other scripts`
+- Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [readmore: Configuration settings](readmore.md#configuration-settings), or `edit %h/test/readmore#config`.
+- Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/test/readmore#config` for examples.
+- For other script language examples, `edit %h/test/readmore#other scripts`
 
 ---
 ### Python
@@ -333,7 +333,7 @@ print("lua ok") -- this outputs in the output code block below
 ---
 ### Gnuplot
 
-*Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (`edit %h/READMORE#chaining` for examples).
+*Gnuplot* is a very useful stand-alone plotting facility. Assuming *gnuplot* has been installed,  it can be executed within *hover-exec*. In addition, other scripts can output *gnuplot* commands (along with data) in their output block and the data can be immediatedly plotted in a chained fashion (`edit %h/test/readmore#chaining` for examples).
 
 ```gnuplot {cmd} # cmd is for markdown preview enhanced
 # '''gnuplot //here gnuplot is being used stand-alone
@@ -457,12 +457,12 @@ They must start in col 1.
 `ls`  zsh, bash, pwsh \
 `dir` cmd
 
-##### exec notepad with file in current file's folder::
+##### exec notepad with file in hover-exec extension folder:
 
-`notepad "%d/READMORE.md"`  --windows \
-`open -a textedit "%d/README.md"`  --mac \
-`gedit "%d/READMORE.md"`  --linux/wsl \
-`xedit "%d/README.md"`  --linux/wsl
+`notepad "%h/test/readmore.md"`  --windows \
+`open -a textedit "%h/readme.md"`  --mac \
+`gedit "%h/test/readmore.md"`  --linux/wsl \
+`xedit "%h/readme.md"`  --linux/wsl
 
 ##### exec notepad with temp file (%f):
 
@@ -494,7 +494,7 @@ They must start in col 1.
 `firefox <h1>Hello world!</h1>` linux firefox with some html \
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>`  wsl chrome with href 
 
-There are many more one-liner examples in the READMORE: `edit %h/READMORE#one-liners`.
+There are many more one-liner examples in the readmore: `edit %h/test/readmore#one-liners`.
 
 ### Quickmath examples
 
@@ -511,7 +511,7 @@ NB. You can copy the answer in the hover to the clipboard with a click.
 ---
 ## Configuration settings
 
-For configuration settings see [READMORE](READMORE.md#configuration-settings) or `edit %h/READMORE#config`.
+For configuration settings see [readmore](test/readmore.md#configuration-settings) or `edit %h/test/readmore#config`.
 
 ---
 
@@ -521,10 +521,10 @@ This is a beta version.
 
 Note that in all the demos above, except *js:vm* and *js:eval* which allow definition of *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/READMORE#using scripts` for examples.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/test/readmore#using scripts` for examples.
 In REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an *include* capability, known as '#inhere' (to distinguish from *includes* in scripts) - `edit %h/READMORE#including` for details and examples.
+There is also an *include* capability, known as *#inhere* (to distinguish from *includes* in scripts) - `edit %h/test/readmore#including` for details and examples.
 
 ---
 
