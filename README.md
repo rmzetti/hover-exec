@@ -234,7 +234,7 @@ Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - see [READMORE: Configuration settings](READMORE.md#configuration-settings), or `edit %h/READMORE#config`.
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/READMORE#config` for examples.
-- For other script language examples, `edit %h/READMORE#other`
+- For other script language examples, `edit %h/READMORE#other scripts`
 
 ---
 ### Python
@@ -524,10 +524,17 @@ Note that in all the demos above, except *js:vm* and *js:eval* which allow defin
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/READMORE#using scripts` for examples.
 In REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an *include* capability, known as `#inhere` (to distinguish from *includes* in scripts) - `edit %h/READMORE#including` for details and examples.
+There is also an *include* capability, known as '#inhere' (to distinguish from *includes* in scripts) - `edit %h/READMORE#including` for details and examples.
 
 ---
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+
+```js
+let s='zvcz xcv,zx cv,xcv abc xcv xcv ';
+s=s.replace(/.*?`(.*?)`.*/, "$1");
+s=>>zvcz xcv,zx cv,xcv abc xcv xcv 
+```
+
 

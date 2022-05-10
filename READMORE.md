@@ -2103,7 +2103,7 @@ This is a beta version.
 
 Note that in all the demos above, except  *js:vm* and  *js:eval* which allow definition of  *global* variables and functions, the script starts from scratch when the code block is executed. In other words, assigned variables do not carry over into the next script execution. This kind of approach is best suited for small scripts to demonstrate or highlight language features, provide quick reference, or show comparisons between scripting languages.
 
-Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %h/test/misc_tests#using.*repl`. For REPLs, successive script execution will recognise previously defined variables and functions.
+Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %e#using.*repls`. For REPLs, successive script execution will recognise previously defined variables and functions.
 
 There is also an  *include* capability, known as `#inhere` (to distinguish from  *includes* in scripts) - see [Including tagged sections using #inhere](#including-tagged-sections-using-inhere) for details and examples.
 

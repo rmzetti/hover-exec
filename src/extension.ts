@@ -110,8 +110,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text); //allow eg. `1+2=` or `/1+2/`
-          edit = line.text.includes("`edit");
-          includeHere = /#inhere.*#\w+/.test(line.text);
+          edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
+          includeHere = /#inhere.*#\w+/.test(line.text) && !edit && !quickmath; //#inhere lines can't include `edit  ...` 
           if (!oneLiner && !quickmath && !includeHere && !edit) {
             return null;
           } //ignore if not a code block, oneLiner, edit or quickmath
@@ -129,9 +129,11 @@ export function activate(context: vscode.ExtensionContext) {
           [cmd,cmda] = getFileToEdit(line.text,pos.character);
           if (cmd==="") { return null; }
           cmdId="edit";
+          let msg='';
+          if (cmda!="") { msg=" at heading #"+cmda+".."; }
           let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
           const contents = new vscode.MarkdownString(
-            "*hover-exec:* edit in vsCode " + "\n\n**[" + cmd + " =>>](" + url + ")**"
+            "*hover-exec:* edit in vsCode" + msg + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
@@ -264,9 +266,9 @@ export function activate(context: vscode.ExtensionContext) {
         let pos = editor.selection.active; //and position
         let s = doc.lineAt(pos).text; //get current line text
         let h='';
-        if (s.includes('`edit')) { //possibly an edit command
+        if (/`edit.*`/.test(s)) { //possibly an edit command
           [cmd,cmda]=getFileToEdit(s, pos.character); 
-          if(cmd!==""){ //if it is an edit command
+          if(cmd !== ""){ //if it is an edit command
             hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?edit"));
             return;
           }
@@ -446,23 +448,27 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function getFileToEdit(s :string, n:number) {
-    if (s[n] === '`') { n-=1; } //hover over the expression not backticks
-    let s1 = s.slice(0, n);//there may be more than one expression in a line
-    let s2 = s.slice(n);  //so isolate parts before & after hover pos
-    if (!s1.includes('`') || !s2.includes('`')) { return ""; }
-    s1 = s1.slice(s1.lastIndexOf('`') + 1);
-    s2 = s2.slice(0,s2.indexOf('`'));
-    s1 = s1 + s2;
-    if(!s1.startsWith('edit')) { return ""; } //not edit command
-    s1=replaceStrVars(s1.slice(5)); //allow use of %cdefgh
-    let m=s1.indexOf('#');
+    if (/`.*`.*`/.test(s)) { //more than one backticked expression in line
+      if (s[n] === '`') { n-=1; } //hover over the expression not backticks
+      let s1 = s.slice(0, n);//there may be more than one expression in a line
+      let s2 = s.slice(n);  //so isolate parts before & after hover pos
+      if (!s1.includes('`') || !s2.includes('`')) { return ["",""]; }
+      s1 = s1.slice(s1.lastIndexOf('`') + 1);
+      s2 = s2.slice(0,s2.indexOf('`'));
+      s = s1 + s2;
+    } else {
+      s=s.replace(/.*?`(.*?)`.*/, "$1"); //get backtick content
+    }
+    if(!s.startsWith('edit')) { return ["",""]; } //not edit command
+    s=replaceStrVars(s.slice(5)); //allow use of %cdefgh
+    let m=s.indexOf('#');
     let h='';
     if(m>0) { 
-      h=s1.slice(m+1);
-      s1=s1.slice(0,m);
+      h=s.slice(m+1);
+      s=s.slice(0,m);
     } //remove comment
-    if(!/\.[^\/]*$/.test(s1)) { s1+='.md'; } //no .ext, default is .md
-    return [s1,h];
+    if(!/\.[^\/]*$/.test(s)) { s+='.md'; } //no .ext, default is .md
+    return [s,h];
   }
   
   function pad(s: string) {
@@ -616,7 +622,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
     if(uri.query === "edit" && vscode.window.activeTextEditor) {
       await vscode.window.showTextDocument(vscode.Uri.file(cmd));
       let f = vscode.window.activeTextEditor.document.getText();
-      let myRe = new RegExp('^#* '+cmda,'mi');
+      let myRe = new RegExp('^#+ +'+cmda,'mi');
       let m=vscode.window.activeTextEditor.document.positionAt(f.search(myRe)).line;
       vscode.window.activeTextEditor.revealRange(new vscode.Selection(m, 0, m+30, 0));
       vscode.window.activeTextEditor.selection = new vscode.Selection(m, 0, m, 0);
