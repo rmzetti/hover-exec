@@ -88,7 +88,7 @@ The following hover message will appear:
 The message shows 'hover-exec:' followed by any comments that were in the command line.
 The bottom line shows the command that will be executed.
 Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and are ignored by *hover-exec*.
-For other information that con be obtained from the hover `edit test/readmore#other info`
+For other information that con be obtained from the hover `edit %h/test/readmore#other info`
 
 ### Exec
 Putting some javascript code into the code block, and clicking the *exec* (bottom line of the hover) gives the output below:
@@ -119,7 +119,7 @@ The bottom line option deletes the output block.
 
 If the cursor is inside an output block, the usual shortcut `Alt+/` or `Opt+/`, will execute the last option and delete the output block.
 
-The examples below also use in-line output, `edit test/readmore#in-line` for more information.
+The examples below also use in-line output, `edit %h/test/readmore#in-line` for more information.
 
 ### Code block labels and commands
 There are three elements to a code block label that *hover-exec* utilises:
