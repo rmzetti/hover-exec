@@ -8,7 +8,7 @@ To help with this, *hover-exec* provides the command *open the hover-exec readme
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
-`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/README` //opens the readme in the vscode editor \
 `edit %h/test/readmore` //the readme but with more detail \
 `edit %h/test/misc_tests` //benchmark and plotting comparative tests
 
@@ -503,9 +503,9 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 ### exec notepad with file in hover-exec extension folder:
 
 `notepad "%h/test/readmore.md"`  --windows \
-`open -a textedit "%h/readme.md"`  --mac \
+`open -a textedit "%h/README.md"`  --mac \
 `gedit "%h/test/readmore.md"`  --linux/wsl \
-`xedit "%h/readme.md"`  --linux/wsl
+`xedit "%h/README.md"`  --linux/wsl
 
 ### exec notepad with temp file (%f):
 

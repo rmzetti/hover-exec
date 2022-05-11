@@ -6,7 +6,7 @@ Once the extension is installed, the readme, the readmore and the test files are
 
 Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
 
-`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/README` //opens the readme in the vscode editor \
 `edit %h/test/readmore` //the readme but with more detail \
 `edit %h/test/misc_tests` //benchmark and plotting comparative tests
 
@@ -1861,10 +1861,10 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 
 ### exec notepad with file in current file's folder:
 
-`notepad "%d/readme.md"` --windows \
-`open -a textedit "%d/readme.md"` --mac \
-`gedit "%d/readme.md"` --linux, wsl \
-`xedit "%d/readme.md"` --linux, wsl
+`notepad "%d/README.md"` --windows \
+`open -a textedit "%d/README.md"` --mac \
+`gedit "%d/README.md"` --linux, wsl \
+`xedit "%d/README.md"` --linux, wsl
 
 ### exec notepad with temp file (%f):
 
@@ -1884,7 +1884,7 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 `open -a finder "%c"` mac to view current workspace folder in finder \
 `explorer ,` windows view 'ThisPC' \
 `explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
-`nemo "%d/readme.md"` Linux mint view current file's folder & select file
+`nemo "%d/README.md"` Linux mint view current file's folder & select file
 
 ### other examples:
 

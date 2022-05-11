@@ -2,7 +2,7 @@
 
 This provides various tests for scripts run in the VSCode extension *hover-exec*. All the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path/name, then click the path/name to open the file in the editor. If the cursor is in the command, using the shortcut alt+/ or opt+/ will open the file.
 
-`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/README` //opens the readme in the vscode editor \
 `edit %h/test/readmore` //the readme but with more detail \
 `edit %h/test/misc_tests` //benchmark and plotting comparative tests
 
