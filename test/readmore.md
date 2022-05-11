@@ -8,8 +8,7 @@ Type or copy one of the following in any instance of the editor - then hover to 
 
 `edit %h/readme` //opens the readme in the vscode editor \
 `edit %h/test/readmore` //the readme but with more detail \
-`edit %h/test/basic_tests` //basic tests \
-`edit %h/test/misc_tests` //benchmark tests and REPLs
+`edit %h/test/misc_tests` //benchmark and plotting comparative tests
 
 Notes:
 1. If you're viewing in preview, the one-liner commands above are surrounded by a single backtick.
@@ -23,6 +22,12 @@ Notes:
   - [Features](#features)
     - [Compatibility with Markdown Preview Enhanced (*mpe*)](#compatibility-with-markdown-preview-enhanced-mpe)
   - [Basic hover-exec](#basic-hover-exec)
+    - [Hover](#hover)
+      - [Other information from the hover](#other-information-from-the-hover)
+    - [Exec](#exec)
+    - [Output](#output)
+    - [In-line output](#in-line-output)
+    - [Code block labels and commands](#code-block-labels-and-commands)
   - [Javascript scripts](#javascript-scripts)
     - [Examples using vm and eval](#examples-using-vm-and-eval)
     - [Available functions in *vm* and *eval*](#available-functions-in-vm-and-eval)
@@ -63,16 +68,15 @@ Notes:
     - [R (rterm) REPL](#r-rterm-repl)
     - [Check for active REPLs](#check-for-active-repls)
   - [One-liners and quickmath](#one-liners-and-quickmath)
-    - [One-liner examples:](#one-liner-examples)
-        - [Default shell simple command execution:](#default-shell-simple-command-execution)
-        - [exec notepad with file in current file's folder:](#exec-notepad-with-file-in-current-files-folder)
-        - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
-        - [open another instance of vscode:](#open-another-instance-of-vscode)
-        - [explore files, view folders:](#explore-files-view-folders)
-        - [other examples:](#other-examples)
-        - [bash html & javascript](#bash-html--javascript)
+    - [Default shell simple command execution:](#default-shell-simple-command-execution)
+    - [exec notepad with file in current file's folder:](#exec-notepad-with-file-in-current-files-folder)
+    - [exec notepad with temp file (%f):](#exec-notepad-with-temp-file-f)
+    - [open another instance of vscode:](#open-another-instance-of-vscode)
+    - [explore files, view folders:](#explore-files-view-folders)
+    - [other examples:](#other-examples)
+    - [bash html & javascript](#bash-html--javascript)
     - [audio one-liners](#audio-one-liners)
-    - [Windows one-liners: ms-settings, control panel and management console](#windows-one-liners-ms-settings-control-panel-and-management-console)
+    - [Windows one-liners](#windows-one-liners)
     - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
     - [What settings are there?](#what-settings-are-there)
@@ -104,40 +108,128 @@ There is also an intention to maintain a certain compatability with the excellen
 
 ---
 
-## Basic hover-exec
+## Basic hover-exec 
 
-Hovering over fenced code block start or end lines which start with a triple backtick, or lines which start with a single backtick and include an end backtick, will trigger a hover message with an  *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
+Hovering over a labelled fenced code block start or end line which starts with a triple backtick, or a line which starts with a single backtick and includes an end backtick, will trigger a hover message with an  *exec* command in the bottom line. Clicking the command link on the bottom line of the hover message will execute the code in the code block, and produce output.
+
+### Hover
+Opening a markdown file (eg. this one) in the vscode editor will activate the *hover-exec* extension.
+After opening in the editor, hover over the start line ```js ...`, or over the end line, of this (empty) code block:
+
+```js //this is a code block with id 'js'
+// '''js   //this is an empty code block with id 'js'
+```
+
+The following hover message will appear:
+>      hover-exec: //this is a code block with id 'js'
+>      [config] [command line vars %f etc] [delete block]
+>      [clear output] [open last script] [open last result]
+>      exec: js =>>
+
+The message shows 'hover-exec:' followed by any comments that were in the command line.
+The bottom line shows the command that will be executed.
+Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and are ignored by *hover-exec*.
+
+#### Other information from the hover
+
+Other 'clickable' areas in the main hover will provide information as follows:
+
+*[ config ]*
+    - will show the shell command that will be executed in an input box at the top of the editor
+    - 'enter' on the input box will open settings.json to show start shell commands for all scripts
+    - editing the command in the input box will change the script start command
+    - escape will ignore any entries & close the input box
+*[ command line vars %f etc ]*
+    - gives a list of possible variables that can be used in command lines and script start shell commands
+    - clicking an item on the list will copy the definition to the clipboard
+*[ delete block ]*
+    - deletes the current code block (if there is a following *output* block that is deleted first)
+    - ctrl-z or cmd-z will undo the deletion
+*[ clear output ]*
+    - will clear all output, both in-line and in a following *output* block
+    - the hover stays in place so you can immediately execute the command to see new output
+*[ open last script ]*
+    - hovering over this option will show the `path/name` of the code to be executed
+    - Clicking will open the file in the editor
+    - The contents of the block will be in the file if the script has been executed.
+*[ open last result ]*
+    - hovering over this option will show the `path/name` of the file with the text ouptut
+    - clicking will open the file in the editor
+
+### Exec
+Putting some javascript code into the code block, and clicking the *exec* (bottom line of the hover) gives the output below:
+
+```js //this is a code block with id 'js'
+// '''js   //this is a code block with id 'js'
+//        when executed the output will be visible in a new code block titled 'output'.
+let world=3;
+console.log('hello world '+world);
+alert('goodbye world');
+```
+```output
+hello world 3
+```
 
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
-Code blocks which are indented (ie. unfenced), fenced with '~', or not labelled, will not result in a hover message and cannot be executed.
+### Output
+Hovering  over the first or last line of the *output* block will show three options:
 
+>      `output block to text`
+>      `all output to text`
+>      `delete output block`.
+
+The first option of the output hover simply removes the code block triple backtick lines, leaving the contents as markdown text.
+The second provides the output from the temporary output file generated, including any in-line results. Note that this should be done before another *exec*, otherwise the newer output will be obtained (which may be from a completely different block).
+The bottom line option deletes the output block.
+
+If the cursor is inside an output block, the usual shortcut `Alt+/` or `Opt+/`, will execute the last option and delete the output block.
+
+### In-line output
+Output can be positioned in-line (within the code block) if this is appropriate:
+
+```js //show calculation results in-line
+// '''js //show calculation results in-line
+let a='the meaning of life';
+console.log('Normally output is shown in an output block');
+a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.29066347387005
+console.log('but results can be shown next to the calculation which produced them');
+```
+>      Test output (also see in-line above):
+>      Normally output is shown in an output block
+>      but results can be shown next to the calculation which produced them
+
+Inline results are produced by using `=>>` at the end of a script line (as above).
+
+Notes
+- in-line results do not need `console.log`, this is provided by the config section called `swappers`, which in effect 'swap' the output from the `output` block to the appropriate line in the original script
+- in-line output should not be utilised inside loops or functions
+- lines with `=>>` appended are not legal javascript, although the line is 'legalised' during processing
+- to produce legal javascript precede `=>>` with a comment marker, ie for javascript use `// =>>` .. the in-line result will still be updated
+- in-line output can be made available for all script engines using the `swappers` config.
+
+### Code block labels and commands
 There are three elements to a code block label that *hover-exec* utilises:
 - *id* to indicate the script language being employed, used for syntax highlighting by *vscode*
 - *cmdid* to indicate the command to use to execute the script (omitted if the same as *id*)
-- *repl* or *restart* to indicate a REPL is to be used or restarted
+- *repl* or *restart* to indicate a REPL is to be used or restarted (see the readmore)
 
-Example code block labels - these are 'fake' (ie. they use quotes instead of backticks) to allow visibility in previews:
+Example code block labels - these use quotes instead of backticks to allow visibility in previews:
 
-```
-'''id : cmdid : repl  -- the general format - spaces can be omitted around the :
-'''python    --a python code block, here id & cmdid are both python
-'''js : eval   --a javascript code block which uses eval for execution
-'''octave     --uses octave as both id & cmdid
-'''python:octave  --python is id for syntax highlight, octave is cmdid for execution
-'''python::repl  --python is the id for syntax highlight, & the REPL is to be used
-'''python::   --as before, but note 'repl' can be omitted but the second colon is required
-'''output     --output blocks are produced by executing scripts
-```
+    '''id : cmdid : repl  -- the general format - spaces can be omitted around the :
+    '''python    --a python code block, here id & cmdid are both python
+    '''js : eval   --a javascript code block which uses eval for execution
+    '''octave     --uses octave as both id & cmdid
+    '''python:octave  --python is id for syntax highlight, octave is cmdid for execution
+    '''output     --output blocks are produced by executing scripts
 
 If *markdown preview enhanced* is used, it will require {cmd..} in the command block label. It also seems to require the {..} as the first item after the code block id. For compatibility *hover-exec* allows the following structure:
 
-'''js {cmd=node} : eval
+    '''js {cmd=node} : eval
 
 This indicates a javascript code block, executed by *node* in *mpe* and *eval* in *hover-exec*.
 
 ---
-
 ## Javascript scripts
 
 Javascript code blocks can be executed using the `vm` module, also by using  *vscode*'s built in `eval` - and also through [nodejs](#nodejs), or a browser. The default, for command blocks with id `js`, is to use the `vm` module. `hover-exec` provides, by default, a reasonably substantial `vm` context.
@@ -1760,39 +1852,33 @@ chRepl[i][0]=>> rterm
 
 Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using  *mathjs* `math.evaluate(..)`) and the result will be shown immediately in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
----
-### One-liner examples:
-
-All these example commands are surrounded with single backticks, eg  *\`pwd\`*.
-They must start in col 1.
-
-##### Default shell simple command execution:
+### Default shell simple command execution:
 (result depends on the default shell for vscode on your system)
 
 `pwd` zsh, bash, pwsh, cmd \
 `ls` zsh,bash, pwsh \
 `dir` cmd
 
-##### exec notepad with file in current file's folder:
+### exec notepad with file in current file's folder:
 
 `notepad "%d/readme.md"` --windows \
 `open -a textedit "%d/readme.md"` --mac \
 `gedit "%d/readme.md"` --linux, wsl \
 `xedit "%d/readme.md"` --linux, wsl
 
-##### exec notepad with temp file (%f):
+### exec notepad with temp file (%f):
 
 `open -a textedit "%f"` --mac \
 `notepad "%f"` --windows \
 `xedit "%f"` --linux, wsl
 
-##### open another instance of vscode:
+### open another instance of vscode:
 
 `code -n %c`
 `code -n %f` --windows, linux, wsl \
 `open -na "visual studio code"` --mac
 
-##### explore files, view folders:
+### explore files, view folders:
 
 `open -a finder ~` mac 'home' \
 `open -a finder "%c"` mac to view current workspace folder in finder \
@@ -1800,7 +1886,7 @@ They must start in col 1.
 `explorer /select, "%E"` windows explorer - view current file's folder & select the file, needs %E not %e \
 `nemo "%d/readme.md"` Linux mint view current file's folder & select file
 
-##### other examples:
+### other examples:
 
 `devmgmt.msc` for windows show devices \
 `system_profiler SPHardwareDataType` for mac show hardware info \
@@ -1812,7 +1898,7 @@ They must start in col 1.
 `firefox <h1>Hello world!</h1>` linux firefox with some html \
 `chrome <script>location.href= 'https://whatamigoingtodonow.net/'</script>` wsl chrome with href
 
-##### bash html & javascript
+### bash html & javascript
 
 `"C:\Program Files\Google\Chrome\Application\chrome.exe" %d/hover-exec.gif` //chrome with media or html file - can use %d etc in one-liners \
 `html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url \
@@ -1828,7 +1914,7 @@ They must start in col 1.
 `pwsh start wmplayer "%d/media/fnt2b.mp3"`
 
 ---
-### Windows one-liners: ms-settings, control panel and management console
+### Windows one-liners
 
 `start ms-settings:` \
 `start ms-settings:windowsupdate` \
@@ -1876,13 +1962,11 @@ They must start in col 1.
 
 ---
 ### Quickmath examples
-And finally, some *quickmath* expressions. As before these expressions are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick (essentially to stop popups for other backtick quoted strings).
+And finally, some *quickmath* expressions. As before these are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick.
+When viewing in preview, the backticks are not visible. You will, of course , need to be in the  editor for quickmath to work. 
 
-You will, of course , need to be in the *vscode* editor for quickmath to work. If viewing in preview, the first expression is actually written ***\`254cm in inches=\`***
-
-So `254cm in inches=` will show 100 inches in the hover message using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
-
-More examples to try:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
+So `254cm in inches=` will show 100 inches in the hover message, using [*mathjs 'math.evaluate'*](https://mathjs.org/docs/reference/functions/evaluate.html).
+More examples:  `[1,2,3,4]*5=`,  `cos(45deg)=`,  `sin(0.81)^2+cos(0.81)^2=`,  `cos(pi/2)=`,  `sin([10,45,90] deg)=`,  `range(0,4,0.5)=`,  `(2+2i)*(1+2i)=` , `3:6=`, `1:0.1:5=`, `7*7-7=` .
 
 NB. You can copy the answer in the hover to the clipboard with a click.
 
@@ -2115,3 +2199,4 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+

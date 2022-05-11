@@ -1,18 +1,17 @@
-## Hover-exec miscellaneous comparative tests
+## Hover-exec comparative tests
 
 This provides various tests for scripts run in the VSCode extension *hover-exec*. All the test files are best viewed in the editor. Type or copy one of the following in any instance of the editor - hover to see the path/name, then click the path/name to open the file in the editor. If the cursor is in the command, using the shortcut alt+/ or opt+/ will open the file.
 
-`edit %h/readme`            //%h is a hover-exec command line variable giving the extension path \
-`edit %h/test/readmore`       //extended readme \
-`edit %h/test/basic_tests` //basic tests \
-`edit %h/test/misc_tests`  //benchmark tests and REPLs \
+`edit %h/readme` //opens the readme in the vscode editor \
+`edit %h/test/readmore` //the readme but with more detail \
+`edit %h/test/misc_tests` //benchmark and plotting comparative tests
 
 NB. Each of the above commands (highlighted in preview) must be surrounded by single backticks. The 'edit' one-liners need not start in col 1.
 
 Using *hover-exec* in the vscode editor on these files will allow live testing and comparison with the test outputs provided. Note that any changes made to these files will be reverted if *hover-exec* is updated, so save the file locally if you want to keep changes.
 
 ## Contents
-- [Hover-exec miscellaneous comparative tests](#hover-exec-miscellaneous-comparative-tests)
+- [Hover-exec comparative tests](#hover-exec-comparative-tests)
 - [Contents](#contents)
 - [Javascript tests](#javascript-tests)
   - [using console.log](#using-consolelog)
@@ -40,9 +39,10 @@ Using *hover-exec* in the vscode editor on these files will allow live testing a
 
 Commands:
 
->      `js` or `js:vm` to use `vm`
+>      `js` or `js:vm` to use vscode's virtual machine
 >      `js:node` to use node
->      `js:eval` to use `eval`.
+>      `js:eval` to use vscode's eval
+>      `html` to use javascript in the browser
 
 For javascript in the browser see the following section [Javascript in the browser](#javascript-in-the-browser)
 
