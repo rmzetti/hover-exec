@@ -1550,7 +1550,7 @@ Here is an example:
 ```gnuplot
 # '''gnuplot
 $speed <<EOD
-  #inhere %d/test/misc_tests.md `#p1`     // hover to view the data in misc_test.md
+  #inhere %d/misc_tests.md `#p1`     // hover to view the data in misc_test.md
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
@@ -1565,7 +1565,7 @@ Or use 'plotly' for the same example data:
 <div id="plot" style="width:70%;height:400px"></div>
 <script>
 let lm='lines+markers'
-let a=[ #inhere  %d/test/misc_tests.md `#p1` ]   //note *inhere* is inside the array designator square brackets
+let a=[ #inhere  %d/misc_tests.md `#p1` ]   //note *inhere* is inside the array designator square brackets
 let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
