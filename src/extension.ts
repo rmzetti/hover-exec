@@ -107,11 +107,11 @@ export function activate(context: vscode.ExtensionContext) {
         quickmath = false;  //quick evaluate using mathjs, or a regex search
         let includeHere = false;    //an 'inhere' (include) line
         setExecParams(context, doc); //reset basic exec parameters
-        if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere
+        if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text); //allow eg. `1+2=` or `/1+2/`
           edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
-          includeHere = /#inhere.*#\w+/.test(line.text) && !edit && !quickmath; //#inhere lines can't include `edit  ...` 
+          includeHere = /`inhere.*#\w*.*`/.test(line.text) && !edit && !quickmath; //`inhere path/to/file.ext#tag` 
           if (!oneLiner && !quickmath && !includeHere && !edit) {
             return null;
           } //ignore if not a code block, oneLiner, edit or quickmath
@@ -148,7 +148,7 @@ export function activate(context: vscode.ExtensionContext) {
           line = doc.lineAt(pos); //to refer to start of block
         }
         startCode = pos.line; //save start of code line number
-        parseLine(line.text);
+        parseLine(line.text); //sets cmdId, full, cmda, mpe, comment
         cursLine = 0; //do not reset cursor pos for hover click
         let script = config.get("scripts." + cmdId) as string; //undefined if not a 'built-in' script
         if (script) {
@@ -160,7 +160,6 @@ export function activate(context: vscode.ExtensionContext) {
             comment = ' *' + comment + '*';
           }
           let msg = comment + "\n\n";
-          comment
           if (oneLiner) {
             msg += "**[" + replaceStrVars(full) + " =>>](" + url + ")**";
           } else {
@@ -218,12 +217,11 @@ export function activate(context: vscode.ExtensionContext) {
           quickmath = s2.endsWith('='); //otherwise regex
           let f = '';
           if (!quickmath) { // then if an inhere line get the file name if present
-            f = s1.replace(/.*#inhere (.*?)`.*/, '$1').trim();
+            f = s1.replace(/.*`inhere (.*?)#.*/, '$1').trim();
             if (f === '') {
-              f = doc.getText();
+              f = doc.getText(); //current file
             }
             else {
-              //f=fs.readFileSync(replaceStrVars(f),'utf-8');
               f = await readFile(replaceStrVars(f));
             }
             status('ok');
@@ -724,7 +722,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           await delay(10); //ensure progress report is visible
         }
         code = hrefSrcReplace(code);
-        code = await inHere(code); //replace #inhere       
+        code = await inHere(code); //replace `inhere       
         if (code !== '') { writeFile(tempPath + '/' + tempName, code); } //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
@@ -824,9 +822,9 @@ function hrefSrcReplace(s: string) { //allow use of command line vars in href an
 function replaceStrVars(s: string) {
   if (cmdId === 'eval' || cmdId === 'js' || cmdId === 'vm') { tempName = 'temp.js'; }
   //if .ext is included with %f or %g change tempName to include it
-  if (/%[fg]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %g and %h
-    tempName = "temp." + s.replace(/.*?%[fg]\.(\w*).*/, "$1"); // \W? before last .
-    s = s.replace(/(%[fg])\.\w*/, "$1"); //remove .ext // (\W?) after * and add $2
+  if (/%[fg]\.\w/.test(s)) {  //provides for %f.ext notation in %f, %g
+    tempName = "temp." + s.replace(/.*?%[fg]\.(\w*).*/, "$1"); //only the first .ext is used
+    s = s.replace(/(%[fg])\.\w*/g, "$1"); //remove .ext from %f, %g
   }
   //replace %n, %c-h, %C-H with the appropriate string
   s = s
@@ -845,25 +843,34 @@ function replaceStrVars(s: string) {
     .replace(/%F/g, tempFsPath + slash + tempName) // %F uses FsPath
     .replace(/%G/g, tempFsPath) // %G uses FsPath
     .replace(/%H/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath
-    .replace(/%`/g, '%'); //unescape %
+    .replace(/%`/g, '%'); //un-escape %
   return s;
 }
 
 async function inHere(s: string): Promise<string> {
-  //#inhere path/name `#tag`
+  //`inhere path/name #tag`
   //        %e etc can be used in the path/name
-  //'#inhere' from `#` will be replaced by the result
+  //`inhere ... #tag` will be replaced by the result
   if (vscode.window.activeTextEditor) {
-    let n = (s.match(/#inhere /g) || []).length;
+    let n = (s.match(/`inhere /g) || []).length;
     if (n === 0) { return s; }
-    let re1 = new RegExp("^([\\s\\S]*?)#inhere(.*?)\\s`(#\\w+)`([\\s\\S]*)$", 'm');
+    //  re1 = new RegExp("^([\\s\\S]*?)#inhere(.*?)\\s`(#\\w+)`([\\s\\S]*)$", 'm');
+    let re1 = new RegExp("^([\\s\\S]*?)`inhere(.*?)(#\\w*)`([\\s\\S]*)$", 'm'); //start,filename,tag,end
     for (let i = 0; i < n; i++) {
       let f = s.replace(re1, '$2').trim(); //file name or ''
-      if (f === '') { f = vscode.window.activeTextEditor.document.getText(); }
-      else { f = fs.readFileSync(replaceStrVars(f), 'utf8'); }
+      let s1 = '';
+      if (f === '') { s1 = vscode.window.activeTextEditor.document.getText(); }
+      else { s1 = fs.readFileSync(replaceStrVars(f), 'utf8'); }
       let tag = s.replace(re1, '$3');      //tag is #tag was s1
-      let re = new RegExp('[\\s\\S]*?' + tag + '($[\\s\\S]*?)' + tag + '[\\s\\S]*', "m");
-      let s1 = f.replace(re, '$1').trim(); //s1 is now string to copy to inhere
+      if (tag === '#') {
+        if (f === '') { s1 = ''; } //no file & no tag, replace the inhere with nothing
+        //otherwise replace the inhere with the file contents, ie s1
+      }
+      else {
+        let re = new RegExp('[\\s\\S]*?' + tag + '($[\\s\\S]*?)' + tag + '[\\s\\S]*', "m");
+        s1 = s1.replace(re, '$1').trim(); //s1 is what is between the tags
+      }
+      if (/`inhere/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
       s = s.replace(re1, '$1' + s1 + '$4');
     }
   };

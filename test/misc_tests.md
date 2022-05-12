@@ -257,7 +257,7 @@ window.setTimeout(function() {test();},150);
 
 ## Plotting comparison
 
-These tests all use the same data utilising *hover-exec*'s #inhere macro. 
+These tests all use the same data utilising *hover-exec*'s *inhere* macro. 
 To see the data quickly, hover over a line containing an *inhere* tag reference (not in preview).
 
 ```html  //chartjs
@@ -265,12 +265,12 @@ To see the data quickly, hover over a line containing an *inhere* tag reference 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 <script>
-let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
+let a=[ `inhere  #p1` ]   //note *inhere* is inside the array designator square brackets
 let x=Array(a.length/2).fill(0).map((x,i) => a[i*2])
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
-let b=[ #inhere  `#j1` ] 
+let b=[ `inhere  #j1` ] 
 let y2=Array(b.length/2).fill(0).map((x,i) => b[i*2+1])
-let c=[ #inhere  `#go` ] 
+let c=[ `inhere  #go` ] 
 let y3=Array(c.length/2).fill(0).map((x,i) => c[i*2+1])
 new Chart("myChart", {
   type: "line",
@@ -291,9 +291,9 @@ new Chart("myChart", {
 <div id="plot" style="width:70%;height:400px"></div>
 <script>
 let lm='lines+markers'
-let a=[ #inhere  `#p1` ]   //note *inhere* is inside the array designator square brackets
-let b=[ #inhere  `#j1` ] 
-let c=[ #inhere  `#go` ] 
+let a=[ `inhere  #p1` ]   //note *inhere* is inside the array designator square brackets
+let b=[ `inhere  #j1` ] 
+let c=[ `inhere  #go` ] 
 let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 let y2=Array(b.length/2).fill(0).map((x,i) => b[i*2+1])
@@ -314,9 +314,9 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
-  let a=[ #inhere  `#p1` ]
-  let b=[ #inhere  `#j1` ] 
-  let c=[ #inhere  `#go` ] 
+  let a=[ `inhere  #p1` ]
+  let b=[ `inhere  #j1` ] 
+  let c=[ `inhere  #go` ] 
   let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
   let d=Array(a.length/2).fill(0).map((e,i)=>[x[i],a[i*2+1],b[i*2+1],c[i*2+1]])
   d=[['x','pascal','javascript','go'], ...d]
@@ -335,13 +335,13 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
 ```js : gnuplot
 # '''js: gnuplot? //test using *gnuplot*, (js: gives some artificial syntax highlighting)
 $go1 <<EOD
- #inhere  `#go`
+ `inhere  #go`
 EOD
 $pascal1 <<EOD
- #inhere  `#p1`
+ `inhere  #p1`
 EOD
 $javascript1 <<EOD
- #inhere  `#j1` 
+ `inhere  #j1` 
 EOD
 set logscale x
 plot "$javascript1" w lp title "javascript",\

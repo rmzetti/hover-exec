@@ -413,7 +413,7 @@ plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
 The above is a *png* file created (using the *paste image* extension) from a copy of the plot window.
 
 If you don't have 'gnuplot' installed, here is the same plot in 'plotly', shown in the browser.
-The data in the above script is used by utilising the '#inhere' tag '#tag1'
+The data in the above script is used by utilising the 'inhere' tag '#tag1'
 
 ```html //plotly
 <!-- '''html //test using plotly -->
@@ -421,7 +421,7 @@ The data in the above script is used by utilising the '#inhere' tag '#tag1'
 <div id="plot" style="width:80%;height:500px"></div>
 <script>
 let lm='lines+markers'
-let a=[#inhere  `#tag1`] //hover here to see the data from the previous script
+let a=[`inhere  #tag1`] //hover here to see the data from the previous script
 let x1=Array(a.length/2).fill(0).map((x,i) => a[i*2])
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
@@ -565,7 +565,7 @@ Note that in all the demos above, except *js:vm* and *js:eval* which allow defin
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - `edit %h/test/readmore#using scripts` for examples.
 In REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an *include* capability, known as *#inhere* (to distinguish from *includes* in scripts) - `edit %h/test/readmore#including` for details and examples.
+There is also an *include* capability, known as *inhere* (to distinguish from *includes* in scripts) - `edit %h/test/readmore#including` for details and examples.
 
 ---
 
