@@ -57,7 +57,7 @@ Notes:
     - [Powershell](#powershell)
     - [Cmd](#cmd)
   - [Chaining execution code blocks](#chaining-execution-code-blocks)
-  - [Including tagged sections using `inhere`](#including-tagged-sections-using-inhere)
+  - [Including tagged sections](#including-tagged-sections)
   - [Using scripts via REPLs](#using-scripts-via-repls)
     - [Python REPL](#python-repl)
     - [Julia REPL](#julia-repl)
@@ -1342,7 +1342,7 @@ plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
 The above is a *png* file created (using the *paste image* extension) from a copy of the plot window.
 
 If you don't have 'gnuplot' installed, here is the same plot in 'plotly', shown in the browser.
-The data in the above script is used by utilising the 'inhere' tag '#tag1'
+The data in the above script is used by utilising the tag '#tag1'
 
 ```html //plotly
 <!-- '''html //test using plotly -->
@@ -1350,7 +1350,7 @@ The data in the above script is used by utilising the 'inhere' tag '#tag1'
 <div id="plot" style="width:80%;height:500px"></div>
 <script>
 let lm='lines+markers'
-let a=[`inhere  #tag1`] //hover here to see the data from the previous script
+let a=[`include  #tag1`] //hover here to see the data from the previous script
 let x1=Array(a.length/2).fill(0).map((x,i) => a[i*2])
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
@@ -1529,19 +1529,19 @@ plot "$speed" w lp title "speed"
 >      Test output is the plot.
 
 ---
-## Including tagged sections using `inhere`
+## Including tagged sections
 
 The following line in a code block
 
-  `inhere #tag_speed` // hover to view the data (which is in the above code block)
+  `include #tag_speed` // hover to view the data (which is in the above code block)
 
 will include a group of lines elsewhere in the file surrounded with the '#tag_speed' tag (lines need not be in a code block).
 
-To see what will be included, hover over the tag reference in the `inhere` line. Note that:
+To see what will be included, hover over the tag reference in the `include` line. Note that:
 
 1. The actual tags must either stand alone in a line, or end the line (eg. tags can have comment markers in front of them)
 2. To include lines from another file use the format
->      `inhere file_path/name #tag`
+>      `include file_path/name #tag`
 >      (nb. file_path can include %c current folder, or %g temp files folder command variables)
 >      If the tag is empty (ie. just #) the whole file is used - recursive is not supported
 
@@ -1550,7 +1550,7 @@ Here is an example:
 ```gnuplot
 # '''gnuplot
 $speed <<EOD
-  `inhere %d/misc_tests.md #p1`     // hover to view the data in misc_test.md
+  `include %d/misc_tests.md #p1`     // hover to view the data in misc_test.md
 EOD
 set logscale x
 plot "$speed" w lp title "speed"
@@ -1565,7 +1565,7 @@ Or use 'plotly' for the same example data:
 <div id="plot" style="width:70%;height:400px"></div>
 <script>
 let lm='lines+markers'
-let a=[ `inhere  %d/misc_tests.md #p1` ]   //note *inhere* is inside the array designator square brackets
+let a=[ `include  %d/misc_tests.md#p1` ]   //note *include* is inside the array designator square brackets
 let x=Array(a.length/2).fill(0).map((x,i) => Math.log10(a[i*2]))
 let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
@@ -2189,7 +2189,7 @@ Note that in all the demos above, except  *js:vm* and  *js:eval* which allow def
 
 Scripts can also be run using their REPL version, if this is available - eg. for node, lua, octave, scilab, r, julia - see above [using scripts via REPL](#using-scripts-via-repl), or `edit %e#using.*repls`. For REPLs, successive script execution will recognise previously defined variables and functions.
 
-There is also an  *include* capability, known as *inhere* (to distinguish from  *includes* in scripts) - see [Including tagged sections using inhere](#including-tagged-sections-using-inhere) for details and examples.
+There is also an  *include* capability, known as *include* (to distinguish from  *includes* in scripts) - see [Including tagged sections using include](#including-tagged-sections-using-include) for details and examples.
 
 Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly straightforward.)
 

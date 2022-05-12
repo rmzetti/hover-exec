@@ -105,13 +105,13 @@ export function activate(context: vscode.ExtensionContext) {
         edit = false; //current script is not 'edit' (executed by hover)
         oneLiner = false; //one-liner
         quickmath = false;  //quick evaluate using mathjs, or a regex search
-        let includeHere = false;    //an 'inhere' (include) line
+        let includeHere = false;    //an 'include' line
         setExecParams(context, doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text); //allow eg. `1+2=` or `/1+2/`
           edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
-          includeHere = /`inhere.*#\w*.*`/.test(line.text) && !edit && !quickmath; //`inhere path/to/file.ext#tag` 
+          includeHere = /`include.*#\w*.*`/.test(line.text) && !edit && !quickmath; //`include path/to/file.ext#tag` 
           if (!oneLiner && !quickmath && !includeHere && !edit) {
             return null;
           } //ignore if not a code block, oneLiner, edit or quickmath
@@ -216,8 +216,8 @@ export function activate(context: vscode.ExtensionContext) {
           s2 = s2.slice(0, s2.indexOf('`'));
           quickmath = s2.endsWith('='); //otherwise regex
           let f = '';
-          if (!quickmath) { // then if an inhere line get the file name if present
-            f = s1.replace(/.*`inhere (.*?)#.*/, '$1').trim();
+          if (!quickmath) { // then if an include line get the file name if present
+            f = s1.replace(/.*`include (.*?)#.*/, '$1').trim();
             if (f === '') {
               f = doc.getText(); //current file
             }
@@ -722,7 +722,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           await delay(10); //ensure progress report is visible
         }
         code = hrefSrcReplace(code);
-        code = await inHere(code); //replace `inhere       
+        code = await inHere(code); //replace `include       
         if (code !== '') { writeFile(tempPath + '/' + tempName, code); } //saves code in temp file for execution
         process.chdir(currentFsPath);
         if (cmd !== '') {
@@ -848,14 +848,14 @@ function replaceStrVars(s: string) {
 }
 
 async function inHere(s: string): Promise<string> {
-  //`inhere path/name #tag`
+  //`include path/name #tag`
   //        %e etc can be used in the path/name
-  //`inhere ... #tag` will be replaced by the result
+  //`include ... #tag` will be replaced by the result
   if (vscode.window.activeTextEditor) {
-    let n = (s.match(/`inhere /g) || []).length;
+    let n = (s.match(/`include /g) || []).length;
     if (n === 0) { return s; }
-    //  re1 = new RegExp("^([\\s\\S]*?)#inhere(.*?)\\s`(#\\w+)`([\\s\\S]*)$", 'm');
-    let re1 = new RegExp("^([\\s\\S]*?)`inhere(.*?)(#\\w*)`([\\s\\S]*)$", 'm'); //start,filename,tag,end
+    //  re1 = new RegExp("^([\\s\\S]*?)#include(.*?)\\s`(#\\w+)`([\\s\\S]*)$", 'm');
+    let re1 = new RegExp("^([\\s\\S]*?)`include(.*?)(#\\w*)`([\\s\\S]*)$", 'm'); //start,filename,tag,end
     for (let i = 0; i < n; i++) {
       let f = s.replace(re1, '$2').trim(); //file name or ''
       let s1 = '';
@@ -863,14 +863,14 @@ async function inHere(s: string): Promise<string> {
       else { s1 = fs.readFileSync(replaceStrVars(f), 'utf8'); }
       let tag = s.replace(re1, '$3');      //tag is #tag was s1
       if (tag === '#') {
-        if (f === '') { s1 = ''; } //no file & no tag, replace the inhere with nothing
-        //otherwise replace the inhere with the file contents, ie s1
+        if (f === '') { s1 = ''; } //no file & no tag, replace the include with nothing
+        //otherwise replace the include with the file contents, ie s1
       }
       else {
         let re = new RegExp('[\\s\\S]*?' + tag + '($[\\s\\S]*?)' + tag + '[\\s\\S]*', "m");
         s1 = s1.replace(re, '$1').trim(); //s1 is what is between the tags
       }
-      if (/`inhere/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
+      if (/`include/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
       s = s.replace(re1, '$1' + s1 + '$4');
     }
   };
