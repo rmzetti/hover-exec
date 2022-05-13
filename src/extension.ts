@@ -101,11 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
         status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
-        let quickmath = false; //current script is 'quickmath' (executed by hover)
-        let variable = false;
+        let quickmath = false; //quick evaluate using mathjs (executed by hover)
+        let variable = false; //variable name is being hovered
         edit = false; //current script is not 'edit' (executed by hover)
         oneLiner = false; //one-liner
-        quickmath = false;  //quick evaluate using mathjs, or a regex search
         let includeHere = false;    //an 'include' line
         setExecParams(context, doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
@@ -113,8 +112,8 @@ export function activate(context: vscode.ExtensionContext) {
           quickmath = /`.+=`/.test(line.text); //eg. `1+2=`
           variable = /`%[c-hC-Hn]`/.test(line.text); //eg. `%c`
           edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
-          includeHere = /`include.*#\w*.*`/.test(line.text) && !edit && !quickmath; //`include path/to/file.ext#tag` 
-          if (!oneLiner && !quickmath && !includeHere && !edit) {
+          includeHere = /`include.*#\w*.*`/.test(line.text) && !edit && !quickmath && !variable; //`include path/to/file.ext#tag` 
+          if (!oneLiner && !quickmath && !includeHere && !edit && !variable) {
             return null;
           } //ignore if not a code block, oneLiner, edit or quickmath
         }
@@ -142,8 +141,11 @@ export function activate(context: vscode.ExtensionContext) {
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
         }
-        else if (quickmath) { //evaluate math expressions like `44-2=` using mathjs
-          return await doQuickmath();
+        else if (quickmath || variable ) { //evaluate math expressions like `44-2=` using mathjs
+          let h=null;
+          if (variable) {h=doVariable();}
+          if (h===null && quickmath) {h=await doQuickmath();}
+          return h;
         }
         if (line.text === "```") {
           //allow hover-exec from end of code block
