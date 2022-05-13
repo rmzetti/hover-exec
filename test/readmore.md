@@ -1575,6 +1575,21 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },]);
 ```
 >      Test output is the plot.
 
+When using javascript (vm, eval, node or html) it is important to note that `console.log` requires the use of backticks around multiline strings.
+So when using include, the following is required:
+
+```js
+console.log(` `include #tag_speed` `)
+```
+> Test output: 
+>       $speed << EOD
+>      1 0.21052631578947367
+>      ...
+>      EOD
+
+The internal backticks are disposed of in hover-exec's pre-processing of the `include` so javascript will not see them.
+The spaces outside the `include..` above are for clarity only - they aren't required.
+
 ---
 ## Using scripts via REPLs
 
