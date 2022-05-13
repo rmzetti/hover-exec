@@ -2011,10 +2011,11 @@ On windows the list looks like this
 
 So
 - `%f` provides the temporary file path & name
-- in addition, the notation `%f.py`, for example, indicates that extension `.py` should be used - default is `.txt` .
+- in addition, the 'ext switching' notation `%f.py`, switches the default `.md` to `.py` .
 
-Generally (currently) these are not available for use within scripts, but only in command lines.
-An exception is that they may be used in 'href' and 'src' strings.
+These may be used in 'href' and 'src' strings, but not with 'ext switching'.
+They can also be used in scripts, but they must be surrounded by backticks, ie. `%c` etc., and 'ext switching' is not available.
+You can hover over `%c` etc to see the actual paths used.
 
 ### Viewing script settings using scripts
 

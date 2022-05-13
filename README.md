@@ -489,7 +489,7 @@ Because cmd.exe is the default windows child-process, if the default is being us
 ---
 ## One-liners and quickmath
 
-*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current workspace folder path, %d current file path, %e current file path+name, %f temp file path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current workspace folder path, %d current file path, %e current file path+name, %f temp file path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote. `edit %h/test/readmore#what settings` for more about %c etc.
 
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
@@ -571,5 +571,4 @@ There is also an *include* capability, `edit %h/test/readmore#including` for det
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
-
 

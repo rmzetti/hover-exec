@@ -36,7 +36,7 @@ let iexec = -1; //number of currently executing code (set to nexec)
 let nexec = 0;  //provides number of currently executing code (auto incremented)
 let oneLiner = false; //current script is a 'one-liner'
 let edit = false; //open link in vscode editor
-let quickmathResult = '';//result of math.evaluate
+let resultForClip = '';//result of math.evaluate
 let inline = false; //if true disallows inline results
 let noOutput = false; //if true ignore output
 let ch: cp.ChildProcess; //child process executing current script
@@ -102,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
         status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
         let quickmath = false; //current script is 'quickmath' (executed by hover)
+        let variable = false;
         edit = false; //current script is not 'edit' (executed by hover)
         oneLiner = false; //one-liner
         quickmath = false;  //quick evaluate using mathjs, or a regex search
@@ -109,7 +110,8 @@ export function activate(context: vscode.ExtensionContext) {
         setExecParams(context, doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
-          quickmath = /`.+=`/.test(line.text) || /`\/.+\/`/.test(line.text); //allow eg. `1+2=` or `/1+2/`
+          quickmath = /`.+=`/.test(line.text); //eg. `1+2=`
+          variable = /`%[c-hC-Hn]`/.test(line.text); //eg. `%c`
           edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
           includeHere = /`include.*#\w*.*`/.test(line.text) && !edit && !quickmath; //`include path/to/file.ext#tag` 
           if (!oneLiner && !quickmath && !includeHere && !edit) {
@@ -117,17 +119,19 @@ export function activate(context: vscode.ExtensionContext) {
           } //ignore if not a code block, oneLiner, edit or quickmath
         }
         if (includeHere) { //show tagged content
+          resultForClip = (await inHere(line.text)).replace(/\n/g, ' ');
           return new vscode.Hover(new vscode.MarkdownString(
-            "[" + (await inHere(line.text)).replace(/\n/g, ' ') + "](vscode://rmzetti.hover-exec?copyToClipboard)"
+            "[" + resultForClip + "](vscode://rmzetti.hover-exec?copyToClipboard)"
           ));
-        }
-        else if (quickmath) { //evaluate math expressions like `44-2=` using mathjs
-          //also evaluate re eg. `/($speed << EOD.*EOD)/`
-          return await doQuickmath();
         }
         else if (edit) { //open in vscode editor
           [cmd, cmda] = getFileToEdit(line.text, pos.character);
-          if (cmd === "") { return null; }
+          if (cmd === "") {
+            let h=null;
+            if (variable) {h=doVariable();}
+            if (h===null && quickmath) {h=await doQuickmath();}
+            return h; 
+          }
           cmdId = "edit";
           let msg = '';
           if (cmda != "") { msg = " at heading #" + cmda + ".."; }
@@ -137,6 +141,9 @@ export function activate(context: vscode.ExtensionContext) {
           );
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //return link string
+        }
+        else if (quickmath) { //evaluate math expressions like `44-2=` using mathjs
+          return await doQuickmath();
         }
         if (line.text === "```") {
           //allow hover-exec from end of code block
@@ -213,38 +220,35 @@ export function activate(context: vscode.ExtensionContext) {
           let s1 = s.slice(0, pos.character);//there may be more than one expression in a line
           let s2 = s.slice(pos.character);  //so isolate parts before & after hover pos
           if (!s1.includes('`') || !s2.includes('`')) { return null; }
-          s2 = s2.slice(0, s2.indexOf('`'));
-          quickmath = s2.endsWith('='); //otherwise regex
-          let f = '';
-          if (!quickmath) { // then if an include line get the file name if present
-            f = s1.replace(/.*`include (.*?)#.*/, '$1').trim();
-            if (f === '') {
-              f = doc.getText(); //current file
-            }
-            else {
-              f = await readFile(replaceStrVars(f));
-            }
-            status('ok');
-          }
+          s2 = s2.slice(0, s2.indexOf('`') - 1);
           s1 = s1.slice(s1.lastIndexOf('`') + 1);
-          if (!quickmath) { s1 = s1.slice(1); }
-          s2 = s2.slice(0, s2.length - 1);
           s1 = s1 + s2;
-          if (quickmath) {
-            s2 = 'hover-exec via mathjs';
-            quickmathResult = '' + math.evaluate(s1);
-          } else { //evaluate 'simplified' regex on file contents
-            //which specifies what is being looked for, & interprets . as [\s\S] 
-            s2 = 'hover-exec via regex:\n';
-            s1 = s1.replace(/\./g, '[\\s\\S]'); //make . mean all chars
-            s1 = s1.replace(/[*]([^?])/g, '*?$1');   //make * not greedy
-            let re = new RegExp('[\\s\\S]*?(' + s1 + ')[\\s\\S]*', "m");
-            quickmathResult = f.replace(re, '$1');
-          } //save result for copy to clipboard
-          if (quickmathResult === '') { return null; }
-          s1 = "[ " + quickmathResult + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
+          s2 = 'hover-exec via mathjs';
+          resultForClip = '' + math.evaluate(s1);
+          if (resultForClip === '') { return null; }
+          s1 = "[ " + resultForClip + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
           const contents = new vscode.MarkdownString(s2 + ":\n\n" + s1);
-          if (quickmath) { status(quickmathResult); }
+          status(resultForClip);
+          return new vscode.Hover(contents);
+        }
+        function doVariable() {
+          let s = line.text;
+          if (s[pos.character] === '`') { return null; } //hover over the expression not backticks
+          let s1 = s.slice(0, pos.character);//there may be more than one expression in a line
+          let s2 = s.slice(pos.character);  //so isolate parts before & after hover pos
+          if (!s1.includes('`') || !s2.includes('`')) { return null; }
+          s2 = s2.slice(0, s2.indexOf('`'));
+          s1 = s1.slice(s1.lastIndexOf('`') + 1);
+          s1 = s1 + s2;
+          if (/%[c-hC-Hn]/.test(s1)) {
+            resultForClip = replaceStrVars(s1);
+          } else {
+            return null;
+          }
+          if (resultForClip === '') { return null; }
+          s1 = "[ " + resultForClip + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
+          const contents = new vscode.MarkdownString("hover-exec variable:\n\n" + s1);
+          status(resultForClip);
           return new vscode.Hover(contents);
         }
       };
@@ -464,7 +468,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (m > 0) {
       h = s.slice(m + 1);
       s = s.slice(0, m);
-    } //remove comment
+    } //separate file name from header tag
     if (!/\.[^\/]*$/.test(s)) { s += '.md'; } //no .ext, default is .md
     return [s, h];
   }
@@ -652,8 +656,8 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       return;
     }
     if (uri.query === "copyToClipboard") {
-      status('copied ' + quickmathResult);
-      await vscode.env.clipboard.writeText(quickmathResult);
+      status('copied ' + resultForClip);
+      await vscode.env.clipboard.writeText(resultForClip);
       return;
     }
     if (uri.query.endsWith("_config")) {
@@ -692,7 +696,6 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
       code = codeBlock.replace(/^\s*(--|#|%|\/\/).*=>>$/mg, ''); //remove commented lines with swap
       //disable swap in fully commented lines by appending a space
       codeBlock = codeBlock.replace(/^(\s*(--|#|%|\/\/).*=>>)$/mg, '$1 ');
-
       re = new RegExp("\\s*(--|#|%|\/\/)*\\s*" + swap + '$', "mg"); //find any comment chars directly preceding a swap
       code = code.replace(re, swap); //remove them -- note \\s required in re, not just \s
       re = new RegExp("^(.+)" + swap, "mg"); //regex finds swap lines, sets $1 to expr
@@ -722,6 +725,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           await delay(10); //ensure progress report is visible
         }
         code = hrefSrcReplace(code);
+        code = replaceStrVarsInCode(code);
         code = await inHere(code); //replace `include       
         if (code !== '') { writeFile(tempPath + '/' + tempName, code); } //saves code in temp file for execution
         process.chdir(currentFsPath);
@@ -827,7 +831,7 @@ function replaceStrVars(s: string) {
     s = s.replace(/(%[fg])\.\w*/g, "$1"); //remove .ext from %f, %g
   }
   //replace %n, %c-h, %C-H with the appropriate string
-  s = s
+  return s
     .replace(/\\%/g, '%`') //where \% used, escape %
     .replace(/%n/g, tempName) //%n temp file name only
     .replace(/%c/g, currentPath) // %c workspace folder path
@@ -844,7 +848,24 @@ function replaceStrVars(s: string) {
     .replace(/%G/g, tempFsPath) // %G uses FsPath
     .replace(/%H/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath
     .replace(/%`/g, '%'); //un-escape %
-  return s;
+}
+
+function replaceStrVarsInCode(s:string) { //in the code these have the form `%c`
+  return s
+    .replace(/`%n`/g, tempName) //%n temp file name only
+    .replace(/`%c`/g, currentPath) // %c workspace folder path
+    .replace(/`%d`/g, currentFilePath) // %d current file path
+    .replace(/`%e`/g, currentFile)
+    .replace(/`%f`/g, tempPath + '/' + tempName)
+    .replace(/`%g`/g, tempPath)
+    .replace(/`%h`/g, hePath) // %h hover-exec path for readme etc.
+    //the following are for windows, although mostly the previous will work ok
+    .replace(/`%C`/g, currentFsPath) // %C uses FsPath
+    .replace(/`%D`/g, currentFsFilePath) // %D uses FsFilePath
+    .replace(/`%E`/g, currentFsFile) // %E uses Fs file path & name
+    .replace(/`%F`/g, tempFsPath + slash + tempName) // %F uses FsPath
+    .replace(/`%G`/g, tempFsPath) // %G uses FsPath
+    .replace(/`%H`/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath
 }
 
 async function inHere(s: string): Promise<string> {
@@ -864,13 +885,14 @@ async function inHere(s: string): Promise<string> {
       let tag = s.replace(re1, '$3');      //tag is #tag was s1
       if (tag === '#') {
         if (f === '') { s1 = ''; } //no file & no tag, replace the include with nothing
-        //otherwise replace the include with the file contents, ie s1
+        //else use s1 as is - complete file contents
       }
       else {
         let re = new RegExp('[\\s\\S]*?' + tag + '($[\\s\\S]*?)' + tag + '[\\s\\S]*', "m");
         s1 = s1.replace(re, '$1').trim(); //s1 is what is between the tags
       }
-      if (/`include/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
+      //if (/`include/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
+      if (/`include/.test(s1)) { s1 = await inHere(s1)}; //recursive, see python_magic.md
       s = s.replace(re1, '$1' + s1 + '$4');
     }
   };
