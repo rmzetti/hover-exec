@@ -47,7 +47,7 @@
       "title": "Hover Exec",
       "properties": {
         "hover-exec.scripts": {
-          "description": "shell command to exec script in file %f.ext",
+          "description": "shell command to exec script in file %f.ext; assumes app is on the PATH",
           "default": {
             "os": "",
             "octave": "octave \"%f.m\"",
@@ -62,7 +62,7 @@
             "python3": "python3 \"%f.py\"",
             "streamlit": "streamlit run \"%f.py\" ",
             "julia": "julia \"%f.jl\"",
-            "julia_mac": "/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia \"%f.jl\"",
+            "julia_mac": "julia \"%f.jl\"",
             "gnuplot": "gnuplot -p -c \"%f.gp\"",
             "pwsh": "set \"NO_COLOR=1\" & pwsh -f \"%f.ps1\" ",
             "bash": "bash \"%f.sh\"",
@@ -124,7 +124,7 @@
         },
         "hover-exec.repls": {
           "description": [
-            "shell_command_to_exec_repl",
+            "shell_command_to_exec_repl, assumes app is on the PATH",
             [
               "option_strings"
             ],
@@ -141,6 +141,7 @@
             ]
           ],
           "default": {
+            "os": "",
             "python": [
               "python",
               [
@@ -212,6 +213,15 @@
               ]
             ],
             "julia": [
+              "julia",
+              [
+                "-i -q"
+              ],
+              "print('\\f')",
+              [],
+              []
+            ],
+            "julia_mac": [
               "julia",
               [
                 "-i -q"

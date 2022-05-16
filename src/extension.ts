@@ -559,17 +559,17 @@ export function activate(context: vscode.ExtensionContext) {
   async function checkConfig() {
     async function checkOS(section: string) {
       let scripts = config.get(section);
-      if (config.get(section + ".os") === "") {
-        let k = Object.keys(scripts as object);
+      if (config.get(section + ".os") === "") { //if os=="", settings have been reset, so now set os defaults
+        let k = Object.keys(scripts as object); //get keys
         let merge = {};
-        merge = Object.assign(merge, { "os": os + " (auto)" });
-        for (let a in k) {
+        merge = Object.assign(merge, { "os": os + " (auto)" }); //first set os to 'os (auto)'
+        for (let a in k) {  //specific defaults are in the form cmdId_os (os=win, mac, lnx, or wsl)
           let s = config.get(section + '.' + k[a] + '_' + os);
-          if (s !== undefined && s !== "") {
+          if (s !== undefined && s !== "") { //if an os default has been included, use it
             merge = Object.assign(merge, { [k[a]]: s });
           }
         }
-        await config.update(section, merge, 1);
+        await config.update(section, merge, 1); //update settings
         config = vscode.workspace.getConfiguration("hover-exec");
       }
     }
@@ -803,7 +803,7 @@ const hUri = new (class MyUriHandler implements vscode.UriHandler {
           writeFile(outName, out);//write to output file
           out = out.replace(/\[object Promise\]\n*/g, ""); //remove this for editor output
           if (!noOutput) {
-            if (tempName.endsWith('.html')) { out = ''; }
+            //if (tempName.endsWith('.html')) { out = ''; }
             await selectCodeblock(false);
             await paste(out);   //paste into editor
             removeSelection(); //deselect
@@ -961,7 +961,7 @@ async function paste(text: string) {
     text = text.replace(/^[\s\S]*?\n`+output/, '```output'); //a `+output line removes preceding text & becomes the label
     text = text.replace(/^`+/, " ```"); //set one or more starting ` to ``` & temporarily mark with leading space
     text = text.replace(/^```/mg, "'''"); //don't allow displayed lines to start with ``` (would end the code block)
-    text = text.replace(/\[\d\d?m/g, ""); //remove in-text color codes (mostly pwsh)
+    text = text.replace(/\[\d[\d;]*?m/g, ""); //remove in-text color codes (mostly pwsh)
     //if there is any output left, it will go into an ```output code block
     await selectCodeblock(false); //select code block to replace
     activeTextEditor.edit((selText) => {
@@ -1117,6 +1117,24 @@ async function deleteOutput(mode: string) {
   }
 }
 
+async function execShell(cmd: string) {
+  //execute shell command (to start scripts, run audio etc.)
+  return new Promise<string>((resolve, reject) => {
+    // let opt={};
+    // let s=(config.get("scripts.os") as string).replace(/.*\((.*)\).*/,'$1');
+    // if(s!=='auto'){ opt={shell:s};}
+    ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
+      if (err1 && stderr1 !== "") {
+        needSwap = false; //turn off swaps for errors
+        console.log(out1 + err1 + "," + stderr1);   //see this in developer tools
+        return resolve(out1 + err1 + "," + stderr1);//return to out buffer
+      }
+      console.log('\n' + out1 + stderr1);//see this in developer tools
+      return resolve(out1 + stderr1);  //return to out buffer
+    });
+  });
+}
+
 function execRepl(cmd: string, args: string[]) {
   repl = cp.spawn(cmd, args, opt);
   if (repl === null) { return; }
@@ -1145,24 +1163,6 @@ async function replOutput() {
     await delay(100);
   }
   return out1.replace(/\f.*/, '');
-}
-
-async function execShell(cmd: string) {
-  //execute shell command (to start scripts, run audio etc.)
-  return new Promise<string>((resolve, reject) => {
-    // let opt={};
-    // let s=(config.get("scripts.os") as string).replace(/.*\((.*)\).*/,'$1');
-    // if(s!=='auto'){ opt={shell:s};}
-    ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
-      if (err1 && stderr1 !== "") {
-        needSwap = false; //turn off swaps for errors
-        console.log(out1 + err1 + "," + stderr1);   //see this in developer tools
-        return resolve(out1 + err1 + "," + stderr1);//return to out buffer
-      }
-      console.log('\n' + out1 + stderr1);//see this in developer tools
-      return resolve(out1 + stderr1);  //return to out buffer
-    });
-  });
 }
 
 async function writeFile(path: string, text: string) {
