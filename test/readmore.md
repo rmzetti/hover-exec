@@ -2033,6 +2033,13 @@ The following one-liner will provide an unsorted config list for 'scripts','repl
 >        scilab_mac: 'scilab-cli -quit -nb -f "%f.sci" ',
 >      etc ...
 
+Note that the settings assume the apps are on the PATH.
+The default *vscode/hover-exec* shell exec launcher is *cmd* for windows, and *bash* for mac/linux/wsl.
+Hence, for example, on MacOS:
+  1. the PATH should be updated in '~/.bashrc'
+  2. if the shell is changed to 'zsh' in the config 'os', ie "os":"mac (zsh)", then the PATH is set in '~/.zshrc'
+  3. nb. don't use ~ in 'zshrc' paths 
+
 The following js script will produce a sorted list of included script startup commands:
 
 ```js //show scripts config settings, sorted
@@ -2060,7 +2067,7 @@ console.log(sort(config.get('scripts')));
 >      javascript: 'node "%f.js"',
 >      js: 'vm',
 >      julia: 'julia "%f.jl"',
->      julia_mac: '/Applications/Julia-1.6.app/Contents/Resources/julia/bin/julia "%f.jl"',
+>      julia_mac: 'julia "%f.jl"',
 >      lua: 'lua "%f.lua"',
 >      lua54: 'lua54 "%f.lua"',
 >      matlab: 'matlab -nodesktop -sd "%g.m/" -batch temp',

@@ -17,6 +17,7 @@ let hePath = ""; //path to hover-exec extension files
 let windows = process.platform.startsWith("win"); //os is windows
 let slash = '/'; //to use between tempPath and tempName
 if (windows) { slash = '\\'; }
+let statusBarItem: vscode.StatusBarItem; //for status bar display
 let tempPath: string = ""; //  path for temp files (provided by vscode)
 let tempFsPath: string = ""; //fsPath for temp files (provided by vscode)
 let tempName: string = ""; //file name of temp file for current script
@@ -1120,9 +1121,7 @@ async function deleteOutput(mode: string) {
 async function execShell(cmd: string) {
   //execute shell command (to start scripts, run audio etc.)
   return new Promise<string>((resolve, reject) => {
-    // let opt={};
-    // let s=(config.get("scripts.os") as string).replace(/.*\((.*)\).*/,'$1');
-    // if(s!=='auto'){ opt={shell:s};}
+    if (opt==='zsh') {cmd='source ~/.zshrc;'+cmd;}
     ch = cp.exec(cmd, opt, (err1, out1, stderr1) => {
       if (err1 && stderr1 !== "") {
         needSwap = false; //turn off swaps for errors
@@ -1136,6 +1135,7 @@ async function execShell(cmd: string) {
 }
 
 function execRepl(cmd: string, args: string[]) {
+  if (opt==='zsh') {cmd='source ~/.zshrc;'+cmd;}
   repl = cp.spawn(cmd, args, opt);
   if (repl === null) { return; }
   repl.stdout?.on('data', (data) => {
@@ -1237,7 +1237,6 @@ function write(...args: any) {
   log(...args);
   return false;
 }
-let statusBarItem: vscode.StatusBarItem;
 async function status(s: string): Promise<void> {
   //put a string in the status bar for vm & eval
   if (s !== undefined && s !== '') {
