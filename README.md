@@ -62,13 +62,11 @@ Notes:
 
 *Hover-exec*
 - facilitates execution from within the editor of fenced markdown code blocks in a variety of script languages that are installed on your system
-- enables the inclusion of other script languages with or without configuration - see   [`edit %h/test/readmore#add new`](test/readmore.md#add-new-script-language)
+- enables the inclusion of other script languages with or without configuration - see [`edit %h/test/readmore#add new`](test/readmore.md#add-new-script-language)
 - offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
 - can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
-
-In addition to executing scripts, *hover-exec* 
 
 ---
 ## Basic hover-exec 
