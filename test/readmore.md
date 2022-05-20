@@ -1,10 +1,11 @@
 # Hover-exec readmore
 
+![*Hover-exec* in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/Hover-exec.gif)
+
 This is the readmore for VS Code extension *hover-exec*.
 
 Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
-
-Type or copy one of the following in any instance of the editor - then hover to see the path, or exec by clicking the bottom line of the hover message to open the file as a new tab in the editor.
+Hover to see the path, then exec by clicking the path to open the file as a new tab in the editor.
 
 `edit %h/README` //opens the readme in the vscode editor \
 `edit %h/test/readmore` //the readme but with more detail \
@@ -95,10 +96,6 @@ Notes:
 *Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
-
-*Hover-exec* in action:
-
-  ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
 
 In addition to executing scripts, *hover-exec* can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 

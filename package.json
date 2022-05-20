@@ -248,6 +248,15 @@
               [],
               []
             ],
+            "scilab_mac": [
+              "scilab-cli",
+              [
+                "-nb"
+              ],
+              "mprintf(ascii(12))",
+              [],
+              []
+            ],
             "scilabcli": [
               "scilab-cli",
               [

@@ -188,7 +188,7 @@ export function activate(context: vscode.ExtensionContext) {
           //create & return message & urls for output hover
           cmdId = "delete";
           let msgOut = "*hover-exec:*\n\n[output block to text](vscode://rmzetti.hover-exec?text_output)\n\n";
-          if (iexec === nexec) msgOut += "[all output to text](vscode://rmzetti.hover-exec?full_output)\n\n";
+          if (iexec === nexec) {msgOut += "[all output to text](vscode://rmzetti.hover-exec?full_output)\n\n";}
           msgOut += "[delete output block](vscode://rmzetti.hover-exec?delete_output)"; //hover for output delete
           return new vscode.Hover(new vscode.MarkdownString(msgOut));
         } else if (oneLiner) {
@@ -868,7 +868,7 @@ function replaceStrVarsInCode(s:string) { //in the code these have the form `%c`
     .replace(/`%E`/g, currentFsFile) // %E uses Fs file path & name
     .replace(/`%F`/g, tempFsPath + slash + tempName) // %F uses FsPath
     .replace(/`%G`/g, tempFsPath) // %G uses FsPath
-    .replace(/`%H`/g, hePath.replace(/\//g, slash)) // %H hover-exec fsPath
+    .replace(/`%H`/g, hePath.replace(/\//g, slash)); // %H hover-exec fsPath
 }
 
 async function inHere(s: string): Promise<string> {
@@ -878,7 +878,6 @@ async function inHere(s: string): Promise<string> {
   if (vscode.window.activeTextEditor) {
     let n = (s.match(/`include /g) || []).length;
     if (n === 0) { return s; }
-    //  re1 = new RegExp("^([\\s\\S]*?)#include(.*?)\\s`(#\\w+)`([\\s\\S]*)$", 'm');
     let re1 = new RegExp("^([\\s\\S]*?)`include(.*?)(#\\w*)`([\\s\\S]*)$", 'm'); //start,filename,tag,end
     for (let i = 0; i < n; i++) {
       let f = s.replace(re1, '$2').trim(); //file name or ''
@@ -894,8 +893,7 @@ async function inHere(s: string): Promise<string> {
         let re = new RegExp('[\\s\\S]*?' + tag + '($[\\s\\S]*?)' + tag + '[\\s\\S]*', "m");
         s1 = s1.replace(re, '$1').trim(); //s1 is what is between the tags
       }
-      //if (/`include/.test(s1)) { s1 = '' }//not recursive, ie. not s1 = await inHere(s1);
-      if (/`include/.test(s1)) { s1 = await inHere(s1)}; //recursive, see python_magic.md
+      if (/`include/.test(s1)) { s1 = await inHere(s1);} //recursive, see python_magic.md
       s = s.replace(re1, '$1' + s1 + '$4');
     }
   };

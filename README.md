@@ -1,10 +1,14 @@
 # Hover-exec readme
 
+![Hover-exec in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/Hover-exec.gif)
+
 This is the readme for the VSCode extension *hover-exec*.
 Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
-This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor, and the readme etc have many example codeblocks that can be executed to try it out.
+This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor.
+The readme etc have many example codeblocks that can be executed to try it out.
 
-To help with this, *hover-exec* provides the command *open the hover-exec readme* to open the readme in the editor (shortcut *ctrl+alt+/*  or *ctrl+opt+/*):
+To facilitate this, *hover-exec* provides the command *open the hover-exec readme* to open the readme in the editor.
+Use *ctrl+shift+P* to find the *hover-exec* command, or use the shortcut *ctrl+alt+/*  or *ctrl+opt+/*.
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
@@ -56,15 +60,15 @@ Notes:
 ---
 ## Features
 
-*Hover-exec* facilitates execution from within the editor of fenced markdown code blocks in a variety of installed script languages. New script languages can be added with or without configuration. This extension is by no means intended as a replacement for the superb vscode notebooks. Instead it offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
+*Hover-exec*
+- facilitates execution from within the editor of fenced markdown code blocks in a variety of script languages that are installed on your system
+- enables the inclusion of other script languages with or without configuration - see   [`edit %h/test/readmore#add new`](test/readmore.md#add-new-script-language)
+- offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
+- can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 
 The *hover-exec* extension is activated when a markdown file is opened in the editor.
 
-*Hover-exec* in action:
-
-  ![](https://raw.githubusercontent.com/rmzetti/hover-exec/master/media/Hover-exec.gif)
-
-In addition to executing scripts, *hover-exec* can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
+In addition to executing scripts, *hover-exec* 
 
 ---
 ## Basic hover-exec 
