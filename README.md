@@ -2,13 +2,14 @@
 
 ![Hover-exec in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/hover-exec.gif)
 
-This is the readme for the VSCode extension *hover-exec*.
+This is the *readme* for the VSCode extension *hover-exec*.
 Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
 This is because *hover-exec* is all about facilitating the execution of markdown codeblocks in the editor.
-The readme etc have many example codeblocks that can be executed to try it out.
+These files have many example codeblocks that can be executed to try it out..
+- The above *gif* was produced from the codeblocks in this *readme*
 
-To facilitate this, *hover-exec* provides the command *open the hover-exec readme* to open the readme in the editor.
-Use *ctrl+shift+P* to find the *hover-exec* command, or use the shortcut *ctrl+alt+/*  or *ctrl+opt+/*.
+> To open this file in the editor, use *ctrl+shift+P* followed by *open the hover-exec readme*.
+> Or use the shortcut *ctrl+alt+/*  or *ctrl+opt+/*.
 
 From inside the editor the following 'one-liners' are available - hover over the command, then click the file name to open the file in the editor.
 
