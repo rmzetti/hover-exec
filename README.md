@@ -1,6 +1,6 @@
 # Hover-exec readme
 
-![Hover-exec in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/Hover-exec.gif)
+![Hover-exec in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/hover-exec.gif)
 
 This is the readme for the VSCode extension *hover-exec*.
 Once the extension is installed, the readme, the readmore and the test files are best viewed in the editor.
@@ -53,7 +53,7 @@ Notes:
     - [open another instance of vscode:](#open-another-instance-of-vscode)
     - [explore files, view folders:](#explore-files-view-folders)
     - [other examples:](#other-examples)
-    - [Quickmath examples](#quickmath-examples)
+  - [Quickmath examples](#quickmath-examples)
   - [Configuration settings](#configuration-settings)
   - [Release Notes and Known Issues](#release-notes-and-known-issues)
 
@@ -101,9 +101,6 @@ Putting some javascript code into the code block, and clicking the *exec* (botto
 let world=3;
 console.log('hello world '+world);
 alert('goodbye world');
-```
-```output
-hello world 3
 ```
 
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
@@ -155,7 +152,7 @@ The code block label `js`  by itself defaults to executing javascript via the bu
 //'''js  //this comment is to show the command line in markdown previews
 //       //the default for the `js` command is to execute using the `vm` module
 console.log("Note the in-line random number result")
-'test: '+Math.random()  =>>test: 0.5918216346770233
+'test: '+Math.random()  =>> 
 ```
 >      Test output:
 >      Note the in-line random number result
@@ -198,7 +195,7 @@ A regex tester using *vscode*'s eval:
 
 ```js : eval
 //'''js : eval // javascript regex tester using eval
-'abcdefg'.replace(/^.*(bcde)/,'$1--') =>>bcde--fg
+'abcdefg'.replace(/^.*(bcde)/,'$1--') =>> 
 ```
 
 ---
@@ -295,8 +292,8 @@ Depending on your system setup you may need to use the *python3* command. But in
 ```python
 # '''python :python3 #<- append this to use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.6264875741003
-'hello, world 3!'       #  =>>hello, world 3!
+45-2+random()       #  =>> 
+'hello, world 3!'       #  =>> 
 print('python ok')
 ```
 >      Test output (also see inline output):
@@ -317,9 +314,9 @@ If the *julia* extension is included, *vscode* will provide syntax highlighting.
 # '''julia
 using LinearAlgebra # this package is not needed if dot(a',a) is commented out
 a=rand(Float64,3);
-a   # =>>[0.8999280817338797, 0.05500849893486204, 0.8299019559590521]
-a'*a # =>>1.5016337437529477
-dot(a',a) # =>>1.5016337437529477
+a   # =>> 
+a'*a # =>> 
+dot(a',a) # =>> 
 b=a;b[2]=42;  # demonstrates that arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
@@ -409,6 +406,9 @@ timefmt = "%d-%m-%Y %H:%M"
 set format x "%d-%m" time
 set mouse mouseformat 3
 plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
+```
+```output
+Warning: slow font initializationqt_processTermEvent received a GE_fontprops event. This should not have happened
 ```
 ![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
@@ -541,7 +541,7 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 
 There are many more one-liner examples in the readmore: `edit %h/test/readmore#one-liners`.
 
-### Quickmath examples
+## Quickmath examples
 
 And finally, some *quickmath* expressions. As before these are surrounded with backticks. They do not have to start in col 1, but must have `=` just before the last backtick.
 When viewing in preview, the backticks are not visible.

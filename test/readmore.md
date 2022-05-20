@@ -1,6 +1,6 @@
 # Hover-exec readmore
 
-![*Hover-exec* in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/Hover-exec.gif)
+![*Hover-exec* in action](https://raw.githubusercontent.com/rmzetti/hover-exec/main/media/hover-exec.gif)
 
 This is the readmore for VS Code extension *hover-exec*.
 
