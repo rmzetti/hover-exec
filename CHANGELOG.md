@@ -6,10 +6,26 @@ All notable changes to the "hover-exec" extension will be documented in this fil
 
 `git reflog --date=iso` //Hover-exec one-liner to provide dated list of commits
 
-## Ref log with version ids
+## Log with version ids
 
-### May 22
-df91c34 HEAD@{2022-05-05 22:02:48 +1200}: commit: include edit oneliner, update reads, [ver_0.7.2]
+### May 22 ver 0.7.2
+23e5d14 HEAD@{2022-05-20 23:11:19 +1200}: commit: update readme
+3b970fb HEAD@{2022-05-20 22:57:27 +1200}: pull --tags origin main: Merge made by the 'recursive' strategy.
+95778a5 HEAD@{2022-05-20 22:57:22 +1200}: commit: updated
+216d8f9 HEAD@{2022-05-20 22:08:44 +1200}: commit: update readme, readmore
+a4b9341 HEAD@{2022-05-20 18:05:31 +1200}: commit: lint suggestions, & update readme, readmore
+9a32f36 HEAD@{2022-05-20 17:34:33 +1200}: Branch: renamed refs/heads/master to refs/heads/main
+9a32f36 HEAD@{2022-05-16 20:32:16 +1200}: commit: check paths and PATH inheritance
+291eb5a HEAD@{2022-05-16 16:35:31 +1200}: commit: check paths
+45e83bf HEAD@{2022-05-13 23:48:32 +1200}: commit: code use of %c etc
+bee4ad6 HEAD@{2022-05-13 12:08:20 +1200}: commit: example using include with console.log
+3807360 HEAD@{2022-05-13 11:03:01 +1200}: commit: inhere > include
+ad232fe HEAD@{2022-05-12 23:25:46 +1200}: commit: adjust inhere command and readmes
+2e5c6f0 HEAD@{2022-05-11 22:33:44 +1200}: commit: update reads
+75d3c72 HEAD@{2022-05-11 17:45:19 +1200}: commit: update reads, put basic_tests in readmore
+c76ec4a HEAD@{2022-05-10 15:37:32 +1200}: commit: adjust edit oneliner, update reads
+04d2124 HEAD@{2022-05-08 20:58:44 +1200}: commit: add kbd shortcut to open readme in editor
+7d51b6a HEAD@{2022-05-05 22:29:57 +1200}: commit: include edit oneliner, update reads, [ver_0.7.2]
 44c2fd7 HEAD@{2022-05-03 21:00:31 +1200}: commit: fix readme error caused by vsce bug
 ad48b07 HEAD@{2022-05-03 20:22:47 +1200}: commit: adjust readme
 1bdc377 HEAD@{2022-05-03 19:55:32 +1200}: commit: adjust reads
@@ -17,7 +33,7 @@ ad48b07 HEAD@{2022-05-03 20:22:47 +1200}: commit: adjust readme
 8aa72db HEAD@{2022-05-02 18:10:12 +1200}: commit: adjust %paths & use in href/src
 664a007 HEAD@{2022-05-02 18:08:19 +1200}: commit: test
 db6fa5c HEAD@{2022-05-02 17:56:20 +1200}: commit: adjust %paths & use in href/src
-### Apr 22
+### Apr 22 ver 0.7.1
 2df51c9 HEAD@{2022-04-29 22:50:02 +1200}: commit: adjust getSpecialPath vs call
 c62550e HEAD@{2022-04-29 15:20:59 +1200}: commit: remove ';' for blank line output
 5d6178c HEAD@{2022-04-28 22:47:21 +1200}: commit: reads
@@ -26,7 +42,7 @@ c62550e HEAD@{2022-04-29 15:20:59 +1200}: commit: remove ';' for blank line outp
 5fe0f24 HEAD@{2022-04-26 16:57:14 +1200}: commit: update reads..
 89315ae HEAD@{2022-04-12 17:07:55 +1200}: commit: update reads & gif
 385782b HEAD@{2022-04-09 11:44:24 +1200}: commit: update reads
-### Mar 22
+### Mar 22 ver 0.7.1
 497992e HEAD@{2022-03-27 17:39:51 +1300}: commit: remove pwsh esc.. color codes
 a687c1f HEAD@{2022-03-26 17:50:54 +1300}: commit: allow shell script change
 a095a15 HEAD@{2022-03-21 15:09:16 +1300}: commit: update os check
@@ -42,14 +58,14 @@ af91617 HEAD@{2022-03-08 08:31:53 +1300}: commit: update readme & tests
 a589cd1 HEAD@{2022-03-07 15:48:06 +1300}: commit: update tests ..
 b7f9194 HEAD@{2022-03-06 19:48:21 +1300}: commit: update tests, [ver_0.6.8]
 8c65327 HEAD@{2022-03-03 18:09:54 +1300}: commit: update readme and readmore
-### Feb 22
+### Feb 22 ver 0.6.7
 f9b96b9 HEAD@{2022-02-26 12:43:36 +1300}: commit: clarify readme and messages
 3b11143 HEAD@{2022-02-23 23:36:54 +1300}: commit: update executing message
 912a09b HEAD@{2022-02-23 21:56:53 +1300}: commit: update tests etc..
 9a79004 HEAD@{2022-02-08 16:45:55 +1300}: commit: update readme etc
 2091e83 HEAD@{2022-02-05 11:58:36 +1300}: commit: fix undefine config
 4ef2d40 HEAD@{2022-02-05 11:02:30 +1300}: commit: update readme etc ..
-### Jan 22
+### Jan 22 ver 0.6.7
 ee832b3 HEAD@{2022-01-31 16:07:02 +1300}: commit: clear previous output hover command
 2ba8869 HEAD@{2022-01-29 22:02:02 +1300}: commit: fix clear previous output for vm/eval
 dd54949 HEAD@{2022-01-28 21:59:29 +1300}: commit: os config defaults ..
@@ -57,7 +73,7 @@ dd54949 HEAD@{2022-01-28 21:59:29 +1300}: commit: os config defaults ..
 9c86702 HEAD@{2022-01-20 21:11:14 +1300}: commit: readme issues..
 ba15a77 HEAD@{2022-01-16 20:41:50 +1300}: commit: readme issues, [ver_0.6.6]
 139f093 HEAD@{2022-01-12 14:55:32 +1300}: commit: readme issues..
-### Dec 21
+### Dec 21 ver 0.6.5
 702ded0 HEAD@{2021-12-22 12:22:49 +1300}: commit: use bash in cp.exec
 85c5b5f HEAD@{2021-12-18 11:36:04 +1300}: commit: clean up docs..
 3d199f1 HEAD@{2021-12-11 20:30:27 +1300}: commit: settings repls, readmore
@@ -65,7 +81,7 @@ ba15a77 HEAD@{2022-01-16 20:41:50 +1300}: commit: readme issues, [ver_0.6.6]
 5711388 HEAD@{2021-12-06 14:18:03 +1300}: commit: settings
 f37ea85 HEAD@{2021-12-05 16:22:30 +1300}: commit: include repls, [ver_0.6.5]
 d832211 HEAD@{2021-12-05 09:30:01 +1300}: commit: various script REPLs
-### Nov 21
+### Nov 21 ver 0.6.4
 681c9c2 HEAD@{2021-11-25 16:59:43 +1300}: commit: various script REPLs beta
 d628260 HEAD@{2021-11-24 09:47:02 +1300}: commit: lua repl beta
 bf9f1c5 HEAD@{2021-11-20 18:00:22 +1300}: commit: google charts
@@ -73,7 +89,7 @@ fc9504e HEAD@{2021-11-20 15:35:02 +1300}: commit: python repl
 a16e866 HEAD@{2021-11-08 21:54:20 +1300}: commit: script urls in hover
 2939aef HEAD@{2021-11-07 22:21:40 +1300}: commit: inhere with tags
 a4aa400 HEAD@{2021-11-03 18:12:37 +1300}: commit: test console.log
-### Oct 21
+### Oct 21 ver 0.6.4
 b521d98 HEAD@{2021-10-30 11:15:14 +1300}: commit: console.log for vm and eval, [ver_0.6.4]
 bed7571 HEAD@{2021-10-28 16:45:31 +1300}: commit: test console.log
 bc602a5 HEAD@{2021-10-26 22:34:22 +1300}: commit: wsl
@@ -91,7 +107,7 @@ ac63d6c HEAD@{2021-10-02 21:09:07 +1300}: commit: update gif
 dd5077a HEAD@{2021-10-02 14:52:51 +1300}: commit: hrefSrcPath
 118a205 HEAD@{2021-10-01 23:18:23 +1300}: commit: update node modules
 9c8d1f1 HEAD@{2021-09-30 10:29:14 +1300}: commit: include vm.Script syntax check for eval scripts
-### Sep 21
+### Sep 21 ver 0.6.2
 bedf4e7 HEAD@{2021-09-27 12:12:04 +1300}: commit: wrap eval with async to allow await for input, etc., [ver_0.6.2]
 103a963 HEAD@{2021-09-20 16:32:14 +1200}: commit: fix link
 27c5c96 HEAD@{2021-09-19 22:32:28 +1200}: commit: prettier
@@ -104,7 +120,7 @@ aaea83d HEAD@{2021-09-05 16:14:56 +1200}: commit: update for linux file paths
 7b1cdc6 HEAD@{2021-09-03 16:52:51 +1200}: commit: ref command vsix
 50e9b11 HEAD@{2021-09-03 16:50:34 +1200}: commit: exploring ref command
 1aab85d HEAD@{2021-09-01 08:14:21 +1200}: commit: currentfile
-### Aug 21
+### Aug 21 ver 0.5.1
 93cea83 HEAD@{2021-08-31 20:31:22 +1200}: commit: readme, [ver_0.5.1]
 563c3f2 HEAD@{2021-08-31 20:19:52 +1200}: commit (amend): readme and vsce update
 0c0ba29 HEAD@{2021-08-30 23:52:42 +1200}: commit: Update readme
@@ -112,7 +128,7 @@ aaea83d HEAD@{2021-09-05 16:14:56 +1200}: commit: update for linux file paths
 6120be7 HEAD@{2021-08-26 13:53:36 +1200}: commit: [ver_0.5.0]
 c55fc13 HEAD@{2021-08-26 13:40:40 +1200}: commit: change config settings structure
 74fd91b HEAD@{2021-07-31 22:10:43 +1200}: commit: provide internal variables for eval code blocks
-### Jul 21
+### Jul 21 ver 0.4.1
 e4eb76c HEAD@{2021-07-26 22:34:35 +1200}: commit: readme
 6e57f8a HEAD@{2021-07-26 20:26:07 +1200}: commit: readme gif
 4a3896c HEAD@{2021-07-26 20:14:18 +1200}: commit: merge repos
