@@ -42,7 +42,9 @@
         "title": "Hover-exec: open the hover-exec readme"
       }
     ],
-    "capabilities":{"hoverProvider":"true"},
+    "capabilities": {
+      "hoverProvider": "true"
+    },
     "configuration": {
       "type": "object",
       "title": "Hover Exec",
@@ -326,7 +328,6 @@
         "mac": "ctrl+opt+/",
         "when": "editorLangId == markdown"
       }
-
     ]
   },
   "scripts": {
