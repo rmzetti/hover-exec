@@ -201,7 +201,7 @@ A regex tester using *vscode*'s eval:
 
 ---
 All the code blocks above can be executed using either `eval` or `vm`.
-The difference is that `vm` scripts are executed within a more restricted *context* - `edit %h/test/readmore`
+The difference is that `vm` scripts are executed within a more restricted *context* - `edit %h/test/readmore#using a custom vm context`
 
 In the command line (eg. above), using `js` for the code block id produces javascript syntax highlighting (it's a quick and dirty approach to provide basic syntax highlighting for a range of scripts), then adding `:eval` sets the actual exec command to `eval`.
 
@@ -283,7 +283,7 @@ Notes:
 - The script language you wish to use (eg `julia`, `nodejs` ..) needs to have been installed in your system
 - Some of the commands to run the scripts ***may need customising*** to suit your particular installation - go `edit %h/test/readmore#config`.
 - Other script languages may be added. In basic usage the script command can be entered via '[config]' in the hover. To achieve in-line capability, use the *hover-exec* extension settings, or as an alternative, this can also done with `eval` - `edit %h/test/readmore#config` for examples.
-- For other script language examples, `edit %h/test/readmore#other scripts`
+- For more script language examples, `edit %h/test/readmore#other scripts`
 
 ---
 ### Python
@@ -492,7 +492,14 @@ Because cmd.exe is the default windows child-process, if the default is being us
 ---
 ## One-liners and quickmath
 
-*One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click or the alt-/ or opt-/ shortcut. The pre-defined command variables %c current workspace folder path, %d current file path, %e current file path+name, %f temp file path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote. `edit %h/test/readmore#what settings` for more about %c etc.
+ *One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click, or `alt-/` or `opt-/`.
+ The following command variables can be used (the derived path will be seen in the hover):
+ %c current workspace folder path, %d current file path, %e current file path+name,
+ %f temp file path+name, %g temp file path, %n temp file name
+ %h the *hover-exec* install directory.
+
+Comments can be added after the closing quote.
+`edit %h/test/readmore#what settings` for more about %c etc.
 
 Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using *mathjs* `math.evaluate(..)`) and the result will be shown immediately  in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
@@ -512,9 +519,9 @@ Another useful facility is *quickmath*. A math expression of the form `5-sqrt(2)
 
 ### exec notepad with temp file (%f):
 
-`open -a textedit "%f"` --mac \
-`notepad "%f.md"`  --windows \
-`xedit "%f"`  --linux/wsl
+`open -a textedit "%f.js"` --mac \
+`notepad "%f.js"`  --windows \
+`xedit "%f.js"`  --linux/wsl
 
 ### open another instance of vscode:
 

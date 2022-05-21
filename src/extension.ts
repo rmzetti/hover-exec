@@ -111,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
           oneLiner = line.text.startsWith("`") && line.text.slice(2).includes("`");
           quickmath = /`.+=`/.test(line.text); //eg. `1+2=`
-          variable = /`%[c-hC-Hn]`/.test(line.text); //eg. `%c`
+          variable = /`%[c-hC-Hn](\.\w\w\w?)?`/.test(line.text); //eg. `%c`, `%f.py`
           edit = /`edit.*`/.test(line.text); //allow eg. `edit path/to/file.ext`
           includeHere = /`include.*#\w*.*`/.test(line.text) && !edit && !quickmath && !variable; //`include path/to/file.ext#tag` 
           if (!oneLiner && !quickmath && !includeHere && !edit && !variable) {

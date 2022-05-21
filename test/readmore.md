@@ -95,7 +95,7 @@ Notes:
 
 *Hover-exec*
 - facilitates execution from within the editor of fenced markdown code blocks in a variety of script languages that are installed on your system
-- enables the inclusion of other script languages with or without configuration - see [`edit %h/test/readmore#add new`](test/readmore.md#add-new-script-language)
+- enables the inclusion of other script languages with or without configuration - see [`edit %h/test/readmore#add new`](#add-new-script-language)
 - offers the opportunity, when working with markdown docs, to include 'live' calculations, results, code samples, demos, comparisons and useful links, using a range of possible scripts.
 - can execute a range of 'one-liners' and provides a quick calculation facility - see [One-liners and quickmath](#one-liners-and-quickmath).
 
@@ -1383,7 +1383,7 @@ ls -l
 >      drwxr-xr-x ... etc.
 
 Can also use bash commands direct, since for macos/linux/wsl bash is the default shell for child-process
-`ls -al "%g"` //list temp directory files (in the hover command, %e, %f etc are expanded - see the hover message)
+`ls -al "%g"` //list temp directory files (in the hover message, %e, %f etc are expanded)
 
 Hover-exec can also use `zsh` as the default by setting `scripts.os="mac (zsh)"` rather than the child-process default `bash` which is used if `scripts.os="mac (auto)"` (if changed, *vscode* may need a restart)
 
@@ -1541,7 +1541,7 @@ To see what will be included, hover over the tag reference in the `include` line
 1. The actual tags must either stand alone in a line, or end the line (eg. tags can have comment markers in front of them)
 2. To include lines from another file use the format
 >      `include file_path/name #tag`
->      (nb. file_path can include %c current folder, or %g temp files folder command variables)
+>      nb. file_path can include command variables %c, %d, %g (workspace, current or temp folder)
 >      If the tag is empty (ie. just #) the whole file is used - recursive is not supported
 
 Here is an example:
@@ -1862,7 +1862,14 @@ chRepl[i][0]=>> rterm
 ---
 ## One-liners and quickmath
 
- *One-liners* starting with a single backtick  in column 1 and ending with a single backtick can also be executed with *hover-click*. The pre-defined variables %c current workspace folder, %d current file path only, %e current file full path+name, %f temp file full path+name, %g temp file path, %n temp file name can be used (the derived path will be seen in the hover). Comments can be added after the closing quote.
+ *One-liners* starting with a single backtick *in column 1* and ending with a single backtick can also be executed with hover-click, or `alt-/` or `opt-/`.
+ The following command variables can be used (the derived path will be seen in the hover):
+ %c current workspace folder path, %d current file path, %e current file path+name,
+ %f temp file path+name, %g temp file path, %n temp file name
+ %h the *hover-exec* install directory.
+
+Comments can be added after the closing quote.
+See [Configuration settings](#configuration-settings) for more about %c etc.
 
 Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2)=` (does not need to start in column 1) will be evaluated on hover (using  *mathjs* `math.evaluate(..)`) and the result will be shown immediately in the hover message. Clicking the hover result will copy it to the clipboard. Note that the expression is surrounded by single backticks, and there needs to be '=' before the last backtick (essentially to stop popups for other backtick quoted strings).
 
@@ -1875,10 +1882,10 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 
 ### exec notepad with file in current file's folder:
 
-`notepad "%d/README.md"` --windows \
-`open -a textedit "%d/README.md"` --mac \
-`gedit "%d/README.md"` --linux, wsl \
-`xedit "%d/README.md"` --linux, wsl
+`notepad "%d/misc_tests.md"` --windows \
+`open -a textedit "%d/misc_tests.md"` --mac \
+`gedit "%d/misc_tests.md"` --linux, wsl \
+`xedit "%d/misc_tests.md"` --linux, wsl
 
 ### exec notepad with temp file (%f):
 
@@ -1914,18 +1921,23 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 
 ### bash html & javascript
 
-`"C:\Program Files\Google\Chrome\Application\chrome.exe" %d/hover-exec.gif` //chrome with media or html file - can use %d etc in one-liners \
+`"C:\Program Files\Google\Chrome\Application\chrome.exe" "%h/media/matplotlib_example.png"` //chrome with media or html file - can use %c etc in one-liners \
 `html <script>location.href='https://whatamigoingtodonow.net/'</script>` //browser with url \
-`html <h1 align='center' >this: %d</h1><br><h3 align='center' >or this: /%d</h3>` \
+`html <h1 align='center' >workspace: %c</h1><br><h3 align='center' >this folder: /%d</h3>` \
 `js console.log(7*7-7)` \
 `js progress(''+(7*7-7),4000)` //quick calculator output via 4sec message
 
 ---
 ### audio one-liners
 
-`html <h2>French nuclear test<br>Recorded in New Zealand 1996</h2>Played much faster than real time<br><audio id="a2" controls autoplay src="%d/media/fnt2b.mp3"/>` \
-`"c:\Program Files (x86)\Windows Media Player\wmplayer.exe" "%d/media\fnt2b.mp3"` \
-`pwsh start wmplayer "%d/media/fnt2b.mp3"`
+Audio of Moruroa nuclear test 1996.
+Recorded by hydrophone 4600km away in New Zealand.
+Played much faster than real time (at least 8x).
+
+`html <h2>French nuclear test Moruroa 1996</h2><audio id="a2" controls autoplay src="%h/media/fnt2b.mp3"/>` \
+`"c:\Program Files\Windows Media Player\wmplayer.exe" "%h/media/fnt2b.mp3"` \
+`pwsh start wmplayer "%h/media/fnt2b.mp3"`
+`pwsh start mpg123 -win min  "C:\Users\ralph\OneDrive\Documents\Notes\media\SH_realisation_installation_a.mp3"`
 
 ---
 ### Windows one-liners
@@ -1948,7 +1960,7 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 >      Test output:
 >      Major  Minor  Build  Revision
 >      -----  -----  -----  --------
->      7      2      2      -1
+>      7      2      3      -1
 
 `devmgmt.msc` //devices \
 `mmc diskmgmt.msc` //disk management \
@@ -2213,7 +2225,7 @@ Scripts can also be run using their REPL version, if this is available - eg. for
 
 There is also an  *include* capability, known as *include* (to distinguish from  *includes* in scripts) - see [Including tagged sections using include](#including-tagged-sections-using-include) for details and examples.
 
-Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly straightforward.)
+Matlab takes a substantial amount of time to run from code block exec (eg. the startup time for matlab to run a 'batch file' is about 5s on a recent Ryzen laptop). Although this is a Matlab startup issue, it undermines the use of `matlab` within *hover-exec*. Also I haven't been able to get a Matlab based REPL working (unlike, for example, Octave, which is fairly straightforward.) 
 
 The startup times for other included scripts are generally fairly minimal (see the demo gif above).
 
@@ -2221,4 +2233,5 @@ The startup times for other included scripts are generally fairly minimal (see t
 
 Initial beta release was 0.6.1
 Published using: vsce package/publish
+
 
