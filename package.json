@@ -42,6 +42,7 @@
         "title": "Hover-exec: open the hover-exec readme"
       }
     ],
+    "capabilities":{"hoverProvider":"true"},
     "configuration": {
       "type": "object",
       "title": "Hover Exec",
@@ -359,15 +360,6 @@
     "vscode-test": "^1.5.0",
     "webpack": "^5.40.0",
     "webpack-cli": "^4.7.2"
-  },
-  "comments": {
-    "//": [
-      "originally in package:",
-      "webpack --mode production --devtool hidden-source-map",
-      "for hover, did not need under contributes:",
-      "  'capabilities':{'hoverProvider':'true'},",
-      "Relative image URLs require a repository with HTTPS protocol to be specified in the package.json."
-    ]
   },
   "dependencies": {
     "vm2": "^3.9.9"
