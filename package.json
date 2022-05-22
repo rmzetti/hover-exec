@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/rmzetti/hover-exec"
   },
-  "license": "NCSA",
+  "license": "SEE LICENSE IN LICENSE.md",
   "contributors": [
     "rmzetti"
   ],
@@ -19,6 +19,11 @@
     "Other",
     "Notebooks"
   ],
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#080800",
+    "theme": "dark"
+  },
   "keywords": [
     "execute",
     "run",
@@ -42,9 +47,6 @@
         "title": "Hover-exec: open the hover-exec readme"
       }
     ],
-    "capabilities": {
-      "hoverProvider": "true"
-    },
     "configuration": {
       "type": "object",
       "title": "Hover Exec",
