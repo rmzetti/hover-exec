@@ -1355,7 +1355,7 @@ let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
 Plotly.plot( plot1, [{ x: x1, y: y1, mode: lm, name:'pascal'}]);
 </script>
-<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+<a href="https://plotly.com/javascript/">plotly.js documentation</a>
 ```
 
 ---
@@ -1570,7 +1570,7 @@ let y1=Array(a.length/2).fill(0).map((x,i) => a[i*2+1])
 plot1 = document.getElementById('plot');
 Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },]);
 </script>
-<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+<a href="https://plotly.com/javascript/">plotly.js documentation</a>
 ```
 >      Test output is the plot.
 

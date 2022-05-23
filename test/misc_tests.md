@@ -303,7 +303,7 @@ Plotly.plot( plot1, [{ x: x, y: y1, mode: lm, name:'pascal' },
                   { x: x, y: y2, mode: lm, name:'javascript' },
                   { x: x, y: y3, mode: lm, name:'go' },]);
 </script>
-<a href="https://bit.ly/1Or9igj">plotly.js documentation</a>
+<a href="https://plotly.com/javascript/">plotly.js documentation</a>
 ```
 
 ```html //google charts
