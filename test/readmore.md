@@ -165,9 +165,6 @@ let world=3;
 console.log('hello world '+world);
 alert('goodbye world');
 ```
-```output
-hello world 3
-```
 
 If the cursor is inside a fenced code block, the code can be quickly executed using the shortcut `Alt+/` or `Opt+/`.
 
@@ -191,7 +188,7 @@ Output can be positioned in-line (within the code block) if this is appropriate:
 // '''js //show calculation results in-line
 let a='the meaning of life';
 console.log('Normally output is shown in an output block');
-a+' is '+(7*7-7+Math.random()) =>>the meaning of life is 42.29066347387005
+a+' is '+(7*7-7+Math.random()) =>> 
 console.log('but results can be shown next to the calculation which produced them');
 ```
 >      Test output (also see in-line above):
@@ -242,7 +239,7 @@ The code block label `js` by itself defaults to executing javascript via the bui
 //                        //the default for the `js` command is to execute using the `vm` module
 //   {cmd=..} is only for execution by markdown preview enhanced, it is not used in hover-exec
 console.log("Note the in-line random number result ")
-'test: '+Math.random() =>>test: 0.9885335440728578
+'test: '+Math.random() =>> 
 aa = function (fruit){alert('I like ' + fruit);} //no 'let' creates global
 bb = function (animal){alert('he likes ' + animal);}
 ```
@@ -271,11 +268,11 @@ alert(abc) //not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() =>>
-eval('let b=3; 2*b*Math.random()')=>>
+2*b*Math.random() =>> 
+eval('let b=3; 2*b*Math.random()')=>> 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random())=>>
-process.cwd() =>>
+'hello '+(2-1+Math.random())=>> 
+process.cwd() =>> 
 console.log(abc)
 ```
  >     Test output (note inline results above, and alerts appear in a message box bottom right):
@@ -289,7 +286,7 @@ A useful example is a regex tester using the *javascript* vm (try clicking *clea
 
 ```js
 //'''js  //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>> 
 ```
 
 ---
@@ -375,7 +372,7 @@ With this context, for example, the following works in `vm`:
 
 ```js
 //'''js //can use lodash
-_.range(0,5)=>>0,1,2,3,4
+_.range(0,5)=>> 
 ```
 
 The following four examples show how to reduce the *vm* context, and re-enable the default context.
@@ -468,9 +465,9 @@ function xrange(){
    let x=math.round(math.exp(math.multiply(x1,math.log(10))));
    return x
 }
-xrange()=>>1,4,16,63,251,1000,3981,15849,63096,251189,1000000
+xrange()=>> 
 let cd=process.cwd().replace(/\\/g,'/'); //current directory using '/'
-cd =>>c:/Users/../GitHub/hover-exec
+cd =>> 
 console.log(xrange())
 ```
 >      Test output (also inline):
@@ -896,14 +893,14 @@ Various time and date functions using `vm`
 
 ```js
 //'''js      //time & date using internal javascript via vm - not in *mpe*
-(44-Math.random())=>>43.00094653105661
+(44-Math.random())=>> 
 //show information message via vscode api
 progress('Hello whole World',4000)
-new Date().toISOString().slice(0,10)=>>2022-01-29
-new Date().toLocaleDateString()=>>30/01/2022
-new Date().toString()=>>Sun Jan 30 2022 10:29:40 GMT+1300 (New Zealand Daylight Time)
-new Date().toLocaleString()=>>30/01/2022, 10:29:40 am
-new Date().getTime()=>>1643491780855
+new Date().toISOString().slice(0,10)=>> 
+new Date().toLocaleDateString()=>> 
+new Date().toString()=>> 
+new Date().toLocaleString()=>> 
+new Date().getTime()=>> 
 ```
 >      Test output: all inline (and a progress message bottom right)
 
@@ -914,8 +911,8 @@ Time and date using node
 //'''js {cmd=node} :node  //through nodejs in both mpe and hover-exec
 a=44
 // in-line results are calculated but not output in mpe
-'answer='+(a-Math.random()) =>>answer=43.021172705218675
-new Date().getTime()=>>1650276828942
+'answer='+(a-Math.random()) =>> 
+new Date().getTime()=>> 
 console.log(new Date().toISOString().slice(0, 10))
 console.log(new Date().toLocaleDateString())
 ```
@@ -1018,7 +1015,7 @@ To see that the output is being regenerated click *[clear output]* in the hover 
 //'''js {cmd} //javascript regex tester (use node for mpe)
 // if not using md preview enhanced, use = >> instead of // = (less faint)
 let s="xys {cmd='js'} th".replace(/.*cmd=(.*?)[\s\,\}].*/,'$1').replace(/["']/g,'');
-s+' this output not from mpe.' // =>>js this output not from mpe.
+s+' this output not from mpe.' // =>> 
 console.log(s); //this needed for mpe
 ```
 >      Test output:
@@ -1027,7 +1024,7 @@ console.log(s); //this needed for mpe
 ---
 ```js {cmd=node} :eval // for mpe the {..} needs to be before the : 
 //'''js {cmd=node} :eval //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1Baa')  // =>> bcBaadefg
+'abcdefg'.replace(/^.*(bc)/,'$1Baa')  // =>> 
 console.log('abcdefg'.replace(/^.*(bc)/,'$1Baa'))  //this for *mpe*
 ```
 >      Test output:
@@ -1041,14 +1038,14 @@ another regex example
 //'''js :node // if the space is not included before the : the code block disappears in mpe
 var myRe = new RegExp('d(b+)d', 'g');
 var myArray = myRe.exec('xxdbbbdwerwr');
-myArray =>>dbbbd,bbb
+myArray =>> 
 if(myArray!==null){
-  myArray.index =>>2
-  myArray.input =>>xxdbbbdwerwr
-  myArray.input[myRe.lastIndex] =>>w
+  myArray.index =>> 
+  myArray.input =>> 
+  myArray.input[myRe.lastIndex] =>> 
 }
-myRe.source =>>d(b+)d
-myRe.lastIndex =>>7
+myRe.source =>> 
+myRe.lastIndex =>> 
 console.log('myRe is '+myRe)
 ```
 >      Test output:
@@ -1064,7 +1061,7 @@ This uses `await input('text')` to get input for a js script. It works in *js* (
 //'''js   //getting input for js:vm or js:eval
 let d=await input('dosage ug?')/1 // /1 converts to number, also note 'await'
 let u=1.5*d/(d+1.5)+(1-1.5/(d+1.5))*0.009*d
-' uptake='+u  =>> uptake=10.484273589615576
+' uptake='+u  =>> 
 console.log('for',d,'ug uptake is',u,'ug')
 ```
 >      Test output:
@@ -1106,8 +1103,8 @@ Use `python` to run python. `python3` can be used if that is the python start co
 ```python {cmd}
 # '''python :python3 # use this instead to use 'python3' as start command
 from random import random
-45-2+random()       #  =>>43.60797447261393
-'hello, world 3!'       #  =>>hello, world 3!
+45-2+random()       #  =>> 
+'hello, world 3!'       #  =>> 
 print('python ok')
 ```
 >      Test output (plus inline output):
@@ -1183,9 +1180,9 @@ If the *julia* extension is included, *vscode* will provide syntax highlighting.
 # '''julia  // use '''julia {cmd} to execute in *mpe* 
 using LinearAlgebra # this package is not needed if dot(a',a) is commented out
 a=rand(Float64,3);
-a   # =>>[0.8999280817338797, 0.05500849893486204, 0.8299019559590521]
-a'*a # =>>1.5016337437529477
-dot(a',a) # =>>1.5016337437529477
+a   # =>> 
+a'*a # =>> 
+dot(a',a) # =>> 
 b=a;b[2]=42;  # demonstrates that arrays are shallow copied here
 println(string("a=",a,"\n","b=",b))  # double quotes only for julia strings
 ```
@@ -1205,9 +1202,9 @@ Use `octave` or `python : octave` to run octave. Using 'python' as the command i
  # '''python : octave {cmd=octave} -- {cmd..} is for mpe
  #   python gives a syntax highlighter, :octave executes in octave
  #   nb. in octave, need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.2741
-'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\...\GitHub\hover-exec
+num2str(7.1+rand(1))  =>> 
+'hello world in-line'  =>> 
+pwd()  =>> 
 disp('hello world in output section!')
 disp(rand(1))
 ```
@@ -1225,8 +1222,8 @@ Use `scilab` to run scilab, or `js :scilab` for some quick and dirty syntax high
 //  nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
 rand("seed",getdate('s')); //set new random sequence
 mprintf('%s\n','test '+string(rand())+' '+pwd());
-string(rand())+' '+pwd() =>>0.7225487 c:\Users\rmzetti\GitHub\hover-exec
-string(rand()) =>>0.4548922
+string(rand())+' '+pwd() =>> 
+string(rand()) =>> 
 disp('disp puts quotes around strings',rand())
 ```
 >      Test output (also see in-line):
@@ -1245,8 +1242,8 @@ If this is the case use 'lua : lua54' as the command id, etc. ... or check/adjus
 ```lua -- say hello & goodbye
 -- '''lua  -- 'lua' id specifies syntax highlight and default start command
 --   add :lua54 to use 'lua54' as theactual command
-'hello ' .. 44-2+math.random() =>>hello 42.44251179337
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.2245941852191
+'hello ' .. 44-2+math.random() =>> 
+"& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
 ```
 >      Test output (also see in-line):
@@ -1264,7 +1261,7 @@ y = x.^2;
 plot(x,y)
 uiwait(helpdlg('Ok!')); % this line needed otherwise the plot disappears
 % more waiting after plot dismissed before the following answer appears
-7*7-7 =>>42
+7*7-7 =>> 
 disp("matlab ok!")
 ```
 >      Test output (need to close the plot to see this, after a delay.. ):
@@ -1404,8 +1401,8 @@ Can also get in-line results:
 
 ```pwsh
 # '''pwsh {cmd}
-Get-Random -Min 0.0 -Max 1.0  =>>0.166621897447213
-"current dir: "+(pwd)  =>>current dir: C:\Users\rmzetti\GitHub\hover-exec
+Get-Random -Min 0.0 -Max 1.0  =>> 
+"current dir: "+(pwd)  =>> 
 ```
 >      Test output is in-line.
 
@@ -1500,26 +1497,26 @@ console.log('plot "$speed" w lp title "speed"');
 ```output :gnuplot
 #tag_speed
 $speed << EOD
-1 0.21052631578947367
+1 0.17391304347826086
 2 0.5714285714285715
-4 1.142857142857143
-9 2.7692307692307696
-18 5.142857142857142
-38 10.133333333333335
-78 14.857142857142858
+4 1.2307692307692308
+9 2.3999999999999995
+18 4.799999999999999
+38 8.941176470588236
+78 13.565217391304348
 162 21.6
 336 19.2
 695 21.384615384615387
 1438 23.008
-2976 25.878260869565214
-6158 27.36888888888889
-12743 27.702173913043477
-26367 25.72390243902439
-54556 20.0205504587156
-112884 26.10034682080925
-233572 23.012019704433502
-483293 24.595063613231556
-1000000 22.222222222222225
+2976 23.808
+6158 25.658333333333335
+12743 24.98627450980392
+26367 15.066857142857144
+54556 18.493559322033896
+112884 19.462758620689655
+233572 18.21224171539961
+483293 18.254693106704437
+1000000 17.722640673460347
 EOD
 #tag_speed
 set logscale x
@@ -1634,7 +1631,7 @@ The second script can use script variables defined in the first script (and any 
 # python::repl   # the two colons indicate the REPL is to be used, 'repl' can be omitted.
 # python :python3:  # use this instead to use 'python3' as start command
 from time import time
-b=>>6000600
+b=>> 
 b=b+1 # b is successively updated with each run
 time()-t
 "b",b          # note 'print' not necessary when using repl

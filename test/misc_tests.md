@@ -51,7 +51,7 @@ For javascript in the browser see the following section [Javascript in the brows
 ```js
 // '''js //can use js, js:eval or js:node
 let name='Fred'
-'hello '+name+', how are you '+3+' doing, ok?'=>>hello Fred, how are you 3 doing, ok?
+'hello '+name+', how are you '+3+' doing, ok?'=>> 
 console.log('hello %s, how are you %s doing', name,3,', ok?')
 ```
 >      Test output (also identical output in-line):
@@ -65,38 +65,38 @@ console.log('hello %s, how are you %s doing', name,3,', ok?')
 // '''js:eval //uses js syntax highlight and eval to exec
 // '''js:node // uses js syntax highlight and nodejs to exec
 let a=[1,2,3,4,5,6,7,8];
-a.slice(2)=>>3,4,5,6,7,8
-a.slice(0,2)=>>1,2
-a=>>1,2,3,4,5,6,7,8
-a.splice(2)=>>3,4,5,6,7,8
-a=>>1,2
+a.slice(2)=>> 
+a.slice(0,2)=>> 
+a=>> 
+a.splice(2)=>> 
+a=>> 
 a=[1,2,3,4,5,6,7,8];
-a=>>1,2,3,4,5,6,7,8
-a.includes(6)=>>true
-a.includes(5,-3)=>>false
-a.includes(6,-3)=>>true
-a.shift(1)=>>1
-a=>>2,3,4,5,6,7,8
-a.shift(1)=>>2
-a=>>3,4,5,6,7,8
-a.pop(1)=>>8
-a=>>3,4,5,6,7
-a.pop(1)=>>7
-a=>>3,4,5,6
-a.unshift(12)=>>5
-a=>>12,3,4,5,6
-a.push(['hello',true])=>>6
-a=>>12,3,4,5,6,hello,true
-a[5]=>>hello,true
+a=>> 
+a.includes(6)=>> 
+a.includes(5,-3)=>> 
+a.includes(6,-3)=>> 
+a.shift(1)=>> 
+a=>> 
+a.shift(1)=>> 
+a=>> 
+a.pop(1)=>> 
+a=>> 
+a.pop(1)=>> 
+a=>> 
+a.unshift(12)=>> 
+a=>> 
+a.push(['hello',true])=>> 
+a=>> 
+a[5]=>> 
 a.push(['goodbye',false])
-a=>>12,3,4,5,6,hello,true,goodbye,false
-i=a.findIndex((el) => el[0]==='goodbye')=>>6
+a=>> 
+i=a.findIndex((el) => el[0]==='goodbye')=>> 
 if(i===-1){i=a.length;} //because if index not found, i=-1, & splice(i,1) wrong
-a.splice(i,1)=>>goodbye,false
-a=>>12,3,4,5,6,hello,true
-a.indexOf(6)=>>4
+a.splice(i,1)=>> 
+a=>> 
+a.indexOf(6)=>> 
 b=a.find((el) => el[0]==='hello')
-b=>>hello,true
+b=>> 
 console.log("hello ".repeat(3))
 ```
 >      Test output (mostly in-line):
@@ -115,7 +115,7 @@ console.time('timer')
 let t=Date.now()
 array1=array1.map(x => Math.random())
 array1=array1.map(String)
-performance.now()-p=>>530.5593000017107
+performance.now()-p=>> 
 console.timeEnd('timer')  //vm & eval output this in dev-tools console only
 console.log(array1.slice(0,2))
 console.log('hello ',Date.now()-t)
@@ -140,12 +140,12 @@ for (let i = 0; i < n; i++) { //speed test loop
   result = Function("return " + expr)();
 }
 t1 = Date.now() - p
-'check result='+result =>>check result=42
+'check result='+result =>> 
 p = Date.now();
 for (let i = 0; i < n; i++) { //speed test loop
   result = eval( expr );
 }
-'check result='+result =>>check result=42
+'check result='+result =>> 
 t2 = Date.now() - p
 console.log('- for n=',n,': using Function',t1,'msec using eval',t2,'msec')
 ```

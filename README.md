@@ -172,11 +172,11 @@ alert(abc) //alert produces vscode alerts - not available in nodejs scripts
 let a='goodbye world'
 vscode.window.showInformationMessage(a) //not available in node scripts
 let b=3;
-2*b*Math.random() // =>> 2.3470376208640706
-eval('let b=3; 2*b*Math.random()') // =>> 2.757493399289601
+2*b*Math.random() // =>> 
+eval('let b=3; 2*b*Math.random()') // =>> 
 console.log(a,Math.random())
-'hello '+(2-1+Math.random()) // =>> hello 1.8468812061012565
-process.cwd() // =>> c:\Users\rmZetti\GitHub\hover-exec
+'hello '+(2-1+Math.random()) // =>> 
+process.cwd() // =>> 
 console.log(abc)
 ```
 >      Test output: see also alert box bottom right
@@ -189,7 +189,7 @@ A regex tester using the *javascript* vm (try clicking *clear output* before *ex
 
 ```js
 //'''js  //javascript regex tester
-'abcdefg'.replace(/^.*(bc)/,'$1--') =>>bc--defg
+'abcdefg'.replace(/^.*(bc)/,'$1--') =>> 
 ```
 
 A regex tester using *vscode*'s eval:
@@ -337,9 +337,9 @@ Use `octave` or `python : octave` to run octave. Using 'python' as the command i
  # '''python:octave {cmd=octave} -- {cmd..} is for mpe
  # using '''python:octave instead of just '''octave gives syntax highlighter
  # nb. need mat2str or num2str for numeric output
-num2str(7.1+rand(1))  =>>7.8169
-'hello world in-line'  =>>hello world in-line
-pwd()  =>>c:\Users\rmzetti\GitHub\hover-exec
+num2str(7.1+rand(1))  =>> 
+'hello world in-line'  =>> 
+pwd()  =>> 
 disp('hello world in output section!')
 disp(rand(1))
 ```
@@ -357,8 +357,8 @@ Scilab generally won't have syntax highlighting - identifying the code block as 
   //nb. scilab needs to use 'string()' for inline numeric output (uses mprintf)
 rand("seed",getdate('s')); //set new random sequence
 mprintf('%s\n','test '+string(rand())+' '+pwd());
-string(rand())+' '+pwd() =>>0.9321708 c:\Users\rmzetti\GitHub\hover-exec
-string(rand()) =>>0.3329656
+string(rand())+' '+pwd() =>> 
+string(rand()) =>> 
 //disp('disp puts quotes around strings',rand())
 ```
 >      Test output (also see inline output):
@@ -372,8 +372,8 @@ Lua has a syntax highlighter available for *vscode*. Many installations however 
 ```lua  -- say hello & goodbye
 --'''lua :lua54 -- 'lua' id specifies syntax highlight and default start command
 --                  adding ':lua54' means use 'lua54' as start command
-'hello ' .. 44-2+math.random() -- =>>hello 42.046598765538
-"& goodbye " .. math.pi+math.random() =>>& goodbye 3.3082099849202
+'hello ' .. 44-2+math.random() -- =>> 
+"& goodbye " .. math.pi+math.random() =>> 
 print("lua ok") -- this outputs in the output code block below
 ```
 >      Test output (also see inline output):
@@ -407,9 +407,6 @@ timefmt = "%d-%m-%Y %H:%M"
 set format x "%d-%m" time
 set mouse mouseformat 3
 plot $charge u (timecolumn(1,timefmt)):2 w lp pt 7 ps 2 ti "charge"
-```
-```output
-Warning: slow font initializationqt_processTermEvent received a GE_fontprops event. This should not have happened
 ```
 ![[2021-08-31-20-28-22.png]] (this 'wiki' type link is enabled in the editor using *markdown memo*)
 
@@ -461,7 +458,7 @@ Powershell scripts can be run, usually in *windows*
 ```pwsh #  random number, show current directory
 # '''pwsh # random number, show current directory
 # $PSStyle.OutputRendering = 'PlainText'   # stops color codes appearing in output
-Get-Random -Min 0.0 -Max 1.0 # =>>0.804137573020597
+Get-Random -Min 0.0 -Max 1.0 # =>> 
 pwd
 ```
 >      Test output (also see inline output):
@@ -478,6 +475,7 @@ Cmd executes cmd.exe in Windows and runs a batch file with contents from the cod
 @pwd
 @echo "hello world 3"
 ```
+
 >      Test output:
 >      c:\Users\..\GitHub\hover-exec
 >      "hello world 3"
