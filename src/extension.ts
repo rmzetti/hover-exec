@@ -71,8 +71,8 @@ const refStr =
   " - The required ext can be specified by appending .ext, eg. %f.py\n" +
   " - %C,D,E,F,G,X use \ instead of /, windows is usually ok with either\n";
 const msgDel =
-  "[ [*command line vars %f etc*] ](vscode://rmzetti.hover-exec?ref) " +
-  "[ [*delete block*] ](vscode://rmzetti.hover-exec?delete_output)\n\n";
+  "[ [*command line vars %f etc*] ](command:ref)" +
+  "[ [*delete block*] ](command:delete_output)\n\n";
 let msg = "", cmda = "", mpe = "", comment = "", full = "";  //for cmd line parse
 let os = 'win'; //set current os
 if (!windows) {
@@ -94,11 +94,9 @@ export function activate(context: vscode.ExtensionContext) {
       ): Promise<vscode.Hover | null> {
         if (executing) {
           //if already executing code block, show cancel option
-          return new vscode.Hover(
-            new vscode.MarkdownString(
-              "*hover-exec:* executing...\n\n[cancel execution](vscode://rmzetti.hover-exec?abort)"
-            )
-          );
+          const contents = new vscode.MarkdownString("*hover-exec:* executing...\n\n[cancel execution](command:abort)");
+          contents.isTrusted = true;
+          return new vscode.Hover(contents);          
         }
         status(''); //clear status message
         let line = doc.lineAt(pos); //user is currently hovering over this line
@@ -106,6 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
         let variable = false; //variable name is being hovered
         edit = false; //current script is not 'edit' (executed by hover)
         oneLiner = false; //one-liner
+        startCode=-1; //start line of code
         let includeHere = false;    //an 'include' line
         setExecParams(context, doc); //reset basic exec parameters
         if (!line.text.startsWith("```")) { //check for oneLiner, quickmath, includeHere, edit
@@ -120,9 +119,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (includeHere) { //show tagged content
           resultForClip = (await inHere(line.text)).replace(/\n/g, ' ');
-          return new vscode.Hover(new vscode.MarkdownString(
-            "[" + resultForClip + "](vscode://rmzetti.hover-exec?copyToClipboard)"
-          ));
+          const contents = new vscode.MarkdownString("[" + resultForClip + "](command:copyToClipboard)");
+          contents.isTrusted = true; //set hover links as trusted
+          return new vscode.Hover(contents);
         }
         else if (edit) { //open in vscode editor
           [cmd, cmda] = getFileToEdit(line.text, pos.character);
@@ -134,8 +133,8 @@ export function activate(context: vscode.ExtensionContext) {
           }
           cmdId = "edit";
           let msg = '';
-          if (cmda != "") { msg = " at heading #" + cmda + ".."; }
-          let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
+          if (cmda !== "") { msg = " at heading #" + cmda + ".."; }
+          let url = "command:edit";
           const contents = new vscode.MarkdownString(
             "*hover-exec:* edit in vsCode" + msg + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
@@ -165,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
           //if predefined script engine
           cmd = replaceStrVars(script); //expand %f etc & get tempName
           codeBlock = getCodeBlockAt(doc, pos); //save code block
-          let url = "vscode://rmzetti.hover-exec?" + cmdId; //url for hover
+          let url = "command:hoverexec"; //url for hover
           if (comment !== '') {
             comment = ' *' + comment + '*';
           }
@@ -174,11 +173,11 @@ export function activate(context: vscode.ExtensionContext) {
             msg += "**[" + replaceStrVars(full) + " =>>](" + url + ")**";
           } else {
             let msgOpen = //to open last script & result
-              "[ [*clear output*]  ](vscode://rmzetti.hover-exec?clear_all) " +
+              "[ [*clear output*]  ]( command:clear_all ) " +
               "[ [*open last script*] ](" + vscode.Uri.file(tempPath + '/' + tempName) + ") " +
               "[ [*open last result*] ](" + vscode.Uri.file(tempPath + '/' + tempName + ".out.md") + ")\n\n";
             msg +=
-              "[ [*config*] ](" + url + "_config) " + //add hover info
+              "[ [*config*] ]( command:config )" + //add hover info
               msgDel + msgOpen + "**[ exec: " + cmdId + " =>> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ](" + url + ")**";
           }
           const contents = new vscode.MarkdownString("hover-exec: " + msg);
@@ -187,15 +186,17 @@ export function activate(context: vscode.ExtensionContext) {
         } else if (cmdId === "output") {
           //create & return message & urls for output hover
           cmdId = "delete";
-          let msgOut = "*hover-exec:*\n\n[output block to text](vscode://rmzetti.hover-exec?text_output)\n\n";
-          if (iexec === nexec) {msgOut += "[all output to text](vscode://rmzetti.hover-exec?full_output)\n\n";}
-          msgOut += "[delete output block](vscode://rmzetti.hover-exec?delete_output)"; //hover for output delete
-          return new vscode.Hover(new vscode.MarkdownString(msgOut));
+          let msgOut = "*hover-exec:*\n\n[output block to text](command:text_output)\n\n";
+          if (iexec === nexec) {msgOut += "[all output to text](command:full_output)\n\n";}
+          msgOut += "[delete output block](command:delete_output)"; //hover for output delete
+          const contents = new vscode.MarkdownString(msgOut);
+          contents.isTrusted = true; //set hover links as trusted
+          return new vscode.Hover(contents); //and return it
         } else if (oneLiner) {
           //create & return hover-message and urls for one-liners
           cmd = replaceStrVars(full);
           cmdId = "oneliner";
-          let url = "vscode://rmzetti.hover-exec?" + cmdId; //cmdId;//create hover message, declare as trusted, and return it
+          let url = "command:hoverexec"; //create hover message, declare as trusted, and return it
           const contents = new vscode.MarkdownString(
             "*hover-exec:* " + comment + "\n\n**[" + cmd + " =>>](" + url + ")**"
           );
@@ -205,15 +206,13 @@ export function activate(context: vscode.ExtensionContext) {
           //create and return hover message & urls for non-built-in commands
           cmd = replaceStrVars(full); //replace %f etc in full string
           codeBlock = getCodeBlockAt(doc, pos); //save code block
-          let url = "vscode://rmzetti.hover-exec?"; //create hover message
+          let url = "command:hoverexec"; //create hover message
           let msg =
-            "&nbsp; [ [*config*] ](" + url + cmdId + "_config) " + "[ [*last script*] ](" +
+            "&nbsp; [ [*config*] ]( command:config ) " + "[ [*last script*] ](" +
             vscode.Uri.file(tempPath + '/' + tempName) + ")" + "[ [*last result* ] ](" +
             vscode.Uri.file(tempPath + '/' + tempName) +
-            ".out.md)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + cmdId + ")**";
-          const contents = new vscode.MarkdownString(
-            "hover-exec:" + cmdId + msg
-          );
+            ".out.md)\n\n" + "**[" + pad(cmd + comment) + " =>>](" + url + ")**";
+          const contents = new vscode.MarkdownString("hover-exec:" + cmdId + msg);
           contents.isTrusted = true; //set hover links as trusted
           return new vscode.Hover(contents); //and return it
         }
@@ -229,8 +228,9 @@ export function activate(context: vscode.ExtensionContext) {
           s2 = 'hover-exec via mathjs';
           resultForClip = '' + math.evaluate(s1);
           if (resultForClip === '') { return null; }
-          s1 = "[ " + resultForClip + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
+          s1 = "[ " + resultForClip + " ](command:copyToClipboard)";
           const contents = new vscode.MarkdownString(s2 + ":\n\n" + s1);
+          contents.isTrusted = true; //set hover links as trusted
           status(resultForClip);
           return new vscode.Hover(contents);
         }
@@ -249,8 +249,9 @@ export function activate(context: vscode.ExtensionContext) {
             return null;
           }
           if (resultForClip === '') { return null; }
-          s1 = "[ " + resultForClip + " ](vscode://rmzetti.hover-exec?copyToClipboard)";
+          s1 = "[ " + resultForClip + " ](command:copyToClipboard)";
           const contents = new vscode.MarkdownString("hover-exec variable:\n\n" + s1);
+          contents.isTrusted = true; //set hover links as trusted
           status(resultForClip);
           return new vscode.Hover(contents);
         }
@@ -258,7 +259,74 @@ export function activate(context: vscode.ExtensionContext) {
     })()
   );
 
-  context.subscriptions.push( //register exec command
+  context.subscriptions.push( //register clear_all command
+    vscode.commands.registerCommand("clear_all", async () => {
+      needSwap = true;
+      await clear();
+      removeSelection();
+      status("cleared");
+    })
+  );
+
+  context.subscriptions.push( //register abort command
+    vscode.commands.registerCommand("abort", () => {
+    //cancel has been clicked, kill executing task
+    executing = false;
+    ch.kill();
+    repl.kill();
+    })
+  );
+
+  context.subscriptions.push( //register edit command
+    vscode.commands.registerCommand("edit", async () => {
+      hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?edit"));
+    })
+  );
+
+  context.subscriptions.push( //register delete_output command
+    vscode.commands.registerCommand("delete_output", async () => {
+      await deleteOutput("delete_output");
+    })
+  );
+
+  context.subscriptions.push( //register text_output command
+    vscode.commands.registerCommand("text_output", async () => {
+      await deleteOutput("text_output");
+    })
+  );
+
+  context.subscriptions.push( //register full_output command
+    vscode.commands.registerCommand("full_output", async () => {
+      await deleteOutput("full_output");
+    })
+  );
+
+  context.subscriptions.push( //register ref command
+    vscode.commands.registerCommand("ref", async () => {
+      hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?ref"));
+    })
+  );
+
+  context.subscriptions.push( //register copyToClipboard command
+    vscode.commands.registerCommand("copyToClipboard", async () => {
+      await vscode.env.clipboard.writeText(resultForClip);
+      status('copied ' + resultForClip);
+    })
+  );
+
+  context.subscriptions.push( //register config command
+    vscode.commands.registerCommand("config", async () => {
+      hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?"+cmdId+"_config"));
+    })
+  );
+
+  context.subscriptions.push( //register hoverexec command, only for exec via hover
+    vscode.commands.registerCommand("hoverexec", async () => {
+      hUri.handleUri(vscode.Uri.parse("vscode://rmzetti.hover-exec?"+cmdId));
+    })
+  );
+
+context.subscriptions.push( //register exec command
     vscode.commands.registerCommand("hover-exec.exec", () => {
       //process exec command (default shortcut Alt+/ ) -- find start of block and execute
       status(''); //clear status message
