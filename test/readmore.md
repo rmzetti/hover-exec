@@ -1877,6 +1877,7 @@ Another useful facility is  *quickmath*. A math expression of the form `5-sqrt(2
 `pwd` zsh, bash, pwsh, cmd \
 `ls` zsh,bash, pwsh \
 `dir` cmd
+`pwsh $psversiontable`
 
 ### exec notepad with file in current file's folder:
 
