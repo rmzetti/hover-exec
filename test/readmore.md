@@ -941,13 +941,13 @@ Note. If there is an EACCESS error in windows, use 'net stop winnat' and then 'n
 
 To kill the server, for windows use `pwsh` (see the comments below), also in *mpe*, for macos use zsh below
 
-```pwsh
- # '''pwsh {cmd} --works in mpe
- # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337, pid on rhs)
- # then enter pid in kill statement below and exec again
-kill 1400
-netstat -ano | findstr :13
-```
+  ```pwsh
+  # '''pwsh {cmd} --works in mpe
+  # to kill server, exec once & look for pid to kill (line TCP 127.0.0.1:1337, pid on rhs)
+  # then enter pid in kill statement below and exec again
+  kill 1400
+  netstat -ano | findstr :13
+  ```
 
 ```zsh
  # '''zsh - server usually killed on 'cancel'
@@ -1296,6 +1296,7 @@ func main() {
     fmt.Println("2d: ", twoD)
 }
 ```
+
 >      Test output:
 >      emp: [0 0 0 0 0]
 >      set: [0 0 0 0 42]
